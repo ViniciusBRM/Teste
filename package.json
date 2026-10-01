@@ -1,0 +1,11 @@
+{
+  "name": "cartellino-de-ponto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ponto eletrônico pessoal com painel de horas no estilo Power BI.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/core.test.mjs"
+  }
+}
