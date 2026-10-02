@@ -3332,7 +3332,8 @@ async function askMentor(mid, text, mode = "chat") {
     const r = await SAMPLE(turns, { signal: live.ctl.signal, modelTier: tier, cache: false, ...(fallback ? {} : { tools: mentorTools(mid, live) }), onText: ({ text: t }) => { live.text = t; paintLive(); } });
     finishMentor(r.text, r.truncated);
   } catch (e) {
-    if (e?.code === "tools_unavailable" && TOOLS_MAX) { TOOLS_MAX = 0; MST.live = null; return askMentor(mid, text, mode); }
+    const soft = ["tools_unavailable", "invalid_request", "upstream_error", "transform_error", "prompt_too_large", "empty_completion"].includes(e?.code) || !e?.code;
+    if (soft && !fallback && !e?.text) { console.warn("mentor: tentando sem ferramentas após", e?.code, e?.message); TOOLS_MAX = 0; MST.live = null; return askMentor(mid, text, mode); }
     if (e?.text) finishMentor(e.text, true); else { MST.live = null; render(); }
     if (e?.code !== "cancelled") aiError(e);
   }
@@ -3352,7 +3353,7 @@ function aiError(e) {
   if (c === "not_granted") AI_OFF = "Você não permitiu que este app use o Claude nesta visualização. Mentores e leituras ficam em modo consulta: memória e planos continuam editáveis.";
   else if (c === "sampling_disabled" || c === "capability_disabled" || c === "capability_removed" || c === "not_declared") AI_OFF = "A IA do Claude não está disponível para esta conta ou visualização.";
   const msg = { rate_limited: "Muitas perguntas seguidas. Espere um pouco e tente de novo.", refused: "O Claude não respondeu a esse pedido. Reformule a pergunta.", prompt_too_large: "O contexto ficou grande demais. Limpe a conversa deste mentor e tente de novo.", session_expired: "Sua sessão expirou. Entre de novo no Claude e recarregue.", empty_completion: "A resposta veio vazia. Tente pedir de outro jeito.", invalid_json: "A resposta não veio no formato esperado. Tente de novo." }[c];
-  toast(AI_OFF && ["not_granted", "sampling_disabled", "capability_disabled", "capability_removed", "not_declared"].includes(c) ? AI_OFF : msg || "A resposta foi interrompida. Tente de novo em instantes.");
+  toast(AI_OFF && ["not_granted", "sampling_disabled", "capability_disabled", "capability_removed", "not_declared"].includes(c) ? AI_OFF : msg || `A resposta foi interrompida (código: ${c || "desconhecido"}). Tente de novo em instantes.`);
   render();
 }
 const liveText = t => String(t || "").replace(/```atlas[\s\S]*$/, "").trim();
