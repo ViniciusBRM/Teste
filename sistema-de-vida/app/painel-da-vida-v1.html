@@ -1,0 +1,872 @@
+<title>Painel da Vida Clássico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: barra lateral de navegação por área da vida + área de trabalho em grade; no celular a navegação vira faixa rolável no topo */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eef1f5; --line:#dde2ea; --ink:#141a24; --ink-2:#4b5566; --muted:#7a8496;
+  --nav:#141a24; --nav-ink:#c9d1de; --nav-active:#ffffff;
+  --plan:#2a78d6; --money:#14a072; --body:#e2612d; --grow:#5b4bc4; --people:#d4588a; --home:#c98a00; --sys:#7a8496;
+  --good:#16833a; --good-bg:#e2f3e7; --warn:#946200; --warn-bg:#fdf1d3; --crit:#c0392b; --crit-bg:#fbe3e0;
+  --div-lo:#e86a5f; --div-mid:#e4e1da; --div-hi:#2a78d6;
+  --seq-0:#dbe8fa; --seq-1:#1c5cab;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body-f:"Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f131a; --surface:#171c25; --surface-2:#1e2430; --line:#2a3240; --ink:#e9edf3; --ink-2:#aeb7c6; --muted:#7f8899;
+  --nav:#0a0d12; --nav-ink:#9aa4b5; --nav-active:#ffffff;
+  --plan:#4b92ea; --money:#2bbd8a; --body:#f07a49; --grow:#8b7ef0; --people:#e77aa6; --home:#e0a21c; --sys:#8a93a4;
+  --good:#3fc06a; --good-bg:#16301f; --warn:#e8b23a; --warn-bg:#33290f; --crit:#f07062; --crit-bg:#3a1c19;
+  --div-mid:#3a404c; --seq-0:#1f3350; --seq-1:#6aa8f5; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0f131a; --surface:#171c25; --surface-2:#1e2430; --line:#2a3240; --ink:#e9edf3; --ink-2:#aeb7c6; --muted:#7f8899;
+  --nav:#0a0d12; --nav-ink:#9aa4b5; --nav-active:#ffffff;
+  --plan:#4b92ea; --money:#2bbd8a; --body:#f07a49; --grow:#8b7ef0; --people:#e77aa6; --home:#e0a21c; --sys:#8a93a4;
+  --good:#3fc06a; --good-bg:#16301f; --warn:#e8b23a; --warn-bg:#33290f; --crit:#f07062; --crit-bg:#3a1c19;
+  --div-mid:#3a404c; --seq-0:#1f3350; --seq-1:#6aa8f5; color-scheme:dark }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body-f);font-size:14px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100%}
+nav.side{background:var(--nav);color:var(--nav-ink);padding:20px 12px;position:sticky;top:env(safe-area-inset-top,0px);height:100vh;overflow:auto;display:flex;flex-direction:column;gap:2px}
+.brand{font-family:var(--display);font-weight:700;font-size:20px;color:var(--nav-active);padding:4px 10px 16px;letter-spacing:-.01em}
+.brand small{display:block;font-family:var(--body-f);font-weight:500;font-size:11px;color:var(--nav-ink);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.navgroup{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:12px 10px 4px}
+nav.side a{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;color:var(--nav-ink);text-decoration:none;font-weight:500}
+nav.side a .dot{width:8px;height:8px;border-radius:2px;background:var(--c,var(--sys));flex:none}
+nav.side a:hover{background:rgba(255,255,255,.06);color:var(--nav-active)}
+nav.side a[aria-current="page"]{background:rgba(255,255,255,.1);color:var(--nav-active)}
+nav.side a:focus-visible{outline:2px solid var(--plan);outline-offset:1px}
+main{padding-block:22px 60px;padding-inline:28px;min-width:0}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;justify-content:space-between;margin-bottom:18px}
+.topbar h1{font-family:var(--display);font-weight:700;font-size:28px;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.topbar .sub{color:var(--muted);font-size:13px;margin-top:2px}
+.monthpick{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:3px}
+.monthpick button{border:0;background:none;width:30px;height:30px;border-radius:6px;cursor:pointer;color:var(--ink-2);font-size:16px}
+.monthpick button:hover{background:var(--surface-2)}
+.monthpick span{min-width:128px;text-align:center;font-weight:600}
+.banner{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--warn-bg);color:var(--ink);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);padding:10px 14px;border-radius:var(--r);margin-bottom:18px}
+.banner b{color:var(--warn)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);padding:7px 12px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px}
+.btn:hover{border-color:var(--ink-2)}
+.btn.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn.danger{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 45%,transparent)}
+.btn:focus-visible,.chip:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--plan);outline-offset:1px}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.span2{grid-column:span 2}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.panel h2{font-family:var(--display);font-weight:700;font-size:16px;margin:0 0 12px;letter-spacing:-.01em;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.panel h2 small{font-family:var(--body-f);font-weight:500;font-size:12px;color:var(--muted)}
+.sec{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:26px 0 10px;display:flex;align-items:center;gap:10px}
+.sec::after{content:"";flex:1;height:1px;background:var(--line)}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px 12px;border-top:3px solid var(--c,var(--sys));min-width:0;display:flex;flex-direction:column;gap:2px}
+.kpi .l{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.kpi .v{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi .v.sm{font-size:16px;line-height:1.3;font-family:var(--body-f)}
+.kpi .s{font-size:12px;color:var(--ink-2)}
+.st-good{color:var(--good)} .st-warn{color:var(--warn)} .st-crit{color:var(--crit)} .st-none{color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.good{background:var(--good-bg);color:var(--good)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.crit{background:var(--crit-bg);color:var(--crit)} .pill.none{background:var(--surface-2);color:var(--muted)}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,2fr);gap:14px;margin-bottom:4px}
+.index{background:var(--nav);color:#fff;border-radius:var(--r);padding:20px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;min-width:0}
+.index .big{font-family:var(--display);font-weight:700;font-size:64px;line-height:.95;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.index .big small{font-size:20px;color:#9aa4b5;letter-spacing:0}
+.index .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9aa4b5;font-weight:700}
+.index .cmp{font-size:13px;color:#d4dae4}
+.meter{height:8px;border-radius:4px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
+.meter i{position:absolute;inset:0 auto 0 0;border-radius:4px;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:700;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12.5px}
+tbody tr.click{cursor:pointer} tbody tr.click:hover td{background:var(--surface-2)}
+.tablewrap{overflow-x:auto;margin:0 -4px;padding:0 4px}
+.bar{height:6px;border-radius:3px;background:var(--surface-2);position:relative;min-width:60px}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--c,var(--plan))}
+.bar b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.55}
+.areabar{display:grid;grid-template-columns:28px 1fr;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12px}
+.list{display:flex;flex-direction:column}
+.li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:8px 0;border-bottom:1px solid var(--line);align-items:center}
+.li:last-child{border-bottom:0}
+.li .t{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.li .m{font-size:12px;color:var(--muted)}
+.empty{color:var(--muted);font-size:13px;padding:10px 0}
+.strip{display:grid;grid-template-columns:repeat(28,minmax(0,1fr));gap:3px}
+.strip div{aspect-ratio:1;border-radius:3px;background:var(--surface-2);max-width:100%}
+.strip-l{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--mono)}
+svg text{font-family:var(--body-f)}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--ink-2);margin-bottom:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.reflect{font-size:14px;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
+.reflect.ph{color:var(--muted);font-style:italic}
+.prio{display:flex;flex-direction:column;gap:6px}
+.prio label{display:grid;grid-template-columns:22px 1fr;align-items:center;gap:6px;font-family:var(--mono);color:var(--plan);font-weight:600}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:7px 9px;min-width:0}
+textarea{resize:vertical;min-height:70px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hgrid{display:grid;grid-template-columns:minmax(120px,1.4fr) repeat(14,minmax(22px,1fr)) 64px;gap:4px;align-items:center;font-size:12px;min-width:620px}
+.hgrid .hd{font-size:10.5px;color:var(--muted);text-align:center;font-family:var(--mono)}
+.hgrid .hd.today{color:var(--ink);font-weight:700}
+.tick{aspect-ratio:1;border-radius:5px;border:1px solid var(--line);background:var(--surface);cursor:pointer;padding:0;width:100%}
+.tick.on{background:var(--body);border-color:var(--body)}
+.tick:hover{border-color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;cursor:pointer;font-weight:600;font-size:13px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px 12px}
+.form .full{grid-column:1/-1}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-2);font-weight:600}
+.range{display:grid;grid-template-columns:minmax(0,1fr) 140px 36px;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.range output{font-family:var(--mono);font-weight:600;text-align:right}
+input[type=range]{width:100%;accent-color:var(--plan)}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:0;width:min(620px,calc(100vw - 32px));max-height:calc(100vh - 40px)}
+dialog::backdrop{background:rgba(10,13,18,.45)}
+dialog form{padding:18px;display:flex;flex-direction:column;gap:14px}
+dialog h3{font-family:var(--display);margin:0;font-size:18px}
+.dlgfoot{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:8px;font-weight:600;font-size:13px;z-index:50}
+.saving{font-size:12px;color:var(--muted)}
+.muted{color:var(--muted)} .mono{font-family:var(--mono)}
+@media (max-width:1100px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  nav.side{position:sticky;top:env(safe-area-inset-top,0px);height:auto;flex-direction:row;overflow-x:auto;padding:8px 10px;z-index:5;gap:4px}
+  .brand,.navgroup{display:none}
+  nav.side a{white-space:nowrap;padding:6px 10px}
+  main{padding-inline:16px}
+  .g3,.g2{grid-template-columns:1fr}.span2{grid-column:auto}
+}
+@media (max-width:480px){.g4{grid-template-columns:1fr 1fr}.kpi .v{font-size:21px}.index .big{font-size:52px}.range{grid-template-columns:1fr 100px 30px}}
+@media (prefers-reduced-motion:no-preference){.kpi,.panel{animation:rise .35s ease both}@keyframes rise{from{transform:translateY(4px)}to{transform:none}}}
+</style>
+
+<div class="app">
+  <nav class="side" id="nav" aria-label="Áreas"></nav>
+  <main id="main" tabindex="-1"></main>
+</div>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+/* ============================================================ utilidades */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = n => String(n).padStart(2, "0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d || 1); };
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
+const diff = (a, b) => Math.round((parse(a) - parse(b)) / 864e5);
+const TODAY = iso(new Date());
+const mkey = s => s.slice(0, 7);
+const addMonth = (mk, n) => { const d = parse(mk + "-01"); d.setMonth(d.getMonth() + n); return iso(d).slice(0, 7); };
+const dim = mk => { const d = parse(mk + "-01"); return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); };
+const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const mlabel = mk => `${MESES[+mk.slice(5) - 1]} ${mk.slice(0, 4)}`;
+const mabbr = mk => MESES[+mk.slice(5) - 1].slice(0, 3);
+const fmtD = s => s ? `${s.slice(8, 10)}/${s.slice(5, 7)}` : "";
+const eur = (v, d = 0) => (v < 0 ? "−" : "") + "€ " + Math.abs(v).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const num = (v, d = 1) => v == null || isNaN(v) ? "–" : v.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const pct = v => v == null || isNaN(v) ? "–" : Math.round(v * 100) + "%";
+const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const sum = a => a.reduce((x, y) => x + (+y || 0), 0);
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const uid = () => Math.random().toString(36).slice(2, 10);
+const pill = (st, txt) => `<span class="pill ${st}">${{ good: "✓", warn: "▲", crit: "✕", none: "○" }[st]} ${esc(txt)}</span>`;
+
+const AREAS = ["Saúde física","Saúde mental","Finanças","Carreira","Aprendizado","Família","Amor & parceria","Amizades & social","Lazer & criatividade","Propósito & espiritualidade","Casa & organização"];
+const CAT_DESP = { "Moradia":"Essencial","Contas da casa":"Essencial","Mercado":"Essencial","Transporte":"Essencial","Saúde & bem-estar":"Essencial","Dívidas & financiamentos":"Essencial","Impostos & taxas":"Essencial","Família & ajudas":"Essencial","Restaurantes & cafés":"Estilo de vida","Assinaturas":"Estilo de vida","Cuidados pessoais":"Estilo de vida","Lazer & passeios":"Estilo de vida","Viagens":"Estilo de vida","Roupas":"Estilo de vida","Casa & utensílios":"Estilo de vida","Presentes & doações":"Estilo de vida","Educação & cursos":"Crescimento","Livros & materiais":"Crescimento","Outros":"Estilo de vida" };
+const CAT_REC = ["Salário","Renda extra / freelance","Benefícios","Rendimentos","Reembolsos","Outras receitas"];
+const CAT_APO = ["Reserva de emergência","Investimentos","Previdência","Objetivo específico"];
+const CONTAS = ["Conta corrente","Cartão de crédito","Cartão de débito","PIX / transferência","Dinheiro"];
+const TREINOS = ["Musculação","Corrida","Caminhada","Bicicleta","Natação","Yoga / alongamento","Esporte coletivo","Outro"];
+const RELACAO = ["Família","Parceria","Amizade","Trabalho","Mentoria","Comunidade"];
+
+/* ============================================================ estado */
+const KEYS = ["cfg","lanc","orc","patr","saude","habitos","marks","roda","alvo","revisao","metas","tarefas","pessoas","contatos","aprend","estudo","lazer","sonhos","docs","rotinas","assin","comp","cand","prio"];
+const EMPTY = () => ({
+  cfg: { nome: "", metaPoup: .2, metaReserva: 6, metaSono: 7.5, metaTreinos: 4, metaPassos: 8000, metaEstudo: 24, metaLivros: 12, metaLazer: 6, alertaDocs: 90, alertaAniv: 30 },
+  lanc: [], orc: {}, patr: {}, saude: {}, habitos: [], marks: {}, roda: {}, alvo: {}, revisao: {}, metas: [], tarefas: [],
+  pessoas: [], contatos: [], aprend: [], estudo: [], lazer: [], sonhos: [], docs: [], rotinas: [], assin: [], comp: [], cand: [], prio: ["", "", ""]
+});
+let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false;
+const dirty = new Set(); let saveTimer = null;
+
+function touch(...keys) {
+  if (IS_EXAMPLE) { IS_EXAMPLE = false; KEYS.forEach(k => dirty.add(k)); } else keys.forEach(k => dirty.add(k));
+  clearTimeout(saveTimer); saveTimer = setTimeout(flush, 700); render();
+}
+async function flush() {
+  const keys = [...dirty]; dirty.clear();
+  if (!keys.length) return;
+  try {
+    if (STORE?.kind === "db") { for (const k of keys) await STORE.col.doc("s_" + k).set({ v: S[k], at: Date.now() }); }
+    else { for (const k of keys) try { localStorage.setItem("pv_" + k, JSON.stringify(S[k])); } catch {} }
+    toast("Salvo");
+  } catch (e) { keys.forEach(k => dirty.add(k)); toast("Não foi possível salvar agora. Tentando de novo em instantes."); saveTimer = setTimeout(flush, 5000); }
+}
+function toast(t) { const el = $("#toast"); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 1600); }
+
+/* ============================================================ dados de exemplo (fictícios) */
+function exampleData() {
+  let seed = 7; const R = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const pick = a => a[Math.floor(R() * a.length)];
+  const D = EMPTY(); D.cfg.nome = "";
+  const start = addDays(TODAY, -240), end = addDays(TODAY, -1);
+  // finanças
+  for (let mk = mkey(start); mk <= mkey(TODAY); mk = addMonth(mk, 1)) {
+    const d = n => `${mk}-${pad(Math.min(n, dim(mk)))}`;
+    const add = (dt, tipo, cat, desc, valor, conta) => { if (dt >= start && dt <= end) D.lanc.push({ id: uid(), data: dt, tipo, cat, desc, valor: Math.round(valor * 100) / 100, conta }); };
+    add(d(1), "Despesa", "Moradia", "Aluguel + condomínio", 650, "PIX / transferência");
+    add(d(10), "Receita", "Salário", "Salário líquido", 2450, "Conta corrente");
+    add(d(28), "Receita", "Rendimentos", "Rendimento da reserva", 14 + R() * 6, "Conta corrente");
+    if (R() < .3) add(d(20), "Receita", "Renda extra / freelance", "Projeto freelance", 350 + R() * 250, "PIX / transferência");
+    add(d(2), "Despesa", "Transporte", "Passe de transporte", 38, "Cartão de débito");
+    add(d(3), "Despesa", "Assinaturas", "Streaming + música", 20.98, "Cartão de crédito");
+    add(d(4), "Despesa", "Saúde & bem-estar", "Academia", 34.9, "Cartão de crédito");
+    add(d(5), "Despesa", "Contas da casa", "Internet + celular", 35.94, "Conta corrente");
+    add(d(12), "Despesa", "Contas da casa", "Luz e gás", 60 + R() * 50, "Conta corrente");
+    add(d(9), "Despesa", "Dívidas & financiamentos", "Financiamento estudantil", 90.83, "Conta corrente");
+    add(d(7), "Despesa", "Educação & cursos", "Mensalidade do curso", 180, "Conta corrente");
+    add(d(10), "Despesa", "Família & ajudas", "Ajuda à família", 75, "PIX / transferência");
+    for (let i = 0; i < 6; i++) add(d(1 + Math.floor(R() * 28)), "Despesa", "Mercado", pick(["Supermercado","Feira","Padaria"]), 20 + R() * 50, "Cartão de débito");
+    for (let i = 0; i < 5; i++) add(d(1 + Math.floor(R() * 28)), "Despesa", "Restaurantes & cafés", pick(["Pizzaria","Café","Almoço fora","Aperitivo"]), 7 + R() * 28, "Cartão de crédito");
+    for (let i = 0; i < 2; i++) add(d(1 + Math.floor(R() * 28)), "Despesa", "Lazer & passeios", pick(["Cinema","Museu","Show"]), 10 + R() * 30, "Cartão de crédito");
+    if (R() < .4) add(d(15), "Despesa", "Roupas", "Roupas", 30 + R() * 80, "Cartão de crédito");
+    if (R() < .25) add(d(18), "Despesa", "Viagens", "Viagem de fim de semana", 180 + R() * 300, "Cartão de crédito");
+    add(d(11), "Aporte", "Reserva de emergência", "Transferência para a reserva", 200, "PIX / transferência");
+    add(d(11), "Aporte", "Investimentos", "Aporte mensal", 150, "PIX / transferência");
+  }
+  Object.assign(D.orc, { "Moradia": 650, "Contas da casa": 110, "Mercado": 260, "Transporte": 60, "Saúde & bem-estar": 50, "Dívidas & financiamentos": 91, "Família & ajudas": 75, "Restaurantes & cafés": 100, "Assinaturas": 25, "Lazer & passeios": 60, "Viagens": 80, "Roupas": 40, "Educação & cursos": 180 });
+  let i = 0;
+  for (let mk = mkey(start); mk < mkey(TODAY); mk = addMonth(mk, 1), i++) D.patr[mk] = { contas: Math.round(1400 + R() * 300), reserva: 4000 + 200 * i, invest: 2800 + 160 * i, outros: 0, dividas: Math.round(6200 - 91 * i) };
+  // saúde + hábitos
+  D.habitos = [
+    { id: "h1", nome: "Treinar", area: "Saúde física", meta: 4 }, { id: "h2", nome: "Meditar 10 min", area: "Saúde mental", meta: 6 },
+    { id: "h3", nome: "Ler 20 páginas", area: "Aprendizado", meta: 5 }, { id: "h4", nome: "Estudar italiano", area: "Aprendizado", meta: 5 },
+    { id: "h5", nome: "Dormir até 23h30", area: "Saúde física", meta: 6 }, { id: "h6", nome: "Journaling", area: "Saúde mental", meta: 5 },
+    { id: "h7", nome: "Planejar o dia", area: "Casa & organização", meta: 5 }, { id: "h8", nome: "Falar com alguém querido", area: "Amizades & social", meta: 3 },
+    { id: "h9", nome: "Prática espiritual", area: "Propósito & espiritualidade", meta: 4 }];
+  const pr = { h2: [.45, .88], h3: [.5, .8], h4: [.5, .62], h5: [.35, .6], h6: [.4, .38], h7: [.5, .82], h8: [.3, .5], h9: [.35, .32] };
+  let peso = 84.2; const notas = ["Dia produtivo, treino bom.","Cansado depois do trabalho.","Ótima conversa com a família.","Caminhada longa no parque, recarregou.","Aula de italiano rendeu muito.","Dormi mal, cabeça pesada.","Saí com amigos, me senti bem."];
+  for (let k = 0, dt = start; dt <= end; k++, dt = addDays(dt, 1)) {
+    const p = k / 240, wd = parse(dt).getDay(), e = {};
+    if (R() < .88) {
+      e.sono = Math.round(clamp(6.5 + .8 * p + (R() - .5) * 1.6, 4.5, 9) * 2) / 2;
+      e.humor = Math.round(clamp(3.1 + .7 * p + (R() - .5) * 2, 1, 5)); e.energia = Math.round(clamp(3 + .7 * p + (R() - .5) * 2, 1, 5));
+      e.estresse = Math.round(clamp(3.3 - .8 * p + (R() - .5) * 2, 1, 5)); e.passos = Math.round(6500 + 2000 * p + R() * 3000);
+      if (R() < .15) e.nota = pick(notas);
+    }
+    if (R() < [.25, .75, .25, .75, .2, .6, .55][wd] * (.8 + .3 * p)) { e.treino = pick(TREINOS.slice(0, 6)); e.min = pick([30, 45, 60, 75]); D.marks["h1|" + dt] = 1; }
+    if (wd === 1) { peso -= R() * .45 - .1; e.peso = Math.round(peso * 10) / 10; }
+    if (Object.keys(e).length) D.saude[dt] = e;
+    for (const h in pr) if (R() < pr[h][0] + (pr[h][1] - pr[h][0]) * p) D.marks[h + "|" + dt] = 1;
+  }
+  // roda + revisões
+  const base = [5, 4, 5, 5, 6, 7, 8, 4, 4, 5, 5], tr = [.35, .4, .3, .15, .25, .1, .05, .3, .3, .2, .25];
+  AREAS.forEach((a, j) => D.alvo[a] = [8, 8, 8, 8, 8, 9, 9, 7, 7, 8, 8][j]);
+  i = 0;
+  for (let mk = mkey(start); mk < mkey(TODAY); mk = addMonth(mk, 1), i++) {
+    D.roda[mk] = {}; AREAS.forEach((a, j) => D.roda[mk][a] = clamp(Math.round(base[j] + tr[j] * i + (R() - .5) * 1.4), 1, 10));
+    D.revisao[mk] = { nota: clamp(6 + Math.round(i / 3), 1, 10), vitorias: pick(["Entreguei o módulo do curso no prazo.","Primeiro mês sem estourar o orçamento.","Freelance entregue com elogio do cliente.","Voltei a treinar 4×/semana."]), naofunc: pick(["Dormi tarde na maioria dos dias.","Pouco contato com amigos daqui.","Gastei mais com restaurantes."]), aprendi: pick(["Hábito pequeno vence hábito ambicioso.","Blocos fixos de estudo funcionam melhor.","Convidar é mais fácil do que esperar convite."]), foco: pick(["Preparar a entrevista e fechar o diploma.","Dormir até 23h30 em 5 dias da semana.","Reconectar com 2 amigos."]) };
+  }
+  // metas
+  const y = TODAY.slice(0, 4), ys = +y;
+  D.metas = [
+    { meta: "Concluir o Master BIM", area: "Carreira", inicio: addDays(TODAY, -360), prazo: addDays(TODAY, 75), un: "módulos", ini: 0, atual: 5, alvo: 8 },
+    { meta: "Atingir nível B2 em italiano", area: "Aprendizado", inicio: addDays(TODAY, -270), prazo: addDays(TODAY, 90), un: "nível", manual: .6 },
+    { meta: "Reserva de emergência de 6 meses", area: "Finanças", inicio: addDays(TODAY, -270), prazo: addDays(TODAY, 90), un: "€", ini: 4000, atual: 5600, alvo: 7000 },
+    { meta: "Chegar a 78 kg", area: "Saúde física", inicio: addDays(TODAY, -240), prazo: addDays(TODAY, 90), un: "kg", ini: 84.2, atual: Math.round(peso * 10) / 10, alvo: 78 },
+    { meta: "Ler 12 livros no ano", area: "Aprendizado", inicio: `${y}-01-01`, prazo: `${y}-12-31`, un: "livros", ini: 0, atual: 9, alvo: 12 },
+    { meta: "40 conversas longas com a família", area: "Família", inicio: `${y}-01-01`, prazo: `${y}-12-31`, un: "conversas", ini: 0, atual: 31, alvo: 40 },
+    { meta: "Rede de 8 amigos próximos na cidade", area: "Amizades & social", inicio: `${y}-01-01`, prazo: `${y}-12-31`, un: "pessoas", ini: 2, atual: 6, alvo: 8 },
+    { meta: "Validar o diploma de engenharia", area: "Casa & organização", inicio: addDays(TODAY, -240), prazo: addDays(TODAY, -2), un: "marco", manual: .7 },
+    { meta: "Voluntariado 1×/mês", area: "Propósito & espiritualidade", inicio: `${y}-01-01`, prazo: `${y}-12-31`, un: "ações", ini: 0, atual: 5, alvo: 12 },
+    { meta: "Organizar a vida digital", area: "Casa & organização", inicio: addDays(TODAY, -10), prazo: addDays(TODAY, 45), un: "marco", manual: .2 },
+    { meta: "Reserva de 12 meses de despesas", area: "Finanças", inicio: `${y}-01-01`, prazo: `${ys + 2}-12-31`, un: "€", ini: 4000, atual: 5600, alvo: 24000 },
+    { meta: "Dar aulas em uma pós-graduação", area: "Carreira", inicio: `${y}-01-01`, prazo: `${ys + 4}-12-31`, un: "marco", manual: .1 },
+  ].map(m => ({ id: uid(), status: "Ativa", proximo: "", ...m }));
+  // tarefas
+  const T = (tarefa, projeto, area, prio, dd, status = "A fazer", concl = null) => ({ id: uid(), tarefa, projeto, area, prio, prazo: dd == null ? "" : addDays(TODAY, dd), status, concluida: concl == null ? "" : addDays(TODAY, concl) });
+  D.tarefas = [T("Enviar tradução juramentada","Validação do diploma","Casa & organização","Alta",-7,"Aguardando"), T("Revisar famílias Revit do módulo","Master BIM","Carreira","Média",-6),
+    T("Follow-up com recrutadora","Troca de emprego","Carreira","Média",-3), T("Atualizar portfólio","Troca de emprego","Carreira","Média",1), T("Renovar CNH (agendar)","","Casa & organização","Alta",2),
+    T("Preparar a 2ª entrevista","Troca de emprego","Carreira","Alta",4,"Em andamento"), T("Pesquisar passagens para dezembro","Natal com a família","Família","Alta",6),
+    T("Modelar instalações hidráulicas","Master BIM","Carreira","Alta",8,"Em andamento"), T("Backup completo do notebook","Organização digital","Casa & organização","Média",10),
+    T("Escrever relatório do módulo","Master BIM","Carreira","Alta",26), T("Lista de presentes","Natal com a família","Família","Baixa",49),
+    T("Enviar 3 candidaturas","Troca de emprego","Carreira","Alta",-17,"Concluída",-18), T("Pagar taxa da apostila","Validação do diploma","Casa & organização","Média",-22,"Concluída",-20),
+    T("Revisar orçamento do mês","","Finanças","Média",-2,"Concluída",-2), T("Ler capítulo de coordenação 4D","Master BIM","Carreira","Baixa",-12,"Concluída",-13)];
+  // pessoas e contatos
+  const P = (nome, relacao, freq, aniv, stopAgo) => ({ id: uid(), nome, relacao, freq, aniv: aniv == null ? "" : addDays(TODAY, aniv).replace(/^\d{4}/, "1990"), notas: "", _stop: stopAgo || 1 });
+  D.pessoas = [P("Mãe","Família",7,32), P("Pai","Família",7,17), P("Rafael (irmão)","Família",14,202), P("Tia Regina","Família",60,26,118), P("Chiara","Parceria",3,67),
+    P("Marco","Amizade",14,9), P("Pedro (Brasil)","Amizade",30,135,91), P("Lucas","Amizade",21,271), P("Francesca","Amizade",30,158), P("Davide","Amizade",30,327), P("Prof.ª Rossi","Mentoria",45,110,130)];
+  for (const p of D.pessoas) {
+    let dt = addDays(start, Math.floor(R() * p.freq));
+    while (dt <= addDays(TODAY, -p._stop)) {
+      const tipo = p.relacao === "Família" ? pick(["Ligação","Videochamada","Mensagem"]) : p.relacao === "Parceria" ? "Encontro" : pick(["Encontro","Mensagem","Ligação"]);
+      D.contatos.push({ id: uid(), data: dt, pessoa: p.nome, tipo, qual: clamp(Math.round(3.8 + (R() - .5) * 2), 1, 5), min: tipo === "Mensagem" ? 10 : pick([30, 60, 90]) });
+      dt = addDays(dt, Math.max(1, Math.round(p.freq * (.7 + R() * .5))));
+    }
+    delete p._stop;
+  }
+  // aprendizado
+  D.aprend = [
+    { titulo: "Master BIM — módulos", tipo: "Curso", area: "Carreira", status: "Em andamento", total: 8, atual: 5 },
+    { titulo: "Italiano B1 → B2", tipo: "Idioma", area: "Aprendizado", status: "Em andamento", total: 120, atual: 78 },
+    { titulo: "Python para engenheiros", tipo: "Curso", area: "Carreira", status: "Em andamento", total: 40, atual: 14 },
+    { titulo: "Hábitos Atômicos", tipo: "Livro", area: "Aprendizado", status: "Concluído", total: 320, atual: 320, nota: 5, fim: `${y}-01-28` },
+    { titulo: "Deep Work", tipo: "Livro", area: "Carreira", status: "Concluído", total: 300, atual: 300, nota: 4, fim: `${y}-02-26` },
+    { titulo: "Essencialismo", tipo: "Livro", area: "Aprendizado", status: "Concluído", total: 270, atual: 270, nota: 5, fim: `${y}-04-25` },
+    { titulo: "A Psicologia Financeira", tipo: "Livro", area: "Finanças", status: "Concluído", total: 300, atual: 300, nota: 5, fim: `${y}-05-29` },
+    { titulo: "Comunicação Não-Violenta", tipo: "Livro", area: "Amor & parceria", status: "Concluído", total: 280, atual: 280, nota: 4, fim: `${y}-06-30` },
+    { titulo: "Sapiens", tipo: "Livro", area: "Aprendizado", status: "Concluído", total: 460, atual: 460, nota: 4, fim: `${y}-08-05` },
+    { titulo: "Il nome della rosa", tipo: "Livro", area: "Aprendizado", status: "Em andamento", total: 500, atual: 120 },
+  ].map(a => ({ id: uid(), nota: "", fim: "", ...a }));
+  for (let dt = start; dt <= end; dt = addDays(dt, 1)) {
+    const wd = parse(dt).getDay();
+    if ((wd === 2 || wd === 4) && R() < .85) D.estudo.push({ id: uid(), data: dt, item: "Italiano B1 → B2", horas: pick([1, 1.5]) });
+    if ((wd === 0 || wd === 6) && R() < .8) D.estudo.push({ id: uid(), data: dt, item: "Master BIM — módulos", horas: pick([1.5, 2, 2.5]) });
+    if (wd === 3 && R() < .5) D.estudo.push({ id: uid(), data: dt, item: "Python para engenheiros", horas: 1 });
+    if (R() < .3 + (wd === 0 || wd === 6 ? .15 : 0)) { const a = pick([["Trilha nas colinas","Esporte / ar livre",4,0],["Cinema","Cultura",2.5,18],["Jantar com amigos","Social",3,30],["Tocar violão","Música",1,0],["Museu","Cultura",3,15],["Jogos de tabuleiro","Jogos",3,0]]);
+      D.lazer.push({ id: uid(), data: dt, atividade: a[0], cat: a[1], horas: a[2], custo: a[3], sat: clamp(Math.round(4 + (R() - .5) * 2), 1, 5) }); }
+  }
+  D.sonhos = [{ sonho: "Ver a aurora boreal", status: "Sonho", custo: 2500 }, { sonho: "Correr a meia maratona", status: "Planejando", custo: 40 }, { sonho: "Viagem para a Sicília", status: "Realizado", custo: 700 }, { sonho: "Esquiar nos Alpes", status: "Planejando", custo: 400 }].map(s => ({ id: uid(), ...s }));
+  // casa
+  D.docs = [{ doc: "Permesso di soggiorno", validade: addDays(TODAY, 49), acao: "Agendar na Questura" }, { doc: "CNH brasileira", validade: addDays(TODAY, 23), acao: "Agendar no consulado" }, { doc: "Passaporte", validade: addDays(TODAY, 1680), acao: "" }, { doc: "Contrato de aluguel", validade: addDays(TODAY, 640), acao: "" }, { doc: "Codice fiscale", validade: "", acao: "" }].map(d => ({ id: uid(), ...d }));
+  D.rotinas = [["Trocar roupa de cama",7,-4],["Limpeza pesada do banheiro",14,-18],["Limpar a geladeira",30,-26],["Backup do computador",30,-43],["Revisar senhas",90,-93],["Conferir extratos",7,-5],["Regar as plantas",7,-3],["Revisão da bicicleta",180,-175]].map(([rotina, freq, u]) => ({ id: uid(), rotina, freq, ultima: addDays(TODAY, u) }));
+  D.assin = [["Streaming de vídeo",9.99,"Mensal","Médio"],["Música",10.99,"Mensal","Alto"],["Leitura digital",9.99,"Mensal","Baixo"],["Nuvem",2.99,"Mensal","Alto"],["Academia",34.9,"Mensal","Alto"],["App de idiomas",84,"Anual","Médio"],["Rede profissional premium",39.99,"Mensal","Baixo"]].map(([servico, valor, periodo, uso]) => ({ id: uid(), servico, valor, periodo, uso }));
+  D.comp = [["Revit / modelagem BIM",3,5],["Coordenação e clash detection",2,4],["Dynamo / Python",2,4],["Italiano técnico",3,5],["Gestão de projetos",3,4],["Inglês",4,4]].map(([nome, atual, alvo]) => ({ id: uid(), nome, atual, alvo }));
+  D.cand = [{ empresa: "Construtora Alfa", cargo: "Coordenador BIM", data: addDays(TODAY, -30), etapa: "Entrevista", acao: "Preparar o case", dataAcao: addDays(TODAY, 4) }, { empresa: "Engenharia Beta", cargo: "BIM Specialist", data: addDays(TODAY, -18), etapa: "Aplicado", acao: "Follow-up por e-mail", dataAcao: addDays(TODAY, -3) }, { empresa: "Consultoria Zeta", cargo: "BIM Coordinator", data: addDays(TODAY, -38), etapa: "Teste / case", acao: "Entregar teste técnico", dataAcao: addDays(TODAY, 1) }].map(c => ({ id: uid(), ...c }));
+  D.prio = ["Preparar a 2ª entrevista", "Fechar a tradução do diploma", "Treinar 4×"];
+  return D;
+}
+
+/* ============================================================ motor de cálculo (mesmas regras da planilha) */
+function calc() {
+  const C = S.cfg, mk = REF, mIni = mk + "-01", mFim = `${mk}-${pad(dim(mk))}`;
+  const inM = d => d && d >= mIni && d <= mFim;
+  const DR = mk < mkey(TODAY) ? dim(mk) : mk > mkey(TODAY) ? 0 : +TODAY.slice(8);
+  const corte = DR === 0 ? null : (mk < mkey(TODAY) ? mFim : TODAY);
+  const yIni = mk.slice(0, 4) + "-01-01", yFim = mk.slice(0, 4) + "-12-31";
+  const daysYear = corte ? diff(corte, yIni) + 1 : 0;
+  const R = { mk, DR, corte };
+  // finanças
+  const byM = m => { const o = { rec: 0, desp: 0, apo: 0, cat: {} }; for (const l of S.lanc) if (mkey(l.data) === m) { const v = +l.valor || 0; if (l.tipo === "Receita") o.rec += v; else if (l.tipo === "Aporte") o.apo += v; else { o.desp += v; o.cat[l.cat] = (o.cat[l.cat] || 0) + v; } } o.res = o.rec - o.desp; o.taxa = o.rec > 0 ? o.res / o.rec : null; return o; };
+  const F = R.fin = byM(mk);
+  R.series = []; for (let k = 11; k >= 0; k--) { const m = addMonth(mk, -k); const o = byM(m); o.mk = m; R.series.push(o); }
+  const orcTot = sum(Object.values(S.orc));
+  R.orcTot = orcTot;
+  const ritmo = DR / dim(mk);
+  R.orcCats = Object.keys(CAT_DESP).map(c => { const real = F.cat[c] || 0, plan = +S.orc[c] || 0; const p = plan ? real / plan : null;
+    const st = plan ? (p > 1 ? "crit" : p > ritmo + .15 ? "warn" : "good") : (real ? "none" : null);
+    return { cat: c, grupo: CAT_DESP[c], real, plan, p, st }; }).filter(x => x.real || x.plan);
+  const pk = Object.keys(S.patr).filter(k => k <= mk).sort();
+  const pl = k => { const p = S.patr[k]; return (+p.contas || 0) + (+p.reserva || 0) + (+p.invest || 0) + (+p.outros || 0) - (+p.dividas || 0); };
+  R.pl = pk.length ? pl(pk.at(-1)) : null; R.plVar = pk.length > 1 ? pl(pk.at(-1)) - pl(pk.at(-2)) : null; R.plMes = pk.at(-1);
+  const despMeses = R.series.filter(s => s.desp > 0 && s.mk <= mk).slice(-6).map(s => s.desp);
+  R.reserva = pk.length && despMeses.length ? (+S.patr[pk.at(-1)].reserva || 0) / avg(despMeses) : null;
+  R.dist = ["Essencial", "Estilo de vida", "Crescimento"].map(g => ({ g, v: sum(R.orcCats.filter(c => c.grupo === g).map(c => c.real)) }));
+  // saúde
+  const sd = Object.entries(S.saude).filter(([d]) => inM(d)).map(([, e]) => e);
+  const av = k => avg(sd.map(e => e[k]).filter(v => v != null && v !== ""));
+  R.sono = av("sono"); R.humor = av("humor"); R.energia = av("energia"); R.estresse = av("estresse"); R.passos = av("passos");
+  R.treinos = sd.filter(e => e.treino).length; R.minTreino = sum(sd.map(e => e.min)); R.diasReg = sd.length;
+  const pesos = Object.entries(S.saude).filter(([d, e]) => e.peso && (!corte || d <= corte)).sort(); R.peso = pesos.length ? pesos.at(-1)[1].peso : null;
+  R.saudeSeries = R.series.map(s => { const e = Object.entries(S.saude).filter(([d]) => mkey(d) === s.mk).map(([, x]) => x); return { mk: s.mk, sono: avg(e.map(x => x.sono).filter(Boolean)), treinos: e.filter(x => x.treino).length, humor: avg(e.map(x => x.humor).filter(Boolean)) }; });
+  // hábitos
+  R.hab = S.habitos.map(h => {
+    let feitos = 0; for (let d = 1; d <= DR; d++) if (S.marks[`${h.id}|${mk}-${pad(d)}`]) feitos++;
+    let streak = 0, d0 = S.marks[`${h.id}|${TODAY}`] ? TODAY : addDays(TODAY, -1); while (S.marks[`${h.id}|${d0}`]) { streak++; d0 = addDays(d0, -1); }
+    const pm = DR && h.meta ? Math.min(1, feitos / (h.meta * DR / 7)) : null;
+    return { ...h, feitos, pDias: DR ? feitos / DR : null, pm, streak, st: pm == null ? "none" : pm >= .9 ? "good" : pm >= .6 ? "warn" : "crit" };
+  });
+  R.habMeta = avg(R.hab.map(h => h.pm).filter(v => v != null));
+  // metas
+  R.metas = S.metas.map(m => {
+    const hasNum = [m.ini, m.atual, m.alvo].every(v => v !== "" && v != null && !isNaN(+v)) && +m.alvo !== +m.ini;
+    const prog = m.status === "Concluída" ? 1 : hasNum ? clamp((+m.atual - +m.ini) / (+m.alvo - +m.ini)) : clamp(+m.manual || 0);
+    const esp = m.inicio && m.prazo ? (m.prazo <= m.inicio ? 1 : clamp(diff(TODAY, m.inicio) / diff(m.prazo, m.inicio))) : null;
+    let rt, st;
+    if (m.status === "Concluída" || prog >= 1) [rt, st] = ["Concluída", "good"];
+    else if (m.status === "Pausada" || m.status === "Abandonada") [rt, st] = [m.status, "none"];
+    else if (esp == null) [rt, st] = ["Sem prazo", "none"];
+    else if (m.prazo < TODAY) [rt, st] = ["Vencida", "crit"];
+    else if (prog >= esp - .1) [rt, st] = ["No ritmo", "good"];
+    else if (prog >= esp - .25) [rt, st] = ["Atenção", "warn"];
+    else [rt, st] = ["Atrasada", "crit"];
+    const dur = m.prazo ? diff(m.prazo, m.inicio || TODAY) : null;
+    const hz = dur == null ? "" : dur <= 183 ? "Curto" : dur <= 731 ? "Médio" : "Longo";
+    const abertas = S.tarefas.filter(t => t.meta === m.meta && !["Concluída", "Cancelada"].includes(t.status)).length;
+    return { ...m, prog, esp, rt, st, hz, dias: m.prazo && rt !== "Concluída" ? diff(m.prazo, TODAY) : null, abertas, ativa: !["Pausada", "Abandonada"].includes(m.status) };
+  });
+  const and = R.metas.filter(m => m.ativa && m.rt !== "Concluída");
+  R.metasAnd = and.length; R.metasRitmo = and.filter(m => m.rt === "No ritmo").length; R.metasAtras = and.filter(m => m.st === "crit").length;
+  R.metasProg = avg(and.map(m => m.prog));
+  // tarefas
+  R.tar = S.tarefas.map(t => {
+    const done = t.status === "Concluída", canc = t.status === "Cancelada";
+    let al, st;
+    if (done) [al, st] = ["Feita", "good"]; else if (canc) [al, st] = ["Cancelada", "none"]; else if (!t.prazo) [al, st] = ["Sem prazo", "none"];
+    else if (t.prazo < TODAY) [al, st] = ["Atrasada", "crit"]; else if (t.prazo === TODAY) [al, st] = ["Vence hoje", "warn"];
+    else if (diff(t.prazo, TODAY) <= 7) [al, st] = ["Próximos 7 dias", "warn"]; else [al, st] = ["No prazo", "none"];
+    const urg = t.prazo && diff(t.prazo, TODAY) <= 3, open = !done && !canc;
+    const quad = !open ? "" : t.prio === "Alta" ? (urg ? "1 · Fazer já" : "2 · Agendar") : (urg ? "3 · Resolver rápido" : "4 · Depois");
+    return { ...t, al, st, quad, open };
+  });
+  R.tarAbertas = R.tar.filter(t => t.open).length; R.tarAtras = R.tar.filter(t => t.st === "crit").length;
+  R.tar7 = R.tar.filter(t => t.open && t.st === "warn").length; R.tarConcl = R.tar.filter(t => t.status === "Concluída" && inM(t.concluida)).length;
+  // pessoas
+  R.pes = S.pessoas.map(p => {
+    const cs = S.contatos.filter(c => c.pessoa === p.nome && c.data <= TODAY).map(c => c.data).sort();
+    const ult = cs.at(-1) || "", dias = ult ? diff(TODAY, ult) : null;
+    let st, txt; if (!+p.freq) [st, txt] = ["none", "Sem frequência"]; else if (!ult) [st, txt] = ["crit", "Sem registro"];
+    else if (dias > p.freq) [st, txt] = ["crit", "Atrasado"]; else if (dias >= .8 * p.freq) [st, txt] = ["warn", "Em breve"]; else [st, txt] = ["good", "Em dia"];
+    let prox = null; if (p.aniv) { const a = parse(p.aniv); let d = new Date(+TODAY.slice(0, 4), a.getMonth(), a.getDate()); if (iso(d) < TODAY) d.setFullYear(d.getFullYear() + 1); prox = iso(d); }
+    return { ...p, ult, dias, st, txt, ratio: p.freq ? (ult ? dias / p.freq : 99) : 0, prox, faltam: prox ? diff(prox, TODAY) : null };
+  });
+  const comFreq = R.pes.filter(p => +p.freq);
+  R.relEmDia = comFreq.length ? comFreq.filter(p => p.st === "good" || p.st === "warn").length / comFreq.length : null;
+  R.relAtras = R.pes.filter(p => p.st === "crit").length;
+  R.contMes = S.contatos.filter(c => inM(c.data));
+  // aprendizado / lazer
+  R.horasEst = sum(S.estudo.filter(e => inM(e.data)).map(e => e.horas));
+  R.livros = S.aprend.filter(a => a.tipo === "Livro" && a.status === "Concluído" && a.fim >= yIni && a.fim <= yFim).length;
+  R.estSeries = R.series.map(s => ({ mk: s.mk, est: sum(S.estudo.filter(e => mkey(e.data) === s.mk).map(e => e.horas)), laz: sum(S.lazer.filter(e => mkey(e.data) === s.mk).map(e => e.horas)) }));
+  const lz = S.lazer.filter(l => inM(l.data)); R.horasLaz = sum(lz.map(l => l.horas)); R.lazN = lz.length; R.lazSat = avg(lz.map(l => +l.sat).filter(Boolean)); R.lazCusto = sum(lz.map(l => l.custo));
+  // casa
+  R.docs = S.docs.map(d => { const dias = d.validade ? diff(d.validade, TODAY) : null; const st = dias == null ? "none" : dias < 0 ? "crit" : dias <= C.alertaDocs ? "warn" : "good";
+    return { ...d, dias, st, txt: { none: "Sem validade", crit: "Vencido", warn: "Renovar", good: "Válido" }[st] }; });
+  R.rot = S.rotinas.map(r => { const prox = r.ultima && +r.freq ? addDays(r.ultima, +r.freq) : null; const dias = prox ? diff(prox, TODAY) : null; const st = dias == null ? "none" : dias < 0 ? "crit" : dias <= 7 ? "warn" : "good";
+    return { ...r, prox, dias, st, txt: { none: "Sem registro", crit: "Atrasada", warn: "Em breve", good: "Em dia" }[st] }; });
+  const perM = { Mensal: 1, Bimestral: 2, Trimestral: 3, Semestral: 6, Anual: 12 };
+  R.ass = S.assin.map(a => ({ ...a, mensal: (+a.valor || 0) / (perM[a.periodo] || 1) }));
+  R.assMes = sum(R.ass.map(a => a.mensal)); R.economia = sum(R.ass.filter(a => a.uso === "Baixo").map(a => a.mensal));
+  R.casaAlertas = R.docs.filter(d => d.st === "crit" || d.st === "warn").length + R.rot.filter(r => r.st === "crit").length;
+  // carreira
+  R.compPct = avg(S.comp.filter(c => +c.alvo).map(c => Math.min(1, c.atual / c.alvo)));
+  R.candAtivas = S.cand.filter(c => ["Aplicado", "Entrevista", "Teste / case", "Proposta"].includes(c.etapa)).length;
+  // roda: percepção do mês ou último anterior
+  const rodaKeys = Object.keys(S.roda).filter(k => k <= mk).sort();
+  const perc = a => { for (let i = rodaKeys.length - 1; i >= 0; i--) { const v = S.roda[rodaKeys[i]][a]; if (v != null && v !== "") return { v: +v, k: rodaKeys[i], i }; } return null; };
+  // áreas
+  const share = arr => { const n = arr.filter(x => x.st !== "none").length; return n ? arr.filter(x => x.st === "good").length / n : null; };
+  const relShare = rel => { const ps = R.pes.filter(p => p.relacao === rel && +p.freq); return ps.length ? ps.filter(p => p.st === "good" || p.st === "warn").length / ps.length : null; };
+  const relQual = rel => { const names = new Set(S.pessoas.filter(p => p.relacao === rel).map(p => p.nome)); const q = avg(R.contMes.filter(c => names.has(c.pessoa)).map(c => +c.qual).filter(Boolean)); return q == null ? null : (q - 1) / 4; };
+  const relInd = rel => { const ps = R.pes.filter(p => p.relacao === rel && +p.freq); return `${ps.filter(p => p.st === "good" || p.st === "warn").length} de ${ps.length} em dia · ${R.contMes.filter(c => ps.some(p => p.nome === c.pessoa)).length} contatos no mês`; };
+  const has = v => v != null && !isNaN(v);
+  const spec = {
+    "Saúde física": [[DR && R.diasReg ? Math.min(1, R.treinos / (C.metaTreinos * DR / 7)) : null, has(R.sono) ? Math.min(1, R.sono / C.metaSono) : null, has(R.passos) ? Math.min(1, R.passos / C.metaPassos) : null], (has(R.sono) ? `Sono ${num(R.sono)} h · ` : "") + `${R.treinos} treinos`],
+    "Saúde mental": [[has(R.humor) ? (R.humor - 1) / 4 : null, has(R.estresse) ? (5 - R.estresse) / 4 : null, has(R.energia) ? (R.energia - 1) / 4 : null], has(R.humor) ? `Humor ${num(R.humor)} · estresse ${num(R.estresse)} (1–5)` : "Sem registros de humor"],
+    "Finanças": [[has(F.taxa) ? Math.min(1, Math.max(0, F.taxa) / C.metaPoup) : null, has(R.reserva) ? Math.min(1, R.reserva / C.metaReserva) : null, share(R.orcCats.filter(c => c.st))], (has(F.taxa) ? `Poupança ${pct(F.taxa)}` : "Sem receitas") + (has(R.reserva) ? ` · reserva ${num(R.reserva)} meses` : "")],
+    "Carreira": [[R.compPct, null, null], `${R.candAtivas} candidaturas ativas` + (has(R.compPct) ? ` · competências ${pct(R.compPct)} do alvo` : "")],
+    "Aprendizado": [[DR && S.estudo.length ? Math.min(1, R.horasEst / (C.metaEstudo * DR / dim(mk))) : null, daysYear && S.aprend.some(a => a.tipo === "Livro") ? Math.min(1, R.livros / Math.max(.5, C.metaLivros * daysYear / 365)) : null], `${num(R.horasEst)} h de estudo · ${R.livros} livros no ano`],
+    "Família": [[relShare("Família"), relQual("Família")], relInd("Família")],
+    "Amor & parceria": [[relShare("Parceria"), relQual("Parceria")], relInd("Parceria")],
+    "Amizades & social": [[relShare("Amizade"), relQual("Amizade")], relInd("Amizade")],
+    "Lazer & criatividade": [[DR && S.lazer.length ? Math.min(1, R.horasLaz / (C.metaLazer * DR / 7)) : null, has(R.lazSat) ? (R.lazSat - 1) / 4 : null], `${num(R.horasLaz)} h de lazer · ${R.lazN} atividades`],
+    "Propósito & espiritualidade": [[], ""],
+    "Casa & organização": [[share(R.docs), share(R.rot)], `${R.docs.filter(d => d.st === "warn" || d.st === "crit").length} doc(s) p/ renovar · ${R.rot.filter(r => r.st === "crit").length} rotina(s) atrasada(s)`],
+  };
+  R.areas = AREAS.map(a => {
+    const ms = R.metas.filter(m => m.area === a && m.ativa); const metas = ms.length ? ms.filter(m => ["No ritmo", "Concluída", "Sem prazo"].includes(m.rt)).length / ms.length : null;
+    const hs = R.hab.filter(h => h.area === a && h.pm != null); const hab = hs.length ? avg(hs.map(h => h.pm)) : null;
+    const comps = [metas, hab, ...spec[a][0]].filter(v => v != null && !isNaN(v));
+    const dados = comps.length ? Math.round(avg(comps) * 100) / 10 : null;
+    const p = perc(a), prev = p ? (() => { for (let i = p.i - 1; i >= 0; i--) { const v = S.roda[rodaKeys[i]][a]; if (v != null && v !== "") return +v; } return null; })() : null;
+    let ind = spec[a][1]; if (!ind) ind = hab != null || metas != null ? [hab != null ? `${pct(hab)} da meta dos hábitos` : "", metas != null ? `${pct(metas)} das metas no ritmo` : ""].filter(Boolean).join(" · ") : "Ligue hábitos e metas a esta área";
+    return { a, dados, perc: p?.v ?? null, prev, alvo: S.alvo[a] ?? null, ind, st: dados == null ? "none" : dados >= 7 ? "good" : dados >= 5 ? "warn" : "crit" };
+  });
+  const ds = R.areas.map(a => a.dados).filter(v => v != null), ps = R.areas.map(a => a.perc).filter(v => v != null);
+  R.indice = ds.length ? Math.round(avg(ds) * 10) : null; R.percep = ps.length ? avg(ps) : null;
+  // reflexão e strips
+  R.foco = (S.revisao[addMonth(mk, -1)] || {}).foco || ""; R.rev = S.revisao[mk] || {};
+  const notas = Object.entries(S.saude).filter(([d, e]) => e.nota && (!corte || d <= corte)).sort(); R.ultNota = notas.at(-1) || null;
+  R.days28 = []; const endD = corte || TODAY; for (let k = 27; k >= 0; k--) { const d = addDays(endD, -k); const n = S.habitos.length ? S.habitos.filter(h => S.marks[`${h.id}|${d}`]).length / S.habitos.length : null; R.days28.push({ d, humor: S.saude[d]?.humor ?? null, hab: d <= TODAY ? n : null }); }
+  // próximos 7 dias
+  R.aniv7 = R.pes.filter(p => p.faltam != null && p.faltam <= 7).length;
+  R.venc = [...R.docs.filter(d => d.dias != null && d.dias <= C.alertaDocs).map(d => ({ t: d.doc, k: "documento", dias: d.dias })), ...R.rot.filter(r => r.dias != null && r.dias <= 7).map(r => ({ t: r.rotina, k: "rotina", dias: r.dias }))].sort((a, b) => a.dias - b.dias);
+  R.prox7 = R.tar7 + R.aniv7 + R.venc.filter(v => v.dias >= 0 && v.dias <= 7).length;
+  return R;
+}
+
+/* ============================================================ gráficos SVG */
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function niceMax(v) { if (v <= 0) return 1; const e = Math.pow(10, Math.floor(Math.log10(v))); return [1, 2, 2.5, 5, 10].map(m => m * e).find(m => m >= v); }
+function colChart(labels, series, { h = 200, fmt = v => num(v, 0), max = null, hi = -1 } = {}) {
+  const W = 560, H = h, L = 44, B = 22, T = 8, iw = W - L - 8, ih = H - B - T;
+  const mx = max ?? niceMax(Math.max(0, ...series.flatMap(s => s.data.map(v => v || 0))));
+  const n = labels.length, gw = iw / n, bw = Math.min(22, (gw - 6) / series.length);
+  let g = "";
+  for (let t = 0; t <= 4; t++) { const y = T + ih - ih * t / 4; g += `<line x1="${L}" x2="${W - 8}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-width="1"/><text x="${L - 6}" y="${y + 4}" font-size="10.5" text-anchor="end" fill="var(--muted)">${fmt(mx * t / 4)}</text>`; }
+  labels.forEach((lb, i) => {
+    const x0 = L + i * gw + (gw - bw * series.length) / 2;
+    series.forEach((s, j) => { const v = s.data[i] || 0, bh = Math.max(0, ih * Math.min(v, mx) / mx); if (bh > 0) g += `<rect x="${x0 + j * bw + 1}" y="${T + ih - bh}" width="${bw - 2}" height="${bh}" rx="2" fill="${s.color}" opacity="${hi >= 0 && i !== hi ? .55 : 1}"><title>${esc(lb)} · ${esc(s.name)}: ${fmt(v)}</title></rect>`; });
+    g += `<text x="${L + i * gw + gw / 2}" y="${H - 6}" font-size="10.5" text-anchor="middle" fill="${i === hi ? "var(--ink)" : "var(--muted)"}" font-weight="${i === hi ? 700 : 400}">${esc(lb)}</text>`;
+  });
+  const leg = series.length > 1 ? `<div class="legend">${series.map(s => `<span><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join("")}</div>` : "";
+  return leg + `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">${g}</svg>`;
+}
+function hbars(rows, { color = "var(--body)", fmt = v => eur(v), max = null } = {}) {
+  if (!rows.length) return `<div class="empty">Sem dados no mês.</div>`;
+  const mx = max ?? (Math.max(...rows.map(r => r.v)) || 1);
+  return `<div class="list">${rows.map(r => `<div style="display:grid;grid-template-columns:minmax(90px,38%) 1fr auto;gap:10px;align-items:center;padding:5px 0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.l)}</span><div class="bar" style="--c:${color}"><i style="width:${clamp(r.v / mx) * 100}%"></i>${r.mark != null ? `<b style="left:${clamp(r.mark / mx) * 100}%"></b>` : ""}</div><span class="mono" style="font-size:12px;min-width:56px;text-align:right">${fmt(r.v)}</span></div>`).join("")}</div>`;
+}
+function radar(areas) {
+  const W = 360, H = 320, cx = 180, cy = 158, r = 108, n = areas.length;
+  const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * r * v / 10, cy + Math.sin(a) * r * v / 10]; };
+  let g = "";
+  for (const v of [2, 4, 6, 8, 10]) g += `<polygon points="${areas.map((_, i) => pt(i, v).join(",")).join(" ")}" fill="none" stroke="var(--line)"/>`;
+  areas.forEach((a, i) => { const [x, y] = pt(i, 10), [lx, ly] = pt(i, 12.4); g += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)"/><text x="${lx}" y="${ly + 3}" font-size="9.5" text-anchor="${lx < cx - 8 ? "end" : lx > cx + 8 ? "start" : "middle"}" fill="var(--ink-2)">${esc(a.a.split(" & ")[0])}</text>`; });
+  const poly = (key, col, dash, fillOp) => { if (!areas.some(a => a[key] != null)) return ""; const pts = areas.map((a, i) => pt(i, a[key] ?? 0).join(",")).join(" ");
+    return `<polygon points="${pts}" fill="${col}" fill-opacity="${fillOp}" stroke="${col}" stroke-width="2" ${dash ? 'stroke-dasharray="4 3"' : ""}/>` + (dash ? "" : areas.map((a, i) => a[key] == null ? "" : `<circle cx="${pt(i, a[key])[0]}" cy="${pt(i, a[key])[1]}" r="3" fill="${col}"><title>${esc(a.a)}: ${num(a[key])}</title></circle>`).join("")); };
+  g += poly("alvo", "var(--muted)", true, 0) + poly("perc", "var(--plan)", false, .1) + poly("dados", "var(--body)", false, .08);
+  return `<div class="legend"><span><i style="background:var(--plan)"></i>Percepção</span><span><i style="background:var(--body)"></i>Dados</span><span><i style="background:var(--muted)"></i>Alvo</span></div><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Roda da Vida">${g}</svg>`;
+}
+function strip(days, key, mode) {
+  const col = v => { if (v == null) return "var(--surface-2)"; if (mode === "div") { const t = (v - 1) / 4; return t < .5 ? `color-mix(in srgb, var(--div-lo) ${Math.round((1 - t * 2) * 100)}%, var(--div-mid))` : `color-mix(in srgb, var(--div-hi) ${Math.round((t - .5) * 200)}%, var(--div-mid))`; }
+    return `color-mix(in srgb, var(--seq-1) ${Math.round(v * 100)}%, var(--seq-0))`; };
+  return `<div class="strip">${days.map(d => `<div style="background:${col(d[key])}" title="${fmtD(d.d)}: ${d[key] == null ? "sem registro" : mode === "div" ? d[key] + "/5" : pct(d[key])}"></div>`).join("")}</div><div class="strip-l"><span>${fmtD(days[0].d)}</span><span>${fmtD(days.at(-1).d)}</span></div>`;
+}
+
+/* ============================================================ CRUD genérico */
+const SCH = {
+  lanc: { t: "Lançamento", f: [["data", "Data", "date"], ["tipo", "Tipo", ["Receita", "Despesa", "Aporte"]], ["cat", "Categoria", o => o.tipo === "Receita" ? CAT_REC : o.tipo === "Aporte" ? CAT_APO : Object.keys(CAT_DESP)], ["desc", "Descrição", "text"], ["valor", "Valor (€)", "num"], ["conta", "Conta / forma", CONTAS]], def: () => ({ data: TODAY, tipo: "Despesa" }) },
+  metas: { t: "Meta", f: [["meta", "Meta (específica e mensurável)", "text", 1], ["area", "Área da vida", AREAS], ["status", "Status", ["Ativa", "Pausada", "Concluída", "Abandonada"]], ["inicio", "Início", "date"], ["prazo", "Prazo", "date"], ["un", "Unidade", "text"], ["ini", "Valor inicial", "num"], ["atual", "Valor atual", "num"], ["alvo", "Valor alvo", "num"], ["manual", "Progresso manual (0–1, só p/ marcos)", "num"], ["proximo", "Próximo passo concreto", "text", 1]], def: () => ({ status: "Ativa", inicio: TODAY }) },
+  tarefas: { t: "Tarefa", f: [["tarefa", "Tarefa", "text", 1], ["projeto", "Projeto", "text"], ["area", "Área", AREAS], ["prio", "Prioridade", ["Alta", "Média", "Baixa"]], ["prazo", "Prazo", "date"], ["status", "Status", ["A fazer", "Em andamento", "Aguardando", "Concluída", "Cancelada"]], ["concluida", "Concluída em", "date"], ["meta", "Meta vinculada", () => ["", ...S.metas.map(m => m.meta)]]], def: () => ({ status: "A fazer", prio: "Média" }) },
+  pessoas: { t: "Pessoa", f: [["nome", "Nome", "text"], ["relacao", "Relação", RELACAO], ["freq", "Falar a cada (dias)", "num"], ["aniv", "Aniversário", "date"], ["notas", "Notas · interesses, presentes", "text", 1]], def: () => ({ relacao: "Amizade", freq: 30 }) },
+  contatos: { t: "Contato", f: [["data", "Data", "date"], ["pessoa", "Pessoa", () => S.pessoas.map(p => p.nome)], ["tipo", "Tipo", ["Encontro", "Ligação", "Videochamada", "Mensagem", "Evento / grupo"]], ["qual", "Qualidade (1–5)", "num"], ["min", "Duração (min)", "num"]], def: () => ({ data: TODAY, qual: 4 }) },
+  aprend: { t: "Item de aprendizado", f: [["titulo", "Título", "text", 1], ["tipo", "Tipo", ["Livro", "Curso", "Idioma", "Certificação", "Podcast / vídeo", "Workshop"]], ["area", "Área", AREAS], ["status", "Status", ["Quero fazer", "Em andamento", "Pausado", "Concluído", "Abandonado"]], ["total", "Total (pág./aulas)", "num"], ["atual", "Onde estou", "num"], ["fim", "Concluído em", "date"], ["nota", "Nota (1–5)", "num"]], def: () => ({ status: "Em andamento", tipo: "Livro" }) },
+  estudo: { t: "Sessão de estudo", f: [["data", "Data", "date"], ["item", "Item / assunto", () => S.aprend.map(a => a.titulo)], ["horas", "Horas", "num"]], def: () => ({ data: TODAY, horas: 1 }) },
+  lazer: { t: "Atividade de lazer", f: [["data", "Data", "date"], ["atividade", "Atividade", "text"], ["cat", "Categoria", ["Hobby criativo", "Esporte / ar livre", "Cultura", "Passeio", "Viagem", "Social", "Descanso", "Jogos", "Música"]], ["horas", "Duração (h)", "num"], ["custo", "Custo (€)", "num"], ["sat", "Satisfação (1–5)", "num"]], def: () => ({ data: TODAY, sat: 4 }) },
+  sonhos: { t: "Sonho / experiência", f: [["sonho", "Sonho", "text", 1], ["status", "Status", ["Sonho", "Planejando", "Agendado", "Realizado"]], ["custo", "Custo estimado (€)", "num"]], def: () => ({ status: "Sonho" }) },
+  docs: { t: "Documento", f: [["doc", "Documento", "text"], ["validade", "Validade", "date"], ["acao", "Próxima ação", "text", 1]], def: () => ({}) },
+  rotinas: { t: "Rotina recorrente", f: [["rotina", "Rotina", "text"], ["freq", "A cada (dias)", "num"], ["ultima", "Última vez", "date"]], def: () => ({ ultima: TODAY, freq: 30 }) },
+  assin: { t: "Assinatura", f: [["servico", "Serviço", "text"], ["valor", "Valor (€)", "num"], ["periodo", "Periodicidade", ["Mensal", "Bimestral", "Trimestral", "Semestral", "Anual"]], ["uso", "Uso real", ["Alto", "Médio", "Baixo"]]], def: () => ({ periodo: "Mensal", uso: "Médio" }) },
+  comp: { t: "Competência", f: [["nome", "Competência", "text"], ["atual", "Nível atual (1–5)", "num"], ["alvo", "Nível alvo (1–5)", "num"]], def: () => ({ atual: 2, alvo: 4 }) },
+  cand: { t: "Candidatura", f: [["empresa", "Empresa", "text"], ["cargo", "Cargo", "text"], ["data", "Data", "date"], ["etapa", "Etapa", ["Interesse", "Aplicado", "Entrevista", "Teste / case", "Proposta", "Aceito", "Recusado", "Desisti"]], ["acao", "Próxima ação", "text"], ["dataAcao", "Data da ação", "date"]], def: () => ({ data: TODAY, etapa: "Aplicado" }) },
+  habitos: { t: "Hábito", f: [["nome", "Hábito", "text"], ["area", "Área da vida", AREAS], ["meta", "Meta (dias por semana)", "num"]], def: () => ({ meta: 5 }) },
+};
+function openForm(key, id) {
+  const sc = SCH[key], cur = id ? S[key].find(x => x.id === id) : sc.def();
+  const dlg = $("#dlg"), o = { ...cur };
+  const field = ([k, lb, ty, full]) => {
+    const v = o[k] ?? "", opts = typeof ty === "function" ? ty(o) : Array.isArray(ty) ? ty : null;
+    const inp = opts ? `<select id="f_${k}" name="${k}">${["", ...opts.filter(x => x !== "")].map(x => `<option ${x === v ? "selected" : ""}>${esc(x)}</option>`).join("")}</select>`
+      : `<input id="f_${k}" name="${k}" type="${ty === "num" ? "number" : ty}" ${ty === "num" ? 'step="any"' : ""} value="${esc(v)}">`;
+    return `<label class="${full ? "full" : ""}">${esc(lb)}${inp}</label>`;
+  };
+  dlg.innerHTML = `<form method="dialog" id="fm"><h3>${id ? "Editar" : "Adicionar"} · ${esc(sc.t)}</h3><div class="form">${sc.f.map(field).join("")}</div>
+    <div class="dlgfoot"><div>${id ? `<button type="button" class="btn danger" id="del">Excluir</button>` : ""}</div><div style="display:flex;gap:8px"><button type="button" class="btn" id="cancel">Cancelar</button><button class="btn primary" value="ok">Salvar</button></div></div></form>`;
+  const fm = $("#fm", dlg);
+  const tipo = $("#f_tipo", dlg); if (tipo && key === "lanc") tipo.addEventListener("change", () => { o.tipo = tipo.value; const sel = $("#f_cat", dlg); sel.innerHTML = ["", ...sc.f[2][2](o)].map(x => `<option>${esc(x)}</option>`).join(""); });
+  $("#cancel", dlg).onclick = () => dlg.close();
+  const del = $("#del", dlg); if (del) del.onclick = () => { if (del.dataset.c) { S[key] = S[key].filter(x => x.id !== id); dlg.close(); touch(key); toast("Excluído"); } else { del.dataset.c = 1; del.textContent = "Confirmar exclusão"; } };
+  fm.onsubmit = e => { e.preventDefault(); const fd = new FormData(fm); const rec = { ...(cur || {}), id: id || uid() };
+    sc.f.forEach(([k, , ty]) => { const v = fd.get(k); rec[k] = ty === "num" ? (v === "" ? "" : +v) : v; });
+    if (key === "tarefas" && rec.status === "Concluída" && !rec.concluida) rec.concluida = TODAY;
+    if (id) S[key] = S[key].map(x => x.id === id ? rec : x); else S[key].push(rec);
+    dlg.close(); touch(key); };
+  dlg.showModal(); setTimeout(() => $("input,select", dlg)?.focus(), 30);
+}
+function table(key, rows, cols, { limit = 0, empty = "Nada cadastrado ainda." } = {}) {
+  if (!rows.length) return `<div class="empty">${empty}</div>`;
+  const shown = limit ? rows.slice(0, limit) : rows;
+  return `<div class="tablewrap"><table><thead><tr>${cols.map(c => `<th class="${c[2] || ""}">${c[0]}</th>`).join("")}</tr></thead><tbody>${shown.map(r => `<tr class="click" data-edit="${key}" data-id="${r.id}" tabindex="0">${cols.map(c => `<td class="${c[2] || ""}">${c[1](r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${limit && rows.length > limit ? `<div class="muted" style="font-size:12px;margin-top:6px">Mostrando ${limit} de ${rows.length}.</div>` : ""}`;
+}
+const addBtn = (key, lbl) => `<button class="btn" data-add="${key}">+ ${lbl}</button>`;
+
+/* ============================================================ páginas */
+const PAGES = [
+  ["painel", "Painel", "var(--ink)", "Visão"], ["roda", "Roda da Vida", "var(--plan)", "Planejar"], ["metas", "Metas", "var(--plan)"], ["tarefas", "Tarefas", "var(--plan)"],
+  ["financas", "Finanças", "var(--money)", "Áreas"], ["saude", "Saúde", "var(--body)"], ["habitos", "Hábitos", "var(--body)"], ["carreira", "Carreira", "var(--grow)"], ["aprendizado", "Aprendizado", "var(--grow)"],
+  ["relacoes", "Relações", "var(--people)"], ["lazer", "Lazer", "var(--people)"], ["casa", "Casa & docs", "var(--home)"], ["config", "Ajustes", "var(--sys)", "Sistema"]];
+let PAGE = (location.hash || "").slice(1); if (!PAGES.some(p => p[0] === PAGE)) PAGE = "painel";
+
+function kpi(c, l, v, s, st = "", sm = false) { return `<div class="kpi" style="--c:${c}"><div class="l">${l}</div><div class="v ${sm ? "sm" : ""}">${v}</div><div class="s ${st ? "st-" + st : ""}">${s}</div></div>`; }
+const stp = st => ({ good: "✓ ", warn: "▲ ", crit: "✕ ", none: "" }[st] || "");
+
+function pPainel(R) {
+  const C = S.cfg, F = R.fin;
+  const iSt = R.indice == null || R.percep == null ? "" : Math.abs(R.percep * 10 - R.indice) <= 10 ? "alinhada aos dados" : R.percep * 10 > R.indice ? "acima dos dados" : "abaixo dos dados";
+  const tSorted = R.tar.filter(t => t.open && t.prazo).sort((a, b) => a.prazo.localeCompare(b.prazo)).slice(0, 7);
+  const cont = R.pes.filter(p => p.ratio >= .8).sort((a, b) => b.ratio - a.ratio).slice(0, 6);
+  const aniv = R.pes.filter(p => p.prox).sort((a, b) => a.faltam - b.faltam).slice(0, 5);
+  const mAnd = R.metas.filter(m => m.ativa && m.rt !== "Concluída" && m.prazo).sort((a, b) => a.prazo.localeCompare(b.prazo)).slice(0, 7);
+  const cats = Object.entries(F.cat).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([l, v]) => ({ l, v, mark: S.orc[l] || null }));
+  const hi = 11;
+  return `
+  <div class="hero">
+    <div class="index"><div><div class="lbl">Índice de vida · dados</div><div class="big">${R.indice ?? "–"}<small> /100</small></div></div>
+      <div class="meter"><i style="width:${R.indice ?? 0}%"></i></div>
+      <div class="cmp">Percepção ${R.percep == null ? "–" : num(R.percep) + "/10"}${iSt ? ` · ${iSt}` : ""}. Média dos placares das 11 áreas (metas, hábitos e métricas de cada uma).</div></div>
+    <div class="grid g2">
+      ${kpi("var(--plan)", "Metas no ritmo", R.metasAnd ? `${R.metasRitmo} de ${R.metasAnd}` : "–", R.metasAnd ? `${R.metasAtras ? "▲ " + R.metasAtras + " atrasada(s) · " : "✓ "}progresso médio ${pct(R.metasProg)}` : "Cadastre suas metas", R.metasAnd ? (R.metasAtras ? "warn" : "good") : "none")}
+      ${kpi("var(--plan)", "Tarefas atrasadas", R.tarAtras, `${R.tarAbertas} abertas · ${R.tarConcl} concluídas no mês`, R.tarAtras ? "crit" : "good")}
+      ${kpi("var(--plan)", "Próximos 7 dias", R.prox7 + " itens", `${R.tar7} tarefas · ${R.aniv7} aniversários · ${R.venc.filter(v => v.dias >= 0 && v.dias <= 7).length} vencimentos`)}
+      ${kpi("var(--home)", "Casa & documentos", R.casaAlertas + " alertas", `${R.docs.filter(d => d.st === "warn" || d.st === "crit").length} doc(s) · ${R.rot.filter(r => r.st === "crit").length} rotina(s) atrasada(s)`, R.casaAlertas ? "warn" : "good")}
+    </div>
+  </div>
+  <div class="sec">Indicadores do mês</div>
+  <div class="grid g4">
+    ${kpi("var(--money)", "Resultado do mês", eur(F.res), F.rec + F.desp ? `Receitas ${eur(F.rec)} · despesas ${eur(F.desp)}` : "Sem lançamentos no mês", F.rec + F.desp ? (F.res >= 0 ? "good" : "crit") : "none")}
+    ${kpi("var(--money)", "Taxa de poupança", pct(F.taxa), `${F.taxa == null ? "" : F.taxa >= C.metaPoup ? "✓ " : "▲ "}meta ${pct(C.metaPoup)}`, F.taxa == null ? "none" : F.taxa >= C.metaPoup ? "good" : "warn")}
+    ${kpi("var(--money)", "Patrimônio líquido", R.pl == null ? "–" : eur(R.pl), R.plVar == null ? "Atualize os saldos em Finanças" : `${R.plVar >= 0 ? "✓ +" : "✕ "}${eur(R.plVar)} no mês`, R.plVar == null ? "none" : R.plVar >= 0 ? "good" : "crit")}
+    ${kpi("var(--money)", "Reserva de emergência", R.reserva == null ? "–" : num(R.reserva) + " meses", `meta ${C.metaReserva} meses de despesas`, R.reserva == null ? "none" : R.reserva >= C.metaReserva ? "good" : "warn")}
+    ${kpi("var(--body)", "Hábitos · % da meta", pct(R.habMeta), R.hab.length ? `Maior sequência: ${esc([...R.hab].sort((a, b) => b.streak - a.streak)[0].nome)} (${Math.max(...R.hab.map(h => h.streak))} dias)` : "Crie seus hábitos", R.habMeta == null ? "none" : R.habMeta >= .9 ? "good" : "warn")}
+    ${kpi("var(--body)", "Sono médio", R.sono == null ? "–" : num(R.sono) + " h", `${R.sono == null ? "" : R.sono >= C.metaSono ? "✓ " : "▲ "}meta ${num(C.metaSono)} h`, R.sono == null ? "none" : R.sono >= C.metaSono ? "good" : "warn")}
+    ${kpi("var(--body)", "Treinos no mês", R.treinos, `meta ${Math.round(C.metaTreinos * R.DR / 7)} · ${R.minTreino} min`, R.treinos >= C.metaTreinos * R.DR / 7 ? "good" : "warn")}
+    ${kpi("var(--body)", "Humor médio", R.humor == null ? "–" : num(R.humor) + "/5", `Energia ${num(R.energia)} · estresse ${num(R.estresse)}`, R.humor == null ? "none" : R.humor >= 3.5 ? "good" : R.humor >= 2.5 ? "warn" : "crit")}
+    ${kpi("var(--people)", "Relações em dia", pct(R.relEmDia), `${R.relAtras} contato(s) atrasado(s) · ${R.contMes.length} no mês`, R.relAtras ? "warn" : "good")}
+    ${kpi("var(--grow)", "Estudo no mês", num(R.horasEst) + " h", `meta ${C.metaEstudo} h/mês · ${R.livros} livros no ano`, R.horasEst >= C.metaEstudo * R.DR / dim(R.mk) ? "good" : "warn")}
+    ${kpi("var(--people)", "Lazer no mês", num(R.horasLaz) + " h", `meta ${Math.round(C.metaLazer * R.DR / 7)} h até agora · satisfação ${num(R.lazSat)}`, R.horasLaz >= C.metaLazer * R.DR / 7 ? "good" : "warn")}
+    ${kpi("var(--grow)", "Candidaturas ativas", R.candAtivas, `competências ${pct(R.compPct)} do alvo`)}
+  </div>
+  <div class="sec">Áreas da vida · percepção × dados</div>
+  <div class="grid g3">
+    <div class="panel span2"><div class="tablewrap"><table><thead><tr><th>Área</th><th>Percepção</th><th>Dados</th><th></th><th>Indicador do mês</th></tr></thead><tbody>
+      ${R.areas.map(a => { const tr = a.perc == null || a.prev == null ? "" : a.perc > a.prev ? `<span class="st-good" title="subiu">↑</span>` : a.perc < a.prev ? `<span class="st-crit" title="caiu">↓</span>` : `<span class="muted">→</span>`;
+        return `<tr><td style="font-weight:600;white-space:nowrap">${esc(a.a)}</td><td><div class="areabar"><span>${a.perc == null ? "–" : num(a.perc, 0)}</span><div class="bar" style="--c:var(--plan)"><i style="width:${(a.perc ?? 0) * 10}%"></i>${a.alvo ? `<b style="left:${a.alvo * 10}%" title="alvo ${a.alvo}"></b>` : ""}</div></div></td>
+        <td>${a.dados == null ? pill("none", "–") : pill(a.st, num(a.dados))}</td><td>${tr}</td><td class="muted" style="font-size:12.5px;min-width:180px">${esc(a.ind)}</td></tr>`; }).join("")}
+    </tbody></table></div><div class="muted" style="font-size:12px;margin-top:8px">A marca na barra é o alvo da área. Diferença grande entre percepção e dados merece uma pergunta.</div></div>
+    <div class="panel"><h2>Roda da Vida</h2>${radar(R.areas)}</div>
+  </div>
+  <div class="sec">Foco & reflexão</div>
+  <div class="grid g3">
+    <div class="panel"><h2>Foco do mês <small>da revisão anterior</small></h2><div class="reflect ${R.foco ? "" : "ph"}">${esc(R.foco || "No fim do mês, escreva o foco do próximo em Roda da Vida.")}</div></div>
+    <div class="panel"><h2>Prioridades da semana</h2><div class="prio">${[0, 1, 2].map(i => `<label for="prio${i}">${i + 1}<input id="prio${i}" type="text" data-prio="${i}" value="${esc(S.prio[i] || "")}" placeholder="O que precisa acontecer esta semana?"></label>`).join("")}</div></div>
+    <div class="panel"><h2>Vitórias do mês</h2><div class="reflect ${R.rev.vitorias ? "" : "ph"}">${esc(R.rev.vitorias || "Ainda sem revisão de " + mlabel(R.mk) + ".")}</div>
+      ${R.ultNota ? `<div class="muted" style="font-size:12px;margin-top:12px">Último diário · ${fmtD(R.ultNota[0])}</div><div class="reflect">${esc(R.ultNota[1].nota)}</div>` : ""}</div>
+  </div>
+  <div class="sec">Atenção agora</div>
+  <div class="grid g3">
+    <div class="panel"><h2>Tarefas <small>atrasadas e próximas</small></h2><div class="list">${tSorted.length ? tSorted.map(t => `<div class="li"><div class="t">${esc(t.tarefa)}<div class="m">${fmtD(t.prazo)}${t.projeto ? " · " + esc(t.projeto) : ""}</div></div>${pill(t.st, t.al)}</div>`).join("") : `<div class="empty">Nada com prazo.</div>`}</div></div>
+    <div class="panel"><h2>Contatos a fazer</h2><div class="list">${cont.length ? cont.map(p => `<div class="li"><div class="t">${esc(p.nome)}<div class="m">${p.ult ? `há ${p.dias} dias · a cada ${p.freq}` : "nunca registrado"}</div></div>${pill(p.st, p.txt)}</div>`).join("") : `<div class="empty">Todos em dia.</div>`}</div>
+      <h2 style="margin-top:14px">Aniversários</h2><div class="list">${aniv.length ? aniv.map(p => `<div class="li"><div class="t">${esc(p.nome)}<div class="m">${fmtD(p.prox)}</div></div>${pill(p.faltam <= C.alertaAniv ? "warn" : "none", p.faltam === 0 ? "hoje" : "em " + p.faltam + " d")}</div>`).join("") : `<div class="empty">Cadastre datas em Relações.</div>`}</div></div>
+    <div class="panel"><h2>Vencimentos & rotinas</h2><div class="list">${R.venc.length ? R.venc.slice(0, 8).map(v => `<div class="li"><div class="t">${esc(v.t)}<div class="m">${v.k}</div></div>${pill(v.dias < 0 ? "crit" : "warn", v.dias < 0 ? `venceu há ${-v.dias} d` : v.dias === 0 ? "hoje" : `em ${v.dias} d`)}</div>`).join("") : `<div class="empty">Nada vencendo.</div>`}</div></div>
+  </div>
+  <div class="sec">Metas em andamento</div>
+  <div class="panel"><div class="tablewrap"><table><thead><tr><th>Meta</th><th>Área</th><th style="min-width:160px">Progresso × esperado</th><th>Ritmo</th><th class="num">Prazo</th></tr></thead><tbody>
+    ${mAnd.map(m => `<tr class="click" data-edit="metas" data-id="${m.id}" tabindex="0"><td style="font-weight:600">${esc(m.meta)}</td><td class="muted">${esc(m.area)}</td><td><div class="areabar" style="grid-template-columns:38px 1fr"><span>${pct(m.prog)}</span><div class="bar" style="--c:var(--plan)"><i style="width:${m.prog * 100}%"></i>${m.esp != null ? `<b style="left:${m.esp * 100}%" title="esperado ${pct(m.esp)}"></b>` : ""}</div></div></td><td>${pill(m.st, m.rt)}</td><td class="num">${fmtD(m.prazo)}</td></tr>`).join("") || `<tr><td colspan="5" class="empty">Sem metas em andamento.</td></tr>`}
+  </tbody></table></div><div class="muted" style="font-size:12px;margin-top:6px">O traço vertical marca quanto do tempo da meta já passou.</div></div>
+  <div class="sec">Finanças · últimos 12 meses</div>
+  <div class="grid g2">
+    <div class="panel"><h2>Receitas × despesas</h2>${colChart(R.series.map(s => mabbr(s.mk)), [{ name: "Receitas", color: "var(--plan)", data: R.series.map(s => s.rec) }, { name: "Despesas", color: "var(--body)", data: R.series.map(s => s.desp) }], { fmt: v => num(v, 0), hi })}</div>
+    <div class="panel"><h2>Despesas por categoria <small>${mlabel(R.mk)} · traço = orçamento</small></h2>${hbars(cats, { max: Math.max(1, ...cats.map(c => Math.max(c.v, c.mark || 0))) })}</div>
+  </div>
+  <div class="sec">Saúde & hábitos</div>
+  <div class="grid g2">
+    <div class="panel"><h2>Humor · últimos 28 dias <small>vermelho = dia ruim · azul = dia bom</small></h2>${strip(R.days28, "humor", "div")}
+      <h2 style="margin-top:16px">Hábitos cumpridos por dia <small>mais escuro = mais hábitos</small></h2>${strip(R.days28, "hab", "seq")}</div>
+    <div class="panel"><h2>Sono médio por mês <small>horas</small></h2>${colChart(R.saudeSeries.map(s => mabbr(s.mk)), [{ name: "Sono", color: "var(--body)", data: R.saudeSeries.map(s => s.sono) }], { max: 10, fmt: v => num(v, 0), hi })}</div>
+    <div class="panel"><h2>Hábitos no mês <small>% da meta</small></h2>${hbars(R.hab.map(h => ({ l: h.nome, v: h.pm ?? 0 })), { color: "var(--body)", fmt: pct, max: 1 })}</div>
+    <div class="panel"><h2>Estudo e lazer por mês <small>horas</small></h2>${colChart(R.estSeries.map(s => mabbr(s.mk)), [{ name: "Estudo", color: "var(--grow)", data: R.estSeries.map(s => s.est) }, { name: "Lazer", color: "var(--people)", data: R.estSeries.map(s => s.laz) }], { hi })}</div>
+  </div>`;
+}
+
+function pRoda(R) {
+  const mk = R.mk, cur = S.roda[mk] || {}, rv = S.revisao[mk] || {};
+  return `<div class="grid g2">
+    <div class="panel"><h2>Notas de ${mlabel(mk)} <small>0 = péssimo · 10 = pleno</small></h2>
+      ${AREAS.map((a, i) => `<div class="range"><label for="r${i}" style="font-weight:600">${esc(a)}</label><input id="r${i}" type="range" min="0" max="10" step="1" value="${cur[a] ?? 5}" data-roda="${esc(a)}"><output>${cur[a] ?? "–"}</output></div>`).join("")}
+      <div class="muted" style="font-size:12px;margin-top:8px">Mover o controle grava a nota do mês selecionado no topo.</div></div>
+    <div class="panel"><h2>Percepção × dados × alvo</h2>${radar(R.areas)}
+      <h2 style="margin-top:14px">Alvos por área</h2><div class="form">${AREAS.map((a, i) => `<label>${esc(a)}<input id="alvo${i}" type="number" min="0" max="10" data-alvo="${esc(a)}" value="${S.alvo[a] ?? ""}"></label>`).join("")}</div></div>
+    <div class="panel span2" style="grid-column:1/-1"><h2>Revisão mensal · ${mlabel(mk)} <small>15 minutos no último dia do mês</small></h2>
+      <div class="form">${[["vitorias", "Vitórias & destaques"], ["naofunc", "O que não funcionou"], ["aprendi", "O que aprendi"], ["foco", "Foco do próximo mês"]].map(([k, l]) => `<label>${l}<textarea id="rev_${k}" data-rev="${k}">${esc(rv[k] || "")}</textarea></label>`).join("")}
+      <label>Nota do mês (0–10)<input id="rev_nota" type="number" min="0" max="10" data-rev="nota" value="${rv.nota ?? ""}"></label></div></div>
+    <div class="panel" style="grid-column:1/-1"><h2>Histórico</h2><div class="tablewrap"><table><thead><tr><th>Área</th>${R.series.map(s => `<th class="num">${mabbr(s.mk)}</th>`).join("")}</tr></thead><tbody>
+      ${AREAS.map(a => `<tr><td style="white-space:nowrap">${esc(a)}</td>${R.series.map(s => { const v = S.roda[s.mk]?.[a]; return `<td class="num" style="${v != null ? `background:color-mix(in srgb, ${v >= 5 ? "var(--div-hi)" : "var(--div-lo)"} ${Math.abs(v - 5) * 9}%, transparent)` : ""}">${v ?? ""}</td>`; }).join("")}</tr>`).join("")}
+    </tbody></table></div></div></div>`;
+}
+
+function pMetas(R) {
+  const ord = [...R.metas].sort((a, b) => (a.rt === "Concluída") - (b.rt === "Concluída") || (a.prazo || "9").localeCompare(b.prazo || "9"));
+  const hz = h => R.metas.filter(m => m.hz === h && m.ativa && m.rt !== "Concluída").length;
+  return `<div class="grid g4">${kpi("var(--plan)", "Em andamento", R.metasAnd, `concluídas: ${R.metas.filter(m => m.rt === "Concluída").length}`)}${kpi("var(--plan)", "No ritmo", R.metasRitmo, "progresso ≥ tempo decorrido − 10 pts", "good")}${kpi("var(--plan)", "Atrasadas ou vencidas", R.metasAtras, R.metasAtras ? "replaneje ou ajuste o prazo" : "nenhuma", R.metasAtras ? "crit" : "good")}${kpi("var(--plan)", "Por horizonte", `${hz("Curto")} · ${hz("Médio")} · ${hz("Longo")}`, "curto ≤ 6 meses · médio ≤ 2 anos · longo")}</div>
+  <div class="panel" style="margin-top:14px"><div class="toolbar"><h2 style="margin:0">Metas</h2>${addBtn("metas", "Nova meta")}</div>
+  ${table("metas", ord, [["Meta", m => `<b>${esc(m.meta)}</b><div class="muted" style="font-size:12px">${esc(m.proximo || "")}</div>`], ["Área", m => esc(m.area)], ["Horizonte", m => m.hz], ["Progresso", m => `<div class="areabar" style="grid-template-columns:38px 1fr;min-width:140px"><span>${pct(m.prog)}</span><div class="bar"><i style="width:${m.prog * 100}%"></i>${m.esp != null ? `<b style="left:${m.esp * 100}%"></b>` : ""}</div></div>`], ["Ritmo", m => pill(m.st, m.rt)], ["Dias", m => m.dias ?? "", "num"], ["Tarefas", m => m.abertas || "", "num"]], { empty: "Escreva 3 a 7 metas mensuráveis, cada uma ligada a uma área." })}</div>`;
+}
+
+function pTarefas(R) {
+  const ord = [...R.tar].sort((a, b) => (!a.open) - (!b.open) || (a.prazo || "9").localeCompare(b.prazo || "9"));
+  const projs = [...new Set(S.tarefas.map(t => t.projeto).filter(Boolean))].map(p => { const ts = R.tar.filter(t => t.projeto === p && t.status !== "Cancelada"); return { p, n: ts.length, d: ts.filter(t => t.status === "Concluída").length, a: ts.filter(t => t.st === "crit").length }; });
+  const quads = ["1 · Fazer já", "2 · Agendar", "3 · Resolver rápido", "4 · Depois"];
+  return `<div class="grid g4">${kpi("var(--plan)", "Abertas", R.tarAbertas, `alta prioridade: ${R.tar.filter(t => t.open && t.prio === "Alta").length}`)}${kpi("var(--plan)", "Atrasadas", R.tarAtras, R.tarAtras ? "resolva ou replaneje" : "nada atrasado", R.tarAtras ? "crit" : "good")}${kpi("var(--plan)", "Vencem em 7 dias", R.tar7, "inclui hoje", R.tar7 ? "warn" : "")}${kpi("var(--plan)", "Concluídas no mês", R.tarConcl, mlabel(R.mk))}</div>
+  <div class="grid g4" style="margin-top:14px">${quads.map((q, i) => { const ts = R.tar.filter(t => t.quad === q); return `<div class="panel"><h2>${q.slice(4)} <small>${["urgente e importante", "importante", "urgente", "nem um nem outro"][i]}</small></h2><div class="list">${ts.slice(0, 6).map(t => `<div class="li click" data-edit="tarefas" data-id="${t.id}" style="cursor:pointer"><div class="t">${esc(t.tarefa)}<div class="m">${t.prazo ? fmtD(t.prazo) : "sem prazo"}</div></div>${pill(t.st, t.al)}</div>`).join("") || `<div class="empty">Vazio.</div>`}</div></div>`; }).join("")}</div>
+  <div class="grid g3" style="margin-top:14px"><div class="panel span2"><div class="toolbar"><h2 style="margin:0">Todas as tarefas</h2>${addBtn("tarefas", "Nova tarefa")}</div>
+    ${table("tarefas", ord, [["Tarefa", t => t.open ? `<b>${esc(t.tarefa)}</b>` : `<s class="muted">${esc(t.tarefa)}</s>`], ["Projeto", t => esc(t.projeto || "")], ["Prioridade", t => esc(t.prio || "")], ["Prazo", t => fmtD(t.prazo), "num"], ["Alerta", t => pill(t.st, t.al)]])}</div>
+    <div class="panel"><h2>Projetos</h2>${projs.map(p => `<div class="li"><div class="t">${esc(p.p)}<div class="m">${p.d} de ${p.n} concluídas${p.a ? ` · <span class="st-crit">${p.a} atrasada(s)</span>` : ""}</div><div class="bar" style="margin-top:6px"><i style="width:${p.n ? p.d / p.n * 100 : 0}%"></i></div></div></div>`).join("") || `<div class="empty">Use o campo Projeto nas tarefas para agrupá-las.</div>`}</div></div>`;
+}
+
+function pFinancas(R) {
+  const F = R.fin, lm = S.lanc.filter(l => mkey(l.data) === R.mk).sort((a, b) => b.data.localeCompare(a.data));
+  const p = S.patr[R.mk] || {};
+  return `<div class="grid g4">${kpi("var(--money)", "Receitas", eur(F.rec), mlabel(R.mk))}${kpi("var(--money)", "Despesas", eur(F.desp), R.orcTot ? `${pct(F.desp / R.orcTot)} do orçamento` : "orçamento não definido", R.orcTot ? (F.desp > R.orcTot ? "crit" : "good") : "none")}${kpi("var(--money)", "Resultado", eur(F.res), `aportes ${eur(F.apo)} · caixa ${eur(F.res - F.apo)}`, F.res >= 0 ? "good" : "crit")}${kpi("var(--money)", "Taxa de poupança", pct(F.taxa), `meta ${pct(S.cfg.metaPoup)}`, F.taxa == null ? "none" : F.taxa >= S.cfg.metaPoup ? "good" : "warn")}</div>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="panel span2"><div class="toolbar"><h2 style="margin:0">Lançamentos de ${mlabel(R.mk)}</h2>${addBtn("lanc", "Novo lançamento")}</div>
+      ${table("lanc", lm, [["Data", l => fmtD(l.data), "num"], ["Tipo", l => `<span class="${l.tipo === "Receita" ? "st-good" : l.tipo === "Aporte" ? "" : ""}" style="${l.tipo === "Aporte" ? "color:var(--plan)" : ""}">${esc(l.tipo)}</span>`], ["Categoria", l => esc(l.cat)], ["Descrição", l => esc(l.desc)], ["Valor", l => eur(+l.valor, 2), "num"]], { empty: "Nenhum lançamento neste mês." })}</div>
+    <div class="grid" style="align-content:start">
+      <div class="panel"><h2>Orçamento <small>% usado · ritmo ${pct(R.DR / dim(R.mk))} do mês</small></h2>
+        ${R.orcCats.map(c => `<div class="li"><div class="t" style="font-weight:500">${esc(c.cat)}<div class="bar" style="margin-top:5px;--c:${c.st === "crit" ? "var(--crit)" : c.st === "warn" ? "var(--warn)" : "var(--money)"}"><i style="width:${clamp(c.p ?? 0) * 100}%"></i></div></div><div style="text-align:right"><div class="mono" style="font-size:12px">${eur(c.real)}${c.plan ? " / " + eur(c.plan) : ""}</div><input type="number" aria-label="Orçamento de ${esc(c.cat)}" data-orc="${esc(c.cat)}" value="${S.orc[c.cat] ?? ""}" placeholder="plano" style="width:84px;padding:3px 6px;margin-top:3px"></div></div>`).join("")}
+        <details style="margin-top:8px"><summary class="muted" style="cursor:pointer">Definir orçamento de outras categorias</summary>${Object.keys(CAT_DESP).filter(c => !R.orcCats.some(x => x.cat === c)).map(c => `<div class="li"><span>${esc(c)}</span><input type="number" aria-label="Orçamento de ${esc(c)}" data-orc="${esc(c)}" placeholder="plano" style="width:84px;padding:3px 6px"></div>`).join("")}</details></div>
+      <div class="panel"><h2>Distribuição <small>referência 50/30/20</small></h2>${hbars([...R.dist.map(d => ({ l: d.g, v: F.rec ? d.v / F.rec : 0 })), { l: "Poupança", v: F.rec ? Math.max(0, F.res) / F.rec : 0 }], { color: "var(--money)", fmt: pct, max: 1 })}</div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="panel"><h2>Patrimônio · fim de ${mlabel(R.mk)} <small>preencha no fim do mês</small></h2>
+      <div class="form">${[["contas", "Contas & caixa"], ["reserva", "Reserva de emergência"], ["invest", "Investimentos"], ["outros", "Outros bens"], ["dividas", "(−) Dívidas"]].map(([k, l]) => `<label>${l}<input id="patr_${k}" type="number" data-patr="${k}" value="${p[k] ?? ""}"></label>`).join("")}</div>
+      <div style="margin-top:12px;display:flex;gap:18px;flex-wrap:wrap"><div><div class="muted" style="font-size:12px">Patrimônio líquido</div><div class="mono" style="font-size:18px;font-weight:600">${R.pl == null ? "–" : eur(R.pl)}</div></div><div><div class="muted" style="font-size:12px">Reserva cobre</div><div class="mono" style="font-size:18px;font-weight:600">${R.reserva == null ? "–" : num(R.reserva) + " meses"}</div></div></div></div>
+    <div class="panel"><h2>Resultado por mês</h2>${colChart(R.series.map(s => mabbr(s.mk)), [{ name: "Receitas", color: "var(--plan)", data: R.series.map(s => s.rec) }, { name: "Despesas", color: "var(--body)", data: R.series.map(s => s.desp) }, { name: "Aportes", color: "var(--money)", data: R.series.map(s => s.apo) }], { hi: 11 })}</div>
+  </div>`;
+}
+
+let checkin = null;
+function pSaude(R) {
+  const day = checkin || TODAY, e = S.saude[day] || {};
+  const scale = (k, lbl, inv) => `<div><div class="muted" style="font-size:12px;font-weight:600;margin-bottom:4px">${lbl} ${inv ? "(1 tranquilo · 5 tenso)" : "(1 ruim · 5 ótimo)"}</div><div class="chips">${[1, 2, 3, 4, 5].map(v => `<button class="chip" data-sd="${k}" data-v="${v}" aria-pressed="${e[k] == v}">${v}</button>`).join("")}</div></div>`;
+  const last = Object.entries(S.saude).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 14);
+  return `<div class="grid g4">${kpi("var(--body)", "Sono médio", R.sono == null ? "–" : num(R.sono) + " h", `meta ${num(S.cfg.metaSono)} h`, R.sono == null ? "none" : R.sono >= S.cfg.metaSono ? "good" : "warn")}${kpi("var(--body)", "Humor médio", R.humor == null ? "–" : num(R.humor) + "/5", `energia ${num(R.energia)} · estresse ${num(R.estresse)}`)}${kpi("var(--body)", "Treinos", R.treinos, `${R.minTreino} min · meta ${Math.round(S.cfg.metaTreinos * R.DR / 7)}`)}${kpi("var(--body)", "Peso atual", R.peso == null ? "–" : num(R.peso) + " kg", `${R.diasReg} dias registrados no mês`)}</div>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="panel span2"><div class="toolbar"><h2 style="margin:0">Check-in diário</h2><input type="date" id="ck_day" value="${day}" style="width:auto"></div>
+      <div class="grid g2">${scale("humor", "Humor")}${scale("energia", "Energia")}${scale("estresse", "Estresse", 1)}${scale("qual", "Qualidade do sono")}</div>
+      <div class="form" style="margin-top:12px"><label>Sono (h)<input id="sd_sono" type="number" step="0.5" data-sdi="sono" value="${e.sono ?? ""}"></label><label>Treino<select id="sd_treino" data-sdi="treino"><option></option>${TREINOS.map(t => `<option ${e.treino === t ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+        <label>Treino (min)<input id="sd_min" type="number" data-sdi="min" value="${e.min ?? ""}"></label><label>Passos<input id="sd_passos" type="number" data-sdi="passos" value="${e.passos ?? ""}"></label><label>Peso (kg)<input id="sd_peso" type="number" step="0.1" data-sdi="peso" value="${e.peso ?? ""}"></label>
+        <label class="full">Como me senti · o que marcou o dia<textarea id="sd_nota" data-sdi="nota">${esc(e.nota || "")}</textarea></label></div></div>
+    <div class="panel"><h2>Humor · 28 dias</h2>${strip(R.days28, "humor", "div")}<h2 style="margin-top:16px">Treinos por mês</h2>${colChart(R.saudeSeries.map(s => mabbr(s.mk)), [{ name: "Treinos", color: "var(--body)", data: R.saudeSeries.map(s => s.treinos) }], { h: 170, hi: 11 })}</div>
+  </div>
+  <div class="panel" style="margin-top:14px"><h2>Últimos registros</h2><div class="tablewrap"><table><thead><tr><th>Dia</th><th class="num">Sono</th><th class="num">Humor</th><th class="num">Energia</th><th class="num">Estresse</th><th>Treino</th><th class="num">Peso</th><th>Notas</th></tr></thead><tbody>
+    ${last.map(([d, x]) => `<tr class="click" data-day="${d}" tabindex="0"><td class="num">${fmtD(d)}</td><td class="num">${x.sono ?? ""}</td><td class="num">${x.humor ?? ""}</td><td class="num">${x.energia ?? ""}</td><td class="num">${x.estresse ?? ""}</td><td>${esc(x.treino || "")}${x.min ? ` · ${x.min}′` : ""}</td><td class="num">${x.peso ?? ""}</td><td class="muted">${esc(x.nota || "")}</td></tr>`).join("") || `<tr><td colspan="8" class="empty">Faça seu primeiro check-in acima.</td></tr>`}</tbody></table></div></div>`;
+}
+
+function pHabitos(R) {
+  const days = []; for (let k = 13; k >= 0; k--) days.push(addDays(TODAY, -k));
+  const wd = ["D", "S", "T", "Q", "Q", "S", "S"];
+  return `<div class="grid g4">${kpi("var(--body)", "% da meta (média)", pct(R.habMeta), mlabel(R.mk), R.habMeta == null ? "none" : R.habMeta >= .9 ? "good" : "warn")}${kpi("var(--body)", "Feitos no mês", sum(R.hab.map(h => h.feitos)), `${R.hab.length} hábitos`)}${kpi("var(--body)", "Maior sequência", R.hab.length ? Math.max(...R.hab.map(h => h.streak)) + " dias" : "–", R.hab.length ? esc([...R.hab].sort((a, b) => b.streak - a.streak)[0].nome) : "")}${kpi("var(--body)", "Abaixo da meta", R.hab.filter(h => h.st === "crit").length, "menos de 60% da meta", R.hab.some(h => h.st === "crit") ? "crit" : "good")}</div>
+  <div class="panel" style="margin-top:14px"><div class="toolbar"><h2 style="margin:0">Últimas 2 semanas <small>toque para marcar</small></h2>${addBtn("habitos", "Novo hábito")}</div>
+  <div class="tablewrap"><div class="hgrid"><div></div>${days.map(d => `<div class="hd ${d === TODAY ? "today" : ""}">${wd[parse(d).getDay()]}<br>${d.slice(8)}</div>`).join("")}<div class="hd">mês</div>
+  ${R.hab.map(h => `<div class="click" data-edit="habitos" data-id="${h.id}" style="cursor:pointer;min-width:0"><b>${esc(h.nome)}</b><div class="muted" style="font-size:11px">${esc(h.area || "")} · ${h.meta}×/sem · seq. ${h.streak}</div></div>${days.map(d => `<button class="tick ${S.marks[h.id + "|" + d] ? "on" : ""}" data-mark="${h.id}|${d}" aria-label="${esc(h.nome)} em ${fmtD(d)}" aria-pressed="${!!S.marks[h.id + "|" + d]}"></button>`).join("")}<div>${h.pm == null ? "" : pill(h.st, pct(h.pm))}</div>`).join("")}
+  </div></div>${R.hab.length ? "" : `<div class="empty">Crie até 10 hábitos, cada um ligado a uma área da vida.</div>`}</div>
+  <div class="panel" style="margin-top:14px"><h2>Cumprimento por dia · 28 dias</h2>${strip(R.days28, "hab", "seq")}</div>`;
+}
+
+function pCarreira(R) {
+  return `<div class="grid g3">${kpi("var(--grow)", "Candidaturas ativas", R.candAtivas, "aplicado, entrevista, teste ou proposta")}${kpi("var(--grow)", "Competências", pct(R.compPct), "média do nível atual ÷ alvo")}${kpi("var(--grow)", "Ações atrasadas", S.cand.filter(c => c.dataAcao && c.dataAcao < TODAY && !["Aceito", "Recusado", "Desisti"].includes(c.etapa)).length, "próximas ações das candidaturas")}</div>
+  <div class="grid g2" style="margin-top:14px"><div class="panel"><div class="toolbar"><h2 style="margin:0">Competências <small>1 iniciante · 5 referência</small></h2>${addBtn("comp", "Nova")}</div>
+    ${table("comp", S.comp, [["Competência", c => `<b>${esc(c.nome)}</b>`], ["Nível", c => `<span style="color:var(--grow);letter-spacing:2px">${"●".repeat(+c.atual || 0)}${"○".repeat(Math.max(0, (+c.alvo || 0) - (+c.atual || 0)))}</span>`], ["Gap", c => (+c.alvo - +c.atual) || "", "num"]])}</div>
+  <div class="panel"><div class="toolbar"><h2 style="margin:0">Candidaturas</h2>${addBtn("cand", "Nova")}</div>
+    ${table("cand", [...S.cand].sort((a, b) => (b.data || "").localeCompare(a.data || "")), [["Empresa", c => `<b>${esc(c.empresa)}</b><div class="muted" style="font-size:12px">${esc(c.cargo)}</div>`], ["Etapa", c => esc(c.etapa)], ["Próxima ação", c => { const late = c.dataAcao && c.dataAcao < TODAY && !["Aceito", "Recusado", "Desisti"].includes(c.etapa); return `${esc(c.acao || "")}${c.dataAcao ? ` ${pill(late ? "crit" : diff(c.dataAcao, TODAY) <= 3 ? "warn" : "none", fmtD(c.dataAcao))}` : ""}`; }]])}</div></div>`;
+}
+
+function pAprend(R) {
+  const est = [...S.estudo].sort((a, b) => b.data.localeCompare(a.data));
+  const horas = t => sum(S.estudo.filter(e => e.item === t).map(e => e.horas));
+  return `<div class="grid g4">${kpi("var(--grow)", "Estudo no mês", num(R.horasEst) + " h", `meta ${S.cfg.metaEstudo} h/mês`)}${kpi("var(--grow)", "Livros no ano", R.livros, `meta ${S.cfg.metaLivros}`)}${kpi("var(--grow)", "Em andamento", S.aprend.filter(a => a.status === "Em andamento").length, S.aprend.filter(a => a.status === "Em andamento").length > 3 ? "▲ muitos ao mesmo tempo dispersam" : "foco saudável")}${kpi("var(--grow)", "Sessões no mês", S.estudo.filter(e => mkey(e.data) === R.mk).length, mlabel(R.mk))}</div>
+  <div class="grid g3" style="margin-top:14px"><div class="panel span2"><div class="toolbar"><h2 style="margin:0">O que estou aprendendo</h2>${addBtn("aprend", "Novo item")}</div>
+    ${table("aprend", [...S.aprend].sort((a, b) => (a.status !== "Em andamento") - (b.status !== "Em andamento")), [["Título", a => `<b>${esc(a.titulo)}</b><div class="muted" style="font-size:12px">${esc(a.tipo)} · ${esc(a.area || "")}</div>`], ["Status", a => esc(a.status)], ["Progresso", a => { const p = a.status === "Concluído" ? 1 : +a.total ? clamp(+a.atual / +a.total) : 0; return `<div class="areabar" style="grid-template-columns:38px 1fr;min-width:120px"><span>${pct(p)}</span><div class="bar" style="--c:var(--grow)"><i style="width:${p * 100}%"></i></div></div>`; }], ["Horas", a => num(horas(a.titulo)), "num"]])}</div>
+  <div class="panel"><div class="toolbar"><h2 style="margin:0">Sessões</h2>${addBtn("estudo", "Registrar")}</div>${table("estudo", est, [["Dia", e => fmtD(e.data), "num"], ["Assunto", e => esc(e.item)], ["h", e => num(+e.horas), "num"]], { limit: 12 })}</div></div>`;
+}
+
+function pRelacoes(R) {
+  return `<div class="grid g4">${kpi("var(--people)", "Pessoas", S.pessoas.length, `família ${S.pessoas.filter(p => p.relacao === "Família").length} · amigos ${S.pessoas.filter(p => p.relacao === "Amizade").length}`)}${kpi("var(--people)", "Em dia", pct(R.relEmDia), "dentro da frequência desejada", R.relEmDia == null ? "none" : R.relEmDia >= .8 ? "good" : "warn")}${kpi("var(--people)", "Atrasados", R.relAtras, R.relAtras ? "veja a lista" : "ninguém esquecido", R.relAtras ? "crit" : "good")}${kpi("var(--people)", "Contatos no mês", R.contMes.length, `qualidade média ${num(avg(R.contMes.map(c => +c.qual).filter(Boolean)))}/5`)}</div>
+  <div class="grid g3" style="margin-top:14px"><div class="panel span2"><div class="toolbar"><h2 style="margin:0">Pessoas</h2>${addBtn("pessoas", "Nova pessoa")}</div>
+    ${table("pessoas", [...R.pes].sort((a, b) => b.ratio - a.ratio), [["Nome", p => `<b>${esc(p.nome)}</b><div class="muted" style="font-size:12px">${esc(p.relacao)} · a cada ${p.freq || "–"} dias</div>`], ["Último contato", p => p.ult ? `${fmtD(p.ult)} <span class="muted">(${p.dias} d)</span>` : "–"], ["Status", p => pill(p.st, p.txt)], ["Aniversário", p => p.prox ? `${fmtD(p.prox)} <span class="muted">em ${p.faltam} d</span>` : ""]])}</div>
+  <div class="panel"><div class="toolbar"><h2 style="margin:0">Contatos</h2>${addBtn("contatos", "Registrar")}</div>${table("contatos", [...S.contatos].sort((a, b) => b.data.localeCompare(a.data)), [["Dia", c => fmtD(c.data), "num"], ["Pessoa", c => esc(c.pessoa)], ["Tipo", c => esc(c.tipo)]], { limit: 14 })}</div></div>`;
+}
+
+function pLazer(R) {
+  return `<div class="grid g4">${kpi("var(--people)", "Horas no mês", num(R.horasLaz) + " h", `meta ${Math.round(S.cfg.metaLazer * R.DR / 7)} h até agora`)}${kpi("var(--people)", "Atividades", R.lazN, mlabel(R.mk))}${kpi("var(--people)", "Satisfação", num(R.lazSat) + "/5", "quanto recarregou")}${kpi("var(--people)", "Gasto com lazer", eur(R.lazCusto), R.horasLaz ? `${eur(R.lazCusto / R.horasLaz)} por hora` : "")}</div>
+  <div class="grid g3" style="margin-top:14px"><div class="panel span2"><div class="toolbar"><h2 style="margin:0">Registro de lazer</h2>${addBtn("lazer", "Registrar")}</div>
+    ${table("lazer", [...S.lazer].sort((a, b) => b.data.localeCompare(a.data)), [["Dia", l => fmtD(l.data), "num"], ["Atividade", l => `<b>${esc(l.atividade)}</b>`], ["Categoria", l => esc(l.cat)], ["Horas", l => num(+l.horas), "num"], ["Satisfação", l => "★".repeat(+l.sat || 0)]], { limit: 15 })}</div>
+  <div class="panel"><div class="toolbar"><h2 style="margin:0">Lista de sonhos</h2>${addBtn("sonhos", "Novo")}</div>${table("sonhos", S.sonhos, [["Sonho", s => s.status === "Realizado" ? `<s class="muted">${esc(s.sonho)}</s>` : `<b>${esc(s.sonho)}</b>`], ["Status", s => pill(s.status === "Realizado" ? "good" : s.status === "Agendado" ? "warn" : "none", s.status)]])}</div></div>`;
+}
+
+function pCasa(R) {
+  return `<div class="grid g4">${kpi("var(--home)", "Documentos a renovar", R.docs.filter(d => d.st === "warn" || d.st === "crit").length, `aviso com ${S.cfg.alertaDocs} dias`, R.docs.some(d => d.st === "crit") ? "crit" : "")}${kpi("var(--home)", "Rotinas atrasadas", R.rot.filter(r => r.st === "crit").length, `${R.rot.filter(r => r.st === "warn").length} nos próximos 7 dias`, R.rot.some(r => r.st === "crit") ? "crit" : "good")}${kpi("var(--home)", "Assinaturas / mês", eur(R.assMes, 2), `${eur(R.assMes * 12)} por ano`)}${kpi("var(--home)", "Economia possível", eur(R.economia, 2), "por mês, em serviços de pouco uso", R.economia ? "warn" : "good")}</div>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="panel"><div class="toolbar"><h2 style="margin:0">Documentos</h2>${addBtn("docs", "Novo")}</div>${table("docs", [...R.docs].sort((a, b) => (a.dias ?? 1e9) - (b.dias ?? 1e9)), [["Documento", d => `<b>${esc(d.doc)}</b><div class="muted" style="font-size:12px">${esc(d.acao || "")}</div>`], ["Validade", d => d.validade ? fmtD(d.validade) + "/" + d.validade.slice(2, 4) : "", "num"], ["", d => pill(d.st, d.txt)]])}</div>
+    <div class="panel"><div class="toolbar"><h2 style="margin:0">Rotinas</h2>${addBtn("rotinas", "Nova")}</div>
+      <div class="list">${[...R.rot].sort((a, b) => (a.dias ?? 1e9) - (b.dias ?? 1e9)).map(r => `<div class="li"><div class="t click" data-edit="rotinas" data-id="${r.id}" style="cursor:pointer">${esc(r.rotina)}<div class="m">a cada ${r.freq} d · próxima ${fmtD(r.prox)}</div></div><div style="display:flex;gap:6px;align-items:center">${pill(r.st, r.txt)}<button class="btn" data-done="${r.id}" title="Marcar como feita hoje">Feito</button></div></div>`).join("") || `<div class="empty">Cadastre limpezas, backups, revisões.</div>`}</div></div>
+    <div class="panel"><div class="toolbar"><h2 style="margin:0">Assinaturas</h2>${addBtn("assin", "Nova")}</div>${table("assin", R.ass, [["Serviço", a => `<b>${esc(a.servico)}</b>`], ["Mês", a => eur(a.mensal, 2), "num"], ["Uso", a => a.uso === "Baixo" ? pill("crit", "cancelar?") : esc(a.uso)]])}</div>
+  </div>`;
+}
+
+function pConfig() {
+  const C = S.cfg;
+  const f = [["nome", "Seu nome", "text"], ["metaPoup", "Meta de taxa de poupança (0–1)", "number"], ["metaReserva", "Reserva de emergência (meses)", "number"], ["metaSono", "Sono (h/noite)", "number"], ["metaTreinos", "Treinos por semana", "number"], ["metaPassos", "Passos por dia", "number"], ["metaEstudo", "Horas de estudo por mês", "number"], ["metaLivros", "Livros no ano", "number"], ["metaLazer", "Horas de lazer por semana", "number"], ["alertaDocs", "Avisar documentos (dias antes)", "number"], ["alertaAniv", "Avisar aniversários (dias antes)", "number"]];
+  return `<div class="grid g2"><div class="panel"><h2>Parâmetros e metas</h2><div class="form">${f.map(([k, l, t]) => `<label>${l}<input id="cfg_${k}" type="${t}" step="any" data-cfg="${k}" value="${esc(C[k] ?? "")}"></label>`).join("")}</div></div>
+  <div class="panel"><h2>Seus dados</h2><p class="muted">${STORE?.kind === "db" ? "Salvos na sua conta, de forma privada: só você vê." : STORE?.kind === "local" ? "Salvos apenas neste navegador." : "Conectando ao armazenamento…"}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" id="loadEx">Carregar dados de exemplo</button><button class="btn danger" id="wipe">Apagar tudo e começar do zero</button></div>
+    <h2 style="margin-top:18px">Como o índice é calculado</h2><p class="muted" style="font-size:13px">Cada área recebe um placar de 0 a 10: a média dos componentes que têm dados (metas da área no ritmo, hábitos da área em % da meta e até 3 métricas próprias, como taxa de poupança ou contatos em dia). Componente sem dados é ignorado, nunca conta como zero. O índice é a média das áreas × 10.</p></div></div>`;
+}
+
+/* ============================================================ render */
+function render() {
+  const R = calc();
+  $("#nav").innerHTML = `<div class="brand">Painel da Vida<small>${esc(S.cfg.nome || "seu sistema pessoal")}</small></div>` + PAGES.map(([k, l, c, g]) => (g ? `<div class="navgroup">${g}</div>` : "") + `<a href="#${k}" style="--c:${c}" ${k === PAGE ? 'aria-current="page"' : ""}><span class="dot"></span>${l}</a>`).join("");
+  const title = PAGES.find(p => p[0] === PAGE)[1];
+  const banner = IS_EXAMPLE && LOADED ? `<div class="banner"><span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa, eles viram seus e passam a ser salvos.</span><button class="btn primary" id="startEmpty">Começar com tudo vazio</button></div>` : "";
+  const body = { painel: pPainel, roda: pRoda, metas: pMetas, tarefas: pTarefas, financas: pFinancas, saude: pSaude, habitos: pHabitos, carreira: pCarreira, aprendizado: pAprend, relacoes: pRelacoes, lazer: pLazer, casa: pCasa, config: pConfig }[PAGE](R);
+  const focusId = document.activeElement?.id, selS = document.activeElement?.selectionStart;
+  $("#main").innerHTML = `<div class="topbar"><div><h1>${PAGE === "painel" ? (S.cfg.nome ? "Olá, " + esc(S.cfg.nome) : "Painel da Vida") : title}</h1><div class="sub">${PAGE === "painel" ? `Visão integrada de ${mlabel(REF)} · dados até ${R.corte ? fmtD(R.corte) : "–"}` : mlabel(REF)} <span class="saving">${LOADED ? "" : "· carregando seus dados…"}</span></div></div>
+    <div class="monthpick" aria-label="Mês de referência"><button id="mPrev" aria-label="Mês anterior">‹</button><span>${mlabel(REF)}</span><button id="mNext" aria-label="Próximo mês">›</button><button id="mNow" style="width:auto;padding:0 8px;font-size:12px;font-weight:600">Hoje</button></div></div>${banner}${body}`;
+  if (focusId) { const el = document.getElementById(focusId); if (el) { el.focus(); try { if (selS != null) el.setSelectionRange(selS, selS); } catch {} } }
+}
+
+/* ============================================================ eventos */
+document.addEventListener("click", e => {
+  const t = e.target.closest("button,[data-edit],[data-day]"); if (!t) return;
+  if (t.id === "mPrev") { REF = addMonth(REF, -1); render(); } else if (t.id === "mNext") { REF = addMonth(REF, 1); render(); } else if (t.id === "mNow") { REF = mkey(TODAY); render(); }
+  else if (t.id === "startEmpty" || t.id === "wipe") { if (t.id === "wipe" && !t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar: apagar tudo"; return; } S = EMPTY(); IS_EXAMPLE = false; KEYS.forEach(k => dirty.add(k)); flush(); render(); toast("Tudo vazio. Comece por Ajustes e Metas."); }
+  else if (t.id === "loadEx") { S = exampleData(); IS_EXAMPLE = true; render(); toast("Exemplo carregado (não salvo)"); }
+  else if (t.dataset.add) openForm(t.dataset.add);
+  else if (t.dataset.edit) openForm(t.dataset.edit, t.dataset.id);
+  else if (t.dataset.mark) { const k = t.dataset.mark; if (S.marks[k]) delete S.marks[k]; else S.marks[k] = 1; touch("marks"); }
+  else if (t.dataset.done) { S.rotinas = S.rotinas.map(r => r.id === t.dataset.done ? { ...r, ultima: TODAY } : r); touch("rotinas"); toast("Rotina registrada hoje"); }
+  else if (t.dataset.sd) { const d = checkin || TODAY; S.saude[d] = { ...(S.saude[d] || {}), [t.dataset.sd]: +t.dataset.v }; touch("saude"); }
+  else if (t.dataset.day) { checkin = t.dataset.day; render(); window.scrollTo({ top: 0 }); }
+});
+document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("tr.click")) e.target.click(); });
+document.addEventListener("input", e => {
+  const t = e.target;
+  if (t.dataset.roda != null) { S.roda[REF] = { ...(S.roda[REF] || {}), [t.dataset.roda]: +t.value }; t.nextElementSibling.textContent = t.value; }
+});
+document.addEventListener("change", e => {
+  const t = e.target, v = t.value;
+  if (t.dataset.roda != null) touch("roda");
+  else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio"); }
+  else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo"); }
+  else if (t.dataset.rev) { S.revisao[REF] = { ...(S.revisao[REF] || {}), [t.dataset.rev]: t.dataset.rev === "nota" ? +v : v }; touch("revisao"); }
+  else if (t.dataset.orc) { if (v === "") delete S.orc[t.dataset.orc]; else S.orc[t.dataset.orc] = +v; touch("orc"); }
+  else if (t.dataset.patr) { S.patr[REF] = { ...(S.patr[REF] || {}), [t.dataset.patr]: v === "" ? "" : +v }; touch("patr"); }
+  else if (t.dataset.cfg) { S.cfg[t.dataset.cfg] = t.type === "number" ? +v : v; touch("cfg"); }
+  else if (t.dataset.sdi) { const d = checkin || TODAY; const val = t.type === "number" ? (v === "" ? null : +v) : v; S.saude[d] = { ...(S.saude[d] || {}), [t.dataset.sdi]: val }; touch("saude"); }
+  else if (t.id === "ck_day") { checkin = v || TODAY; render(); }
+});
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (PAGES.some(p => p[0] === h)) { PAGE = h; checkin = null; render(); $("#main").focus({ preventScroll: true }); window.scrollTo({ top: 0 }); } });
+
+/* ============================================================ inicialização */
+S = exampleData(); REF = addMonth(mkey(TODAY), -1); render();
+(async () => {
+  let loaded = {};
+  try {
+    const db = await window.claude?.use?.("db"), user = db ? await window.claude.use("user") : null;
+    const id = user ? await user.id() : null;
+    if (db && id) {
+      const col = db.collection("data/users/" + id); STORE = { kind: "db", col };
+      const snap = await col.get(); for (const d of snap.docs) if (d.id.startsWith("s_")) loaded[d.id.slice(2)] = d.data()?.v;
+    }
+  } catch (e) { STORE = null; }
+  if (!STORE) { STORE = { kind: "local" }; for (const k of KEYS) try { const v = localStorage.getItem("pv_" + k); if (v) loaded[k] = JSON.parse(v); } catch {} }
+  if (Object.keys(loaded).length) { const E = EMPTY(); S = { ...E, ...loaded, cfg: { ...E.cfg, ...(loaded.cfg || {}) } }; IS_EXAMPLE = false; REF = mkey(TODAY); }
+  LOADED = true; render();
+})();
+</script>
