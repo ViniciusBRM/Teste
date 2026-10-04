@@ -24,6 +24,7 @@ function render() {
     dados: () => ["Dados", "Edite qualquer registro como numa planilha, filtre, altere em massa, importe e exporte", pDados],
     integ: () => ["Integrações", "Notion, agenda, Apple Health, Google Fit e bancos, nos dois sentidos onde dá", pInteg],
     ajustes: () => ["Ajustes", "Metas, áreas, listas, mentores e aparência", pAjustes],
+    bussola: () => ["Bússola moral", { exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um" }[SUB] || "Valores, princípios e perguntas das cinco tradições", pBussola],
     semana: () => ["Fechamento da semana", `Semana de ${wkLabel(fsWk())}`, pSemana],
     radar: () => ["Radar", "Alertas antes que aconteçam, com evidência do seu histórico e conferência depois", pRadar],
     exp: () => ["Experimentos", "Teste uma mudança e meça o efeito em você", pExp],
@@ -102,13 +103,13 @@ function pack() {
 }
 
 /* ================================================================ eventos */
-const CLICK_SEL = "button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel]";
+const CLICK_SEL = "button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv]";
 document.addEventListener("click", e => {
   const t = e.target.closest(CLICK_SEL); if (!t || t.disabled) return;
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (capClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (capClick(t) || bmClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -165,12 +166,12 @@ document.addEventListener("keydown", e => {
   if (!typing && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
   if (!typing && (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") { e.preventDefault(); redo(); return; }
   if (e.key === "Escape") { if (AC.open) { AC.open = false; $("#ac").hidden = true; return; } if (DRAWER) { DRAWER = null; render(); return; } if (NAVOPEN) { NAVOPEN = false; document.body.classList.remove("navopen"); return; } }
-  if ((e.key === "Enter" || e.key === " ") && tg.matches?.('tr.click,[role="button"],[role="link"],.kc.click')) { e.preventDefault(); tg.click(); }
+  if ((e.key === "Enter" || e.key === " ") && tg.matches?.('tr.click,[role="button"],[role="link"],.kc.click')) { e.preventDefault(); tg.dispatchEvent(new MouseEvent("click", { bubbles: true })); }
 });
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t)) return;
+  if (diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -185,7 +186,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (capChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (capChange(t) || bmChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

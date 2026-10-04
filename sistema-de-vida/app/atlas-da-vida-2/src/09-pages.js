@@ -18,6 +18,7 @@ function pHoje(R) {
   return `<div class="g2c hj">
       ${panel(`${ic("bolt")}Capturar <small>escreva ou dite o dia; o Atlas separa os registros</small>`, captureFormHTML("h"), { cls: "span2 capcard" })}
       ${fpend ? `<div class="pn fscta span2"><div>${ic("week")}<b>Hora de fechar a semana de ${wkLabel(fwk)}</b><small>Números, destaques do diário, o que você cumpriu e as prioridades da próxima. Uns 15 minutos.</small></div><a class="btn primary" href="#semana">Fechar a semana</a></div>` : ""}
+      ${bmHoje()}
       ${exps.length ? panel(`${ic("flask")}Experimento de hoje`, exps.map(x => `<div class="hjexp"><b>${esc(x.titulo)}</b>${expToday(x, expAnalyze(x))}</div>`).join(""), { act: `<a class="lnk" href="#exp">ver análise</a>` }) : ""}
       ${al.length ? panel(`${ic("radar")}No radar`, al.map(a => alertCard(a, true)).join(""), { act: `<a class="lnk" href="#radar">ver tudo</a>` }) : ""}
       ${panel(`${ic("pulse")}Check-in de hoje <small>salva sozinho</small>`, `<div class="ck3">${scale("humor", "Humor")}${scale("energia", "Energia")}${scale("estresse", "Estresse")}</div>

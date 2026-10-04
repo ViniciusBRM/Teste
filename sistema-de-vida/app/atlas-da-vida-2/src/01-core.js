@@ -172,13 +172,13 @@ function applyLists() {
 const relArea = r => ({ "Família": "Família", "Parceria": "Amor & parceria", "Amizade": "Amizades & social", "Trabalho": "Carreira", "Mentoria": "Carreira", "Comunidade": "Propósito & espiritualidade" }[r] || "Amizades & social");
 
 /* ================================================================ estado */
-const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos"];
+const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes"];
 const EMPTY = () => ({
   cfg: { nome: "", moeda: "€", metaPoup: .2, metaReserva: 6, metaSono: 7.5, metaTreinos: 4, metaPassos: 8000, metaEstudo: 24, metaLivros: 12, metaLazer: 6, alertaDocs: 90, alertaAniv: 30, mentorNivel: "default", mentorTom: "Direto e caloroso", mentorNotion: true },
   lanc: [], orc: {}, patr: {}, saude: {}, habitos: [], marks: {}, roda: {}, alvo: {}, revisao: {}, metas: [], tarefas: [],
   pessoas: [], contatos: [], aprend: [], estudo: [], lazer: [], sonhos: [], docs: [], rotinas: [], assin: [], comp: [], cand: [], prio: ["", "", ""],
   diario: [], mentores: {}, listas: DEFAULT_LISTS(), regras: [], areasCfg: {}, integ: { notion: { pai: null, hist: [], tarefas: null } },
-  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [],
+  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [],
 });
 let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0;
 applyLists();

@@ -41,6 +41,9 @@ const ICONS = {
   family: '<circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><circle cx="12" cy="13" r="2"/><path d="M3 20a4 4 0 0 1 8 0M13 20a4 4 0 0 1 8 0M9.5 20a2.5 2.5 0 0 1 5 0"/>',
   heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
   palette: '<path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-2 0-1-.8-1.5-.8-2.5S14 15 15 15h2a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/>',
+  moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  leaf: '<path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19c3-4 6-7 10-9"/>',
   compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
   box: '<path d="M3 7l9-4 9 4v10l-9 4-9-4V7z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
   bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>',
@@ -81,7 +84,7 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 const NAV = [
   [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["diario", "Diário", "pen"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
-  ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
+  ["Laboratório", [["bussola", "Bússola moral", "compass"], ["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
 ];
 const SUBS = {
@@ -95,6 +98,7 @@ const SUBS = {
   roda: [["roda", "Roda & revisão"], ["diario", "Diário"]],
   diario: [["feed", "Entradas"], ["perguntar", "Perguntar"], ["cal", "Calendário"], ["analise", "Análise"]],
   capitulos: [["linha", "Linha do tempo"], ["livro", "Livro do ano"]],
+  bussola: [["mapa", "Bússola"], ["exame", "Exame da noite"], ["decidir", "Decidir"], ["caminhos", "Caminhos"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
 };
 const REPORT_TABS = [["visao", "Visão geral"], ["fin.rel", "Finanças"], ["saude.rel", "Saúde"], ["hab.rel", "Hábitos"], ["pessoas.rel", "Relações"], ["cresc.rel", "Crescimento"], ["metas.rel", "Metas"], ["cruz", "Cruzamentos"]];
@@ -288,6 +292,8 @@ function palItems(q) {
   if (q.trim().startsWith("/")) { const r = previewCommand(q.trim()); out.push({ g: "Executar", l: r.ok ? r.txt : r.err || "Comando incompleto", s: r.ok ? "Enter registra agora" : "Ex.: /gasto 12,50 Café · /tarefa Ligar para o banco até 15/10 · /humor 4", ico: "bolt", run: r.ok ? () => runQuickCommand(q.trim()) : null, sc: 999 }); return out; }
   add("Ações", "Capturar", "Escreva ou dite: gastos, sono, treino, contatos, tarefas", "bolt", () => openCapture(), "capturar ditar voz rapido registrar");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");
+  add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("bussola", "exame"), "bussola moral exame consciencia valores");
+  add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("bussola", "decidir"), "dilema decisao etica moral");
   add("Ações", "Fechar a semana", "Números, reflexão, carta e prioridades", "week", () => setHash("semana"), "revisao semanal fechamento");
   add("Ações", "Novo experimento", "Teste uma mudança e meça o efeito", "flask", () => { setHash("exp"); setTimeout(() => openExpForm(), 60); }, "experimento ab teste");
   add("Ações", "Perguntar ao diário", "Busca por significado", "search", () => setHash("diario", "perguntar"), "busca significado semantica");

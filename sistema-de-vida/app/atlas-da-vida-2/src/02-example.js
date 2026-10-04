@@ -182,6 +182,18 @@ function exampleLab(D) {
       { id: uid(), at: at(9), recurso: "Mentor do Dinheiro", ent: fe, nEnt: fe.length, areas: ["Finanças"], met: ["gasto", "c:Restaurantes & cafés"], ferr: ["consultar: Gasto do dia · 6 meses", "salvar_memoria: compromisso: teto semanal"], bloq: 0, bytes: 18820, status: "ok" }];
     VER++;
     const props = chapList().filter(c => !c.conf);
+    /* bússola moral de exemplo: seis semanas de exames, com a prática subindo devagar (tudo fictício) */
+    { const r2 = mulberry32(77), foco = ["paciencia", "humildade", "igualdade"], ex = {};
+      const bem = ["Esperei o colega terminar de falar antes de responder.", "Cedi o lugar no ônibus sem pensar duas vezes.", "Pedi desculpas pela resposta seca de ontem.", "Escutei a vizinha sem olhar o celular."],
+        falha = ["Fui impaciente na fila do mercado; estava cansado.", "Interrompi a reunião para ter razão.", "Respondi atravessado a uma mensagem."],
+        vig = ["Notei um julgamento automático sobre um passageiro no trem. Parei, nomeei e desejei bem a ele.", "Percebi que desconfiei de alguém pela aparência. Anotei e cumprimentei."],
+        serv = ["Ajudei um senhor com as malas na escada.", "Levei o almoço para a vizinha doente.", "Revisei o currículo de um amigo."];
+      for (let k = 41; k >= 1; k--) { const d = addDays(TODAY, -k); if (r2() < .28) continue; const p = .35 + .4 * (41 - k) / 41, n = {};
+        for (const id of foco) { const x = r2(); n[id] = x < p * .7 ? 2 : x < p + .35 ? 1 : 0; }
+        ex[d] = { n, at: parse(d).getTime(), ...(r2() < .5 ? { bem: bem[Math.floor(r2() * bem.length)] } : {}), ...(r2() < .35 ? { falha: falha[Math.floor(r2() * falha.length)] } : {}), ...(r2() < .25 ? { vigia: vig[Math.floor(r2() * vig.length)] } : {}), ...(r2() < .45 ? { servico: serv[Math.floor(r2() * serv.length)] } : {}) }; }
+      D.bussola = { foco }; D.bmExames = ex;
+      D.bmDecisoes = [{ id: uid(), data: addDays(TODAY, -16), t: "Responder à crítica do colega no grupo", sit: "Um colega criticou meu trabalho na frente da equipe, com um tom que achei injusto.", q: { pausa: "Raiva e vergonha.", controle: "Minha resposta; não o que ele pensa.", agua: "Conversar a sós, depois." }, vals: ["paciencia", "respeito", "humildade"], dec: "Esperar um dia e conversar a sós, começando pelo que ele tem razão.", ia: "", rev: { data: addDays(TODAY, -8), txt: "A conversa foi boa; ele explicou o prazo que o pressionava e combinamos revisões antes das reuniões.", nota: 4 } },
+        { id: uid(), data: addDays(TODAY, -3), t: "Doar ou vender a bicicleta parada", sit: "Está parada há um ano. Vender daria algum dinheiro; doar ajudaria o projeto do bairro.", q: { soltar: "Proteger a ideia de que um dia vou usar." }, vals: ["desprendimento", "caridade"], dec: "Doar para o projeto do bairro.", ia: "" }]; }
     if (props.length > 1) D.capitulos = [{ id: uid(), inicio: props[0].inicio, fim: props[0].fim, titulo: "Chegada e rotina nova", nota: "Os primeiros meses com o curso, a casa nova e a rotina de estudo se firmando." }];
   } finally { S = keep; applyLists(); VER++; }
 }
