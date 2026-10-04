@@ -25,10 +25,22 @@ async def main():
             chk(await pg.locator(".crtri").count() == 8 and await pg.locator(".crgeoinv").count() == 1 and await pg.locator(".crana li").count() == len(seedv["v"]["analise"]), "panorama: 8 trilhas, convite da geotecnia e a leitura do percurso")
             # base no mapa conferida à parte
             tri = await pg.evaluate("CR_TRI.map(t => ({ id: t.id, req: t.req }))")
-            mapa = set(seedv["v"]["perfil"]["mapa"])
+            mapa = set(seedv["v"]["perfil"]["mapa"]) | set(seedv["v"]["perfil"].get("cargoComp", []))
             rk = await pg.evaluate("crRank().map(x => [x.t.id, x.mapa, x.fit])")
             exp = {t["id"]: sum(w for n, r, w in t["req"] if n in mapa) / sum(w for _, _, w in t["req"]) for t in tri}
             chk(all(abs(m - exp[i]) < 1e-9 and f == 0 for i, m, f in rk) and [i for i, _, _ in rk] == sorted(exp, key=lambda k: -exp[k]), f"base no mapa = recálculo independente, e a ordem segue a base enquanto nada é avaliado ({[(i, round(m * 100)) for i, m, _ in rk[:3]]})")
+            P0 = seedv["v"]["perfil"]
+            if P0.get("cargoTri"):
+                cur = await pg.evaluate("[...document.querySelectorAll('.crtri.cur h3')].map(e => e.textContent)")
+                chk(len(cur) == 1 and await pg.locator(".crtris:not(.crcur) .crtri").count() == 7, f"o cargo atual aparece como ponto de partida, fora dos 7 potenciais ({cur})")
+                fx = await pg.evaluate("mentorPrompt('car', false)")
+                chk(P0["empresa"] in fx and "não um potencial" in fx and "RAL" in fx, "Mentor da Carreira sabe o cargo, o contrato e que a coordenação é o ponto de partida")
+                await pg.evaluate("location.hash='carreira.avaliacao'"); await pg.wait_for_timeout(300)
+                r = P0["remun"]; ral = r["bruto"] * r["mens"]; tot = ral + r["buoni"] * 12
+                txt = await pg.locator(".crremun").inner_text()
+                fmt = lambda v: f"{v:,.0f}".replace(",", ".")
+                chk(fmt(ral) in txt and fmt(tot) in txt, f"RAL = bruto × mensalidades ({fmt(ral)}) e pacote = RAL + buoni × 12 ({fmt(tot)})")
+                chk(await pg.locator(".crcomp:has-text('Liderança e comunicação') .crtag:has-text('pelo cargo atual')").count() == 1, "competência evidenciada pelo cargo marcada como tal")
             # avaliação
             await pg.evaluate("location.hash='carreira.avaliacao'"); await pg.wait_for_timeout(300)
             await pg.click("[data-act=crlv][data-n='AutoCAD Civil 3D'][data-f=atual][data-v='3']"); await pg.wait_for_timeout(150)

@@ -1106,7 +1106,8 @@ tr.dim td{opacity:.5}
 .crtag{display:inline-flex;align-items:center;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);border-radius:999px;padding:1px 8px;white-space:nowrap}
 .crtris{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
 .crtri{border:1px solid var(--line);border-radius:14px;padding:13px 14px;background:var(--surface-2);display:flex;flex-direction:column;gap:6px}
-.crtri.on{border-color:var(--a-car);box-shadow:inset 0 0 0 1px var(--a-car)}
+.crtri.on{border-color:var(--a-car);box-shadow:inset 0 0 0 1px var(--a-car)}.crtri.cur{border-color:var(--a-pro);background:color-mix(in srgb,var(--a-pro) 7%,var(--surface-2))}.crtri.cur .crrank{background:color-mix(in srgb,var(--a-pro) 22%,transparent);color:var(--a-pro)}.crtri.cur .crrank .ico{width:14px;height:14px}.crcur{margin-bottom:6px}
+.crremun{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0 4px}.crremun>div{display:flex;flex-direction:column;padding:9px 11px;border-radius:10px;background:var(--surface-2)}.crremun small{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}.crremun b{font-size:19px}.crremun em{font-style:normal;font-size:12px;color:var(--ink-2)}
 .crtri header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start}.crtri h3{margin:0;font-size:15px;line-height:1.3}.crtri header small{display:block;font-size:12px;margin-top:2px}
 .crrank{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12.5px;background:color-mix(in srgb,var(--a-car) 18%,transparent);color:var(--a-car)}
 .crfit{text-align:right}.crfit b{display:block;font-size:22px;line-height:1}.crfit small{font-size:10.5px;color:var(--muted)}
@@ -7390,9 +7391,9 @@ const CR_TRI = [
     br: "Prefeituras e concessionárias usam GIS para gestão de ativos; integrar com o modelo BIM é o passo seguinte.",
     certs: ["Cursos de QGIS de formadores certificados (lista no site do QGIS)"],
     passo: "Montar no QGIS o contexto de um trecho (relevo, hidrografia, uso do solo) e levá-lo ao InfraWorks ou ao Civil 3D.", lib: ["qgis", "ispra", "speckle"] },
-  { id: "consult", t: "Consultoria BIM como libero professionista", papel: "Serviços de BEP, coordenação e modelagem para escritórios e construtoras",
+  { id: "consult", t: "Consultoria BIM independente (libero professionista)", papel: "Serviços de BEP, coordenação e modelagem para escritórios e construtoras",
     req: [["BEP (BIM Execution Plan)", 4, 2], ["Coordenação e clash detection", 3, 2], ["Revit", 4, 2], ["AutoCAD Civil 3D", 3, 1], ["Liderança e comunicação", 4, 2], ["ISO 19650", 3, 1], ["UNI 11337", 3, 1]],
-    it: "Pede Partita IVA (o regime forfettario é o mais usado no início) e contribuição previdenciária (Inarcassa, se inscrito no Albo; senão, Gestione Separata do INPS). Assinar projetos como engenheiro exige inscrição no Albo, que para diplomas de fora da UE passa pelo reconhecimento no Ministério da Justiça; coordenação BIM, em geral, não exige assinatura. Confirme com a Ordine e com um commercialista.",
+    it: "Para quem é empregado, atuar em paralelo exige respeitar o dever de fidelidade (art. 2105 do Código Civil, que proíbe concorrer com o empregador) e as cláusulas do contrato. Pede Partita IVA (o regime forfettario é o mais usado no início) e contribuição previdenciária (Inarcassa, se inscrito no Albo; senão, Gestione Separata do INPS). Assinar projetos como engenheiro exige inscrição no Albo, que para diplomas de fora da UE passa pelo reconhecimento no Ministério da Justiça; coordenação BIM, em geral, não exige assinatura. Confirme com a Ordine e com um commercialista.",
     br: "Como PJ, os pacotes de serviço (BEP, coordenação mensal, modelagem) se vendem bem para escritórios pequenos que precisam cumprir exigências BIM.",
     certs: ["Certificação UNI 11337-7 (dá credencial objetiva a quem contrata)"],
     passo: "Definir dois pacotes de serviço com escopo e preço (por exemplo, BEP mais coordenação mensal) e oferecê-los a cinco escritórios.", lib: ["riconoscimento", "cni", "inarcassa", "accredia"] },
@@ -7474,7 +7475,7 @@ const CR_MERC = [["", "não definido"], ["it", "Itália"], ["br", "Brasil"], ["a
 /* ---------------------------------------------------------------- dados */
 function crData() {
   const c = (S.carreira ||= {});
-  c.perfil ||= {}; const p = c.perfil; p.formacao ||= []; p.exp ||= []; p.cert ||= []; p.areas ||= []; p.idiomas ||= []; p.mapa ||= []; p.caminhos ||= [];
+  c.perfil ||= {}; const p = c.perfil; p.formacao ||= []; p.exp ||= []; p.cert ||= []; p.areas ||= []; p.idiomas ||= []; p.mapa ||= []; p.caminhos ||= []; p.cargoComp ||= []; p.remun ||= {};
   c.fortes ||= []; c.gaps ||= []; c.obj ||= []; c.acoes ||= []; c.trilhas ||= []; c.lib ||= {}; c.lib.st ||= {}; c.lib.meus ||= []; c.geo ||= {}; c.geo.modo ||= "oculta"; c.geo.objetivos ||= []; c.geo.mod ||= {}; c.snaps ||= []; c.analise ||= [];
   return c;
 }
@@ -7487,7 +7488,10 @@ function crFind(name) {
 }
 const crLv = name => { const x = crFind(name); return isNum(+x?.atual) && +x?.atual > 0 ? +x.atual : 0; };
 const crAlvo = name => { const x = crFind(name); return isNum(+x?.alvo) && +x?.alvo > 0 ? +x.alvo : 0; };
-const crInMap = name => crData().perfil.mapa.some(m => norm(m) === norm(name));
+/* o que conta como coberto antes da avaliação: o que está no mapa e o que o cargo atual evidencia */
+const crSrc = name => { const P = crData().perfil; return P.mapa.some(m => norm(m) === norm(name)) ? "mapa" : P.cargoComp.some(m => norm(m) === norm(name)) ? "cargo" : ""; };
+const crInMap = name => !!crSrc(name);
+const crSrcPill = name => { const s = crSrc(name); return s === "mapa" ? crPill("no seu mapa", "var(--a-car)") : s === "cargo" ? crPill("pelo cargo atual", "var(--a-pro)") : ""; };
 function crSet(name, field, v) {
   let x = S.comp.find(c => norm(c.nome) === norm(name));
   if (!x) { x = { id: uid(), nome: name, atual: "", alvo: "", grupo: CR_COMP.find(c => c.n === name)?.g || "" }; S.comp.push(x); }
@@ -7551,18 +7555,18 @@ function crFlow() {
   return `<div class="crflow">${st("avaliacao", "user", "Onde estou", `${av} de ${cat.length}`, "competências avaliadas")}<span class="crarrow">${ic("arrow")}</span>${st("objetivos", "target", "Aonde quero chegar", oa, `${plural(oa, "objetivo ativo", "objetivos ativos")}${C.trilhas.length ? ` · ${plural(C.trilhas.length, "trilha", "trilhas")}` : ""}`)}<span class="crarrow">${ic("arrow")}</span>${st("plano", "flag", "Como chegar", ab, `${plural(ab, "ação aberta", "ações abertas")} · ${plural(mk, "marco", "marcos")}`)}<span class="crarrow">${ic("arrow")}</span>${st("biblioteca", "book", "Com o quê", lu, "recursos em estudo")}</div>`;
 }
 function crTrilhaCard(x, i) {
-  const C = crData(), t = x.t, on = C.trilhas.includes(t.id), m = C.perfil.mercado, nada = !x.nAv;
-  return `<article class="crtri${on ? " on" : ""}"><header><span class="crrank">${i + 1}</span><div><h3>${esc(t.t)}</h3><small class="muted">${esc(t.papel)}</small></div>
+  const C = crData(), t = x.t, on = C.trilhas.includes(t.id), m = C.perfil.mercado, nada = !x.nAv, cur = C.perfil.cargoTri === t.id;
+  return `<article class="crtri${on ? " on" : ""}${cur ? " cur" : ""}"><header><span class="crrank">${cur ? ic("flag") : i + 1}</span><div><h3>${esc(t.t)}</h3>${cur ? crPill("o seu cargo hoje", "var(--a-pro)") + " " : ""}<small class="muted">${esc(t.papel)}</small></div>
       <div class="crfit"><b>${nada ? "–" : pct(x.fit)}</b><small>${nada ? "avalie para calcular" : "aderência pelo nível"}</small></div></header>
-    <div class="crbars"><div><span>Base no seu mapa</span><div class="crbar"><i style="width:${(x.mapa * 100).toFixed(0)}%"></i></div><b>${pct(x.mapa)}</b></div><div><span>Aderência pelo nível</span><div class="crbar fit"><i style="width:${(x.fit * 100).toFixed(0)}%"></i></div><b>${nada ? "–" : pct(x.fit)}</b></div></div>
-    ${x.gaps.length ? `<div class="flbl">O que mais falta</div><div class="row wrap">${x.gaps.slice(0, 4).map(g => `<span class="crgap${g.fora ? " fora" : ""}">${esc(g.n)} <small>${g.fora ? "fora do mapa" : `${g.lv || "?"}→${g.r}`}</small></span>`).join("")}</div>` : `<p class="st-good small">Você já cobre os níveis pedidos.</p>`}
+    <div class="crbars"><div><span>Base no seu perfil</span><div class="crbar"><i style="width:${(x.mapa * 100).toFixed(0)}%"></i></div><b>${pct(x.mapa)}</b></div><div><span>Aderência pelo nível</span><div class="crbar fit"><i style="width:${(x.fit * 100).toFixed(0)}%"></i></div><b>${nada ? "–" : pct(x.fit)}</b></div></div>
+    ${x.gaps.length ? `<div class="flbl">O que mais falta</div><div class="row wrap">${x.gaps.slice(0, 4).map(g => `<span class="crgap${g.fora ? " fora" : ""}">${esc(g.n)} <small>${g.fora ? "fora do perfil" : `${g.lv || "?"}→${g.r}`}</small></span>`).join("")}</div>` : `<p class="st-good small">Você já cobre os níveis pedidos.</p>`}
     <p class="crpasso">${ic("arrow")}<span><b>Primeiro passo:</b> ${esc(t.passo)}</span></p>
     ${(m === "it" || m === "ambos" || !m) && t.it ? `<p class="muted small">${crPill("Itália", "var(--a-fin)")} ${esc(t.it)}</p>` : ""}${(m === "br" || m === "ambos") && t.br ? `<p class="muted small">${crPill("Brasil", "var(--a-laz)")} ${esc(t.br)}</p>` : ""}
     <details class="crdet"><summary>Certificações e recursos</summary><ul>${t.certs.map(c => `<li>${esc(c)}</li>`).join("")}</ul><div class="row wrap">${t.lib.map(id => { const l = crLibBy(id); return l ? `<button type="button" class="lnk" data-act="crlibgo" data-id="${id}">${esc(trunc(l.t, 48))}</button>` : ""; }).join("")}</div></details>
     <div class="row wrap"><button type="button" class="btn sm${on ? "" : " primary"}" data-act="crtri" data-id="${t.id}">${ic(on ? "check" : "plus")}${on ? "Trilha escolhida (tirar)" : "Escolher esta trilha"}</button><button type="button" class="btn sm" data-act="crpasso" data-id="${t.id}">${ic("flag")}Primeiro passo no plano</button></div></article>`;
 }
 function crPanorama() {
-  const C = crData(), rk = crRank(), next = C.acoes.filter(a => a.st !== "feito" && a.prazo).sort((a, b) => a.prazo.localeCompare(b.prazo)).slice(0, 5), sn = C.snaps;
+  const C = crData(), rk = crRank(), cur = rk.find(x => x.t.id === C.perfil.cargoTri), pot = rk.filter(x => x !== cur), next = C.acoes.filter(a => a.st !== "feito" && a.prazo).sort((a, b) => a.prazo.localeCompare(b.prazo)).slice(0, 5), sn = C.snaps;
   const geo = C.geo.modo;
   return `<p class="lead">O seu norte profissional: onde você está, aonde quer chegar, como e com quais recursos. Avalie, escolha as trilhas que fazem sentido, transforme os gaps em ações e volte aqui para ver o caminho andar.</p>
     ${crFlow()}
@@ -7570,7 +7574,7 @@ function crPanorama() {
       ${vis("crradar", "Mapa de competências", crRadar(), { sub: "média de cada grupo, de 0 a 5 (1 conheço · 3 autônomo · 5 referência); a linha tracejada é o alvo", nofocus: true, act: `<a class="lnk" href="#carreira.avaliacao">avaliar</a>` })}
       ${panel(`${ic("info")}Leitura do percurso${C.analise.length ? ` <small>${esc(C.analiseInfo || "")}</small>` : ""}`, C.analise.length ? `<ol class="crana">${C.analise.map(a => `<li><b>${esc(a.t)}</b><p>${esc(a.d)}</p></li>`).join("")}</ol>` : `<p class="muted">Quando você avaliar as competências e escolher trilhas, o Mentor da Carreira pode escrever uma leitura do seu percurso.</p>`
         + `<div class="row wrap"><button type="button" class="btn sm" data-act="crask">${ic("spark")}Pedir uma leitura ao Mentor da Carreira</button></div>`)}
-      ${panel(`${ic("sprout")}Potenciais de crescimento <small>8 trilhas, ordenadas pela aderência</small>`, `<p class="muted small">Aderência = Σ peso × mín(seu nível, nível pedido) ÷ nível pedido, dividido pela soma dos pesos. “Base no seu mapa” conta como coberto o que está no seu mapa ou já foi avaliado. ${rk.some(x => x.nAv) ? "" : "Enquanto nada for avaliado, a ordem segue a base no mapa."}</p><div class="crtris">${rk.map(crTrilhaCard).join("")}</div>`, { cls: "span2" })}
+      ${panel(`${ic("sprout")}Potenciais de crescimento <small>${cur ? `${pot.length} trilhas a partir do seu cargo` : "8 trilhas"}, ordenadas pela aderência</small>`, `<p class="muted small">Aderência = Σ peso × mín(seu nível, nível pedido) ÷ nível pedido, dividido pela soma dos pesos. “Base no seu perfil” conta como coberto o que está no seu mapa, o que o seu cargo atual evidencia ou o que já foi avaliado. ${rk.some(x => x.nAv) ? "" : "Enquanto nada for avaliado, a ordem segue a base no perfil."}</p>${cur ? `<div class="flbl">Ponto de partida</div><div class="crtris crcur">${crTrilhaCard(cur, 0)}</div><div class="flbl">Para onde crescer</div>` : ""}<div class="crtris">${pot.map(crTrilhaCard).join("")}</div>`, { cls: "span2" })}
       ${geo === "oculta" ? `<section class="pn crgeoinv"><header><h2>${ic("layers")}Geotecnia</h2></header><p>A seção fica guardada até você querer. Quando ativar, ela mostra as pontes com o que você já sabe (terraplenagem, drenagem, pavimentação, QGIS), um roteiro de cinco módulos e os recursos ligados ao plano.</p><div class="row wrap"><button type="button" class="btn sm primary" data-act="crgeo" data-v="explorando">${ic("eye")}Começar a explorar</button></div></section>`
         : panel(`${ic("layers")}Geotecnia <small>${geo === "ativa" ? "ativa" : "explorando"}</small>`, `<p class="muted">${esc(C.geo.interesse || "Registre o que atrai você na geotecnia.")}</p><div class="crgeomini">${CR_GEO_MOD.map(m => `<span class="crgm ${C.geo.mod[m.id] || ""}" title="${esc(m.t)}">${esc(m.t.split(" ")[0])}</span>`).join("")}</div><a class="btn sm" href="#carreira.geotecnia">${ic("arrow")}Abrir</a>`)}
       ${panel(`${ic("flag")}Próximos passos`, next.length ? `<div class="list">${next.map(a => `<div class="li"><span class="t">${a.marco ? `${ic("star")} ` : ""}${esc(a.t)}<div class="m">${esc(a.tipo)}${a.comp ? ` · ${esc(a.comp)}` : ""}</div></span>${pill(a.prazo < TODAY ? "crit" : diff(a.prazo, TODAY) <= 14 ? "warn" : "none", relDay(a.prazo))}</div>`).join("")}</div>` : `<div class="empty">Sem ações com prazo. Comece pelo primeiro passo de uma trilha.</div>`, { act: `<a class="lnk" href="#carreira.plano">plano</a>` })}
@@ -7581,7 +7585,7 @@ function crPanorama() {
 function crAvaliacao() {
   const C = crData(), P = C.perfil, F = CR.f, g0 = CR.grp, cat = crCat(), extra = S.comp.filter(c => !CR_COMP.some(d => norm(d.n) === norm(c.nome)) && !CR_COMP.some(d => d.al?.test(c.nome) && !S.comp.some(z => norm(z.nome) === norm(d.n))));
   const gs = CR_GRP.filter(g => g[0] !== "geo" || crGeoOn()), sug = crGapsAll().slice(0, 6);
-  const row = c => `<div class="crcomp"><div class="crcn"><b>${esc(c.n)}</b>${crInMap(c.n) ? crPill("no seu mapa", "var(--a-car)") : ""}<small class="muted">${c.tipo}</small></div><div class="crlvs"><span class="crlbl">atual</span>${crLvDots(c.n)}<span class="crlv">${CR_LV[crLv(c.n)]}</span></div><div class="crlvs"><span class="crlbl">alvo</span>${crLvDots(c.n, "alvo")}</div><input type="text" class="crev" data-crev="${esc(c.n)}" value="${esc(crFind(c.n)?.evid || "")}" placeholder="evidência: onde usei" aria-label="Evidência de ${esc(c.n)}"></div>`;
+  const row = c => `<div class="crcomp"><div class="crcn"><b>${esc(c.n)}</b>${crSrcPill(c.n)}<small class="muted">${c.tipo}</small></div><div class="crlvs"><span class="crlbl">atual</span>${crLvDots(c.n)}<span class="crlv">${CR_LV[crLv(c.n)]}</span></div><div class="crlvs"><span class="crlbl">alvo</span>${crLvDots(c.n, "alvo")}</div><input type="text" class="crev" data-crev="${esc(c.n)}" value="${esc(crFind(c.n)?.evid || "")}" placeholder="evidência: onde usei" aria-label="Evidência de ${esc(c.n)}"></div>`;
   const list = (k, cols, fields) => `<div class="crlist">${P[k].map(x => `<div class="cri"><div>${cols(x)}</div><button type="button" class="vb" data-act="crdel" data-k="${k}" data-id="${x.id}" aria-label="Apagar">${ic("trash")}</button></div>`).join("") || `<div class="empty">Nada ainda.</div>`}</div>
     <div class="row wrap cradd">${fields.map(([f, ph, w]) => f === "tipo" ? `<select data-crf="${k}.${f}" aria-label="Tipo">${["Graduação", "Pós-graduação", "Mestrado", "Curso livre"].map(o => `<option${F[k + "." + f] === o ? " selected" : ""}>${o}</option>`).join("")}</select>` : `<input type="${/data|inicio|fim|validade/.test(f) ? "month" : "text"}" data-crf="${k}.${f}" placeholder="${ph}" value="${esc(F[k + "." + f] || "")}" style="flex:${w || 1}" aria-label="${ph}">`).join("")}<button type="button" class="btn sm" data-act="cradd" data-k="${k}">${ic("plus")}Acrescentar</button></div>`;
   return `<p class="lead">Um retrato honesto de hoje. Os níveis vão de 1 (conheço) a 5 (referência, ensino os outros); o que você não marcar fica como não avaliado e não entra nas contas. Registre uma avaliação de tempos em tempos para ver a evolução.</p>
@@ -7589,7 +7593,8 @@ function crAvaliacao() {
       ${panel(`${ic("user")}Perfil`, `<div class="form f2"><label>Mercado em que você atua<select data-crp="mercado">${CR_MERC.map(([v, l]) => `<option value="${v}"${P.mercado === v ? " selected" : ""}>${l}</option>`).join("")}</select></label><label>Senioridade hoje<select data-crp="sen">${CR_SEN.map(s => `<option${P.sen === s ? " selected" : ""}>${s}</option>`).join("")}</select></label></div>
         <div class="flbl">Áreas de atuação</div><div class="row wrap">${CR_AREAS.map(a => `<button type="button" class="jchip${P.areas.includes(a) ? " on" : ""}" style="--c:var(--a-car)" data-act="crarea" data-v="${esc(a)}">${esc(a)}</button>`).join("")}</div>
         <div class="flbl">Idiomas</div>${list("idiomas", x => `<b>${esc(x.nome)}</b> <span class="muted">${esc(x.nivel || "")}</span>`, [["nome", "idioma"], ["nivel", "nível (A2, B2, C1…)"]])}
-        ${P.caminhos.length ? `<div class="flbl">Caminhos que você apontou no mapa</div><div class="row wrap">${P.caminhos.map(c => crPill(c, "var(--a-pro)")).join("")}</div>` : ""}`)}
+        ${P.caminhos.length ? `<div class="flbl">Direções possíveis que aparecem no mapa</div><div class="row wrap">${P.caminhos.map(c => crPill(c, "var(--a-pro)")).join("")}</div>` : ""}`)}
+      ${crRemunPanel()}
       ${panel(`${ic("book")}Formação`, list("formacao", x => `<b>${esc(x.curso)}</b> <span class="muted">${esc([x.tipo, x.inst, x.fim].filter(Boolean).join(" · "))}</span>`, [["curso", "curso", 2], ["tipo"], ["inst", "instituição"], ["fim", "conclusão"]]))}
       ${panel(`${ic("brief")}Experiência`, list("exp", x => `<b>${esc(x.cargo)}</b> <span class="muted">${esc([x.org, [x.inicio, x.fim || "atual"].filter(Boolean).join(" a ")].filter(Boolean).join(" · "))}</span>${x.desc ? `<p class="small">${esc(x.desc)}</p>` : ""}`, [["cargo", "cargo ou projeto", 2], ["org", "empresa ou cliente"], ["inicio", "início"], ["fim", "fim"], ["desc", "o que fez e com quais ferramentas", 3]]))}
       ${panel(`${ic("star")}Certificações`, list("cert", x => `<b>${esc(x.nome)}</b> <span class="muted">${esc([x.emissor, x.data, x.validade && "válida até " + x.validade].filter(Boolean).join(" · "))}</span>`, [["nome", "certificação", 2], ["emissor", "emissor"], ["data", "obtida em"], ["validade", "validade"]]))}
@@ -7603,6 +7608,16 @@ function crAvaliacao() {
         ${sug.length ? `<div class="flbl">Gaps calculados pelas trilhas escolhidas</div>${sug.map(g => `<div class="cri"><div><b>${esc(g.n)}</b> <span class="muted small">${g.lv ? `nível ${g.lv}` : "não avaliado"} → ${g.r} · ${esc(g.tr.join(", "))}</span></div><button type="button" class="lnk" data-act="crgapcomp" data-n="${esc(g.n)}" data-r="${g.r}">virar ação</button></div>`).join("")}` : `<p class="muted small">Escolha trilhas no Panorama ou em Objetivos para ver os gaps calculados.</p>`}`)}
     </div>`;
 }
+const CR_CONTR = ["", "Tempo indeterminato", "Tempo determinato", "Apprendistato", "Libero professionista (Partita IVA)", "Outro"];
+function crRemun() { const r = crData().perfil.remun, b = +r.bruto || 0, m = +r.mens || 0, bp = +r.buoni || 0; return { b, m, bp, ral: b && m ? b * m : null, bpAno: bp ? bp * 12 : null, tot: b && m ? b * m + bp * 12 : null }; }
+function crRemunPanel() {
+  const P = crData().perfil, r = P.remun, x = crRemun(), inp = (k, l, t = "text", ph = "") => `<label>${l}<input type="${t}" data-crr="${k}" value="${esc(r[k] ?? "")}" placeholder="${ph}"${t === "number" ? ' min="0" step="1"' : ""}></label>`;
+  return panel(`${ic("brief")}Cargo, contrato e remuneração`, `<div class="form f2"><label>Cargo atual<input type="text" data-crp="cargo" value="${esc(P.cargo || "")}"></label><label>Empresa<input type="text" data-crp="empresa" value="${esc(P.empresa || "")}"></label><label>Cidade<input type="text" data-crp="cidade" value="${esc(P.cidade || "")}"></label>
+      <label>Contrato<select data-crr="contrato">${CR_CONTR.map(c => `<option${r.contrato === c ? " selected" : ""}>${c}</option>`).join("")}</select></label>${inp("ccnl", "CCNL", "text", "ex.: Studi professionali")}${inp("livello", "Livello", "text", "ex.: 3S")}
+      ${inp("bruto", "Bruto mensal (lordo, €)", "number")}${inp("mens", "Mensalidades por ano", "number", "13 ou 14")}${inp("buoni", "Buoni pasto por mês (€)", "number")}</div>
+    ${x.ral ? `<div class="crremun"><div><small>RAL (bruto anual)</small><b>${eur(x.ral)}</b><em>${eur(x.b)} × ${x.m}</em></div>${x.bpAno ? `<div><small>Buoni pasto no ano</small><b>${eur(x.bpAno)}</b><em>${eur(x.bp)} × 12, aproximado</em></div>` : ""}<div><small>Pacote anual</small><b>${eur(x.tot)}</b><em>RAL + buoni pasto</em></div></div>` : `<p class="muted small">Com o bruto mensal e o número de mensalidades, o hub calcula a RAL e o pacote anual.</p>`}
+    <p class="muted small">Serve para comparar propostas, negociar e decidir sobre trilhas paralelas. Fica só no seu banco privado; o Mentor da Carreira lê estes dados nas conversas.</p>`);
+}
 function crObjetivos() {
   const C = crData(), P = C.perfil, F = CR.f, rk = crRank();
   const ocard = o => { const as = crActsOf(o.id), p = crObjProg(o), t = CR_TRI.find(x => x.id === o.tri);
@@ -7615,7 +7630,7 @@ function crObjetivos() {
       ${panel(`${ic("compass")}O seu norte`, `<label class="crvis">Daqui a cinco anos, eu quero…<textarea rows="3" data-crp="visao" placeholder="Ex.: coordenar a informação BIM de grandes obras ferroviárias, com certificação e uma frente própria de cursos">${esc(P.visao || "")}</textarea></label>
         <div class="form f2"><label>Senioridade alvo<select data-crp="senAlvo">${CR_SEN.map(s => `<option${P.senAlvo === s ? " selected" : ""}>${s}</option>`).join("")}</select></label><label>Até<input type="month" data-crp="senAno" value="${esc(P.senAno || "")}"></label></div>
         <p class="muted small">Hoje: ${esc(P.sen || "não definido")} · mercado: ${esc(CR_MERC.find(m => m[0] === (P.mercado || ""))[1])}</p>`)}
-      ${panel(`${ic("sprout")}Trilhas escolhidas <small>${C.trilhas.length} de 3</small>`, `<div class="crtsel">${rk.map(x => { const on = C.trilhas.includes(x.t.id); return `<button type="button" class="crts${on ? " on" : ""}" data-act="crtri" data-id="${x.t.id}" aria-pressed="${on}"><b>${esc(x.t.t)}</b><small>${x.nAv ? `aderência ${pct(x.fit)}` : `mapa ${pct(x.mapa)}`}</small></button>`; }).join("")}</div>${P.caminhos.length ? `<p class="muted small">No seu mapa você apontou: ${P.caminhos.map(esc).join(", ")}.</p>` : ""}`)}
+      ${panel(`${ic("sprout")}Trilhas escolhidas <small>${C.trilhas.length} de 3</small>`, `<div class="crtsel">${rk.map(x => { const on = C.trilhas.includes(x.t.id); return `<button type="button" class="crts${on ? " on" : ""}" data-act="crtri" data-id="${x.t.id}" aria-pressed="${on}"><b>${esc(x.t.t)}</b><small>${x.nAv ? `aderência ${pct(x.fit)}` : `mapa ${pct(x.mapa)}`}</small></button>`; }).join("")}</div>${P.caminhos.length ? `<p class="muted small">Direções possíveis no seu mapa: ${P.caminhos.map(esc).join(", ")}.</p>` : ""}`)}
       ${vis("crtl", "Linha do tempo", crTimeline(), { cls: "span2", sub: "objetivos (círculos, com o progresso das ações) e marcos do plano (losangos)", nofocus: true })}
       ${panel(`${ic("plus")}Novo objetivo`, `<div class="form f1"><label>Objetivo<input type="text" data-crf="obj.t" value="${esc(F["obj.t"] || "")}" placeholder="Ex.: ser BIM Coordinator certificado (UNI 11337-7)"></label></div>
         <div class="form f2"><label>Tipo<select data-crf="obj.tipo">${["especialização", "senioridade", "área emergente", "certificação", "mercado", "empreendimento"].map(o => `<option${F["obj.tipo"] === o ? " selected" : ""}>${o}</option>`).join("")}</select></label><label>Prazo<input type="date" data-crf="obj.prazo" value="${esc(F["obj.prazo"] || "")}"></label>
@@ -7628,7 +7643,7 @@ function crGeotecnia() {
   const C = crData(), G = C.geo, md = G.modo, F = CR.f;
   const modes = `<div class="segs crgeomodes">${[["oculta", "Guardada"], ["explorando", "Explorando"], ["ativa", "Ativa"]].map(([v, l]) => `<button type="button" class="seg" data-act="crgeo" data-v="${v}" aria-pressed="${md === v}">${l}</button>`).join("")}</div>`;
   if (md === "oculta") return `<p class="lead">A geotecnia está guardada. Quando quiser, comece a explorar: a seção cresce com você, primeiro com o interesse e as pontes com o que você já sabe, depois com o roteiro completo, as competências e o plano.</p>${modes}`;
-  const pontes = CR_PONTES.map(([n, d]) => `<div class="crponte"><b>${esc(n)}</b>${crLv(n) ? `<small class="muted">nível ${crLv(n)}</small>` : crInMap(n) ? crPill("no seu mapa", "var(--a-car)") : ""}<p>${esc(d)}</p></div>`).join("");
+  const pontes = CR_PONTES.map(([n, d]) => `<div class="crponte"><b>${esc(n)}</b>${crLv(n) ? `<small class="muted">nível ${crLv(n)}</small>` : crSrcPill(n)}<p>${esc(d)}</p></div>`).join("");
   const modCard = (m, i) => { const st = G.mod[m.id] || ""; return `<div class="crmod ${st}"><span class="crmn">${i + 1}</span><div><b>${esc(m.t)}</b><p>${esc(m.d)}</p><div class="row wrap">${m.lib.map(id => { const l = crLibBy(id); return l ? `<button type="button" class="lnk" data-act="crlibgo" data-id="${id}">${esc(trunc(l.t, 44))}</button>` : ""; }).join(" · ")}</div>
     <div class="row wrap"><div class="segs">${[["", "não iniciado"], ["estudando", "estudando"], ["feito", "concluído"]].map(([v, l]) => `<button type="button" class="seg" data-act="crgmod" data-id="${m.id}" data-v="${v}" aria-pressed="${st === v}">${l}</button>`).join("")}</div><button type="button" class="btn sm" data-act="crgmodact" data-id="${m.id}">${ic("flag")}Pôr no plano</button></div></div></div>`; };
   return `<p class="lead">${md === "ativa" ? "Geotecnia ativa: as competências do grupo entram na avaliação e nas trilhas, e o roteiro abaixo guia o estudo." : "Explorando: registre o que atrai você e veja o quanto do caminho já está andado. Quando estiver pronto, ative o roteiro completo."}</p>${modes}
@@ -7677,11 +7692,14 @@ function crBiblioteca() {
 /* ---------------------------------------------------------------- para o Mentor da Carreira */
 function crFacts() {
   const C = crData(), P = C.perfil, L = [];
+  const rm = crRemun(), R0 = P.remun;
+  if (P.cargo || R0.contrato) L.push(`Cargo atual: ${[P.cargo, P.empresa, P.cidade].filter(Boolean).join(", ") || "não informado"}; contrato ${R0.contrato || "não informado"}${R0.ccnl ? `, CCNL ${R0.ccnl}` : ""}${R0.livello ? `, livello ${R0.livello}` : ""}${rm.b ? `; bruto ${eur(rm.b)}/mês${rm.m ? ` × ${rm.m} (RAL ${eur(rm.ral)})` : ""}` : ""}${rm.bp ? `; buoni pasto ${eur(rm.bp)}/mês` : ""}.${P.cargoTri ? ` A trilha "${CR_TRI.find(t => t.id === P.cargoTri)?.t}" é o cargo atual, não um potencial.` : ""}`);
   L.push(`Hub de carreira: mercado ${CR_MERC.find(m => m[0] === (P.mercado || ""))[1]}; senioridade hoje ${P.sen || "não definida"}, alvo ${P.senAlvo || "não definido"}${P.senAno ? ` até ${P.senAno}` : ""}. Visão de 5 anos: ${P.visao || "não escrita"}.`);
   if (P.formacao.length) L.push("Formação: " + P.formacao.map(f => [f.curso, f.tipo, f.inst, f.fim].filter(Boolean).join(", ")).join("; "));
   if (P.exp.length) L.push("Experiência: " + P.exp.map(x => `${x.cargo}${x.org ? " em " + x.org : ""}${x.desc ? ` (${trunc(x.desc, 120)})` : ""}`).join("; "));
   if (P.cert.length) L.push("Certificações: " + P.cert.map(x => x.nome).join("; "));
-  if (P.mapa.length) L.push("No mapa de carreira da pessoa: " + P.mapa.join(", ") + (P.caminhos.length ? `; caminhos apontados: ${P.caminhos.join(", ")}` : "") + ".");
+  if (P.mapa.length) L.push("No mapa de carreira da pessoa: " + P.mapa.join(", ") + (P.caminhos.length ? `; direções possíveis no mapa: ${P.caminhos.join(", ")}` : "") + ".");
+  if (P.cargoComp.length) L.push("Competências evidenciadas pelo cargo atual (ainda sem nível): " + P.cargoComp.join(", ") + ".");
   const av = crCat().filter(c => crLv(c.n)); L.push(av.length ? "Competências avaliadas (atual/alvo, 1–5): " + av.map(c => `${c.n} ${crLv(c.n)}/${crAlvo(c.n) || "–"}`).join(", ") : "Nenhuma competência avaliada ainda.");
   L.push("Trilhas (aderência pelo nível · base no mapa): " + crRank().map(x => `${x.t.t}${C.trilhas.includes(x.t.id) ? " [escolhida]" : ""} ${x.nAv ? pct(x.fit) : "–"} · ${pct(x.mapa)}`).join("; "));
   if (C.fortes.length) L.push("Pontos fortes que a pessoa escreveu: " + C.fortes.map(x => x.t).join("; "));
@@ -7753,6 +7771,7 @@ function crInput(t) {
 function crChange(t) {
   const ds = t.dataset, C = crData();
   if (ds.crf) { CR.f[ds.crf] = t.type === "checkbox" ? t.checked : t.value; return true; }
+  if (ds.crr) { const v = t.value.trim(); C.perfil.remun[ds.crr] = t.type === "number" ? (v === "" ? "" : +v) : v; touch("carreira", { label: "Contrato e remuneração" }); return true; }
   if (ds.crp) { C.perfil[ds.crp] = t.value.trim(); touch("carreira", { label: "Perfil", noRender: t.tagName === "TEXTAREA" }); return true; }
   if (ds.crev) { const n = ds.crev; let x = S.comp.find(c => norm(c.nome) === norm(n)); if (!x) { if (!t.value.trim()) return true; crSet(n, "atual", 0); x = S.comp.find(c => norm(c.nome) === norm(n)); } x.evid = t.value.trim(); touch("comp", { label: "Evidência", noRender: true }); return true; }
   if (ds.crgeo) { C.geo[ds.crgeo] = t.value.trim(); touch("carreira", { label: "Geotecnia", noRender: true }); return true; }
