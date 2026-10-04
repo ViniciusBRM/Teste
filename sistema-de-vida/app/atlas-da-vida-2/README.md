@@ -1,0 +1,22 @@
+# Atlas da Vida 2 · código-fonte
+
+O app é um arquivo só, `../atlas-da-vida-2.html`, montado a partir dos módulos em `src/`. O Atlas da Vida original
+(`../atlas-da-vida.html`) continua separado e não é tocado por este build.
+
+- `python3 build.py` monta o HTML e, se o Node estiver instalado, confere a sintaxe do JavaScript.
+- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `21` entram na ordem definida no `build.py`.
+
+## Testes (Playwright + Chromium)
+
+Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` por verificação e o total no fim.
+
+| Script | O que cobre |
+|---|---|
+| `lab1.py` | privacidade (cofre, sem-IA, registro de leitura), captura sem atrito, experimentos A/B |
+| `lab2.py` | radar (contra cálculo independente), fechamento semanal, capítulos e livro em PDF, busca por significado |
+| `lab3.py` | espaço a dois (duas pessoas), agenda .ics (recorrências contra a `python-dateutil`), Apple Health, Google Fit, Notion, extrato que aprende |
+| `flows.py`, `edge.py`, `sjflows.py` | fluxos herdados do Atlas original |
+| `smoke.py 390 dark`, `holes.py 1024` | todas as páginas numa largura/tema; buracos entre cartões |
+
+Dependências: `playwright`, `python-dateutil`, `pdftotext`/`pdfinfo` (poppler). O livro em PDF carrega o jsPDF do
+cdnjs; para testar sem internet, coloque `jspdf.umd.min.js` (2.5.1) em `testes/`. `CHROMIUM_PATH` aponta outro Chromium.
