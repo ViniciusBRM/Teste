@@ -105,6 +105,7 @@ function pFinProjetos(R) {
     ${kpiRow([kmini("var(--a-fin)", "Sobra média", eur(c.sobra), `receitas ${eur(c.rec)} − despesas ${eur(c.desp)} · ${plural(c.meses, "mês", "meses")}`, c.sobra < 0 ? "crit" : ""), kmini("var(--good)", "Reserva de emergência", c.resMeses == null ? "–" : `${num(c.resMeses, 1)} meses`, `meta ${C.metaReserva} meses (${eur(c.alvoRes)})`, c.gapRes > 0 ? "warn" : "good"), kmini("var(--accent)", "Livre para projetos", eur(c.livre), `${pct(C.usoSobra)} da sobra · reserva leva ${eur(P.res)}/mês`), kmini("var(--warn)", "Parcelas / renda", c.rec ? pct(P.comprom / c.rec) : "–", `teto ${pct(C.maxParcela)} · ${eur(P.comprom)}/mês`, c.rec && P.comprom > P.tetoParc ? "crit" : "")])}
     <div class="g2c pjg">
       ${PJ.edit ? pjForm() : ""}
+      ${finTermometro("span2")}
       ${panel(`${ic("target")}Projetos e aquisições <small>${ps.length}</small>`, `${ps.length ? "" : `<div class="empty">Nenhum projeto ainda. Cadastre o que você quer realizar ou comprar; o plano diz se cabe, quanto juntar por mês e quando fica pronto.</div>`}<div class="row"><button type="button" class="btn primary" data-act="pjnew">${ic("plus")}Novo projeto ou aquisição</button></div>`, { cls: "span2" })}
       ${ativos.map(p => pjCard(p, P)).join("")}
       ${vis("pjtl", "Linha do tempo", pjTimeline(P), { cls: "span2", sub: "próximos 36 meses · barra escura = quando o plano fica pronto · traço = prazo desejado" })}
@@ -166,7 +167,7 @@ function pjInput(t) { if (t.dataset.pjf) { PJ.f[t.dataset.pjf] = t.value; return
 
 /* ---------------------------------------------------------------- saldo dia a dia e ritmo da semana (no relatório de finanças) */
 function finExtras(R) {
-  const sc = S.saldoConta, out = [];
+  const sc = S.saldoConta, out = [finTermometro()];
   if (sc?.serie?.length) { const s = sc.serie.filter(([d]) => d >= addDays(TODAY, -400)), low = 100;
     out.push(vis("fin-saldo", `Saldo da conta, dia a dia · ${esc(sc.conta || "")}`, lineChart(s.map(([d]) => fmtD(d)), [{ name: "Saldo", color: "var(--accent)", data: s.map(([, v]) => v) }], { h: 230, w: 900, fmt: v => eur(v), target: low }),
       { cls: "s12", sub: `${s.length} dias com movimento · ${fmtDY(s[0][0])} a ${fmtDY(s.at(-1)[0])} · linha de referência em ${eur(low)} · fonte: ${esc(sc.fonte || "")}` })); }
@@ -179,4 +180,36 @@ function finExtras(R) {
 function finFontes() {
   const im = S.importacoes || []; if (!im.length) return "";
   return panel(`${ic("download")}Origem dos dados <small>${im.length}</small>`, im.map(x => `<div class="pjsrc"><b>${esc(x.fonte)}</b> <span class="muted">importado em ${fmtDY(x.data)}</span><ul>${(x.itens || []).map(i => `<li>${esc(i)}</li>`).join("")}</ul>${(x.pendentes || []).length ? `<div class="flbl">Ficou de fora (sem data na fonte)</div><ul>${x.pendentes.map(i => `<li>${esc(i)}</li>`).join("")}</ul>` : ""}</div>`).join(""));
+}
+
+/* ---------------------------------------------------------------- termômetro da saúde financeira
+   Mesma fórmula do Quadro Finanziario BBVA, com os dados do Atlas: meses completos com movimento; poupança (30%),
+   peso dos custos fixos (20%), colchão de liquidez em meses de despesa (30%) e constância, meses fora do vermelho (20%). */
+const FIX_CATS = ["Moradia", "Contas da casa", "Assinaturas", "Dívidas & financiamentos"];
+function finSaude() {
+  return memo("finsaude", () => {
+    const by = {}; for (const l of S.lanc) { if (!l.data || mkey(l.data) >= mkey(TODAY)) continue; const m = by[mkey(l.data)] ||= { e: 0, u: 0, f: 0 }, v = +l.valor || 0;
+      if (l.tipo === "Receita") m.e += v; else if (l.tipo === "Despesa") { m.u += v; if (FIX_CATS.includes(l.cat)) m.f += v; } }
+    const ms = Object.values(by).filter(m => m.e > 0 || m.u > 0), n = ms.length; if (!n) return null;
+    const em = avg(ms.map(m => m.e)), um = avg(ms.map(m => m.u)), fm = avg(ms.map(m => m.f)); if (!em || !um) return null;
+    const pk = Object.keys(S.patr || {}).sort(), lp = pk.length ? S.patr[pk.at(-1)] : {}, sc = S.saldoConta?.serie;
+    const saldo = sc?.length ? sc.at(-1)[1] + (+lp.reserva || 0) : (+lp.contas || 0) + (+lp.reserva || 0);
+    const tasso = (em - um) / em * 100, peso = fm / um * 100, rosso = ms.filter(m => m.e - m.u < 0).length, buf = saldo / um, cl = x => Math.max(0, Math.min(100, x));
+    const sr = cl(tasso / 20 * 100), sf = cl((50 - peso) / 20 * 100 + 50), sb = cl(buf / 3 * 100), sk = cl((1 - rosso / n) * 100);
+    return { score: Math.round(sr * .3 + sf * .2 + sb * .3 + sk * .2), n, comp: [
+      { n: "Taxa de poupança", v: Math.round(sr), d: `${num(tasso, 1)}% da renda`, peso: "30%" },
+      { n: "Peso dos custos fixos", v: Math.round(sf), d: `${num(peso, 0)}% das despesas`, peso: "20%" },
+      { n: "Colchão de liquidez", v: Math.round(sb), d: `${num(buf, 2)} meses de despesas`, peso: "30%" },
+      { n: "Constância mensal", v: Math.round(sk), d: `${rosso} de ${n} meses no vermelho`, peso: "20%" }] };
+  });
+}
+function finTermometro(cls = "s6") {
+  const h = finSaude(); if (!h) return vis("fin-saude", "Termômetro da saúde financeira", emptyChart("Registre receitas e despesas de pelo menos um mês completo."), { cls });
+  const sc = h.score, R = 52, cx = 78, cy = 62, a0 = Math.PI, col = sc >= 80 ? "var(--good)" : sc >= 60 ? "#8bb62a" : sc >= 35 ? "var(--warn)" : "var(--crit)", lab = sc >= 80 ? "sólida" : sc >= 60 ? "boa" : sc >= 35 ? "frágil" : "crítica";
+  const arc = (f, t, c) => { const p = a => [cx + R * Math.cos(a), cy + R * Math.sin(a)], [x1, y1] = p(f), [x2, y2] = p(t); return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}A${R} ${R} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round"/>`; };
+  let g = [[0, .35, "var(--crit)"], [.35, .6, "var(--warn)"], [.6, .8, "#8bb62a"], [.8, 1, "var(--good)"]].map(z => arc(a0 + z[0] * Math.PI + .012, a0 + z[1] * Math.PI - .012, z[2])).join("");
+  const na = a0 + sc / 100 * Math.PI; g += `<line x1="${cx}" y1="${cy}" x2="${(cx + (R - 13) * Math.cos(na)).toFixed(1)}" y2="${(cy + (R - 13) * Math.sin(na)).toFixed(1)}" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="4" fill="var(--ink)"/>`;
+  const body = `<div class="fhg"><div class="fhgauge">${svgWrap(156, 78, g, `Saúde financeira ${sc} de 100`)}<div class="fhsc" style="color:${col}">${sc}<small>/100</small></div><div class="muted small">situação <b style="color:${col}">${lab}</b></div></div>
+    <div class="fhcomp">${h.comp.map(c => `<div class="fhrow"><div class="fhl"><span>${esc(c.n)} <small class="muted">peso ${c.peso}</small></span><span class="muted small">${esc(c.d)}</span></div><div class="fht"><i style="width:${c.v}%;background:${c.v >= 70 ? "var(--good)" : c.v >= 40 ? "var(--warn)" : "var(--crit)"}"></i></div><b>${c.v}</b></div>`).join("")}</div></div>`;
+  return vis("fin-saude", "Termômetro da saúde financeira", body, { cls, sub: `${plural(h.n, "mês completo", "meses completos")} · mesma fórmula do Quadro BBVA · custos fixos: ${FIX_CATS.join(", ").toLowerCase()}` });
 }

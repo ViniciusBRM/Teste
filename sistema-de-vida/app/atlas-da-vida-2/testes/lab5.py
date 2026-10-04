@@ -16,6 +16,22 @@ async def main():
             if seed:
                 chk(not await pg.evaluate("IS_EXAMPLE") and await pg.evaluate("S.lanc.length") == 782, "Atlas abre com os 782 lançamentos importados, fora do modo exemplo")
                 chk(await pg.locator("[data-vid='fin-saldo']").count() == 1 and await pg.locator("[data-vid='fin-semana']").count() == 1, "relatório ganhou saldo dia a dia e ritmo da semana")
+                h = await pg.evaluate("finSaude()"); L = await pg.evaluate("S.lanc"); hoje = await pg.evaluate("TODAY")
+                fx = ["Moradia", "Contas da casa", "Assinaturas", "Dívidas & financiamentos"]; by = {}
+                for l in L:
+                    if not l.get("data") or l["data"][:7] >= hoje[:7]: continue
+                    m = by.setdefault(l["data"][:7], [0, 0, 0]); v = float(l.get("valor") or 0)
+                    if l["tipo"] == "Receita": m[0] += v
+                    elif l["tipo"] == "Despesa": m[1] += v; m[2] += v if l.get("cat") in fx else 0
+                ms = [m for m in by.values() if m[0] > 0 or m[1] > 0]; n = len(ms)
+                em, um, fm = (sum(m[i] for m in ms) / n for i in range(3))
+                pa = await pg.evaluate("(() => { const k = Object.keys(S.patr).sort().at(-1); return S.patr[k]; })()"); sc_ = await pg.evaluate("S.saldoConta?.serie?.at(-1)?.[1] ?? null")
+                sal = (sc_ + float(pa.get("reserva") or 0)) if sc_ is not None else float(pa.get("contas") or 0) + float(pa.get("reserva") or 0)
+                c = lambda x: max(0, min(100, x)); ro = sum(1 for m in ms if m[0] - m[1] < 0)
+                exp = round(c((em - um) / em * 100 / 20 * 100) * .3 + c((50 - fm / um * 100) / 20 * 100 + 50) * .2 + c(sal / um / 3 * 100) * .3 + c((1 - ro / n) * 100) * .2)
+                chk(h["n"] == n and h["score"] == exp, f"termômetro: nota {h['score']} = recálculo independente {exp} ({n} meses completos)")
+                chk(await pg.locator("[data-vid='fin-saude'] .fhgauge svg").count() == 1 and await pg.locator("[data-vid='fin-saude'] .fhrow").count() == 4, "termômetro no relatório: medidor + 4 componentes")
+                await pg.locator("[data-vid='fin-saude']").screenshot(path=str(pathlib.Path(__file__).parent.parent / "a2_fh.png"))
                 await pg.evaluate("location.hash='fin.orc'"); await pg.wait_for_timeout(300)
                 t = await pg.locator("#main").inner_text()
                 chk("Origem dos dados" in t and "4.033,83" in t, "Orçamento & patrimônio mostra a origem dos dados e o que ficou de fora")
@@ -44,6 +60,7 @@ async def main():
             chk(len(await pg.evaluate(f"S.projetos.find(z => z.id === '{pr['id']}').mentor")) == 1, "orientação do mentor fica guardada no projeto")
             facts = await pg.evaluate("mentorFacts ? '' : ''") if False else await pg.evaluate("pjFacts().join('\\n')")
             chk("Carro usado" in facts and "Plano sustentável" in facts, "Mentor do Dinheiro vê os projetos nas conversas")
+            chk(await pg.locator("#main [data-vid='fin-saude']").count() == 1, "termômetro também em Projetos & aquisições")
             chk(await pg.locator(".pjc").count() >= 1 and await pg.locator("[data-vid='pjtl'] svg.chart").count() == 1, "cartão do projeto e linha do tempo aparecem")
             chk(not errs, f"sem erros no console ({errs[:2]})")
         except Exception as e:
