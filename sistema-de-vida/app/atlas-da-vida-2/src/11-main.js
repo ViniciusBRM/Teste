@@ -24,7 +24,7 @@ function render() {
     dados: () => ["Dados", "Edite qualquer registro como numa planilha, filtre, altere em massa, importe e exporte", pDados],
     integ: () => ["Integrações", "Notion, agenda, Apple Health, Google Fit e bancos, nos dois sentidos onde dá", pInteg],
     ajustes: () => ["Ajustes", "Metas, áreas, listas, mentores e aparência", pAjustes],
-    bussola: () => ["Bússola moral", { exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um" }[SUB] || "Valores, princípios e perguntas das cinco tradições", pBussola],
+    jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", confluencias: "Onde os quatro caminhos se encontram", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
     semana: () => ["Fechamento da semana", `Semana de ${wkLabel(fsWk())}`, pSemana],
     radar: () => ["Radar", "Alertas antes que aconteçam, com evidência do seu histórico e conferência depois", pRadar],
     exp: () => ["Experimentos", "Teste uma mudança e meça o efeito em você", pExp],
@@ -51,7 +51,7 @@ function render() {
 /* ================================================================ empacotamento: nenhum buraco entre os cartões
    Grades de cartões viram "alvenaria": cada cartão ocupa linhas de 4px conforme a altura real, a grade preenche
    os vãos (dense) e o último cartão de cada coluna estica até a base. Grades de itens iguais dividem a última linha. */
-const PACK_SEL = ".vg,.g2c,.g3c", FILL_SEL = ".mgrid,.pgrid,.sjels,.sjside,.hgrid2,.xgrid,.krow,.minis", PACK_ROW = 4;
+const PACK_SEL = ".vg,.g2c,.g3c", FILL_SEL = ".mgrid,.jmgrid,.pgrid,.sjels,.sjside,.hgrid2,.xgrid,.krow,.minis", PACK_ROW = 4;
 let PACK_RO = null, PACK_RAF = 0;
 const PACK_H = new WeakMap(), PACK_W = new WeakMap();
 /* só listas longas por natureza (agenda, listas, tabelas compridas) podem ganhar rolagem; gráficos e placares nunca */
@@ -109,7 +109,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (capClick(t) || bmClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (capClick(t) || bmClick(t) || jClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -156,7 +156,7 @@ document.addEventListener("keydown", e => {
   if ((tg.id === "cap_txt" || tg.id === "hj_cap") && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); capRefresh({ keepAI: CAP.src === "ia", keepDate: true }); capSave(); return; }
   if (tg.id === "sem_q" && e.key === "Enter") { e.preventDefault(); semAsk(tg.value); return; }
   if (tg.id === "cf_p" && e.key === "Enter") { e.preventDefault(); $('[data-act="cfopen"]')?.click(); return; }
-  if (tg.id === "m_in" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); askMentor(SUB, tg.value); return; }
+  if (tg.id === "m_in" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); askMentor(tg.closest("[data-mid]")?.dataset.mid || SUB, tg.value); return; }
   if (tg.id?.startsWith("mq_") && e.key === "Enter") { e.preventDefault(); $(`[data-mquick="${tg.id.slice(3)}"]`)?.click(); return; }
   if (tg.id === "memnew" && e.key === "Enter") { e.preventDefault(); $('[data-act="memadd"]')?.click(); return; }
   if ((tg.id === "qt_in" || tg.id === "hj_tar") && e.key === "Enter") { e.preventDefault(); quickTask(tg.value); tg.value = ""; return; }
@@ -171,14 +171,14 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t) || pjInput(t)) return;
+  if (diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t) || jInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
   if (t.id === "tf_q") { TF.q = t.value; reRender(); return; }
   if (t.id === "lf_q") { LF.q = t.value; reRender(); return; }
   if (t.id === "dg_q") { DG.q = t.value; DG.page = 0; reRender(); return; }
-  if (t.id === "m_in") { MST.input[SUB] = t.value; return; }
+  if (t.id === "m_in") { MST.input[t.closest("[data-mid]")?.dataset.mid || SUB] = t.value; return; }
   if (t.id === "memnew") { MST.memNew = t.value; return; }
   if (t.id === "nt_q") { NT.q = t.value; return; } if (t.id === "nt_pq") { NT.pq = t.value; return; }
   if (t.id === "ql_in" || t.id === "qt_in" || t.id === "hj_tar") { quickHint(t.id, t.value); return; }
@@ -186,7 +186,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (capChange(t) || bmChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (capChange(t) || bmChange(t) || jChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

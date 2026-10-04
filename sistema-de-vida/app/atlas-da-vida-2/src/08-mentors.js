@@ -16,7 +16,7 @@ const MENTOR_DEF = {
   cas: { area: "Casa & organização", nome: "Mentor da Casa", papel: "mentor de organização da vida prática", foco: "documentos, rotinas da casa, burocracia e vida digital", met: "GTD, rotinas com gatilho, revisão semanal, lotes de tarefas" },
 };
 const MIDS = Object.keys(MENTOR_DEF);
-const mcol = mid => MENTOR_DEF[mid]?.area ? acol(MENTOR_DEF[mid].area) : "var(--accent)";
+const mcol = mid => MENTOR_DEF[mid]?.cor || (MENTOR_DEF[mid]?.area ? acol(MENTOR_DEF[mid].area) : "var(--accent)");
 const mico = mid => MENTOR_DEF[mid]?.ico || AREA_INFO[MENTOR_DEF[mid]?.area]?.ico || "spark";
 const mavatar = (mid, cls = "") => `<span class="mav ${cls}" style="--c:${mcol(mid)}">${ic(mico(mid))}</span>`;
 const QUICK = {
@@ -106,6 +106,7 @@ function councilFacts(Hs) {
   return L;
 }
 function mentorPrompt(mid, fallback) {
+  if (MENTOR_DEF[mid].jor) return jPrompt(mid, fallback);
   const def = MENTOR_DEF[mid], m = mget(mid), Hs = []; for (let k = 5; k >= 0; k--) Hs.push(calcAt(addMonth(mkey(TODAY), -k)));
   const facts = def.area ? [...areaFacts(def.area, Hs), ...specFacts(mid, Hs), ...labFacts(def.area)] : councilFacts(Hs);
   const mem = [...m.mem.filter(x => x.fixo), ...m.mem.filter(x => !x.fixo).slice(-24)].map(x => `- [${x.tipo} · ${fmtD(iso(new Date(x.at)))}${x.origem !== "mentor" ? " · " + x.origem : ""}]${x.fixo ? " (fixa)" : ""} ${x.texto}`);
@@ -166,7 +167,8 @@ function mentorTools(mid, live) {
   if (NOTION_OK && S.cfg.mentorNotion) T.push({ name: "buscar_notion", description: "Busca páginas no Notion da pessoa por palavras-chave e devolve até 5 resultados com título, link e trecho. Use para projetos, anotações e planos que estão lá.",
     inputSchema: { type: "object", properties: { consulta: { type: "string" } }, required: ["consulta"] },
     execute: async (inp, ctx) => { const res = await MCP.callTool("Notion", "notion-search", { query: String(inp.consulta).slice(0, 200), page_size: 5 }, { signal: ctx.signal }); const rs = (res.payload?.results || []).slice(0, 5).map(x => ({ titulo: x.title, link: x.url, trecho: trunc(String(x.highlight || "").replace(/\*\*/g, ""), 300) })); note("buscar_notion", `“${trunc(inp.consulta, 40)}” · ${rs.length} páginas`); return rs; } });
-  return TOOLS_MAX && TOOLS_MAX < T.length ? T.slice(0, TOOLS_MAX) : T;
+  const out = def.jor ? jTools(mid, live, T) : T;
+  return TOOLS_MAX && TOOLS_MAX < out.length ? out.slice(0, TOOLS_MAX) : out;
 }
 function mkProposal(inp) {
   const tipo = ["tarefa", "meta", "habito", "lembrete"].includes(inp.tipo) ? inp.tipo : "tarefa";
@@ -178,7 +180,7 @@ async function askMentor(mid, text, mode = "chat") {
   text = String(text || "").trim(); if (!text) return;
   if (!SAMPLE) { toast(AI_OFF || "A IA do Claude não está disponível nesta visualização."); return; }
   if (MST.live) { toast("Espere a resposta atual terminar ou toque em Parar."); return; }
-  if (blockedMentor(mid)) { toast(`${ashort(MENTOR_DEF[mid].area)} está fora da IA em Privacidade. Libere o setor para conversar com este mentor.`); return; }
+  if (blockedMentor(mid)) { toast(`${ashort(MENTOR_DEF[mid].area || MENTOR_DEF[mid].gate)} está fora da IA em Privacidade. Libere o setor para conversar com este mentor.`); return; }
   const m = mget(mid), user = { role: "user", content: text, at: Date.now(), mode };
   const live = MST.live = { mid, text: "", uso: [], acoes: [], ctl: new AbortController(), user, mode };
   MST.input[mid] = ""; render(); scrollChat();
@@ -198,8 +200,9 @@ async function askMentor(mid, text, mode = "chat") {
 function finishMentor(text, cut) {
   const live = MST.live; if (!live) return;
   let content = String(text || ""); const mm = content.match(/```atlas\s*([\s\S]*?)```/);
-  if (mm) { try { const b = JSON.parse(mm[1]); for (const x of b.memorias || []) { const r = addMemory(live.mid, { tipo: x.tipo, texto: x.texto }); if (r) live.uso.push({ t: "salvar_memoria", d: `${r.tipo}: ${trunc(r.texto, 90)}` }); } if (b.plano?.foco) { setPlan(live.mid, b.plano); live.uso.push({ t: "atualizar_plano", d: trunc(b.plano.foco, 70) }); } for (const p of b.propostas || []) live.acoes.push(mkProposal(p)); } catch {} content = content.replace(mm[0], "").trim(); }
+  if (mm) { try { const b = JSON.parse(mm[1]); for (const x of b.memorias || []) { const r = addMemory(live.mid, { tipo: x.tipo, texto: x.texto }); if (r) live.uso.push({ t: "salvar_memoria", d: `${r.tipo}: ${trunc(r.texto, 90)}` }); } if (b.plano?.foco) { setPlan(live.mid, b.plano); live.uso.push({ t: "atualizar_plano", d: trunc(b.plano.foco, 70) }); } for (const p of b.propostas || []) live.acoes.push(mkProposal(p)); const pid = jMidP(live.mid); if (pid) for (const x of b.praticas || []) { const r = jRecommend(pid, x); if (r) live.uso.push({ t: "recomendar", d: `${r.tipo}: ${trunc(r.titulo, 80)}` }); } } catch {} content = content.replace(mm[0], "").trim(); }
   content = content.replace(/```atlas[\s\S]*$/, "").trim();
+  if (live.uso.some(u => u.t === "recomendar")) dirty.add("jornada");
   const m = mstate(live.mid); m.conversa.push(live.user, { role: "assistant", content: (content || "(sem texto)") + (cut ? "\n\n_(resposta interrompida)_" : ""), at: Date.now(), uso: live.uso, acoes: live.acoes });
   if (m.conversa.length > 40) m.conversa = m.conversa.slice(-40);
   m.visto = Date.now(); m.ultimo = { at: Date.now(), dados: areaScoreNow(live.mid) };
@@ -221,7 +224,7 @@ function paintLive() {
   scrollChat(true);
 }
 function scrollChat(soft) { const c = $("#mchat"); if (c && (!soft || c.scrollHeight - c.scrollTop - c.clientHeight < 160)) c.scrollTop = c.scrollHeight; }
-const USO_TXT = { salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"] };
+const USO_TXT = { salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"] };
 const usoHTML = us => (us || []).map(u => `<span class="uso">${ic(USO_TXT[u.t]?.[0] || "bolt")}<b>${USO_TXT[u.t]?.[1] || u.t}</b> ${esc(u.d)}</span>`).join("");
 function propHTML(mid, mi, p) {
   const lab = { tarefa: "Tarefa", meta: "Meta", habito: "Hábito", lembrete: "Lembrete" }[p.tipo];
@@ -230,7 +233,7 @@ function propHTML(mid, mi, p) {
 }
 function decideProposal(mid, mi, pid, ok) {
   const msg = mstate(mid).conversa[mi], p = msg?.acoes?.find(x => x.id === pid); if (!p || p.status !== "pendente") return;
-  const area = MENTOR_DEF[mid].area || "", keys = ["mentores"];
+  const area = MENTOR_DEF[mid].area || MENTOR_DEF[mid].gate || "", keys = ["mentores"];
   if (!ok) { p.status = "descartada"; touch("mentores", { label: "Proposta descartada" }); return; }
   if (p.tipo === "tarefa" || p.tipo === "lembrete") { const meta = S.metas.find(m => norm(m.meta) === norm(p.meta))?.meta || ""; S.tarefas.push({ id: p.ref = uid(), tarefa: p.titulo, projeto: "", area: area || (meta ? S.metas.find(m => m.meta === meta).area : ""), prio: p.prio, prazo: p.prazo, status: "A fazer", concluida: "", meta, notas: p.detalhes, origem: MENTOR_DEF[mid].nome }); keys.push("tarefas"); }
   if (p.tipo === "meta") { S.metas.push({ id: p.ref = uid(), meta: p.titulo, area: area || "Casa & organização", status: "Ativa", inicio: TODAY, prazo: p.prazo, un: p.un, ini: p.alvo !== "" ? 0 : "", atual: p.alvo !== "" ? 0 : "", alvo: p.alvo, manual: p.alvo !== "" ? "" : 0, proximo: p.detalhes, origem: MENTOR_DEF[mid].nome }); keys.push("metas"); }
@@ -252,7 +255,9 @@ function pMentores(R) {
       ${nud ? `<div class="mnud ${nud.st}">${ic("bolt")}<span>${nud.t}</span></div>` : ""}
       <footer><span class="muted">${m.conversa?.length ? `conversa ${relDay(iso(new Date(m.visto || m.conversa.at(-1).at)))}` : "nunca conversaram"} · ${plural((m.mem || []).length, "memória", "memórias")}${sl.out.length && m.visto ? ` · desde então: ${esc(sl.out.slice(0, 2).join(", "))}` : ""}</span><a class="btn sm${mid === "conselho" ? " primary" : ""}" href="#mentor.${mid}">${ic("spark")}Conversar</a></footer></article>`; };
   return `${aiBanner()}<p class="lead">Um mentor para cada área da vida e um Conselho que olha o todo. Cada um lê os seus números e o seu diário, lembra do que vocês combinaram e propõe melhorias, que só viram tarefa, meta ou hábito quando você aprova.</p>
-    <div class="mgrid">${MIDS.map(card).join("")}</div>`;
+    <div class="mgrid">${MIDS.filter(m => !MENTOR_DEF[m].jor).map(card).join("")}</div>
+    <div class="mhead jmh2">${ic("lotus")}Mentores da jornada existencial<small>um para cada pilar e o Navegante da Bússola moral</small></div>
+    <div class="jmgrid">${J_MIDS.map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>`;
 }
 function aiBanner() {
   if (AI_OFF) return `<div class="banner warn">${ic("info")}<span>${esc(AI_OFF)}</span></div>`;
@@ -294,7 +299,7 @@ function pMentor(R) {
         <div class="memadd"><input id="memnew" type="text" placeholder="Anote algo para o mentor lembrar" value="${esc(MST.memNew)}" aria-label="Nova memória"><button type="button" class="btn sm" data-act="memadd">${ic("plus")}Guardar</button></div>`)}</aside></div>`;
 }
 function mentorClick(t) {
-  const ds = t.dataset, mid = SUB;
+  const ds = t.dataset, mid = t.closest("[data-mid]")?.dataset.mid || SUB;
   if (ds.act === "msend") { const v = $("#m_in")?.value || ""; askMentor(mid, v); return true; }
   if (ds.act === "mstop") { MST.live?.ctl.abort(); return true; }
   if (ds.act === "mcheck") { askMentor(mid, mid === "conselho" ? "Faça a revisão semanal do Conselho: 1) leitura do momento em 3 linhas com números; 2) áreas que avançaram e as que ficaram para trás desde a última conversa; 3) conflitos entre áreas (tempo, energia, dinheiro); 4) as 3 prioridades da semana e o que pausar; 5) uma ideia nova para a semana. Atualize o plano com as prioridades, deixe recados aos mentores das áreas envolvidas e guarde só o essencial." : "Faça o acompanhamento desta área agora: 1) diagnóstico em 3 linhas com números; 2) o que melhorou e o que piorou desde a última conversa; 3) riscos; 4) até 3 melhorias concretas e 1 experimento novo adaptado ao meu cenário. Depois atualize o plano e guarde na memória só o essencial.", "check"); return true; }

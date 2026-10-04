@@ -144,6 +144,7 @@ function exampleData() {
   exampleDiary(D, R, start, end);
   exampleMentors(D);
   exampleLab(D);
+  exampleJornada(D);
   return D;
 }
 
@@ -326,4 +327,59 @@ function exampleMentors(D) {
         conversa: [] },
     };
   } finally { S = keep; applyLists(); VER++; }
+}
+
+/* jornada existencial de exemplo: quatro meses de reflexões, práticas e notas (tudo fictício) */
+function exampleJornada(D) {
+  const r = mulberry32(31), d = n => addDays(TODAY, -n), at = n => parse(d(n)).getTime() + 20 * 36e5, id = () => uid();
+  const marks = (dias, p) => { const m = []; for (let k = dias; k >= 0; k--) if (r() < p * (0.55 + 0.45 * (dias - k) / dias)) m.push(d(k)); return m; };
+  const est = o => Object.fromEntries(Object.entries(o).filter(([, [v]]) => v).map(([k, [v, n]]) => [k, { v, at: at(n) }]));
+  const refl = (n, tipo, texto, extra = {}) => ({ id: id(), data: d(n), at: at(n), tipo, texto, tambem: [], priv: false, ...extra });
+  const cot = (n, texto, area = "") => ({ id: id(), data: d(n), at: at(n), texto, area });
+  D.jornada = { p: {
+    esp: { est: est({ principios: [3, 120], estudo: [2, 60], fe: [2, 45], reforma: [1, 30], caridade: [1, 20] }),
+      prat: [{ id: id(), titulo: "Culto do Evangelho no lar", tipo: "prática", desc: "Uma vez por semana, no mesmo dia e hora: prece, leitura de um trecho de O Evangelho segundo o Espiritismo, um breve comentário e a prece final.", fonte: "base", status: "ativa", marcas: marks(70, .14), criado: at(80) },
+        { id: id(), titulo: "O Livro dos Espíritos (Allan Kardec, 1857)", tipo: "leitura", desc: "Uma pergunta por dia.", fonte: "base", status: "ativa", marcas: marks(50, .45), criado: at(55) },
+        { id: id(), titulo: "Uma imperfeição por mês: impaciência", tipo: "exercício", desc: "Observar todos os dias quando a impaciência aparece e o que faço com ela.", porque: "Você citou a impaciência em três reflexões deste mês.", fonte: "mentor", status: "sugerida", marcas: [], criado: at(6) }],
+      refl: [refl(118, "aprendizado", "Li a questão 919 de O Livro dos Espíritos. O exame de consciência não é tribunal: é se conhecer para melhorar. Isso tira um peso."),
+        refl(88, "dúvida", "Se a dor tem causa em outras existências, como não cair na ideia de castigo? Quero entender melhor a lei de causa e efeito sem culpa."),
+        refl(61, "insight", "No Culto do Evangelho de domingo li o capítulo sobre os brandos e pacíficos e percebi que minha impaciência é falta de confiança, não excesso de energia.", { tambem: ["bud"] }),
+        refl(33, "reflexão", "Visitei a vizinha que está acamada. Fiquei pouco, mas saí mais leve do que entrei. Caridade também me faz bem.", { tambem: ["bud"] }),
+        refl(29, "reflexão", "Uma conversa difícil com a minha mãe. Guardo isto só para mim por enquanto.", { priv: true }),
+        refl(9, "insight", "A fé raciocinada me deixa fazer perguntas sem medo. Hoje discordei de um palestrante e não me senti menos espírita por isso.")],
+      cot: [cot(40, "No trânsito, lembrei do “vigiai e orai” e não buzinei para quem me fechou.", "Saúde mental"), cot(21, "Doei duas horas no bazar da casa espírita.", "Amizades & social"), cot(5, "Antes da reunião tensa, fiz uma prece curta no banheiro. Entrei mais calmo.", "Carreira")] },
+    med: { est: est({ chegar: [2, 70], estabilizar: [1, 40], observar: [1, 18], dia: [0, 0], presenca: [0, 0] }),
+      prat: [{ id: id(), titulo: "Respiração consciente (10 min)", tipo: "prática", desc: "Sentar, sentir a respiração entrando e saindo e, a cada distração, voltar sem crítica.", fonte: "base", status: "ativa", marcas: marks(75, .62), criado: at(80) },
+        { id: id(), titulo: "Pausa de três minutos", tipo: "exercício", desc: "O que está aqui; a respiração; o corpo inteiro.", fonte: "base", status: "ativa", marcas: marks(30, .3), criado: at(32) }],
+      refl: [refl(95, "dúvida", "Será que estou fazendo errado? A mente não para nem um minuto."),
+        refl(64, "aprendizado", "O Guia da Atenção disse que perceber a distração já é a prática. Mudou tudo: cada volta conta."),
+        refl(26, "insight", "Na respiração de hoje, a raiva da reunião apareceu e passou como uma onda. Não precisei fazer nada com ela.", { tambem: ["bud", "tao"] }),
+        refl(4, "reflexão", "Dez dias seguidos sentando. Não sei se medito melhor, mas acordo menos apressado.")],
+      cot: [cot(26, "Comi o almoço sem celular. A comida tinha gosto.", "Saúde física"), cot(12, "Antes de responder um e-mail irritante, três respirações. Respondi melhor.", "Carreira")] },
+    tao: { est: est({ desacelerar: [2, 50], simples: [1, 35], suave: [1, 14], wuwei: [0, 0], raiz: [0, 0] }),
+      prat: [{ id: id(), titulo: "Um capítulo por dia", tipo: "exercício", desc: "O Tao Te Ching tem 81 capítulos curtos: ler um por dia e levar uma frase consigo.", fonte: "base", status: "ativa", marcas: marks(45, .38), criado: at(48) },
+        { id: id(), titulo: "Caminhada na natureza", tipo: "prática", desc: "Sem destino e sem tela.", fonte: "base", status: "ativa", marcas: marks(60, .12), criado: at(62) }],
+      refl: [refl(52, "insight", "Capítulo 8: a água não disputa e por isso não erra. Eu disputo tudo, até a fila do mercado.", { tambem: ["esp"] }),
+        refl(31, "reflexão", "Cancelei um compromisso que só fazia por obrigação. A semana respirou."),
+        refl(8, "aprendizado", "Esperei um dia antes de cobrar o colega. Ele mesmo resolveu. Wu wei não é preguiça, é tempo certo.")],
+      cot: [cot(31, "Tirei da agenda o curso que não fazia sentido.", "Aprendizado"), cot(8, "Não insisti na discussão sobre o projeto; no dia seguinte a ideia voltou melhor.", "Carreira")] },
+    bud: { est: est({ confianca: [2, 60], sila: [1, 40], samadhi: [1, 25], panna: [1, 12], coracao: [2, 20] }),
+      prat: [{ id: id(), titulo: "Bondade amorosa (mettā)", tipo: "prática", desc: "Cinco minutos desejando bem a si, a alguém querido, a alguém neutro, a alguém difícil e a todos os seres.", fonte: "base", status: "ativa", marcas: marks(40, .35), criado: at(42) },
+        { id: id(), titulo: "Fala correta por um dia", tipo: "exercício", desc: "Um dia inteiro sem fofoca, exagero ou palavras ásperas.", fonte: "base", status: "pausada", marcas: [d(50), d(43)], criado: at(55) }],
+      refl: [refl(73, "aprendizado", "Dhammapada 5: o ódio não cessa pelo ódio. Testei com o colega que me irrita: desejei bem a ele em silêncio. Estranho, mas a tensão caiu."),
+        refl(37, "dúvida", "Como conciliar o não-eu do Budismo com o Espírito imortal do Espiritismo? Os dois me fazem sentido.", { tambem: ["esp"] }),
+        refl(15, "insight", "Tudo o que me irritou hoje já passou. A impermanência é um alívio, não uma ameaça.", { tambem: ["med"] })],
+      cot: [cot(15, "Passei um dia sem falar mal de ninguém. Foi mais difícil do que eu pensava.", "Amizades & social")] },
+  }, conf: { vivos: ["atencao", "compaixao"], notas: { atencao: "As três respirações antes de responder vêm da meditação, mas é o “vigiai e orai” que me lembra de fazê-las." }, circulos: [
+    { id: id(), at: at(18), pergunta: "Como lidar com a raiva de alguém que me prejudicou no trabalho?", quem: ["esp", "med", "tao", "bud"],
+      texto: "## O Benfeitor\nA raiva é sinal, não sentença. O perdão das ofensas faz parte da caridade (O Livro dos Espíritos, q. 886), e perdoar não é concordar: é não carregar. Que lição esta situação está oferecendo a você?\n\n## Guia da Atenção\nAntes de qualquer resposta, sinta onde a raiva mora no corpo. Três respirações. Ela muda de forma quando é observada.\n\n## Sábio do Vale\nA água não briga com a pedra; contorna, e com o tempo a pedra cede. Espere o lodo assentar antes de agir.\n\n## Kalyāṇamitta\nO ódio não cessa pelo ódio (Dhammapada, 5). Experimente mettā para essa pessoa por uma semana e observe o que muda em você.\n\n## Onde convergem\nTodos pedem uma pausa entre sentir e agir, e tratam a raiva como algo a compreender, não a obedecer.\n\n## Onde divergem\nO Benfeitor lê a situação como prova com sentido na trajetória do Espírito; o Kalyāṇamitta, como fruto de causas e condições, sem um eu que precise ser vingado.\n\n## Uma prática que une os pilares\nPor sete dias: três respirações quando a raiva vier, uma prece ou mettā pela pessoa à noite e nenhuma resposta escrita antes de dormir sobre ela.\n\n## Pergunta para levar\nO que a minha raiva está protegendo?" }] } };
+  D.mentores.esp = { visto: at(9), mem: [
+      { id: id(), at: at(30), tipo: "dúvida", texto: "Quer entender causa e efeito sem cair na ideia de castigo.", fixo: true, origem: "mentor" },
+      { id: id(), at: at(9), tipo: "compromisso", texto: "Manter o Culto do Evangelho aos domingos às 20h.", fixo: false, origem: "mentor" }],
+    plano: { at: at(9), foco: "Estudo constante e uma imperfeição por vez", passos: [
+      { id: id(), texto: "Culto do Evangelho aos domingos", prazo: "", feito: false },
+      { id: id(), texto: "Ler as questões 614 a 648 (lei divina ou natural)", prazo: addDays(TODAY, 14), feito: false }] },
+    conversa: [
+      { role: "user", content: "Se a dor tem causa em outras existências, como não cair na ideia de castigo?", at: at(9), mode: "chat" },
+      { role: "assistant", content: "Pergunta muito boa, e própria de quem busca a **fé raciocinada**.\n\nPara a Doutrina Espírita, a lei de causa e efeito é **educativa, não punitiva**: Deus não castiga por vingança, e nenhuma prova é eterna. A dor de hoje pode ter causas atuais, desta vida, ou anteriores; em O Evangelho segundo o Espiritismo (cap. V) Kardec pede que olhemos primeiro para as causas atuais, que estão ao nosso alcance.\n\nUma imagem que ajuda: o aluno que repete uma lição não está sendo punido; está aprendendo o que ainda não aprendeu.\n\n**Para contemplar esta semana:** diante de uma dificuldade, em vez de “o que fiz para merecer isto?”, pergunte “o que isto me convida a desenvolver?”.", at: at(9) + 6e4, uso: [{ t: "salvar_memoria", d: "dúvida: causa e efeito sem castigo" }], acoes: [] }] };
 }

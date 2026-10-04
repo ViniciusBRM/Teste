@@ -114,7 +114,7 @@ function aiPeopleStats() {
   return memo("aipeople", () => { const o = {}; for (const e of S.diario) { if (!aiAllowed(e)) continue; for (const n of parseEntry(e.texto).people) { const x = o[n] ||= { n: 0, ms: [] }; x.n++; if (isNum(e.humor)) x.ms.push(+e.humor); } }
     for (const x of Object.values(o)) x.mood = avg(x.ms); return o; });
 }
-const blockedMentor = mid => { const a = MENTOR_DEF[mid]?.area; return !!a && !aiAreaOk(a); };
+const blockedMentor = mid => { const a = MENTOR_DEF[mid]?.area || MENTOR_DEF[mid]?.gate; return !!a && !aiAreaOk(a); };
 
 /* ---------------------------------------------------------------- página Privacidade */
 const PV = { f: "", det: null };

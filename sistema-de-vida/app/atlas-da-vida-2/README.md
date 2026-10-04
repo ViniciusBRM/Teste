@@ -4,7 +4,7 @@ O app é um arquivo só, `../atlas-da-vida-2.html`, montado a partir dos módulo
 (`../atlas-da-vida.html`) continua separado e não é tocado por este build.
 
 - `python3 build.py` monta o HTML e, se o Node estiver instalado, confere a sintaxe do JavaScript.
-- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `21` entram na ordem definida no `build.py`.
+- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `24` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro).
 
 ## Testes (Playwright + Chromium)
 
@@ -16,6 +16,7 @@ Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` 
 | `lab2.py` | radar (contra cálculo independente), fechamento semanal, capítulos e livro em PDF, busca por significado |
 | `lab3.py` | espaço a dois (duas pessoas), agenda .ics (recorrências contra a `python-dateutil`), Apple Health, Google Fit, Notion, extrato que aprende |
 | `lab4.py` | bússola moral: valores, foco, exame da noite (índice conferido à parte), decisões com revisita, caminhos, Hoje |
+| `lab6.py` | jornada existencial: estações, reflexões (e as privadas fora da IA), práticas, lua do pilar, mentores com `recomendar`, círculo, a Bússola dentro da aba e o Navegante |
 | `lab5.py` | finanças: projetos e aquisições (parcela pela fórmula Price, alertas, aportes, mentor) e, se existir `../ft/docs`, os dados importados |
 | `flows.py`, `edge.py`, `sjflows.py` | fluxos herdados do Atlas original |
 | `smoke.py 390 dark`, `holes.py 1024` | todas as páginas numa largura/tema; buracos entre cartões |

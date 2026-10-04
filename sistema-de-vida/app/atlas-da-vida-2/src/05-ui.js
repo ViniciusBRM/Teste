@@ -1,6 +1,11 @@
 
 /* ================================================================ ícones (traço 1.7, 24×24) */
 const ICONS = {
+  lotus: '<path d="M12 20c-1.9-1.6-3.2-4-3.2-6.9 0-2.6 1.2-5 3.2-7 2 2 3.2 4.4 3.2 7 0 2.9-1.3 5.3-3.2 6.9z"/><path d="M12 20c-3.5 0-6.6-1.4-8.5-4.4 1.6-.6 3.3-.7 4.9-.3M12 20c3.5 0 6.6-1.4 8.5-4.4-1.6-.6-3.3-.7-4.9-.3"/>',
+  flame: '<path d="M12 3c2.6 3 4.2 5.4 4.2 8a4.2 4.2 0 0 1-8.4 0c0-1.5.6-2.8 1.6-3.9.2 1.2.8 2 1.6 2.4C11 7.4 11.3 5.1 12 3z"/><path d="M8 21h8M10 17.5h4"/>',
+  breath: '<circle cx="12" cy="5" r="2"/><path d="M12 8.5v4.5M7.5 11.5c1.3 1 2.8 1.5 4.5 1.5s3.2-.5 4.5-1.5M4.5 19.5c2-2.3 4.5-3.5 7.5-3.5s5.5 1.2 7.5 3.5"/>',
+  yinyang: '<circle cx="12" cy="12" r="9"/><path d="M12 3a4.5 4.5 0 0 1 0 9 4.5 4.5 0 0 0 0 9"/><circle cx="12" cy="7.5" r=".8"/><circle cx="12" cy="16.5" r=".8"/>',
+  dharma: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3.5v6.3M12 14.2v6.3M3.5 12h6.3M14.2 12h6.3M6 6l4.4 4.4M13.6 13.6L18 18M18 6l-4.4 4.4M10.4 13.6L6 18"/>',
   grid: '<rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   pen: '<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>',
@@ -82,9 +87,9 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 
 /* ================================================================ navegação */
 const NAV = [
-  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["diario", "Diário", "pen"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
+  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
-  ["Laboratório", [["bussola", "Bússola moral", "compass"], ["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
+  ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
 ];
 const SUBS = {
@@ -98,7 +103,8 @@ const SUBS = {
   roda: [["roda", "Roda & revisão"], ["diario", "Diário"]],
   diario: [["feed", "Entradas"], ["perguntar", "Perguntar"], ["cal", "Calendário"], ["analise", "Análise"]],
   capitulos: [["linha", "Linha do tempo"], ["livro", "Livro do ano"]],
-  bussola: [["mapa", "Bússola"], ["exame", "Exame da noite"], ["decidir", "Decidir"], ["caminhos", "Caminhos"]],
+  /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
+  jornada: [["inicio", "Início"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
 };
 const REPORT_TABS = [["visao", "Visão geral"], ["fin.rel", "Finanças"], ["saude.rel", "Saúde"], ["hab.rel", "Hábitos"], ["pessoas.rel", "Relações"], ["cresc.rel", "Crescimento"], ["metas.rel", "Metas"], ["cruz", "Cruzamentos"]];
@@ -108,7 +114,11 @@ const pageTitle = (p = PAGE) => p === "mentor" ? "Mentor" : NAV.flatMap(g => g[1
 const isReport = () => PAGE === "visao" || PAGE === "cruz" || (SUBS[PAGE] && (SUB || SUBS[PAGE][0][0]) === "rel");
 function setHash(p, s) { const h = s ? `${p}.${s}` : p; if (location.hash.slice(1) !== h) location.hash = h; else route(); }
 function route() {
-  const [p, s] = (location.hash.slice(1) || "visao").split(".");
+  let [p, s] = (location.hash.slice(1) || "visao").split(".");
+  /* a Bússola moral e os mentores da jornada moram na Jornada existencial; links antigos continuam valendo */
+  if (p === "bussola") { p = "jornada"; s = !s || s === "mapa" ? "bussola" : s; }
+  if (p === "mentor" && MENTOR_DEF[s]?.jor) { p = "jornada"; s = jSubOfMid(s); }
+  if (`${p}${s ? "." + s : ""}` !== location.hash.slice(1) && location.hash) try { history.replaceState(null, "", `#${p}${s ? "." + s : ""}`); } catch {}
   const ok = p === "mentor" || NAV.some(g => g[1].some(x => x[0] === p));
   PAGE = ok ? p : "visao"; SUB = ok ? s || null : null;
   if (SUBS[PAGE] && !SUBS[PAGE].some(x => x[0] === SUB)) SUB = SUBS[PAGE][0][0];
@@ -135,7 +145,8 @@ function topbar(R, title, sub) {
       <div class="monthpick" aria-label="Mês de referência"><button type="button" data-act="mprev" aria-label="Mês anterior">‹</button><span>${mlabel(REF)}</span><button type="button" data-act="mnext" aria-label="Próximo mês">›</button>${REF !== mkey(TODAY) ? `<button type="button" class="mnow" data-act="mnow">Hoje</button>` : ""}</div>
       <button type="button" class="iconbtn" data-act="undo" title="Desfazer (Ctrl+Z)" aria-label="Desfazer"${UNDO.length ? "" : " disabled"}>${ic("undo")}</button><button type="button" class="iconbtn" data-act="redo" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer"${REDO.length ? "" : " disabled"}>${ic("redo")}</button></div></header>`;
 }
-const subtabs = () => SUBS[PAGE] ? `<nav class="subtabs" aria-label="Seções">${SUBS[PAGE].map(([k, l]) => `<a href="#${PAGE}.${k}" class="st${SUB === k ? " on" : ""}"${SUB === k ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>` : "";
+const subtabs = () => { if (!SUBS[PAGE]) return ""; const cur = SUBS[PAGE].find(x => x[0] === SUB), on = k => SUB === k || cur?.[2] === k;
+  return `<nav class="subtabs" aria-label="Seções">${SUBS[PAGE].filter(x => !x[2]).map(([k, l]) => `<a href="#${PAGE}.${k}" class="st${on(k) ? " on" : ""}"${on(k) ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>`; };
 const reportTabs = () => `<nav class="rtabs" aria-label="Páginas do relatório">${REPORT_TABS.map(([k, l]) => { const [p, s] = k.split("."); const on = PAGE === p && (!s || SUB === s); return `<a href="#${k}" class="rt${on ? " on" : ""}"${on ? ' aria-current="page"' : ""}>${l}</a>`; }).join("")}</nav>`;
 
 /* ================================================================ filtros cruzados (estilo Power BI) */
@@ -293,8 +304,10 @@ function palItems(q) {
   add("Ações", "Capturar", "Escreva ou dite: gastos, sono, treino, contatos, tarefas", "bolt", () => openCapture(), "capturar ditar voz rapido registrar");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");
   add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
-  add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("bussola", "exame"), "bussola moral exame consciencia valores");
-  add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("bussola", "decidir"), "dilema decisao etica moral");
+  add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("jornada", "exame"), "bussola moral exame consciencia valores");
+  add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("jornada", "decidir"), "dilema decisao etica moral");
+  add("Ações", "Escrever uma reflexão da jornada", "Espiritismo, meditação, Taoísmo ou Budismo", "lotus", () => setHash("jornada", "inicio"), "jornada reflexao insight espiritual");
+  add("Ações", "Círculo dos mentores", "Os quatro mentores da jornada conversam sobre a sua pergunta", "council", () => setHash("jornada", "confluencias"), "circulo mentores confluencias tradicoes");
   add("Ações", "Fechar a semana", "Números, reflexão, carta e prioridades", "week", () => setHash("semana"), "revisao semanal fechamento");
   add("Ações", "Novo experimento", "Teste uma mudança e meça o efeito", "flask", () => { setHash("exp"); setTimeout(() => openExpForm(), 60); }, "experimento ab teste");
   add("Ações", "Perguntar ao diário", "Busca por significado", "search", () => setHash("diario", "perguntar"), "busca significado semantica");
@@ -312,7 +325,7 @@ function palItems(q) {
   add("Ações", "Alternar tema claro/escuro", "", "sun", () => cycleTheme(), "tema dark light");
   for (const [, items] of NAV) for (const [k, l, i] of items) add("Páginas", l, "", i, () => setHash(k));
   for (const [p, subs] of Object.entries(SUBS)) for (const [s, l] of subs) if (s !== "rel" && s !== "feed") add("Páginas", `${pageTitle(p)} › ${l}`, "", "arrow", () => setHash(p, s));
-  for (const id of Object.keys(MENTOR_DEF)) add("Mentores", MENTOR_DEF[id].nome, MENTOR_DEF[id].area ? ashort(MENTOR_DEF[id].area) : "Todas as áreas", "spark", () => setHash("mentor", id), "mentor " + (MENTOR_DEF[id].area || ""));
+  for (const id of Object.keys(MENTOR_DEF)) add("Mentores", MENTOR_DEF[id].nome, MENTOR_DEF[id].area ? ashort(MENTOR_DEF[id].area) : MENTOR_DEF[id].jor ? "Jornada existencial" : "Todas as áreas", "spark", () => setHash("mentor", id), "mentor " + (MENTOR_DEF[id].area || ""));
   if (q.trim().length >= 1) {
     for (const p of S.pessoas) add("Pessoas", p.nome, p.relacao, "users", () => openEnt("p", p.nome));
     for (const m of S.metas) add("Metas", m.meta, m.area, "target", () => openEnt("meta", m.id));

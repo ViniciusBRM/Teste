@@ -1,8 +1,9 @@
 /* ================================================================ bússola moral: valores, decisões, exame da noite e caminhos
-   Dados em três chaves: bussola (foco), bmExames (um registro por noite), bmDecisoes. Nada daqui vai para a IA, exceto o texto
-   de uma decisão quando a pessoa pede o olhar das cinco tradições (e isso entra no registro de Privacidade). */
+   Dados em três chaves: bussola (foco e a permissão navLe), bmExames (um registro por noite), bmDecisoes. Mora dentro da Jornada
+   existencial. Vai para a IA: o texto de uma decisão quando a pessoa pede o olhar das cinco tradições, e, nas conversas com o
+   Navegante, as notas do exame (os textos do exame e das decisões só com navLe ligado). Tudo entra no registro de Privacidade. */
 const BM = { sel: null, dia: null, draft: null, ai: "", busy: false, ctl: null };
-const BM_TRAD = [["kardec", "Espiritismo"], ["estoico", "Estoicismo"], ["tao", "Taoismo"], ["conf", "Confucionismo"], ["buda", "Budismo"]];
+const BM_TRAD = [["kardec", "Espiritismo"], ["estoico", "Estoicismo"], ["tao", "Taoísmo"], ["conf", "Confucionismo"], ["buda", "Budismo"]];
 const BM_AX = [
   { id: "centro", nome: "Consciência", rumo: "Centro", sub: "a agulha: perceber", cor: "var(--accent)" },
   { id: "norte", nome: "Sentido", rumo: "Norte", sub: "para onde vou", cor: "var(--a-pro)" },
@@ -213,14 +214,14 @@ function bmDetail(v, sc) {
     <div class="bmsombra"><div><span class="flbl">Quando falta</span><p>${esc(v.falta)}</p></div><div><span class="flbl">Quando passa do ponto</span><p>${esc(v.excesso)}</p></div></div>
     <div class="flbl">Nas cinco tradições</div><dl class="bmtrad">${BM_TRAD.map(([k, l]) => `<dt>${l}</dt><dd>${esc(v.t[k])}</dd>`).join("")}</dl>
     <div class="flbl">Tece com</div><div class="row wrap">${v.liga.map(id => bmChip(id)).join("")}</div>
-    <div class="row wrap bmacts"><button type="button" class="btn sm${foc ? "" : " primary"}" data-act="bmfoco" data-id="${v.id}">${ic(foc ? "check" : "target")}${foc ? "Em foco (tirar)" : "Pôr em foco"}</button><button type="button" class="btn sm" data-act="bmhab" data-hab="${esc(v.hab)}">${ic("repeat")}Virar hábito: ${esc(v.hab)}</button><span class="muted small">${s == null ? "sem notas nas últimas 4 semanas" : `prática nas últimas 4 semanas: ${pct(s)}`}</span></div>`, { cls: "bmdet", style: `--c:${a.cor}` });
+    <div class="row wrap bmacts"><button type="button" class="btn sm${foc ? "" : " primary"}" data-act="bmfoco" data-id="${v.id}">${ic(foc ? "check" : "target")}${foc ? "Em foco (tirar)" : "Pôr em foco"}</button><button type="button" class="btn sm" data-act="bmhab" data-hab="${esc(v.hab)}">${ic("repeat")}Virar hábito: ${esc(v.hab)}</button><button type="button" class="btn sm" data-act="bmnav" data-id="${v.id}">${ic("spark")}Conversar com o Navegante</button><span class="muted small">${s == null ? "sem notas nas últimas 4 semanas" : `prática nas últimas 4 semanas: ${pct(s)}`}</span></div>`, { cls: "bmdet", style: `--c:${a.cor}` });
 }
 function pBussola(R) {
   if (SUB === "exame") return bmExame();
   if (SUB === "decidir") return bmDecidir();
   if (SUB === "caminhos") return bmCaminhos();
   const sc = bmScores(28), v = bmV(BM.sel || bmFoco()[0] || "consciencia"), wk = bmWeeks(12), st = bmStreak();
-  return `<p class="lead">Um instrumento para orientar decisões e acompanhar a evolução: 17 valores em quatro rumos (o sentido, o outro, o coração e o próprio), com a consciência no centro. Cada valor traz o que dizem o Espiritismo, o Estoicismo, o Taoismo, o Confucionismo e o Budismo, um princípio de ação, uma prática e uma pergunta. Escolha até três para pôr em foco; o exame da noite mede o caminho.</p>
+  return `<p class="lead">Um instrumento para orientar decisões e acompanhar a evolução: 17 valores em quatro rumos (o sentido, o outro, o coração e o próprio), com a consciência no centro. Cada valor traz o que dizem o Espiritismo, o Estoicismo, o Taoísmo, o Confucionismo e o Budismo, um princípio de ação, uma prática e uma pergunta. Escolha até três para pôr em foco; o exame da noite mede o caminho.</p>
     ${kpiRow([kmini("var(--accent)", "Valores em foco", bmFoco().length ? bmFoco().map(id => esc(bmV(id).nome)).join(", ") : "nenhum", bmFoco().length ? `${bmFoco().length} de 3` : "toque num valor e ponha em foco"), kmini("var(--a-pro)", "Prática · 4 semanas", sc.idx == null ? "–" : pct(sc.idx), "média das notas do exame (0 a 2)"), kmini("var(--a-men)", "Consciência · 4 semanas", `${sc.dias} de 28`, "noites com exame"), kmini("var(--a-amo)", "Exames seguidos", st, st ? "noites" : "comece hoje")])}
     <div class="g2c bmmap">
       ${vis("bmcomp", "A bússola", bmCompass(sc), { sub: "toque num valor; a cor mais forte é o mais praticado nas últimas 4 semanas, e a agulha aponta o valor escolhido", nofocus: true })}
@@ -276,7 +277,7 @@ function bmCaminhos() {
 /* cartão em Hoje */
 function bmHoje() {
   const v = bmDayValue(), done = !!bmEx()[TODAY], a = bmAx(v.ax);
-  return panel(`${ic("compass")}Bússola de hoje`, `<div class="bmday" style="--c:${a.cor}"><b>${esc(v.nome)}</b><p>${esc(v.acao)}</p><p class="muted small">Prática: ${esc(v.pratica)}</p><p class="bmq">${ic("info")}<span>${esc(v.perg)}</span></p></div><div class="row wrap"><a class="btn sm${done ? "" : " primary"}" href="#bussola.exame">${ic(done ? "check" : "moon")}${done ? "Exame de hoje feito" : "Exame da noite"}</a></div>`, { act: `<a class="lnk" href="#bussola">bússola</a>` });
+  return panel(`${ic("compass")}Bússola de hoje`, `<div class="bmday" style="--c:${a.cor}"><b>${esc(v.nome)}</b><p>${esc(v.acao)}</p><p class="muted small">Prática: ${esc(v.pratica)}</p><p class="bmq">${ic("info")}<span>${esc(v.perg)}</span></p></div><div class="row wrap"><a class="btn sm${done ? "" : " primary"}" href="#jornada.exame">${ic(done ? "check" : "moon")}${done ? "Exame de hoje feito" : "Exame da noite"}</a></div>`, { act: `<a class="lnk" href="#jornada.bussola">bússola</a>` });
 }
 /* ---------------------------------------------------------------- IA: o olhar das cinco tradições */
 async function bmAI() {
@@ -284,7 +285,7 @@ async function bmAI() {
   if (!(dr.sit || dr.t).trim()) { toast("Descreva o dilema antes."); return; }
   BM.busy = true; BM.ai = ""; BM.ctl = new AbortController(); render();
   const build = () => `TAREFA: BUSSOLA MORAL
-Você ajuda uma pessoa a pensar um dilema ético, moral ou existencial à luz de cinco tradições: Espiritismo kardecista (evolução do Espírito, lei de causa e efeito, caridade), Estoicismo, Taoismo, Confucionismo e Budismo. Ela é espírita e tem afinidade com as outras quatro. Português do Brasil, segunda pessoa, respeitoso e prático, até 280 palavras, em markdown.
+Você ajuda uma pessoa a pensar um dilema ético, moral ou existencial à luz de cinco tradições: Espiritismo kardecista (evolução do Espírito, lei de causa e efeito, caridade), Estoicismo, Taoísmo, Confucionismo e Budismo. Ela é espírita e tem afinidade com as outras quatro. Português do Brasil, segunda pessoa, respeitoso e prático, até 280 palavras, em markdown.
 Não decida por ela. Mostre o que cada tradição iluminaria aqui (uma linha cada, citando a fonte só se tiver certeza), depois 2 caminhos possíveis com o que cada um tende a plantar, e termine com uma única pergunta para ela levar.
 Se o texto sugerir risco à própria vida ou desesperança grave, comece acolhendo e indique buscar ajuda agora (no Brasil, CVV 188; na Europa, 112), sem sermão.
 Dilema: ${dr.t || "(sem título)"}
@@ -299,7 +300,7 @@ Decisão que está considerando: ${dr.dec || "ainda nenhuma"}`;
 /* ---------------------------------------------------------------- eventos */
 function bmClick(t) {
   const ds = t.dataset, a = ds.act;
-  if (ds.bmv && !a) { BM.sel = ds.bmv; if (PAGE !== "bussola" || SUB !== "mapa") setHash("bussola", "mapa"); else render(); return true; }
+  if (ds.bmv && !a) { BM.sel = ds.bmv; if (PAGE !== "jornada" || SUB !== "bussola") setHash("jornada", "bussola"); else render(); return true; }
   if (a === "bmfoco") { const f = bmFoco(), i = f.indexOf(ds.id); let msg; if (i >= 0) f.splice(i, 1); else { if (f.length >= 3) { msg = `${bmV(f[0]).nome} saiu do foco`; f.shift(); } f.push(ds.id); } touch("bussola", { label: "Valores em foco" }); if (msg) toast(msg); return true; }
   if (a === "bmhab") { const nome = ds.hab; if ((S.habitos || []).some(h => norm(h.nome) === norm(nome))) { toast("Esse hábito já está na sua lista."); return true; } S.habitos.push({ id: uid(), nome, area: AREAS.find(x => /prop/i.test(x)) || AREAS[0], meta: 5 }); touch("habitos", { label: "Hábito da Bússola" }); undoToast(`Hábito criado: ${nome}`); return true; }
   if (a === "bmnota") { const d = BM.dia || TODAY, e = bmEx()[d] || { n: {} }, v = +ds.v, cur = e.n?.[ds.id]; bmSet(d, { n: { ...(e.n || {}), [ds.id]: cur === v ? null : v } }, "Nota do exame"); render(); return true; }
