@@ -104,8 +104,8 @@ function pFinProjetos(R) {
   return `<p class="lead">Projetos e aquisições dentro de um plano que preserva a saúde financeira: primeiro a reserva de emergência, depois cada projeto pela prioridade e pelo prazo, usando só parte da sobra média. Cada cartão mostra quanto falta, quanto precisa por mês, quanto cabe e quando fica pronto se não couber.</p>
     ${kpiRow([kmini("var(--a-fin)", "Sobra média", eur(c.sobra), `receitas ${eur(c.rec)} − despesas ${eur(c.desp)} · ${plural(c.meses, "mês", "meses")}`, c.sobra < 0 ? "crit" : ""), kmini("var(--good)", "Reserva de emergência", c.resMeses == null ? "–" : `${num(c.resMeses, 1)} meses`, `meta ${C.metaReserva} meses (${eur(c.alvoRes)})`, c.gapRes > 0 ? "warn" : "good"), kmini("var(--accent)", "Livre para projetos", eur(c.livre), `${pct(C.usoSobra)} da sobra · reserva leva ${eur(P.res)}/mês`), kmini("var(--warn)", "Parcelas / renda", c.rec ? pct(P.comprom / c.rec) : "–", `teto ${pct(C.maxParcela)} · ${eur(P.comprom)}/mês`, c.rec && P.comprom > P.tetoParc ? "crit" : "")])}
     <div class="g2c pjg">
-      ${PJ.edit ? pjForm() : ""}
       ${finTermometro("span2")}
+      ${PJ.edit ? pjForm() : ""}
       ${panel(`${ic("target")}Projetos e aquisições <small>${ps.length}</small>`, `${ps.length ? "" : `<div class="empty">Nenhum projeto ainda. Cadastre o que você quer realizar ou comprar; o plano diz se cabe, quanto juntar por mês e quando fica pronto.</div>`}<div class="row"><button type="button" class="btn primary" data-act="pjnew">${ic("plus")}Novo projeto ou aquisição</button></div>`, { cls: "span2" })}
       ${ativos.map(p => pjCard(p, P)).join("")}
       ${vis("pjtl", "Linha do tempo", pjTimeline(P), { cls: "span2", sub: "próximos 36 meses · barra escura = quando o plano fica pronto · traço = prazo desejado" })}
@@ -167,7 +167,7 @@ function pjInput(t) { if (t.dataset.pjf) { PJ.f[t.dataset.pjf] = t.value; return
 
 /* ---------------------------------------------------------------- saldo dia a dia e ritmo da semana (no relatório de finanças) */
 function finExtras(R) {
-  const sc = S.saldoConta, out = [finTermometro()];
+  const sc = S.saldoConta, out = [];
   if (sc?.serie?.length) { const s = sc.serie.filter(([d]) => d >= addDays(TODAY, -400)), low = 100;
     out.push(vis("fin-saldo", `Saldo da conta, dia a dia · ${esc(sc.conta || "")}`, lineChart(s.map(([d]) => fmtD(d)), [{ name: "Saldo", color: "var(--accent)", data: s.map(([, v]) => v) }], { h: 230, w: 900, fmt: v => eur(v), target: low }),
       { cls: "s12", sub: `${s.length} dias com movimento · ${fmtDY(s[0][0])} a ${fmtDY(s.at(-1)[0])} · linha de referência em ${eur(low)} · fonte: ${esc(sc.fonte || "")}` })); }

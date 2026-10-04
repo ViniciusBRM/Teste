@@ -1002,6 +1002,8 @@ tr.dim td{opacity:.5}
 .fhsc{font-size:34px;font-weight:700;line-height:1}.fhsc small{font-size:15px;color:var(--muted)}.fhcomp{display:grid;gap:9px}
 .fhrow{display:grid;grid-template-columns:minmax(0,1fr) 30px;gap:4px 10px;align-items:center}.fhl{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px;font-size:13px}
 .fht{height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden}.fht i{display:block;height:100%;border-radius:4px}.fhrow b{text-align:right;font-size:12.5px}
+.s12 .fhcomp,.span2 .fhcomp{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 26px}
+@media (max-width:900px){.s12 .fhcomp,.span2 .fhcomp{grid-template-columns:1fr}}
 @media (max-width:560px){.fhg{grid-template-columns:1fr}}
 </style>
 
@@ -2716,7 +2718,8 @@ function rFin(R) {
   const dmap = {}; days.forEach(d => { const v = dsp(d); if (v) dmap[d] = v; });
   const top = R.lm.filter(l => l.tipo === "Despesa" && inF(l)).sort((a, b) => b.valor - a.valor), mx = Math.max(1, ...top.map(l => +l.valor));
   const pk = Object.keys(S.patr).filter(k => k <= mk).sort().slice(-12), pv = k => S.patr[k] || {};
-  const body = `${vis("fin-cols", "Despesas por grupo, receita e resultado", cols, { cls: "s8", sub: `${PER} meses · toque num mês para analisá-lo${f.cat ? ` · filtro: ${f.cat}` : ""}`, table: () => ({ cols: [{ l: "Mês" }, { l: "Receita", num: true, f: v => eur(v) }, ...GRUPOS.map(g => ({ l: g, num: true, f: v => eur(v) })), { l: "Aportes", num: true, f: v => eur(v) }, { l: "Resultado", num: true, f: v => eur(v) }], rows: H.map(h => [mlabel(h.mk), h.fin.rec, ...GRUPOS.map(g => h.fin.grp[g] || 0), h.fin.apo, h.fin.res]) }) })}
+  const body = `${finTermometro("s12")}
+    ${vis("fin-cols", "Despesas por grupo, receita e resultado", cols, { cls: "s8", sub: `${PER} meses · toque num mês para analisá-lo${f.cat ? ` · filtro: ${f.cat}` : ""}`, table: () => ({ cols: [{ l: "Mês" }, { l: "Receita", num: true, f: v => eur(v) }, ...GRUPOS.map(g => ({ l: g, num: true, f: v => eur(v) })), { l: "Aportes", num: true, f: v => eur(v) }, { l: "Resultado", num: true, f: v => eur(v) }], rows: H.map(h => [mlabel(h.mk), h.fin.rec, ...GRUPOS.map(g => h.fin.grp[g] || 0), h.fin.apo, h.fin.res]) }) })}
     ${vis("fin-wf", "Cascata do mês", wf, { cls: "s4", sub: `${mlabel(mk)} · da receita à sobra` })}
     ${vis("fin-sk", "Para onde foi o dinheiro", sankey(F), { cls: "s6", sub: "receita → grupos → categorias · toque numa categoria para filtrar" })}
     ${vis("fin-tm", "Mapa das categorias", treemap(cats, { w: vw(6), h: 300, xf: "cat", sel: f.cat }), { cls: "s6", sub: "área proporcional ao gasto · toque para filtrar", table: () => ({ cols: [{ l: "Categoria" }, { l: "Grupo" }, { l: "Valor", num: true, f: v => eur(v, 2) }, { l: "% das despesas", num: true, f: v => pct(v, 1) }], rows: cats.sort((a, b) => b.v - a.v).map(c => [c.l, c.sub, c.v, F.desp ? c.v / F.desp : null]) }) })}
@@ -6389,8 +6392,8 @@ function pFinProjetos(R) {
   return `<p class="lead">Projetos e aquisições dentro de um plano que preserva a saúde financeira: primeiro a reserva de emergência, depois cada projeto pela prioridade e pelo prazo, usando só parte da sobra média. Cada cartão mostra quanto falta, quanto precisa por mês, quanto cabe e quando fica pronto se não couber.</p>
     ${kpiRow([kmini("var(--a-fin)", "Sobra média", eur(c.sobra), `receitas ${eur(c.rec)} − despesas ${eur(c.desp)} · ${plural(c.meses, "mês", "meses")}`, c.sobra < 0 ? "crit" : ""), kmini("var(--good)", "Reserva de emergência", c.resMeses == null ? "–" : `${num(c.resMeses, 1)} meses`, `meta ${C.metaReserva} meses (${eur(c.alvoRes)})`, c.gapRes > 0 ? "warn" : "good"), kmini("var(--accent)", "Livre para projetos", eur(c.livre), `${pct(C.usoSobra)} da sobra · reserva leva ${eur(P.res)}/mês`), kmini("var(--warn)", "Parcelas / renda", c.rec ? pct(P.comprom / c.rec) : "–", `teto ${pct(C.maxParcela)} · ${eur(P.comprom)}/mês`, c.rec && P.comprom > P.tetoParc ? "crit" : "")])}
     <div class="g2c pjg">
-      ${PJ.edit ? pjForm() : ""}
       ${finTermometro("span2")}
+      ${PJ.edit ? pjForm() : ""}
       ${panel(`${ic("target")}Projetos e aquisições <small>${ps.length}</small>`, `${ps.length ? "" : `<div class="empty">Nenhum projeto ainda. Cadastre o que você quer realizar ou comprar; o plano diz se cabe, quanto juntar por mês e quando fica pronto.</div>`}<div class="row"><button type="button" class="btn primary" data-act="pjnew">${ic("plus")}Novo projeto ou aquisição</button></div>`, { cls: "span2" })}
       ${ativos.map(p => pjCard(p, P)).join("")}
       ${vis("pjtl", "Linha do tempo", pjTimeline(P), { cls: "span2", sub: "próximos 36 meses · barra escura = quando o plano fica pronto · traço = prazo desejado" })}
@@ -6452,7 +6455,7 @@ function pjInput(t) { if (t.dataset.pjf) { PJ.f[t.dataset.pjf] = t.value; return
 
 /* ---------------------------------------------------------------- saldo dia a dia e ritmo da semana (no relatório de finanças) */
 function finExtras(R) {
-  const sc = S.saldoConta, out = [finTermometro()];
+  const sc = S.saldoConta, out = [];
   if (sc?.serie?.length) { const s = sc.serie.filter(([d]) => d >= addDays(TODAY, -400)), low = 100;
     out.push(vis("fin-saldo", `Saldo da conta, dia a dia · ${esc(sc.conta || "")}`, lineChart(s.map(([d]) => fmtD(d)), [{ name: "Saldo", color: "var(--accent)", data: s.map(([, v]) => v) }], { h: 230, w: 900, fmt: v => eur(v), target: low }),
       { cls: "s12", sub: `${s.length} dias com movimento · ${fmtDY(s[0][0])} a ${fmtDY(s.at(-1)[0])} · linha de referência em ${eur(low)} · fonte: ${esc(sc.fonte || "")}` })); }
