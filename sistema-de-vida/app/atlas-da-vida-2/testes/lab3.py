@@ -356,9 +356,50 @@ async def bank(p):
     chk(not errs, f"sem erros no console ({errs[:2]})")
     await b.close()
 
+# ---------------------------------------------------------------- Samsung Health (exportação de dados pessoais)
+async def samsung(p):
+    b, pg, errs = await open_page(p, w=1440, hash_="integ")
+    T = await pg.evaluate("TODAY"); t = dd(T)
+    d1, d2 = (t - datetime.timedelta(days=2)).isoformat(), (t - datetime.timedelta(days=1)).isoformat()
+    def ep(d): return str(int(datetime.datetime.fromisoformat(d).replace(tzinfo=datetime.timezone.utc).timestamp() * 1000))
+    pre = "com.samsung.health.step_daily_trend"
+    files = {
+      "Samsung Health/com.samsung.shealth.step_daily_trend.20261004.csv": f"com.samsung.shealth.step_daily_trend,6313004,4\n{pre}.day_time,{pre}.count,{pre}.source_type,{pre}.distance\n{ep(d1)},8000,-2,6000\n{ep(d1)},5000,0,4000\n{ep(d1)},7600,1,5000\n{ep(d2)},4200,-2,3000\n",
+      "Samsung Health/com.samsung.shealth.sleep.20261004.csv": "com.samsung.shealth.sleep,6313004,3\nstart_time,end_time,time_offset,com.samsung.health.sleep.deviceuuid\n" +
+         f"{d1[:8]}{int(d1[8:])-1:02d} 21:30:00.000,{d1} 04:30:00.000,UTC+0200,relogio\n{d1[:8]}{int(d1[8:])-1:02d} 22:00:00.000,{d1} 05:15:00.000,UTC+0200,celular\n",
+      "Samsung Health/com.samsung.health.weight.20261004.csv": f"com.samsung.health.weight,6313004,3\ncom.samsung.health.weight.start_time,com.samsung.health.weight.weight,com.samsung.health.weight.time_offset\n{d2} 05:10:00.000,79.4,UTC+0200\n",
+      "Samsung Health/com.samsung.shealth.exercise.20261004.csv": f"com.samsung.shealth.exercise,6313004,5\ncom.samsung.health.exercise.start_time,com.samsung.health.exercise.exercise_type,com.samsung.health.exercise.duration,com.samsung.health.exercise.time_offset\n{d2} 16:00:00.000,1002,2460000,UTC+0200\n{d2} 07:00:00.000,1001,300000,UTC+0200\n",
+      "Samsung Health/com.samsung.shealth.sleep_stage.20261004.csv": "com.samsung.shealth.sleep_stage,6313004,1\nstart_time,end_time,stage\nx,y,40001\n",
+    }
+    zb = io.BytesIO()
+    with zipfile.ZipFile(zb, "w", zipfile.ZIP_DEFLATED) as z:
+        for n, c in files.items(): z.writestr(n, c)
+    zp = OUT / "samsung.zip"; zp.write_bytes(zb.getvalue())
+    await pg.evaluate("([a, b]) => { delete S.saude[a]; delete S.saude[b]; VER++; }", [d1, d2])
+    await pg.set_input_files("#ix_sh", str(zp)); await pg.wait_for_timeout(1200)
+    chk(await pg.locator("#dlg[open] #hok").count() == 1, "Samsung Health (.zip da pasta exportada): prévia aberta")
+    H = await pg.evaluate("IX.health")
+    chk(H["fonte"] == "Samsung Health" and H["days"].get(d1, {}).get("passos") == 8000 and H["days"].get(d2, {}).get("passos") == 4200, f"passos: total combinado do dia (fonte -2), sem somar celular e relógio ({H['days'].get(d1, {}).get('passos')})")
+    chk(H["days"].get(d1, {}).get("sono") == 7.75, f"sono: noite do relógio e do celular juntada, não somada (23:30–06:45 local = 7,75 h) ({H['days'].get(d1, {}).get('sono')})")
+    chk(H["days"].get(d2, {}).get("peso") == 79.4, "peso com colunas prefixadas")
+    chk(H["days"].get(d2, {}).get("treino") == "Corrida" and H["days"].get(d2, {}).get("min") == 46, f"exercícios do dia: corrida de 41 min + caminhada de 5 = 46 min, tipo da maior ({H['days'].get(d2)})")
+    await pg.click("#hok"); await pg.wait_for_timeout(300)
+    chk(await pg.evaluate(f"S.saude['{d1}'].passos") == 8000 and await pg.evaluate(f"S.saude['{d2}'].treino") == "Corrida", "Samsung Health importado")
+    csvs = []
+    for n, c in list(files.items())[:2]:
+        fp = OUT / n.split("/")[-1]; fp.write_text(c); csvs.append(str(fp))
+    await pg.set_input_files("#ix_sh", csvs); await pg.wait_for_timeout(800)
+    chk((await pg.evaluate(f"IX.health.days['{d1}']?.sono")) == 7.75, "também aceita os .csv soltos (vários de uma vez)")
+    await pg.keyboard.press("Escape")
+    bad = OUT / "outro.csv"; bad.write_text("a,b\n1,2\n")
+    await pg.set_input_files("#ix_sh", str(bad)); await pg.wait_for_timeout(500)
+    chk("Não achei passos" in await toast_text(pg), "arquivo que não é do Samsung Health: aviso claro")
+    chk(not errs, f"sem erros no console ({errs[:2]})")
+    await b.close()
+
 async def main():
     async with async_playwright() as p:
-        for n, f in (("dupla", dupla), ("agenda", ics), ("saude", health), ("notion", notion), ("extrato", bank)):
+        for n, f in (("dupla", dupla), ("agenda", ics), ("saude", health), ("samsung", samsung), ("notion", notion), ("extrato", bank)):
             await section(n, f, p)
     print(f"\n{ok}/{ok + bad} passaram")
 asyncio.run(main())

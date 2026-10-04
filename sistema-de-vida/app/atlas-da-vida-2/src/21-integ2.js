@@ -64,6 +64,49 @@ function fitParse(rows) {
   return { fonte: "Google Fit", days, n: rows.length - 1 };
 }
 const isFit = rows => rows.length > 1 && rows[0].some(x => norm(x) === "date") && rows[0].some(x => norm(x).includes("step count"));
+/* ---------------------------------------------------------------- Samsung Health (app › Configurações › Baixar dados pessoais)
+   A exportação é uma pasta de .csv, um por tipo de dado (com.samsung.shealth.sleep.<data>.csv…). A 1ª linha de cada arquivo é
+   um cabeçalho do tipo; os nomes de coluna podem vir prefixados (com.samsung.health.weight.start_time). Horários vêm em UTC
+   com uma coluna time_offset (“UTC+0200”); o dia é o local. */
+const SH_WORK = { 1001: "Caminhada", 1002: "Corrida", 11007: "Bicicleta", 14001: "Natação", 14002: "Natação", 13001: "Caminhada", 10004: "Musculação", 10007: "Musculação", 15005: "Yoga / alongamento", 15006: "Yoga / alongamento", 9002: "Yoga / alongamento" };
+function shRows(text) {
+  let t = String(text).replace(/^﻿/, ""); const l1 = t.split(/\r?\n/, 1)[0];
+  if (/^com\.samsung\./i.test(l1) && l1.split(",").length <= 4) t = t.slice(l1.length).replace(/^\r?\n/, "");
+  const rows = csvParse(t); if (rows.length < 2) return [];
+  const h = rows[0].map(x => String(x || "").trim().split(".").pop().toLowerCase());
+  return rows.slice(1).map(r => Object.fromEntries(h.map((k, i) => [k, r[i]])));
+}
+function shTime(v, off) {
+  if (v == null || v === "") return null; let ms;
+  if (/^\d{11,}$/.test(String(v).trim())) ms = +v; else { const m = String(v).match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}(?::\d{2})?)/); if (!m) return null; ms = Date.parse(`${m[1]}T${m[2].length === 5 ? m[2] + ":00" : m[2]}Z`); }
+  const o = String(off || "").match(/UTC([+-])(\d{2}):?(\d{2})/); if (o) ms += (o[1] === "-" ? -1 : 1) * (+o[2] * 60 + +o[3]) * 6e4;
+  return ms;   // relógio local expresso como se fosse UTC
+}
+const shDay = ms => new Date(ms).toISOString().slice(0, 10);
+async function samsungRead(files) {
+  const texts = [];
+  for (const f of files) {
+    if (/\.zip$/i.test(f.name)) { for (const e of (await zipEntries(f)).filter(e => /\.csv$/i.test(e.name))) texts.push([e.name, await new Response(await zipStream(f, e)).text()]); }
+    else if (/\.csv$/i.test(f.name)) texts.push([f.name, await f.text()]);
+  }
+  const base = n => n.split("/").pop().toLowerCase(), min = addDays(TODAY, -730), steps = {}, stepsTrend = {}, sleep = {}, weight = {}, work = {}, used = new Set(); let n = 0;
+  for (const [name, tx] of texts) {
+    const b = base(name);
+    if (/step_daily_trend/.test(b)) { used.add("passos"); for (const r of shRows(tx)) { const ms = shTime(r.day_time); if (ms == null) continue; const d = shDay(ms); if (d < min) continue; n++; const src = String(r.source_type ?? ""), v = +r.count || 0; if (src === "-2") stepsTrend[d] = v; else (steps[d] ||= {})["trend" + src] = Math.max(steps[d]?.["trend" + src] || 0, v); } }
+    else if (/pedometer_day_summary/.test(b)) { used.add("passos"); for (const r of shRows(tx)) { const ms = shTime(r.day_time ?? r.create_time); if (ms == null) continue; const d = shDay(ms); if (d < min) continue; n++; const v = +r.step_count || 0; (steps[d] ||= {}).sum = Math.max(steps[d]?.sum || 0, v); } }
+    else if (/shealth\.sleep\.|health\.sleep\./.test(b) && !/sleep_stage|sleep_combined|sleep_snoring|sleep_goal|sleep_data/.test(b)) { used.add("sono"); for (const r of shRows(tx)) { const a = shTime(r.start_time, r.time_offset), e = shTime(r.end_time, r.time_offset); if (a == null || e == null || e <= a) continue; const d = shDay(e); if (d < min) continue; n++; (sleep[d] ||= []).push([a, e]); } }
+    else if (/health\.weight\./.test(b)) { used.add("peso"); for (const r of shRows(tx)) { const ms = shTime(r.start_time ?? r.create_time, r.time_offset), v = parseFloat(r.weight); if (ms == null || !(v > 20 && v < 400)) continue; const d = shDay(ms); if (d < min) continue; n++; weight[d] = Math.round(v * 10) / 10; } }
+    else if (/shealth\.exercise\.|health\.exercise\./.test(b) && !/exercise\.(weather|recovery|routine|custom|periodization)/.test(b)) { used.add("treinos"); for (const r of shRows(tx)) { const ms = shTime(r.start_time, r.time_offset), mn = (+r.duration || 0) / 6e4; if (ms == null || !mn) continue; const d = shDay(ms); if (d < min) continue; n++; const tipo = SH_WORK[+r.exercise_type] || "Outro", w = work[d] ||= { min: 0, tipo: "", best: 0 }; w.min += mn; if (mn > w.best) { w.best = mn; w.tipo = tipo; } } }
+  }
+  if (!used.size) throw new Error("noshealth");
+  const days = {};
+  for (const d of new Set([...Object.keys(steps), ...Object.keys(stepsTrend)])) { const v = stepsTrend[d] ?? Math.max(0, ...Object.values(steps[d] || {})); if (v > 0) (days[d] ||= {}).passos = Math.round(v); }
+  /* sono: junta períodos sobrepostos (relógio e celular registram a mesma noite) antes de somar */
+  for (const [d, iv] of Object.entries(sleep)) { iv.sort((x, y) => x[0] - y[0]); let tot = 0, [a, e] = iv[0]; for (const [x, y] of iv.slice(1)) { if (x <= e) e = Math.max(e, y); else { tot += e - a; [a, e] = [x, y]; } } tot += e - a; const h = tot / 36e5; if (h >= 1 && h <= 16) (days[d] ||= {}).sono = Math.round(h * 4) / 4; }
+  for (const [d, v] of Object.entries(weight)) (days[d] ||= {}).peso = v;
+  for (const [d, w] of Object.entries(work)) if (w.min >= 10) Object.assign(days[d] ||= {}, { treino: findIn(TREINOS, w.tipo) || "Outro", min: Math.round(w.min) });
+  return { fonte: "Samsung Health", days, n };
+}
 function healthPreview(H) {
   IX.health = H; const ds = Object.keys(H.days).sort(), cnt = k => ds.filter(d => H.days[d][k] != null).length, clash = ds.filter(d => S.saude[d] && Object.keys(H.days[d]).some(k => isNum(S.saude[d][k]) || (k === "treino" && S.saude[d].treino))).length;
   $("#dlg").innerHTML = `<form method="dialog" class="wide"><h3>${ic("pulse")}${esc(H.fonte)}: prévia</h3><p class="muted">${num(H.n, 0)} registros lidos · ${ds.length ? `${plural(ds.length, "dia", "dias")} de ${fmtDY(ds[0])} a ${fmtDY(ds.at(-1))}` : "nenhum dia com dados úteis"}.</p>
@@ -211,7 +254,7 @@ function pIntegTwoWay(R) {
   const on = !!MCP && NT.status !== "off", ts = S.integ?.notion?.tarefas, auto = (S.regras || []).filter(r => r.auto), ev = (S.eventos || []).filter(e => e.data >= TODAY).length;
   return panel(`${ic("refresh")}Nos dois sentidos`, `<div class="ixrow"><div>${ic("globe")}<b>Notion · tarefas</b><small>${ts?.id ? `Página <a class="lnk" href="${esc(ts.url || "#")}" target="_blank" rel="noopener">Tarefas do Atlas</a> · última sincronização ${relDay(iso(new Date(ts.at)))}` : "Cria uma página com as tarefas abertas; o que você marcar lá volta concluído, e o que escrever lá entra no Atlas."}</small></div><button type="button" class="btn sm${ts?.id ? "" : " primary"}" data-act="ixnotion"${on && !IX.busy ? "" : " disabled"}>${IX.busy === "notion" ? "Sincronizando…" : ts?.id ? "Sincronizar agora" : "Criar no Notion"}</button></div>
     <div class="ixrow"><div>${ic("cal")}<b>Agenda</b><small>${ev ? `${plural(ev, "compromisso futuro", "compromissos futuros")} importados. ` : ""}Importe o .ics (ou o .zip exportado pelo Google Agenda); exporte prazos, aniversários e documentos em .ics.</small></div><div class="row wrap"><label class="btn sm filebtn">${ic("upload")}Importar .ics<input type="file" id="ix_ics" accept=".ics,.zip,text/calendar,application/zip" hidden></label><button type="button" class="btn sm" data-act="ixicsout">${ic("download")}Exportar .ics</button></div></div>
-    <div class="ixrow"><div>${ic("pulse")}<b>Saúde do celular e do relógio</b><small>Apple Health: Saúde › seu perfil › Exportar todos os dados (export.zip). Google Fit: Takeout › Fit › “Daily activity metrics.csv”. Passos, sono, peso e treinos.</small></div><div class="row wrap"><label class="btn sm filebtn">${ic("upload")}Apple Health<input type="file" id="ix_ah" accept=".zip,.xml,application/zip,text/xml" hidden></label><label class="btn sm filebtn">${ic("upload")}Google Fit<input type="file" id="ix_fit" accept=".csv,text/csv" hidden></label></div></div>
+    <div class="ixrow"><div>${ic("pulse")}<b>Saúde do celular e do relógio</b><small>Apple Health: Saúde › seu perfil › Exportar todos os dados (export.zip). Google Fit: Takeout › Fit › “Daily activity metrics.csv”. Samsung Health: no app, Configurações › Baixar dados pessoais; envie a pasta exportada compactada em .zip (ou os .csv). Passos, sono, peso e treinos.</small></div><div class="row wrap"><label class="btn sm filebtn">${ic("upload")}Apple Health<input type="file" id="ix_ah" accept=".zip,.xml,application/zip,text/xml" hidden></label><label class="btn sm filebtn">${ic("upload")}Google Fit<input type="file" id="ix_fit" accept=".csv,text/csv" hidden></label><label class="btn sm filebtn">${ic("upload")}Samsung Health<input type="file" id="ix_sh" accept=".zip,.csv,application/zip,text/csv" multiple hidden></label></div></div>
     ${IX.busy === "health" ? `<p class="note">${ic("clock")}<span id="ix_prog">${esc(IX.prog || "Lendo o arquivo…")}</span></p>` : ""}
     <div class="ixrow"><div>${ic("coins")}<b>Extrato do banco que aprende</b><small>Ao importar, corrija a categoria de uma linha e todas as do mesmo estabelecimento seguem; a correção vira regra para os próximos extratos. ${auto.length ? `${plural(auto.length, "regra aprendida", "regras aprendidas")}: ${auto.slice(-4).map(r => `“${esc(r.termo)}” → ${esc(r.cat)}`).join(", ")}.` : ""}</small></div><label class="btn sm filebtn">${ic("upload")}Importar extrato<input type="file" id="imp_bank2" accept=".csv,text/csv,text/plain" hidden></label></div>
     ${IX.err ? `<p class="note st-warn">${esc(IX.err)}</p>` : ""}`, { cls: "span2" });
@@ -225,6 +268,7 @@ function integ2Click(t) {
 function integ2Change(t) {
   const f = t.files?.[0];
   if (t.id === "ix_ah" && f) { IX.busy = "health"; IX.prog = "Abrindo o arquivo…"; render(); healthRead(f).then(healthPreview).catch(e => toast(e?.message === "noexport" ? "Não achei o export.xml dentro do .zip." : e?.message === "zip" ? "Esse arquivo não parece um .zip válido." : e?.message === "zipmethod" ? "Este navegador não consegue descompactar esse .zip; descompacte e envie o export.xml." : "Não consegui ler o arquivo do Apple Health.")).finally(() => { IX.busy = ""; render(); }); t.value = ""; return true; }
+  if (t.id === "ix_sh" && f) { const fs = [...t.files]; IX.busy = "health"; IX.prog = "Lendo a exportação do Samsung Health…"; render(); samsungRead(fs).then(healthPreview).catch(e => toast(e?.message === "noshealth" ? "Não achei passos, sono, peso nem exercícios nesses arquivos. Envie a pasta exportada pelo Samsung Health (compactada em .zip) ou os .csv dela." : e?.message === "zip" ? "Esse arquivo não parece um .zip válido." : "Não consegui ler a exportação do Samsung Health.")).finally(() => { IX.busy = ""; render(); }); t.value = ""; return true; }
   if (t.id === "ix_fit" && f) { f.text().then(tx => { const rows = csvParse(tx); if (!isFit(rows)) { toast("Esse CSV não parece o “Daily activity metrics” do Google Fit."); return; } healthPreview(fitParse(rows)); }).catch(() => toast("Não consegui ler o arquivo.")); t.value = ""; return true; }
   if (t.id === "ix_ics" && f) { icsReadFile(f).then(tx => icsPreview(icsParse(tx), f.name)).catch(() => toast("Não consegui ler a agenda.")); t.value = ""; return true; }
   if (t.id === "imp_bank2") { readFile(t).then(x => openImport("lanc", csvParse(x.text), x.name)).catch(() => toast("Não consegui ler o arquivo.")); t.value = ""; return true; }
