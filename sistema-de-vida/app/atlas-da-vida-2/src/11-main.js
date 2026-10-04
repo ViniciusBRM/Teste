@@ -14,7 +14,7 @@ function render() {
     mentores: () => ["Mentores", "Um agente para cada área, com memória do que vocês combinaram", pMentores],
     mentor: () => [esc(MENTOR_DEF[SUB].nome), esc(MENTOR_DEF[SUB].papel[0].toUpperCase() + MENTOR_DEF[SUB].papel.slice(1)), pMentor],
     cruz: () => ["Cruzamentos", "Descubra o que anda junto na sua vida: escolha duas métricas ou deixe o Atlas procurar", rCruz],
-    fin: () => ["Finanças", mlabel(REF), { rel: rFin, lanc: pLanc, orc: pOrc, diario: pSetorDiario }[SUB]],
+    fin: () => ["Finanças", mlabel(REF), { rel: rFin, lanc: pLanc, orc: pOrc, projetos: pFinProjetos, diario: pSetorDiario }[SUB]],
     saude: () => ["Saúde", mlabel(REF), { rel: rSaude, checkin: pCheckin, diario: pSetorDiario }[SUB]],
     hab: () => ["Hábitos", mlabel(REF), { rel: rHab, marcar: pHabMarcar, diario: pSetorDiario }[SUB]],
     metas: () => ["Metas & tarefas", mlabel(REF), { rel: rMetas, lista: pMetasLista, tarefas: pTarefas, diario: pSetorDiario }[SUB]],
@@ -109,7 +109,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (capClick(t) || bmClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (capClick(t) || bmClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -171,7 +171,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t)) return;
+  if (diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -186,7 +186,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (capChange(t) || bmChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (capChange(t) || bmChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

@@ -88,7 +88,7 @@ const NAV = [
   ["Sistema", [["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
 ];
 const SUBS = {
-  fin: [["rel", "Relatório"], ["lanc", "Lançamentos"], ["orc", "Orçamento & patrimônio"], ["diario", "Diário"]],
+  fin: [["rel", "Relatório"], ["lanc", "Lançamentos"], ["orc", "Orçamento & patrimônio"], ["projetos", "Projetos & aquisições"], ["diario", "Diário"]],
   saude: [["rel", "Relatório"], ["checkin", "Check-in"], ["diario", "Diário"]],
   hab: [["rel", "Relatório"], ["marcar", "Marcar hábitos"], ["diario", "Diário"]],
   metas: [["rel", "Relatório"], ["lista", "Metas"], ["tarefas", "Tarefas"], ["diario", "Diário"]],
@@ -292,6 +292,7 @@ function palItems(q) {
   if (q.trim().startsWith("/")) { const r = previewCommand(q.trim()); out.push({ g: "Executar", l: r.ok ? r.txt : r.err || "Comando incompleto", s: r.ok ? "Enter registra agora" : "Ex.: /gasto 12,50 Café · /tarefa Ligar para o banco até 15/10 · /humor 4", ico: "bolt", run: r.ok ? () => runQuickCommand(q.trim()) : null, sc: 999 }); return out; }
   add("Ações", "Capturar", "Escreva ou dite: gastos, sono, treino, contatos, tarefas", "bolt", () => openCapture(), "capturar ditar voz rapido registrar");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");
+  add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
   add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("bussola", "exame"), "bussola moral exame consciencia valores");
   add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("bussola", "decidir"), "dilema decisao etica moral");
   add("Ações", "Fechar a semana", "Números, reflexão, carta e prioridades", "week", () => setHash("semana"), "revisao semanal fechamento");
