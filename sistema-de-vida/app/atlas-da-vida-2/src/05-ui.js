@@ -1,6 +1,7 @@
 
 /* ================================================================ ícones (traço 1.7, 24×24) */
 const ICONS = {
+  layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17.5l9 5 9-5" opacity=".55"/>',
   lotus: '<path d="M12 20c-1.9-1.6-3.2-4-3.2-6.9 0-2.6 1.2-5 3.2-7 2 2 3.2 4.4 3.2 7 0 2.9-1.3 5.3-3.2 6.9z"/><path d="M12 20c-3.5 0-6.6-1.4-8.5-4.4 1.6-.6 3.3-.7 4.9-.3M12 20c3.5 0 6.6-1.4 8.5-4.4-1.6-.6-3.3-.7-4.9-.3"/>',
   flame: '<path d="M12 3c2.6 3 4.2 5.4 4.2 8a4.2 4.2 0 0 1-8.4 0c0-1.5.6-2.8 1.6-3.9.2 1.2.8 2 1.6 2.4C11 7.4 11.3 5.1 12 3z"/><path d="M8 21h8M10 17.5h4"/>',
   breath: '<circle cx="12" cy="5" r="2"/><path d="M12 8.5v4.5M7.5 11.5c1.3 1 2.8 1.5 4.5 1.5s3.2-.5 4.5-1.5M4.5 19.5c2-2.3 4.5-3.5 7.5-3.5s5.5 1.2 7.5 3.5"/>',
@@ -88,7 +89,7 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 /* ================================================================ navegação */
 const NAV = [
   [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
-  ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
+  ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
 ];
@@ -103,6 +104,7 @@ const SUBS = {
   roda: [["roda", "Roda & revisão"], ["diario", "Diário"]],
   diario: [["feed", "Entradas"], ["perguntar", "Perguntar"], ["cal", "Calendário"], ["analise", "Análise"]],
   capitulos: [["linha", "Linha do tempo"], ["livro", "Livro do ano"]],
+  carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["objetivos", "Objetivos"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
   jornada: [["inicio", "Início"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
@@ -146,7 +148,7 @@ function topbar(R, title, sub) {
       <button type="button" class="iconbtn" data-act="undo" title="Desfazer (Ctrl+Z)" aria-label="Desfazer"${UNDO.length ? "" : " disabled"}>${ic("undo")}</button><button type="button" class="iconbtn" data-act="redo" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer"${REDO.length ? "" : " disabled"}>${ic("redo")}</button></div></header>`;
 }
 const subtabs = () => { if (!SUBS[PAGE]) return ""; const cur = SUBS[PAGE].find(x => x[0] === SUB), on = k => SUB === k || cur?.[2] === k;
-  return `<nav class="subtabs" aria-label="Seções">${SUBS[PAGE].filter(x => !x[2]).map(([k, l]) => `<a href="#${PAGE}.${k}" class="st${on(k) ? " on" : ""}"${on(k) ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>`; };
+  return `<nav class="subtabs" aria-label="Seções">${SUBS[PAGE].filter(x => !x[2] && !(PAGE === "carreira" && x[0] === "geotecnia" && !crGeoOn() && SUB !== "geotecnia")).map(([k, l]) => `<a href="#${PAGE}.${k}" class="st${on(k) ? " on" : ""}"${on(k) ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>`; };
 const reportTabs = () => `<nav class="rtabs" aria-label="Páginas do relatório">${REPORT_TABS.map(([k, l]) => { const [p, s] = k.split("."); const on = PAGE === p && (!s || SUB === s); return `<a href="#${k}" class="rt${on ? " on" : ""}"${on ? ' aria-current="page"' : ""}>${l}</a>`; }).join("")}</nav>`;
 
 /* ================================================================ filtros cruzados (estilo Power BI) */
@@ -308,6 +310,8 @@ function palItems(q) {
   add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("jornada", "decidir"), "dilema decisao etica moral");
   add("Ações", "Escrever uma reflexão da jornada", "Espiritismo, meditação, Taoísmo ou Budismo", "lotus", () => setHash("jornada", "inicio"), "jornada reflexao insight espiritual");
   add("Ações", "Círculo dos mentores", "Os quatro mentores da jornada conversam sobre a sua pergunta", "council", () => setHash("jornada", "confluencias"), "circulo mentores confluencias tradicoes");
+  add("Ações", "Plano de carreira", "Avaliação, objetivos, plano de ação e biblioteca de BIM", "brief", () => setHash("carreira", "panorama"), "carreira bim plano objetivos competencias");
+  add("Ações", "Avaliar competências BIM", "Níveis de 1 a 5, com evidência", "brief", () => setHash("carreira", "avaliacao"), "competencias avaliacao revit civil 3d");
   add("Ações", "Fechar a semana", "Números, reflexão, carta e prioridades", "week", () => setHash("semana"), "revisao semanal fechamento");
   add("Ações", "Novo experimento", "Teste uma mudança e meça o efeito", "flask", () => { setHash("exp"); setTimeout(() => openExpForm(), 60); }, "experimento ab teste");
   add("Ações", "Perguntar ao diário", "Busca por significado", "search", () => setHash("diario", "perguntar"), "busca significado semantica");

@@ -145,6 +145,7 @@ function exampleData() {
   exampleMentors(D);
   exampleLab(D);
   exampleJornada(D);
+  exampleCarreira(D);
   return D;
 }
 
@@ -382,4 +383,30 @@ function exampleJornada(D) {
     conversa: [
       { role: "user", content: "Se a dor tem causa em outras existências, como não cair na ideia de castigo?", at: at(9), mode: "chat" },
       { role: "assistant", content: "Pergunta muito boa, e própria de quem busca a **fé raciocinada**.\n\nPara a Doutrina Espírita, a lei de causa e efeito é **educativa, não punitiva**: Deus não castiga por vingança, e nenhuma prova é eterna. A dor de hoje pode ter causas atuais, desta vida, ou anteriores; em O Evangelho segundo o Espiritismo (cap. V) Kardec pede que olhemos primeiro para as causas atuais, que estão ao nosso alcance.\n\nUma imagem que ajuda: o aluno que repete uma lição não está sendo punido; está aprendendo o que ainda não aprendeu.\n\n**Para contemplar esta semana:** diante de uma dificuldade, em vez de “o que fiz para merecer isto?”, pergunte “o que isto me convida a desenvolver?”.", at: at(9) + 6e4, uso: [{ t: "salvar_memoria", d: "dúvida: causa e efeito sem castigo" }], acoes: [] }] };
+}
+
+/* hub de carreira de exemplo: uma pessoa fictícia de BIM em infraestrutura, morando na Itália */
+function exampleCarreira(D) {
+  const id = () => uid(), d = n => addDays(TODAY, n);
+  const lv = { "AutoCAD Civil 3D": [3, 5], "InfraWorks": [2, 4], "Geometria viária": [3, 4], "Terraplenagem": [3, 4], "Drenagem": [2, 3], "Navisworks": [3, 4], "BEP (BIM Execution Plan)": [2, 4], "ISO 19650": [2, 4], "IFC e openBIM": [2, 3],
+    "Microsoft Project": [3, 3], "Cronograma 4D": [2, 3], "Power BI": [2, 3], "QGIS": [2, 3], "Projeto estrutural": [2, 2], "Pavimentação": [2, 3] };
+  for (const [nome, [atual, alvo]] of Object.entries(lv)) D.comp.push({ id: id(), nome, atual, alvo, grupo: CR_COMP.find(c => c.n === nome)?.g || "", evid: nome === "AutoCAD Civil 3D" ? "Corredores e superfícies de uma variante rodoviária de 4 km" : nome === "Navisworks" ? "Clash detection semanal no projeto da estação" : "" });
+  const snap = k => Object.fromEntries(Object.entries(lv).map(([n, [a]]) => [n, Math.max(1, a - k)]));
+  D.carreira = {
+    perfil: { mercado: "it", sen: "Pleno", senAlvo: "Coordenação", senAno: d(640).slice(0, 7), visao: "Coordenar a informação BIM de obras ferroviárias, com certificação de BIM Coordinator e uma frente de cursos em português.",
+      formacao: [{ id: id(), curso: "Engenharia Civil", tipo: "Graduação", inst: "Universidade Exemplo", fim: "2018-12" }, { id: id(), curso: "Especialização em BIM", tipo: "Pós-graduação", inst: "Instituto Fictício", fim: "2023-07" }],
+      exp: [{ id: id(), cargo: "Projetista de infraestrutura", org: "Projetos Delta", inicio: "2019-02", fim: "2022-11", desc: "Geometria e terraplenagem de rodovias no Civil 3D" }, { id: id(), cargo: "BIM Specialist", org: "Engenharia Ômega", inicio: "2023-01", fim: "", desc: "Modelagem e clash detection em projeto ferroviário" }],
+      cert: [{ id: id(), nome: "Curso de Navisworks avançado", emissor: "Escola Fictícia", data: "2024-05" }],
+      areas: ["Rodovias", "Ferrovias", "Gestão BIM"], idiomas: [{ id: id(), nome: "Italiano", nivel: "B2" }, { id: id(), nome: "Inglês", nivel: "B2" }], mapa: Object.keys(lv), caminhos: [] },
+    fortes: [{ id: id(), t: "Modelos viários limpos e bem organizados no Civil 3D", data: d(-40) }, { id: id(), t: "Explico bem o modelo para quem não é da área", data: d(-40) }],
+    gaps: [{ id: id(), t: "Nunca escrevi um BEP inteiro sozinho", data: d(-40) }, { id: id(), t: "Italiano técnico para reuniões com o cliente", data: d(-20) }],
+    obj: [{ id: "objEx1", t: "BIM Coordinator certificado (UNI 11337-7)", tipo: "certificação", prazo: d(240), tri: "manager", metrica: "Certificado emitido por organismo acreditado", porque: "Credencial objetiva para editais e para negociar salário", st: "ativo", criado: Date.now() },
+      { id: "objEx2", t: "Coordenar a modelagem de um trecho ferroviário", tipo: "senioridade", prazo: d(420), tri: "infra", metrica: "Função de coordenação no próximo projeto", porque: "", st: "ativo", criado: Date.now() }],
+    acoes: [{ id: id(), t: "Curso de ISO 19650 e um BEP de exemplo", tipo: "curso", obj: "objEx1", comp: "ISO 19650", lib: "ukbim", prazo: d(35), custo: 450, marco: false, crit: "", st: "andamento", criado: Date.now() },
+      { id: id(), t: "Prova de certificação BIM Coordinator", tipo: "certificação", obj: "objEx1", comp: "UNI 11337", lib: "pdr78", prazo: d(200), custo: 600, marco: true, crit: "Aprovação na prova", st: "aberta", criado: Date.now() },
+      { id: id(), t: "Modelo federado de um trecho viário para o portfólio", tipo: "projeto prático", obj: "objEx2", comp: "Coordenação e clash detection", lib: "acp_c3d", prazo: d(-5), custo: "", marco: true, crit: "Publicado no portfólio", st: "aberta", criado: Date.now() },
+      { id: id(), t: "Ler o Anexo I.9 do D.Lgs. 36/2023", tipo: "competência", obj: "objEx1", comp: "UNI 11337", lib: "dlgs36", prazo: d(-20), custo: "", marco: false, crit: "", st: "feito", feito: d(-22), criado: Date.now() }],
+    trilhas: ["infra", "manager"], lib: { st: { ukbim: "estudando", dlgs36: "feito", acp_c3d: "quero", pinto: "quero" }, meus: [] },
+    geo: { modo: "explorando", interesse: "Entender o subsolo dos trechos que já modelo e chegar a modelos geotécnicos ligados ao Civil 3D.", objetivos: [{ id: id(), t: "Modelar as camadas de um trecho com sondagens reais" }], mod: { fund: "estudando" } },
+    snaps: [{ data: d(-120), niveis: snap(1) }, { data: d(-30), niveis: snap(0) }], analise: [] };
 }
