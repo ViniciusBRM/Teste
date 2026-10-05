@@ -58,6 +58,10 @@ async def main():
                 await pg.evaluate(f"location.hash='{h}'"); await pg.wait_for_timeout(500)
                 w = await pg.evaluate(f"document.querySelector('{sel}').getBoundingClientRect().width")
                 chk(w > 600, f"{h}: desenho com {w:.0f} px de largura a 1440 px")
+                await pg.set_viewport_size({"width": 1440, "height": 420}); await pg.wait_for_timeout(400)
+                w2, sh, vh2 = await pg.evaluate(f"(() => {{ const s = document.querySelector('{sel}').getBoundingClientRect(), v = document.querySelector('{sel}').closest('.vis').getBoundingClientRect(); return [s.width, s.height, v.height]; }})()")
+                chk(abs(w2 - w) < 1 and vh2 < sh + 160, f"{h}: com a janela baixa o desenho não encolhe ({w2:.0f} px) e o cartão não sobra vazio ({vh2:.0f} px para {sh:.0f})")
+                await pg.set_viewport_size({"width": 1440, "height": 900})
             errs[:] = [e for e in errs if "ERR_FAILED" not in e]
         finally:
             for e in errs: print("  ", e)

@@ -370,8 +370,8 @@ function jInicio() {
   const Q = J.q;
   return `<p class="lead">Um espaço para acompanhar e aprofundar o seu caminho pelos quatro pilares que orientam a sua vida, com um mentor para cada um, um lugar onde eles se encontram e a Bússola moral no centro. Não é um formulário: volte quando quiser, escreva o que viveu e converse.</p>
     ${kpiRow([kmini("var(--jp-med)", "Dias na jornada · 4 semanas", `${all.size} de 28`, `${plural(tot, "registro-dia", "registros-dia")} somando os pilares`), kmini(viva[1] ? J_PIL[viva[0]].cor : "var(--muted)", "Pilar mais vivo", viva[1] ? esc(J_PIL[viva[0]].nome) : "–", viva[1] ? `${jMoonInfo(viva[0]).nome} · ${plural(viva[1], "dia", "dias")}` : "comece por qualquer um"), kmini("var(--jp-bud)", "Estações florescendo", `${flor} de 20`, "autoavaliação, sem pressa"), kmini("var(--jp-esp)", "Reflexões · 30 dias", rmes, rmes ? "continue escrevendo" : "a primeira está a um toque")])}
+    ${vis("jmandala", "Mandala da jornada", jMandala(), { sub: "cada pétala é uma estação do caminho; a lua mostra o ritmo de 4 semanas; toque para entrar", cls: "bigvis" })}
     <div class="g2c jhome">
-      ${vis("jmandala", "Mandala da jornada", jMandala(), { sub: "cada pétala é uma estação do caminho; a lua mostra o ritmo de 4 semanas; toque para entrar", cls: "bigvis" })}
       ${panel(`${ic("sun")}Hoje na jornada`, `<div class="jday" style="--c:${D.cor}"><span class="jtag">${ic(D.ico)}${esc(D.nome)}</span><blockquote class="jquote">${esc(q)}<cite>${esc(src)}</cite></blockquote><p class="bmq">${ic("info")}<span>${esc(jQuestion(pid))}</span></p></div>
         <div class="flbl">Uma reflexão rápida</div><textarea class="jta" rows="3" data-jq="1" placeholder="O que você viveu, percebeu ou aprendeu?">${esc(Q.txt)}</textarea>
         <div class="row wrap jqrow">${J_ORDER.map(p => jChip(p, Q.p.includes(p), `data-act="jqp" data-p="${p}"`)).join("")}</div>
