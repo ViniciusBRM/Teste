@@ -146,6 +146,7 @@ function exampleData() {
   exampleLab(D);
   exampleJornada(D);
   exampleCarreira(D);
+  exampleLazer(D);
   return D;
 }
 
@@ -409,4 +410,27 @@ function exampleCarreira(D) {
     trilhas: ["infra", "manager"], lib: { st: { ukbim: "estudando", dlgs36: "feito", acp_c3d: "quero", pinto: "quero" }, meus: [] },
     geo: { modo: "explorando", interesse: "Entender o subsolo dos trechos que já modelo e chegar a modelos geotécnicos ligados ao Civil 3D.", objetivos: [{ id: id(), t: "Modelar as camadas de um trecho com sondagens reais" }], mod: { fund: "estudando" } },
     snaps: [{ data: d(-120), niveis: snap(1) }, { data: d(-30), niveis: snap(0) }], analise: [] };
+}
+
+/* lazer de exemplo: gostos, listas e registros de uma pessoa fictícia */
+function exampleLazer(D) {
+  const id = () => uid(), d = n => addDays(TODAY, n);
+  D.aprend.push({ id: id(), titulo: "Fundação", tipo: "Livro", area: "Lazer & criatividade", status: "Em andamento", total: 320, atual: 140, nota: "", autor: "Isaac Asimov", gen: "Ficção científica" },
+    { id: id(), titulo: "O Cão dos Baskervilles", tipo: "Livro", area: "Lazer & criatividade", status: "Concluído", total: 250, atual: 250, nota: 5, fim: d(-40), autor: "Arthur Conan Doyle", gen: "Mistério" },
+    { id: id(), titulo: "Duna", tipo: "Livro", area: "Lazer & criatividade", status: "Quero fazer", total: "", atual: "", nota: "", autor: "Frank Herbert", gen: "Ficção científica" });
+  D.lazerHub = {
+    perfil: { leitura: { gosto: ["Ficção científica", "Mistério clássico", "Filosofia"], evito: [] }, filmes: { gosto: ["Ficção científica", "Faroeste", "Clássicos"], evito: ["Terror"], notas: "Prefiro qualidade a novidade." },
+      jogos: { gosto: ["Estratégia", "Construção", "Cartas colecionáveis"], evito: [] }, viagens: { gosto: ["Montanhas", "Cidades históricas", "Comida local"], evito: [], notas: "Base em Milão." },
+      cafe: { gosto: ["Espresso", "V60", "Cafés naturais"], evito: [] }, aviacao: { gosto: ["Simulação de voo", "Aviação comercial"], evito: [] },
+      estudos: { gosto: ["Astronomia", "Pontes e túneis", "Filosofia da ciência"], evito: [] }, existencial: { gosto: ["Meditação", "Budismo"], evito: [] } },
+    nivel: { cafe: 2, aviacao: 1 }, sug: { filmes: [{ id: id(), titulo: "Era uma Vez no Oeste (1968)", sub: "Sergio Leone", porque: "Faroeste clássico, de fotografia e trilha marcantes", at: Date.now() }] },
+    filmes: [{ id: id(), t: "Interestelar", tipo: "Filme", ano: "2014", gen: "Ficção científica", onde: "", status: "visto", nota: 5, notas: "A cena do planeta da água" }, { id: id(), t: "Os Imperdoáveis", tipo: "Filme", ano: "1992", gen: "Faroeste", onde: "", status: "quero" }],
+    jogos: [{ id: id(), t: "Minecraft", plat: "PC", gen: "Construção", status: "jogando", notas: "Fazenda automática com redstone" }],
+    viagens: [{ id: id(), t: "Lago de Como", reg: "Arredores", ini: d(26), fim: d(27), orc: 220, status: "planejando", notas: "Barco entre Bellagio e Varenna" }, { id: id(), t: "Quioto e Nara", reg: "Japão", ini: "", fim: "", orc: 3200, status: "ideia" }],
+    temas: [{ id: id(), t: "Buracos negros", area: "Astronomia e física", fonte: "", status: "estudando" }, { id: id(), t: "Túnel de base do São Gotardo", area: "Engenharia e megaconstruções", fonte: "", status: "quero" }],
+    avTemas: [{ id: id(), t: "Aproximação ILS", fonte: "", status: "estudando" }], perguntas: [{ id: id(), t: "Por que o tempo passa mais devagar perto de um buraco negro?", data: d(-6) }],
+    voos: [{ id: id(), data: d(-9), sim: "Microsoft Flight Simulator", aeronave: "A320neo", de: "LIML", para: "LIRF", dur: 70, notas: "Primeira aproximação ILS completa" }, { id: id(), data: d(-2), sim: "X-Plane", aeronave: "Cessna 172", de: "LIML", para: "LIML", dur: 35, notas: "Circuito de tráfego" }],
+    cafe: { equip: [{ id: id(), t: "Máquina de espresso", notas: "" }, { id: id(), t: "Moedor", notas: "" }, { id: id(), t: "V60", notas: "Hario 02" }],
+      log: [{ id: id(), at: Date.now(), data: d(-3), tipo: "extracao", cafe: "Etiópia natural", metodo: "V60", dose: 15, agua: 250, tempo: "2:50", moagem: "média-fina", temp: 94, nota: 4, notas: "mirtilo, doce" },
+        { id: id(), at: Date.now(), data: d(-1), tipo: "extracao", cafe: "Brasil, Cerrado", metodo: "Espresso", dose: 18, agua: 38, tempo: "29", moagem: "", temp: 93, nota: 3, notas: "um pouco amargo" }], provar: [] } };
 }

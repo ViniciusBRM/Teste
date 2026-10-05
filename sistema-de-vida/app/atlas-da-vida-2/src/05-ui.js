@@ -1,6 +1,11 @@
 
 /* ================================================================ ícones (traço 1.7, 24×24) */
 const ICONS = {
+  film: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7.5 5v14M16.5 5v14M3 9.5h4.5M3 14.5h4.5M16.5 9.5H21M16.5 14.5H21"/>',
+  gamepad: '<path d="M6.5 8h11a4 4 0 0 1 3.9 4.9l-.8 3.3a2.4 2.4 0 0 1-4.1 1.1L14.4 15H9.6l-2.1 2.3a2.4 2.4 0 0 1-4.1-1.1l-.8-3.3A4 4 0 0 1 6.5 8z"/><path d="M8.5 10.5v3M7 12h3"/><circle cx="15.5" cy="11" r=".9"/><circle cx="17.3" cy="13" r=".9"/>',
+  plane: '<path d="M10.6 3.6a1.4 1.4 0 0 1 2.8 0V9l7.6 4.6v2.1l-7.6-2.4v4.6l2.4 1.9v1.6L12 20.4l-3.8 1V19.8l2.4-1.9v-4.6L3 15.7v-2.1L10.6 9z"/>',
+  coffee: '<path d="M4 9h13v4.5A5.5 5.5 0 0 1 11.5 19h-2A5.5 5.5 0 0 1 4 13.5V9z"/><path d="M17 10.5h1.3a2.7 2.7 0 0 1 0 5.4H16.6"/><path d="M8 3.5c-.7.9-.7 1.9 0 2.8M12 3.5c-.7.9-.7 1.9 0 2.8"/>',
+  atom: '<circle cx="12" cy="12" r="1.5"/><ellipse cx="12" cy="12" rx="9.5" ry="3.7"/><ellipse cx="12" cy="12" rx="9.5" ry="3.7" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9.5" ry="3.7" transform="rotate(-60 12 12)"/>',
   layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17.5l9 5 9-5" opacity=".55"/>',
   lotus: '<path d="M12 20c-1.9-1.6-3.2-4-3.2-6.9 0-2.6 1.2-5 3.2-7 2 2 3.2 4.4 3.2 7 0 2.9-1.3 5.3-3.2 6.9z"/><path d="M12 20c-3.5 0-6.6-1.4-8.5-4.4 1.6-.6 3.3-.7 4.9-.3M12 20c3.5 0 6.6-1.4 8.5-4.4-1.6-.6-3.3-.7-4.9-.3"/>',
   flame: '<path d="M12 3c2.6 3 4.2 5.4 4.2 8a4.2 4.2 0 0 1-8.4 0c0-1.5.6-2.8 1.6-3.9.2 1.2.8 2 1.6 2.4C11 7.4 11.3 5.1 12 3z"/><path d="M8 21h8M10 17.5h4"/>',
@@ -89,7 +94,7 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 /* ================================================================ navegação */
 const NAV = [
   [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
-  ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
+  ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
 ];
@@ -104,6 +109,7 @@ const SUBS = {
   roda: [["roda", "Roda & revisão"], ["diario", "Diário"]],
   diario: [["feed", "Entradas"], ["perguntar", "Perguntar"], ["cal", "Calendário"], ["analise", "Análise"]],
   capitulos: [["linha", "Linha do tempo"], ["livro", "Livro do ano"]],
+  lazer: [["inicio", "Início"], ["leitura", "Leitura"], ["filmes", "Filmes e séries"], ["jogos", "Jogos"], ["viagens", "Viagens"], ["cafe", "Café"], ["aviacao", "Aviação"], ["estudos", "Estudos"], ["existencial", "Existencial"]],
   carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["objetivos", "Objetivos"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
   jornada: [["inicio", "Início"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
@@ -120,6 +126,7 @@ function route() {
   /* a Bússola moral e os mentores da jornada moram na Jornada existencial; links antigos continuam valendo */
   if (p === "bussola") { p = "jornada"; s = !s || s === "mapa" ? "bussola" : s; }
   if (p === "mentor" && MENTOR_DEF[s]?.jor) { p = "jornada"; s = jSubOfMid(s); }
+  if (p === "mentor" && MENTOR_DEF[s]?.lz) { p = "lazer"; s = MENTOR_DEF[s].lz; }
   if (`${p}${s ? "." + s : ""}` !== location.hash.slice(1) && location.hash) try { history.replaceState(null, "", `#${p}${s ? "." + s : ""}`); } catch {}
   const ok = p === "mentor" || NAV.some(g => g[1].some(x => x[0] === p));
   PAGE = ok ? p : "visao"; SUB = ok ? s || null : null;
@@ -311,6 +318,8 @@ function palItems(q) {
   add("Ações", "Escrever uma reflexão da jornada", "Espiritismo, meditação, Taoísmo ou Budismo", "lotus", () => setHash("jornada", "inicio"), "jornada reflexao insight espiritual");
   add("Ações", "Círculo dos mentores", "Os quatro mentores da jornada conversam sobre a sua pergunta", "council", () => setHash("jornada", "confluencias"), "circulo mentores confluencias tradicoes");
   add("Ações", "Plano de carreira", "Avaliação, objetivos, plano de ação e biblioteca de BIM", "brief", () => setHash("carreira", "panorama"), "carreira bim plano objetivos competencias");
+  add("Ações", "Registrar extração ou torra de café", "Lazer › Café", "coffee", () => setHash("lazer", "cafe"), "cafe espresso v60 torra extracao");
+  add("Ações", "Registrar um voo no simulador", "Lazer › Aviação", "plane", () => setHash("lazer", "aviacao"), "voo simulador xplane msfs aviacao");
   add("Ações", "Avaliar competências BIM", "Níveis de 1 a 5, com evidência", "brief", () => setHash("carreira", "avaliacao"), "competencias avaliacao revit civil 3d");
   add("Ações", "Fechar a semana", "Números, reflexão, carta e prioridades", "week", () => setHash("semana"), "revisao semanal fechamento");
   add("Ações", "Novo experimento", "Teste uma mudança e meça o efeito", "flask", () => { setHash("exp"); setTimeout(() => openExpForm(), 60); }, "experimento ab teste");

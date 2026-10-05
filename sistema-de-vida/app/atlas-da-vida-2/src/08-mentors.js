@@ -107,6 +107,7 @@ function councilFacts(Hs) {
 }
 function mentorPrompt(mid, fallback) {
   if (MENTOR_DEF[mid].jor) return jPrompt(mid, fallback);
+  if (MENTOR_DEF[mid].lz) return lzPrompt(mid, fallback);
   const def = MENTOR_DEF[mid], m = mget(mid), Hs = []; for (let k = 5; k >= 0; k--) Hs.push(calcAt(addMonth(mkey(TODAY), -k)));
   const facts = def.area ? [...areaFacts(def.area, Hs), ...specFacts(mid, Hs), ...labFacts(def.area)] : councilFacts(Hs);
   const mem = [...m.mem.filter(x => x.fixo), ...m.mem.filter(x => !x.fixo).slice(-24)].map(x => `- [${x.tipo} · ${fmtD(iso(new Date(x.at)))}${x.origem !== "mentor" ? " · " + x.origem : ""}]${x.fixo ? " (fixa)" : ""} ${x.texto}`);
@@ -167,7 +168,7 @@ function mentorTools(mid, live) {
   if (NOTION_OK && S.cfg.mentorNotion) T.push({ name: "buscar_notion", description: "Busca páginas no Notion da pessoa por palavras-chave e devolve até 5 resultados com título, link e trecho. Use para projetos, anotações e planos que estão lá.",
     inputSchema: { type: "object", properties: { consulta: { type: "string" } }, required: ["consulta"] },
     execute: async (inp, ctx) => { const res = await MCP.callTool("Notion", "notion-search", { query: String(inp.consulta).slice(0, 200), page_size: 5 }, { signal: ctx.signal }); const rs = (res.payload?.results || []).slice(0, 5).map(x => ({ titulo: x.title, link: x.url, trecho: trunc(String(x.highlight || "").replace(/\*\*/g, ""), 300) })); note("buscar_notion", `“${trunc(inp.consulta, 40)}” · ${rs.length} páginas`); return rs; } });
-  const out = def.jor ? jTools(mid, live, T) : T;
+  const out = def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T;
   return TOOLS_MAX && TOOLS_MAX < out.length ? out.slice(0, TOOLS_MAX) : out;
 }
 function mkProposal(inp) {
@@ -200,9 +201,11 @@ async function askMentor(mid, text, mode = "chat") {
 function finishMentor(text, cut) {
   const live = MST.live; if (!live) return;
   let content = String(text || ""); const mm = content.match(/```atlas\s*([\s\S]*?)```/);
-  if (mm) { try { const b = JSON.parse(mm[1]); for (const x of b.memorias || []) { const r = addMemory(live.mid, { tipo: x.tipo, texto: x.texto }); if (r) live.uso.push({ t: "salvar_memoria", d: `${r.tipo}: ${trunc(r.texto, 90)}` }); } if (b.plano?.foco) { setPlan(live.mid, b.plano); live.uso.push({ t: "atualizar_plano", d: trunc(b.plano.foco, 70) }); } for (const p of b.propostas || []) live.acoes.push(mkProposal(p)); const pid = jMidP(live.mid); if (pid) for (const x of b.praticas || []) { const r = jRecommend(pid, x); if (r) live.uso.push({ t: "recomendar", d: `${r.tipo}: ${trunc(r.titulo, 80)}` }); } } catch {} content = content.replace(mm[0], "").trim(); }
+  if (mm) { try { const b = JSON.parse(mm[1]); for (const x of b.memorias || []) { const r = addMemory(live.mid, { tipo: x.tipo, texto: x.texto }); if (r) live.uso.push({ t: "salvar_memoria", d: `${r.tipo}: ${trunc(r.texto, 90)}` }); } if (b.plano?.foco) { setPlan(live.mid, b.plano); live.uso.push({ t: "atualizar_plano", d: trunc(b.plano.foco, 70) }); } for (const p of b.propostas || []) live.acoes.push(mkProposal(p)); const pid = jMidP(live.mid); if (pid) for (const x of b.praticas || []) { const r = jRecommend(pid, x); if (r) live.uso.push({ t: "recomendar", d: `${r.tipo}: ${trunc(r.titulo, 80)}` }); }
+    const lzd = MENTOR_DEF[live.mid]?.lz; if (lzd) { for (const x of b.sugestoes || []) { const r = lzSugAdd(lzd, x); if (r) live.uso.push({ t: "recomendar", d: trunc(r.titulo, 80) }); } if (b.nivel?.nivel) { const n = clamp(Math.round(+b.nivel.nivel), 1, 4); lzData().nivel[lzd] = n; live.uso.push({ t: "ajustar_nivel", d: `${LZ_NIV[n]}: ${trunc(String(b.nivel.motivo || ""), 60)}` }); } } } catch {} content = content.replace(mm[0], "").trim(); }
   content = content.replace(/```atlas[\s\S]*$/, "").trim();
-  if (live.uso.some(u => u.t === "recomendar")) dirty.add("jornada");
+  if (live.uso.some(u => u.t === "recomendar")) dirty.add(MENTOR_DEF[live.mid]?.lz ? "lazerHub" : "jornada");
+  if (live.uso.some(u => u.t === "ajustar_nivel")) dirty.add("lazerHub");
   const m = mstate(live.mid); m.conversa.push(live.user, { role: "assistant", content: (content || "(sem texto)") + (cut ? "\n\n_(resposta interrompida)_" : ""), at: Date.now(), uso: live.uso, acoes: live.acoes });
   if (m.conversa.length > 40) m.conversa = m.conversa.slice(-40);
   m.visto = Date.now(); m.ultimo = { at: Date.now(), dados: areaScoreNow(live.mid) };
@@ -224,7 +227,7 @@ function paintLive() {
   scrollChat(true);
 }
 function scrollChat(soft) { const c = $("#mchat"); if (c && (!soft || c.scrollHeight - c.scrollTop - c.clientHeight < 160)) c.scrollTop = c.scrollHeight; }
-const USO_TXT = { salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"] };
+const USO_TXT = { salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"], ajustar_nivel: ["sprout", "Ajustou o nível"] };
 const usoHTML = us => (us || []).map(u => `<span class="uso">${ic(USO_TXT[u.t]?.[0] || "bolt")}<b>${USO_TXT[u.t]?.[1] || u.t}</b> ${esc(u.d)}</span>`).join("");
 function propHTML(mid, mi, p) {
   const lab = { tarefa: "Tarefa", meta: "Meta", habito: "Hábito", lembrete: "Lembrete" }[p.tipo];
@@ -255,7 +258,9 @@ function pMentores(R) {
       ${nud ? `<div class="mnud ${nud.st}">${ic("bolt")}<span>${nud.t}</span></div>` : ""}
       <footer><span class="muted">${m.conversa?.length ? `conversa ${relDay(iso(new Date(m.visto || m.conversa.at(-1).at)))}` : "nunca conversaram"} · ${plural((m.mem || []).length, "memória", "memórias")}${sl.out.length && m.visto ? ` · desde então: ${esc(sl.out.slice(0, 2).join(", "))}` : ""}</span><a class="btn sm${mid === "conselho" ? " primary" : ""}" href="#mentor.${mid}">${ic("spark")}Conversar</a></footer></article>`; };
   return `${aiBanner()}<p class="lead">Um mentor para cada área da vida e um Conselho que olha o todo. Cada um lê os seus números e o seu diário, lembra do que vocês combinaram e propõe melhorias, que só viram tarefa, meta ou hábito quando você aprova.</p>
-    <div class="mgrid">${MIDS.filter(m => !MENTOR_DEF[m].jor).map(card).join("")}</div>
+    <div class="mgrid">${MIDS.filter(m => !MENTOR_DEF[m].jor && !MENTOR_DEF[m].lz).map(card).join("")}</div>
+    <div class="mhead jmh2">${ic("palette")}Mentores do lazer<small>um para cada tema, do básico ao avançado</small></div>
+    <div class="jmgrid">${LZ_MIDS.map(mid => { const def = MENTOR_DEF[mid]; return `<a class="jmc" href="#lazer.${def.lz}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${esc(lzDiv(def.lz).nome)}</small><em>${esc(def.arq)}</em></span></a>`; }).join("")}</div>
     <div class="mhead jmh2">${ic("lotus")}Mentores da jornada existencial<small>um para cada pilar e o Navegante da Bússola moral</small></div>
     <div class="jmgrid">${J_MIDS.map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>`;
 }

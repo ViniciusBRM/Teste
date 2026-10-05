@@ -112,7 +112,7 @@ async def main():
             chk(len(await pg.evaluate("mget('bm').conversa")) >= 2, "o Navegante responde e guarda a conversa")
             # mentores e hoje
             await pg.evaluate("location.hash='mentores'"); await pg.wait_for_timeout(300)
-            chk(await pg.locator(".mgrid .mcard").count() == 12 and await pg.locator(".jmgrid .jmc").count() == 5, "Mentores: as 12 áreas na grade e os 5 da jornada numa seção própria")
+            chk(await pg.locator(".mgrid .mcard").count() == 12 and await pg.locator(".jmgrid").last.locator(".jmc").count() == 5, "Mentores: as 12 áreas na grade e os 5 da jornada numa seção própria")
             await pg.evaluate("location.hash='hoje'"); await pg.wait_for_timeout(300)
             t = await pg.locator("#main").inner_text()
             chk("Jornada de hoje" in t and await pg.locator(".jhmk [data-act=jmark]").count() >= 1, "Hoje mostra o ensinamento do dia e as práticas da jornada para marcar")

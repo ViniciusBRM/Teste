@@ -123,6 +123,10 @@ async def weekly(p):
     await pg.wait_for_timeout(400)
     T = await pg.evaluate("TODAY"); wk = await pg.evaluate("fsWk()")
     chk(wk == await pg.evaluate("weekStart(TODAY)") if await pg.evaluate("parse(TODAY).getDay()") == 0 else True, f"no domingo o fechamento é da semana corrente ({wk})")
+    # numa segunda ou terça, o exemplo já traz a semana anterior fechada e a semana-alvo acabou de começar, sem dados:
+    # reabre a anterior, que é o caso de uso real (fechar na segunda a semana que terminou)
+    if not await pg.evaluate("S.lanc.some(l => l.tipo === 'Despesa' && l.data >= fsWk() && l.data <= TODAY)"):
+        wk = await pg.evaluate("(() => { const prev = addDays(weekStart(TODAY), -7); delete S.fechamentos[prev]; FS.wk = null; render(); return fsWk(); })()"); await pg.wait_for_timeout(200)
     # números da semana com conta fixa excluída
     nums = await pg.evaluate("""(wk) => { const ds = [0,1,2,3,4,5,6].map(i => addDays(wk, i)).filter(d => d <= TODAY);
         const fixed = S.lanc.filter(l => l.tipo === 'Despesa' && l.data >= wk && l.data <= addDays(wk, 6) && isFixed(l)).map(l => l.valor);
@@ -172,6 +176,8 @@ async def weekly(p):
     chk(await pg.evaluate("S.prio") == d["proximas"], "prioridades da semana nova = as escolhidas no fechamento")
     e = await pg.evaluate("S.diario.at(-1)")
     chk(await pg.evaluate("S.diario.length") == nd + 1 and "#semana" in e["texto"] and "- [ ] Preparar a entrevista" in e["texto"] and e["origem"] == "fechamento", "carta vai para o diário com #semana e as prioridades como lista")
+    # numa segunda, depois de fechar a semana anterior a página passa para a semana nova: volta à que foi fechada
+    await pg.evaluate(f"FS.wk = {json.dumps(wk)}; render()"); await pg.wait_for_timeout(200)
     chk("semana fechada" in (await pg.locator(".fspanel").inner_text()).lower(), "página mostra a semana fechada")
     # carta sem IA
     await pg.click("[data-act=fsreopen]"); await pg.wait_for_timeout(300)
