@@ -9,7 +9,7 @@ const PD_KEYS = ["humor", "energia", "estresse", "sono", "passos", "treino", "mi
 const pdNew = (date = TODAY) => ({ date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], step: "form", done: null, inf: [] });
 let PD = pdLoad() || pdNew();
 function pdLoad() { try { const v = JSON.parse(localStorage.getItem("atlas_painel") || "null"); return v && v.date && v.v ? { ...pdNew(v.date), ...v, step: "form", done: null } : null; } catch { return null; } }
-const pdStore = debounce(() => { try { pdEmpty() ? localStorage.removeItem("atlas_painel") : localStorage.setItem("atlas_painel", JSON.stringify({ ...PD, done: null, step: "form" })); } catch {} }, 400);
+const pdStore = debounce(() => { if (EX_MODE) return; try { pdEmpty() ? localStorage.removeItem("atlas_painel") : localStorage.setItem("atlas_painel", JSON.stringify({ ...PD, done: null, step: "form" })); } catch {} }, 400);
 const pdEmpty = () => !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
 const pdReq = () => Array.isArray(S.cfg.pdReq) ? S.cfg.pdReq : PD_REQ_DEF;
 const pdRev = () => S.cfg.pdRev !== false;

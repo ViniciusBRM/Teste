@@ -30,6 +30,7 @@ const duoAv = id => DUO.prof[id]?.avatarUrl ? `<img class="duav" src="${esc(DUO.
 const duoJoined = () => !!DUO.members[DUO.me];
 /* uma escrita por vez, sempre no documento do próprio mês */
 function duoWrite(path, fn) {
+  if (EX_MODE) { toast("Modo exemplo: o espaço a dois não grava. Desligue o exemplo para usar."); return Promise.resolve(); }
   DUO.q = DUO.q.then(async () => { try { const ref = DUO.db.doc(path), cur = (await ref.get()).data() || {}; await ref.set(fn(cur)); } catch (e) { toast(e?.code === "invalid_argument" ? "Sem permissão para escrever no espaço a dois. Peça a quem compartilhou: Colaborador(a), se vocês estão na mesma organização do Claude; Editor(a) por convite de e-mail (sem link público), se não estão." : e?.code === "quota_exceeded" ? "O espaço compartilhado encheu." : "Não consegui salvar no espaço a dois. Tente de novo."); } });
   return DUO.q;
 }

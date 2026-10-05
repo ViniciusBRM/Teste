@@ -197,9 +197,9 @@ function touch(...keys) {
   for (const k of keys) { const now = JSON.stringify(S[k] ?? null); if (now !== SNAP[k]) { before[k] = SNAP[k]; SNAP[k] = now; } }
   if (Object.keys(before).length && !opts.noUndo) { UNDO.push({ b: before, l: opts.label || "" }); if (UNDO.length > 80) UNDO.shift(); REDO.length = 0; }
   VER++;
-  if (IS_EXAMPLE) { IS_EXAMPLE = false; KEYS.forEach(k => dirty.add(k)); } else Object.keys(before).forEach(k => dirty.add(k));
+  if (EX_MODE) {} else if (IS_EXAMPLE) { IS_EXAMPLE = false; KEYS.forEach(k => dirty.add(k)); } else Object.keys(before).forEach(k => dirty.add(k));
   if (keys.includes("listas")) applyLists();
-  flushSoon();
+  if (!EX_MODE) flushSoon();
   if (!opts.noRender) render();
 }
 function swapState(from, to, msg) {
@@ -229,7 +229,7 @@ async function writeKey(k) {
   PARTS[k] = n;
 }
 async function flush() {
-  if (!STORE) return; const keys = [...dirty]; dirty.clear(); if (!keys.length) return;
+  if (!STORE || EX_MODE) return; const keys = [...dirty]; dirty.clear(); if (!keys.length) return;
   saveStatus("saving");
   try {
     for (const k of keys) { if (STORE.kind === "db") await writeKey(k); else localStorage.setItem("atlas_" + k, JSON.stringify(S[k])); }
@@ -272,7 +272,7 @@ function toast(t, act) {
 const undoToast = msg => toast(msg, { l: "Desfazer", f: undo });
 function saveStatus(st) {
   const el = $("#savest"); if (!el) return;
-  const t = st === "saving" ? ["saving", "Salvando…"] : SAVE_ERR ? ["err", "Não salvo · tentando de novo"] : IS_EXAMPLE ? ["ex", "Exemplo · não salvo"]
+  const t = EX_MODE ? ["ex", "Modo exemplo · não salvo"] : st === "saving" ? ["saving", "Salvando…"] : SAVE_ERR ? ["err", "Não salvo · tentando de novo"] : IS_EXAMPLE ? ["ex", "Exemplo · não salvo"]
     : STORE?.kind === "db" ? ["ok", "Salvo na sua conta"] : STORE?.kind === "local" ? ["local", "Salvo neste navegador"] : ["ex", "Conectando…"];
   el.className = "savest " + t[0]; el.textContent = t[1];
 }

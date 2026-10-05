@@ -16,7 +16,7 @@ function contaOcorr(c, de, ate) {
 }
 const contaPaga = (c, d) => !!(c.pagos || {})[d];
 function casaCalc() {
-  const de = addDays(TODAY, -45), ate = addDays(TODAY, 60), venc = [];
+  const de = addDays(TODAY, -45), ate = addDays(TODAY, 100), venc = [];
   for (const c of S.contasCasa) for (const d of contaOcorr(c, de, ate)) venc.push({ c, d, pago: contaPaga(c, d), dias: diff(d, TODAY) });
   venc.sort((a, b) => a.d.localeCompare(b.d));
   const rot = S.rotinas.map(r => { const prox = r.ultima && +r.freq ? addDays(r.ultima, +r.freq) : TODAY, dias = diff(prox, TODAY); return { ...r, nivel: r.nivel || "Média", prox, dias, st: dias < 0 ? "crit" : dias === 0 ? "warn" : "good" }; });

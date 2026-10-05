@@ -1328,6 +1328,13 @@ tr.dim td{opacity:.5}
 .cadtx{white-space:pre-wrap;font-family:var(--f-mono);font-size:12.5px;line-height:1.5;margin:0;background:var(--surface-2);border-radius:8px;padding:9px 10px;overflow-wrap:anywhere}
 .cadn footer{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 @media (max-width:420px){.hjq>span{min-width:0;flex-basis:100%}.cadgrid{grid-template-columns:1fr}}
+
+/* modo exemplo */
+.exbtn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);padding:7px 10px;border-radius:9px;cursor:pointer;font-weight:600;font-size:13px}
+.exbtn .ico{width:15px;height:15px}.exsw{width:26px;height:15px;border-radius:99px;background:var(--surface-3);position:relative;transition:background .15s}.exsw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:var(--muted);transition:all .15s}
+.exbtn.on{border-color:var(--warn);color:var(--ink)}.exbtn.on .exsw{background:color-mix(in srgb,var(--warn) 55%,var(--surface-3))}.exbtn.on .exsw::after{left:13px;background:var(--warn)}
+.banner.exb{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
+@media (max-width:640px){.exbtn span{display:none}}
 </style>
 
 <div class="app">
@@ -1542,9 +1549,9 @@ function touch(...keys) {
   for (const k of keys) { const now = JSON.stringify(S[k] ?? null); if (now !== SNAP[k]) { before[k] = SNAP[k]; SNAP[k] = now; } }
   if (Object.keys(before).length && !opts.noUndo) { UNDO.push({ b: before, l: opts.label || "" }); if (UNDO.length > 80) UNDO.shift(); REDO.length = 0; }
   VER++;
-  if (IS_EXAMPLE) { IS_EXAMPLE = false; KEYS.forEach(k => dirty.add(k)); } else Object.keys(before).forEach(k => dirty.add(k));
+  if (EX_MODE) {} else if (IS_EXAMPLE) { IS_EXAMPLE = false; KEYS.forEach(k => dirty.add(k)); } else Object.keys(before).forEach(k => dirty.add(k));
   if (keys.includes("listas")) applyLists();
-  flushSoon();
+  if (!EX_MODE) flushSoon();
   if (!opts.noRender) render();
 }
 function swapState(from, to, msg) {
@@ -1574,7 +1581,7 @@ async function writeKey(k) {
   PARTS[k] = n;
 }
 async function flush() {
-  if (!STORE) return; const keys = [...dirty]; dirty.clear(); if (!keys.length) return;
+  if (!STORE || EX_MODE) return; const keys = [...dirty]; dirty.clear(); if (!keys.length) return;
   saveStatus("saving");
   try {
     for (const k of keys) { if (STORE.kind === "db") await writeKey(k); else localStorage.setItem("atlas_" + k, JSON.stringify(S[k])); }
@@ -1617,7 +1624,7 @@ function toast(t, act) {
 const undoToast = msg => toast(msg, { l: "Desfazer", f: undo });
 function saveStatus(st) {
   const el = $("#savest"); if (!el) return;
-  const t = st === "saving" ? ["saving", "Salvando…"] : SAVE_ERR ? ["err", "Não salvo · tentando de novo"] : IS_EXAMPLE ? ["ex", "Exemplo · não salvo"]
+  const t = EX_MODE ? ["ex", "Modo exemplo · não salvo"] : st === "saving" ? ["saving", "Salvando…"] : SAVE_ERR ? ["err", "Não salvo · tentando de novo"] : IS_EXAMPLE ? ["ex", "Exemplo · não salvo"]
     : STORE?.kind === "db" ? ["ok", "Salvo na sua conta"] : STORE?.kind === "local" ? ["local", "Salvo neste navegador"] : ["ex", "Conectando…"];
   el.className = "savest " + t[0]; el.textContent = t[1];
 }
@@ -2098,6 +2105,11 @@ function exampleRedesenho(D) {
   D.cadTec = CAD_MODELO.slice(0, 6).map(([titulo, area, tipo, texto, ref, tags], i) => ({ id: id(), titulo, area, tipo, texto, ref, tags, revisar: i === 0 ? d(-2) : "", upd: Date.now() - i * 1e6 }));
   const work = D.pessoas.filter(p => p.relacao === "Trabalho" || p.relacao === "Mentoria");
   work.forEach((p, i) => { p.empresa ||= ["Studio Exemplo", "Engenharia Beta", "Consultoria Zeta"][i % 3]; p.cargo ||= ["BIM Manager", "Diretor técnico", "Recrutadora"][i % 3]; p.freq ||= 60; });
+  const at = n => Date.now() - n * 864e5, mm = (tipo, texto, n) => ({ id: id(), at: at(n), tipo, texto, fixo: false, origem: "mentor" });
+  const MEM = { med: [["compromisso", "10 minutos de respiração antes do trabalho, de segunda a sexta.", 6], ["ideia", "A pausa de três minutos funciona melhor depois do almoço.", 12]], tao: [["ideia", "Wu wei no trabalho: não forçar a reunião que não está madura.", 8]], bud: [["dúvida", "Como praticar mettā com quem me irrita sem fingir.", 10], ["compromisso", "Uma frase do Dhammapada por dia, de manhã.", 4]], bm: [["compromisso", "Exame da noite três vezes por semana.", 5]],
+    lzlei: [["gosto", "Prefere romances curtos e ensaios; abandonou livros de autoajuda.", 20], ["ideia", "Próximo: Calvino, As cidades invisíveis, em italiano.", 3]], lzfil: [["gosto", "Gosta de séries de 6 a 8 episódios; evita terror.", 15]], lzjog: [["gosto", "Jogos de estratégia por turnos, sessões curtas.", 11]], lzvia: [["ideia", "Langhe na época da vindima, de trem até Alba.", 7]], lzcaf: [["compromisso", "Testar a proporção 1:16 na V60 durante uma semana.", 2]], lzavi: [["ideia", "Treinar aproximação ILS em Caselle no simulador.", 9]], lzest: [["ideia", "Ler sobre história das estradas romanas no Piemonte.", 14]] };
+  for (const [k, ms] of Object.entries(MEM)) D.mentores[k] = { plano: null, conversa: [], ...(D.mentores[k] || {}), visto: at(2), mem: [...(D.mentores[k]?.mem || []), ...ms.map(([t, x, n]) => mm(t, x, n))] };
+  D.hojeCtx = { [TODAY]: { humor: 4, energia: "media", tempo: 60, grana: "pouco" } };
   D.oport = [{ id: id(), titulo: "Vaga de BIM Coordinator infra", empresa: "Engenharia Beta", tipo: "Vaga", estagio: "Conversa", contato: work[0]?.nome || "", prazo: d(5), passo: "Enviar portfólio atualizado" }, { id: id(), titulo: "Palestra no encontro buildingSMART local", empresa: "Comunidade", tipo: "Evento", estagio: "Ideia", contato: "", prazo: d(30), passo: "Propor tema" }];
 }
 
@@ -2915,7 +2927,7 @@ function topbar(R, title, sub) {
   const crumb = PAGE === "mentor" ? `<a href="#mentores">Mentores</a> / ${esc(MENTOR_DEF[SUB]?.nome || "")}` : SUBS[PAGE] ? `${esc(pageTitle())} / ${esc(SUBS[PAGE].find(x => x[0] === SUB)?.[1] || "")}` : "Atlas da Vida";
   return `<header class="top"><button type="button" class="iconbtn menu" data-act="menu" aria-label="Abrir menu">${ic("menu")}</button>
     <div class="ttl"><div class="crumb">${crumb}</div><h1>${title}</h1>${sub ? `<div class="sub">${sub}</div>` : ""}</div>
-    <div class="tools"><button type="button" class="capbtn" data-act="cap" title="Capturar: escreva ou dite o que aconteceu" aria-label="Capturar">${ic("bolt")}<span>Capturar</span></button><button type="button" class="srch" data-act="pal" aria-label="Buscar">${ic("search")}<span>Buscar</span></button>
+    <div class="tools"><button type="button" class="exbtn${EX_MODE ? " on" : ""}" data-act="extog" aria-pressed="${EX_MODE}" title="Liga e desliga dados fictícios em todas as abas; nada é salvo enquanto estiver ligado">${ic("eye")}<span>Exemplo</span><i class="exsw" aria-hidden="true"></i></button><button type="button" class="capbtn" data-act="cap" title="Capturar: escreva ou dite o que aconteceu" aria-label="Capturar">${ic("bolt")}<span>Capturar</span></button><button type="button" class="srch" data-act="pal" aria-label="Buscar">${ic("search")}<span>Buscar</span></button>
       <div class="monthpick" aria-label="Mês de referência"><button type="button" data-act="mprev" aria-label="Mês anterior">‹</button><span>${mlabel(REF)}</span><button type="button" data-act="mnext" aria-label="Próximo mês">›</button>${REF !== mkey(TODAY) ? `<button type="button" class="mnow" data-act="mnow">Hoje</button>` : ""}</div>
       <button type="button" class="iconbtn" data-act="undo" title="Desfazer (Ctrl+Z)" aria-label="Desfazer"${UNDO.length ? "" : " disabled"}>${ic("undo")}</button><button type="button" class="iconbtn" data-act="redo" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer"${REDO.length ? "" : " disabled"}>${ic("redo")}</button></div></header>`;
 }
@@ -3082,6 +3094,7 @@ function palItems(q) {
   const out = [], R = calcAt(REF), add = (g, l, s, ico, run, kw = "") => { const sc = fuzzy(l + " " + kw, q); if (sc >= 0) out.push({ g, l, s, ico, run, sc }); };
   if (q.trim().startsWith("/")) { const r = previewCommand(q.trim()); out.push({ g: "Executar", l: r.ok ? r.txt : r.err || "Comando incompleto", s: r.ok ? "Enter registra agora" : "Ex.: /gasto 12,50 Café · /tarefa Ligar para o banco até 15/10 · /humor 4", ico: "bolt", run: r.ok ? () => runQuickCommand(q.trim()) : null, sc: 999 }); return out; }
   add("Ações", "Capturar", "Escreva ou dite: gastos, sono, treino, contatos, tarefas", "bolt", () => openCapture(), "capturar ditar voz rapido registrar");
+  add("Ações", EX_MODE ? "Desligar o modo exemplo" : "Ligar o modo exemplo", "Dados fictícios em todas as abas, sem tocar nos seus", "eye", () => exToggle(), "exemplo demonstracao demo ficticio tutorial");
   add("Ações", "Painel do dia", "Humor, sono, treino, gastos e hábitos em um minuto, por texto ou voz", "mic", () => setHash("painel"), "painel dia rapido voz falar ditar registrar check-in");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");
   add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
@@ -6111,6 +6124,7 @@ const duoAv = id => DUO.prof[id]?.avatarUrl ? `<img class="duav" src="${esc(DUO.
 const duoJoined = () => !!DUO.members[DUO.me];
 /* uma escrita por vez, sempre no documento do próprio mês */
 function duoWrite(path, fn) {
+  if (EX_MODE) { toast("Modo exemplo: o espaço a dois não grava. Desligue o exemplo para usar."); return Promise.resolve(); }
   DUO.q = DUO.q.then(async () => { try { const ref = DUO.db.doc(path), cur = (await ref.get()).data() || {}; await ref.set(fn(cur)); } catch (e) { toast(e?.code === "invalid_argument" ? "Sem permissão para escrever no espaço a dois. Peça a quem compartilhou: Colaborador(a), se vocês estão na mesma organização do Claude; Editor(a) por convite de e-mail (sem link público), se não estão." : e?.code === "quota_exceeded" ? "O espaço compartilhado encheu." : "Não consegui salvar no espaço a dois. Tente de novo."); } });
   return DUO.q;
 }
@@ -8637,7 +8651,7 @@ const PD_KEYS = ["humor", "energia", "estresse", "sono", "passos", "treino", "mi
 const pdNew = (date = TODAY) => ({ date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], step: "form", done: null, inf: [] });
 let PD = pdLoad() || pdNew();
 function pdLoad() { try { const v = JSON.parse(localStorage.getItem("atlas_painel") || "null"); return v && v.date && v.v ? { ...pdNew(v.date), ...v, step: "form", done: null } : null; } catch { return null; } }
-const pdStore = debounce(() => { try { pdEmpty() ? localStorage.removeItem("atlas_painel") : localStorage.setItem("atlas_painel", JSON.stringify({ ...PD, done: null, step: "form" })); } catch {} }, 400);
+const pdStore = debounce(() => { if (EX_MODE) return; try { pdEmpty() ? localStorage.removeItem("atlas_painel") : localStorage.setItem("atlas_painel", JSON.stringify({ ...PD, done: null, step: "form" })); } catch {} }, 400);
 const pdEmpty = () => !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
 const pdReq = () => Array.isArray(S.cfg.pdReq) ? S.cfg.pdReq : PD_REQ_DEF;
 const pdRev = () => S.cfg.pdRev !== false;
@@ -9338,7 +9352,7 @@ function contaOcorr(c, de, ate) {
 }
 const contaPaga = (c, d) => !!(c.pagos || {})[d];
 function casaCalc() {
-  const de = addDays(TODAY, -45), ate = addDays(TODAY, 60), venc = [];
+  const de = addDays(TODAY, -45), ate = addDays(TODAY, 100), venc = [];
   for (const c of S.contasCasa) for (const d of contaOcorr(c, de, ate)) venc.push({ c, d, pago: contaPaga(c, d), dias: diff(d, TODAY) });
   venc.sort((a, b) => a.d.localeCompare(b.d));
   const rot = S.rotinas.map(r => { const prox = r.ultima && +r.freq ? addDays(r.ultima, +r.freq) : TODAY, dias = diff(prox, TODAY); return { ...r, nivel: r.nivel || "Média", prox, dias, st: dias < 0 ? "crit" : dias === 0 ? "warn" : "good" }; });
@@ -9660,6 +9674,27 @@ function cr2Click(t) {
 const cadDeb = debounce(() => render(), 220);
 function cr2Input(t) { if (t.id === "cad_q") { CAD.q = t.value; cadDeb(); return true; } return false; }
 
+/* ================================================================ modo exemplo: liga e desliga dados fictícios em todas as abas
+   Os dados reais ficam guardados na memória e no banco, intactos. Enquanto o exemplo está ligado nada é gravado,
+   o Notion fica desligado e o espaço a dois não escreve. Desligar devolve exatamente o estado anterior, com o seu histórico de desfazer. */
+let EX_MODE = false, EX_REAL = null;
+const EX_TXT = "Dormi 7 e meia, humor 4, corri 30 min, gastei 12,50 no almoço e 32,40 no mercado, meditei 15 min. Preciso ligar para o comune até sexta";
+async function exOn() {
+  if (EX_MODE) return;
+  try { if (STORE && dirty.size) { clearTimeout(saveTimer); await (FLUSHING || flush()); } } catch {}
+  EX_REAL = { S, IS_EXAMPLE, undo: UNDO.splice(0), redo: REDO.splice(0), PD, MCP, NOTION_OK, ref: REF };
+  EX_MODE = true; S = exampleData(); IS_EXAMPLE = false; MCP = null; NOTION_OK = false; REF = mkey(TODAY);
+  PD = pdNew(); PD.text = EX_TXT; pdParse();
+  applyLists(); VER++; snapAll(); render(); toast("Modo exemplo ligado: dados fictícios, nada é salvo.");
+}
+function exOff() {
+  if (!EX_MODE) return; const R0 = EX_REAL; EX_MODE = false; EX_REAL = null;
+  S = R0.S; IS_EXAMPLE = R0.IS_EXAMPLE; UNDO.splice(0, UNDO.length, ...R0.undo); REDO.splice(0, REDO.length, ...R0.redo); PD = R0.PD; MCP = R0.MCP; NOTION_OK = R0.NOTION_OK; REF = R0.ref;
+  dirty.clear(); applyLists(); VER++; snapAll(); render(); toast("Modo exemplo desligado: de volta aos seus dados.");
+}
+const exToggle = () => EX_MODE ? exOff() : exOn();
+const exBanner = () => EX_MODE ? `<div class="banner exb">${ic("eye")}<span><b>Modo exemplo.</b> Todas as abas estão preenchidas com dados fictícios para mostrar como funcionam. Pode clicar e editar à vontade: nada é salvo, e os seus dados continuam guardados.</span><button type="button" class="btn sm primary" data-act="extog">Desligar o exemplo</button></div>` : "";
+
 
 /* ================================================================ render */
 let RELAYOUT = false;
@@ -9701,7 +9736,7 @@ function render() {
   };
   const [title, sub, fn] = (pages[PAGE] || pages.visao)();
   let body; try { body = fn(R); } catch (err) { console.error(err); body = `<div class="emptyb">${ic("info")}<b>Esta página encontrou um problema ao desenhar.</b><span>${esc(String(err?.message || err))}</span><a class="btn sm" href="#visao">Voltar para a visão geral</a></div>`; }
-  const banner = IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
+  const banner = EX_MODE ? exBanner() : IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
   const ae = document.activeElement, focusId = ae?.id, selS = ae?.selectionStart, selE = ae?.selectionEnd, scT = ae?.scrollTop, chat = $("#mchat"), chatTop = chat ? chat.scrollTop : null, chatBottom = chat ? chat.scrollHeight - chat.scrollTop - chat.clientHeight < 40 : true;
   $("#nav").innerHTML = navHTML(R);
   $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
@@ -9787,8 +9822,10 @@ document.addEventListener("click", e => {
   if (a === "closefocus") { $("#focusdlg").close(); return; }
   if (a === "qtar") { const i = t.closest(".pn,.tcol")?.querySelector(".quick input") || $("#qt_in") || $("#hj_tar"); if (i) { quickTask(i.value); i.value = ""; } return; }
   if (a === "qlanc") { const i = $("#ql_in"); if (i) { quickLanc(i.value); i.value = ""; } return; }
+  if (a === "extog") { exToggle(); return; }
+  if ((t.id === "startEmpty" || t.id === "wipe") && EX_MODE) { toast("Desligue o modo exemplo antes."); return; }
   if (t.id === "startEmpty" || t.id === "wipe") { if (t.id === "wipe" && !t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar: apagar tudo"; return; } S = EMPTY(); VER++; IS_EXAMPLE = false; applyLists(); KEYS.forEach(k => dirty.add(k)); snapAll(); UNDO.length = 0; REDO.length = 0; flushSoon(0); render(); toast("Tudo vazio. Comece por Ajustes, Metas e o Diário."); return; }
-  if (t.id === "loadEx") { S = exampleData(); VER++; IS_EXAMPLE = true; applyLists(); snapAll(); render(); toast("Exemplo carregado (não é salvo)"); return; }
+  if (t.id === "loadEx") { exOn(); return; }
   if (ds.per) { PER = +ds.per; render(); return; }
   if (ds.xf) { const i = ds.xf.indexOf("|"), k = ds.xf.slice(0, i), v = ds.xf.slice(i + 1), f = xf(); f[k] = f[k] === v ? null : v; render(); return; }
   if (ds.xfclear) { if (ds.xfclear === "*") XFP[PAGE + "." + (SUB || "")] = {}; else xf()[ds.xfclear] = null; render(); return; }

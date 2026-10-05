@@ -39,7 +39,7 @@ function render() {
   };
   const [title, sub, fn] = (pages[PAGE] || pages.visao)();
   let body; try { body = fn(R); } catch (err) { console.error(err); body = `<div class="emptyb">${ic("info")}<b>Esta página encontrou um problema ao desenhar.</b><span>${esc(String(err?.message || err))}</span><a class="btn sm" href="#visao">Voltar para a visão geral</a></div>`; }
-  const banner = IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
+  const banner = EX_MODE ? exBanner() : IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
   const ae = document.activeElement, focusId = ae?.id, selS = ae?.selectionStart, selE = ae?.selectionEnd, scT = ae?.scrollTop, chat = $("#mchat"), chatTop = chat ? chat.scrollTop : null, chatBottom = chat ? chat.scrollHeight - chat.scrollTop - chat.clientHeight < 40 : true;
   $("#nav").innerHTML = navHTML(R);
   $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
@@ -125,8 +125,10 @@ document.addEventListener("click", e => {
   if (a === "closefocus") { $("#focusdlg").close(); return; }
   if (a === "qtar") { const i = t.closest(".pn,.tcol")?.querySelector(".quick input") || $("#qt_in") || $("#hj_tar"); if (i) { quickTask(i.value); i.value = ""; } return; }
   if (a === "qlanc") { const i = $("#ql_in"); if (i) { quickLanc(i.value); i.value = ""; } return; }
+  if (a === "extog") { exToggle(); return; }
+  if ((t.id === "startEmpty" || t.id === "wipe") && EX_MODE) { toast("Desligue o modo exemplo antes."); return; }
   if (t.id === "startEmpty" || t.id === "wipe") { if (t.id === "wipe" && !t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar: apagar tudo"; return; } S = EMPTY(); VER++; IS_EXAMPLE = false; applyLists(); KEYS.forEach(k => dirty.add(k)); snapAll(); UNDO.length = 0; REDO.length = 0; flushSoon(0); render(); toast("Tudo vazio. Comece por Ajustes, Metas e o Diário."); return; }
-  if (t.id === "loadEx") { S = exampleData(); VER++; IS_EXAMPLE = true; applyLists(); snapAll(); render(); toast("Exemplo carregado (não é salvo)"); return; }
+  if (t.id === "loadEx") { exOn(); return; }
   if (ds.per) { PER = +ds.per; render(); return; }
   if (ds.xf) { const i = ds.xf.indexOf("|"), k = ds.xf.slice(0, i), v = ds.xf.slice(i + 1), f = xf(); f[k] = f[k] === v ? null : v; render(); return; }
   if (ds.xfclear) { if (ds.xfclear === "*") XFP[PAGE + "." + (SUB || "")] = {}; else xf()[ds.xfclear] = null; render(); return; }
