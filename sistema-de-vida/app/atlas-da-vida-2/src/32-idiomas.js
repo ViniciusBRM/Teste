@@ -42,7 +42,7 @@ function idiPlano() {
   const I = idi(), ini = hm2m(I.janela.ini) ?? 1170, fim = hm2m(I.janela.fim) ?? 1260, jan = Math.max(0, fim - ini), dias = [];
   for (let k = 0; k < 7; k++) {
     const d = addDays(TODAY, k), dow = parse(d).getDay(), disp = +I.disp[dow] || 0;
-    const ev = (S.eventos || []).filter(e => e.data === d), busy = sum(ev.map(e => { const a = hm2m(e.hora), b = hm2m(e.fim) ?? (a != null ? a + 60 : null); return a == null ? 0 : Math.max(0, Math.min(b, fim) - Math.max(a, ini)); }));
+    const ev = [...(S.eventos || []).filter(e => e.data === d), ...rtOcc(d).filter(b => b.cat !== "Estudo").map(b => ({ hora: b.ini, fim: b.fim, titulo: b.titulo }))], busy = sum(ev.map(e => { const a = hm2m(e.hora), b = hm2m(e.fim) ?? (a != null ? a + 60 : null); return a == null ? 0 : Math.max(0, Math.min(b, fim) - Math.max(a, ini)); }));
     const livre = Math.max(0, Math.min(disp, jan - busy)), en = Math.round(livre * I.peso / 100 / 5) * 5, it = Math.max(0, livre - en), desl = dow >= 1 && dow <= 5 ? +I.desloc || 0 : 0;
     dias.push({ d, dow, disp, busy, ev, livre, en, it, desl });
   }

@@ -4,7 +4,7 @@ O app é um arquivo só, `../atlas-da-vida-2.html`, montado a partir dos módulo
 (`../atlas-da-vida.html`) continua separado e não é tocado por este build.
 
 - `python3 build.py` monta o HTML e, se o Node estiver instalado, confere a sintaxe do JavaScript.
-- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `36` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro; `25-carreira.js` é o hub de Carreira; `26-lazer.js` é o Lazer, com oito divisões e seus mentores; `27-painel.js` é o Painel do dia; `28-capas.js` as capas, missões, manuais e o Mapa do Atlas; `29-hoje2.js` o Hoje; `30-casa.js` a Casa; `31-futuro.js` Futuro financeiro e Itália & Brasil; `32-idiomas.js` Idiomas; `33-carreira2.js` Caderno técnico e Rede profissional; `34-exemplo.js` o modo exemplo; `35-painel2.js` as demais abas no Painel do dia; `36-gcal.js` o Google Calendar).
+- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `37` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro; `25-carreira.js` é o hub de Carreira; `26-lazer.js` é o Lazer, com oito divisões e seus mentores; `27-painel.js` é o Painel do dia; `28-capas.js` as capas, missões, manuais e o Mapa do Atlas; `29-hoje2.js` o Hoje; `30-casa.js` a Casa; `31-futuro.js` Futuro financeiro e Itália & Brasil; `32-idiomas.js` Idiomas; `33-carreira2.js` Caderno técnico e Rede profissional; `34-exemplo.js` o modo exemplo; `35-painel2.js` as demais abas no Painel do dia; `36-gcal.js` o Google Calendar; `37-rotina.js` a Rotina em blocos de 30 minutos).
 
 ## Testes (Playwright + Chromium)
 
@@ -16,6 +16,7 @@ Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` 
 | `lab2.py` | radar (contra cálculo independente), fechamento semanal, capítulos e livro em PDF, busca por significado |
 | `lab3.py` | espaço a dois (duas pessoas), agenda .ics (recorrências contra a `python-dateutil`), Apple Health, Google Fit, Notion, extrato que aprende |
 | `lab4.py` | bússola moral: valores, foco, exame da noite (índice conferido à parte), decisões com revisita, caminhos, Hoje |
+| `lab14.py` | rotina: dia, semana e mês sincronizados, meias horas, criar tocando e arrastando, repetições e exceções, sobreposição, agenda junto, Idiomas e Hoje |
 | `lab13.py` | painel com todas as abas, feed do dia pelo banco, mandala e bússola grandes, Google Calendar (leitura em páginas, blocos de estudo, erros) |
 | `lab12.py` | modo exemplo: liga e desliga sem tocar nos dados reais, nada gravado, desfazer preservado |
 | `lab11.py` | redesenho: banco congelado, capas e manuais, Hoje com e sem internet, Casa (vencimentos, compras, limpeza), TFR/IRPEF/reserva conferidos à parte, câmbio, plano de idiomas com a Agenda, caderno e rede |

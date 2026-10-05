@@ -39,7 +39,7 @@ async def main():
             miss = await pg.evaluate("NAV.flatMap(g => g[1]).map(x => x[0]).filter(k => !TAB_INFO[k])")
             chk(miss == [], f"toda aba do menu tem missão e manual (faltam: {miss})")
             chk(await pg.evaluate("document.querySelectorAll('.mapai').length") == await pg.evaluate("MAPA_GRUPOS.flatMap(g => g[1]).length"), "Mapa lista todas as abas com missão e descrição da capa")
-            chk(await pg.evaluate("document.querySelectorAll('.mapsug li').length") == 5, "Mapa propõe 5 abas novas em ordem")
+            chk(await pg.evaluate("document.querySelectorAll('.mapsug li').length") == 4, "Mapa propõe 4 abas novas em ordem (Tempo & energia virou a Rotina)")
             # Futuro financeiro: conferência independente
             await pg.evaluate("location.hash='fin.futuro'"); await pg.wait_for_timeout(300)
             X = await pg.evaluate("(() => { const x = futCalc(); return { ral: x.tfr.ral, q: x.tfr.quotaLiq, reval: x.tfr.reval, marg: x.tfr.marg, base: x.base, alvo: x.alvo, s1: x.tfr.serie[0].a }; })()")

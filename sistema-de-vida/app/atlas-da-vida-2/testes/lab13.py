@@ -76,7 +76,7 @@ async def main():
             chk(len(ev) == 3 and [ev[0][0], ev[0][1]] == exp1 and ev[1][0] == "Viagem" and ev[1][4] == D(7) and ev[2][0] == "Dentista", f"lê duas páginas do Google Calendar, ignora cancelados, viagem de vários dias: {ev}")
             chk(await pg.evaluate("S.integ.gcal.on") and "Conectado" in await pg.inner_text(".page"), "fica marcado como conectado")
             await pg.evaluate("location.hash='idiomas'"); await pg.wait_for_timeout(300)
-            P = await pg.evaluate("idiPlano()[1]")
+            P = await pg.evaluate("(() => { const d = S.eventos.find(e => e.titulo === 'Reunião de projeto').data; return idiPlano().find(p => p.d === d) || { busy: 'fora da semana' }; })()")
             chk(P["busy"] == 30, f"a reunião do Google entra no plano de Idiomas (−30 min na janela): {P['busy']}")
             n0 = await pg.evaluate("window.__calls.filter(c => c.tool === 'create_event').length")
             await pg.click("[data-act=gcestudo]"); await pg.wait_for_timeout(800)

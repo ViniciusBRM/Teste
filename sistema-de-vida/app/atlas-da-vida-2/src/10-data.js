@@ -2,7 +2,7 @@
 /* ================================================================ Dados: editor de planilha para cada conjunto */
 const DSETS = {
   lanc: "Lançamentos", tarefas: "Tarefas", metas: "Metas", habitos: "Hábitos", saude: "Check-ins", diario: "Diário", pessoas: "Pessoas", contatos: "Contatos", aprend: "Aprendizado", estudo: "Sessões de estudo",
-  lazer: "Lazer", sonhos: "Sonhos", docs: "Documentos", rotinas: "Rotinas", assin: "Assinaturas", comp: "Competências", cand: "Candidaturas", regras: "Regras de categorização", eventos: "Agenda (compromissos)", contasCasa: "Contas da casa", compras: "Lista de compras", cadTec: "Caderno técnico", oport: "Oportunidades profissionais", vidaItens: "Itália e Brasil",
+  lazer: "Lazer", sonhos: "Sonhos", docs: "Documentos", rotinas: "Rotinas", assin: "Assinaturas", comp: "Competências", cand: "Candidaturas", regras: "Regras de categorização", eventos: "Agenda (compromissos)", contasCasa: "Contas da casa", compras: "Lista de compras", cadTec: "Caderno técnico", oport: "Oportunidades profissionais", vidaItens: "Itália e Brasil", rotina: "Rotina (blocos)",
 };
 const SAUDE_F = [["data", "Data", "date"], ["sono", "Sono (h)", "num"], ["humor", "Humor", "num"], ["energia", "Energia", "num"], ["estresse", "Estresse", "num"], ["qual", "Qualidade do sono", "num"], ["passos", "Passos", "num"], ["treino", "Treino", () => TREINOS], ["min", "Minutos", "num"], ["peso", "Peso", "num"], ["nota", "Nota", "text"]];
 const DIARIO_F = [["data", "Data", "date"], ["hora", "Hora", "text"], ["titulo", "Título", "text"], ["humor", "Humor", "num"], ["energia", "Energia", "num"], ["texto", "Texto", "long"]];
