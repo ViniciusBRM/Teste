@@ -149,6 +149,7 @@ function exampleData() {
   exampleLazer(D);
   exampleAprofunda(D);
   exampleRedesenho(D);
+  exampleJardim(D);
   return D;
 }
 
@@ -485,4 +486,21 @@ function exampleRedesenho(D) {
   for (const b of D.rotina) for (let k = 1; k <= 20; k++) { const x = addDays(TODAY, -k); if ((k + b.titulo.length) % 5) b.feitos[x] = 1; }
   D.hojeCtx = { [TODAY]: { humor: 4, energia: "media", tempo: 60, grana: "pouco" } };
   D.oport = [{ id: id(), titulo: "Vaga de BIM Coordinator infra", empresa: "Engenharia Beta", tipo: "Vaga", estagio: "Conversa", contato: work[0]?.nome || "", prazo: d(5), passo: "Enviar portfólio atualizado" }, { id: id(), titulo: "Palestra no encontro buildingSMART local", empresa: "Comunidade", tipo: "Evento", estagio: "Ideia", contato: "", prazo: d(30), passo: "Propor tema" }];
+}
+
+/* jardim interior de exemplo: quatro caminhos abertos, cinco pedras lavradas, duas brutas, tábuas talhadas e metade do templo (tudo fictício) */
+function exampleJardim(D) {
+  const id = () => Math.random().toString(36).slice(2, 10), d = n => addDays(TODAY, n);
+  const mk = (nome, val, c, dias, lav) => ({ id: id(), nome, val, criada: d(c), marcas: dias.map(([k, txt]) => ({ data: d(k), txt })), lav: lav == null ? null : d(lav), at: parse(d(c)).getTime() });
+  const pedras = [
+    mk("Impaciência", "paciencia", -58, [[-57, "Na fila do correio respirei antes de reclamar."], [-54, "Esperei o colega terminar de falar."], [-51, "Percebi a pressa no trânsito e baixei o ritmo."]], -50),
+    mk("Maledicência", "gentileza", -48, [[-47, "Mudei de assunto quando começaram a falar mal de alguém."], [-44, "Segurei um comentário irônico."], [-42, "Elogiei em vez de criticar."]], -41),
+    mk("Pressa", "temperanca", -40, [[-39, "Almocei sem celular."], [-37, "Fiz uma coisa de cada vez de manhã."], [-36, "Saí 10 min antes para não correr."]], -35),
+    mk("Orgulho", "humildade", -33, [[-32, "Pedi ajuda num cálculo em vez de insistir sozinho."], [-29, "Admiti um erro na reunião."], [-26, "Agradeci uma correção."]], -25),
+    mk("Ansiedade com o futuro", "equilibrio", -22, [[-21, "Voltei à respiração quando pensei no contrato."], [-19, "Escrevi o que dependia de mim."], [-17, "Deixei a dúvida para amanhã, sem ruminar."]], -16),
+    mk("Comparação", "desprendimento", -10, [[-8, "Notei a inveja vendo o post de um colega e desejei o bem a ele."], [-3, "Lembrei do meu próprio caminho."]], null),
+    mk("Irritação no trânsito", "paciencia", -4, [[-2, "Buzinaram; respirei três vezes."]], null)];
+  const tal = [["med", -45, "A meditação está tirando as rebarbas da minha reatividade."], ["esp", -38, "A prece da noite está me deixando mais leve para perdoar."], ["med", -30, "Percebo antes quando a mente começa a correr."], ["tao", -24, "Estou aprendendo a não forçar o que ainda não amadureceu."], ["bud", -18, "Mettā está amaciando o jeito que falo comigo mesmo."], ["med", -12, "A atenção está virando um hábito, não um esforço."], ["esp", -6, "Servir no sábado me lembra que não sou o centro."]];
+  const talhos = tal.map(([pid, k, texto]) => { const r = { id: id(), data: d(k), at: parse(d(k)).getTime(), tipo: "aprendizado", texto, tambem: [], priv: false, origem: "jardim" }; ((D.jornada.p[pid] ||= {}).refl ||= []).push(r); return { id: id(), data: d(k), pid, refl: r.id }; });
+  D.jardim = { cam: { margem: d(-62), ponte: d(-55), escada: d(-49), mirante: d(-40) }, pedras, talhos, templo: { alicerce: d(-24), piso: d(-15), col_esp: d(-11), col_med: d(-6) }, folhas: [d(-30), d(-21), d(-9), d(-2)].map(x => ({ data: x, at: parse(x).getTime() })) };
 }

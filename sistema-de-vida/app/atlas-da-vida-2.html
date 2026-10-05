@@ -1422,6 +1422,71 @@ tr.dim td{opacity:.5}
 .rtdur{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.rtdur .chip{cursor:pointer}
 @media (max-width:1180px){.rtlay{grid-template-columns:minmax(0,1fr)}.rtins{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}}
 @media (max-width:640px){.rtstrip{grid-template-columns:repeat(7,minmax(0,1fr))}.rtsw{display:none}.rtsd{padding:5px 2px}.rtsd .rtsm{font-size:10px}.rtpt b{font-size:20px}.rtviews{order:-1;width:100%}.rtviews .seg{flex:1;justify-content:center}.rtkpis{grid-template-columns:repeat(2,minmax(0,1fr))}.rtmc{min-height:62px;padding:3px}.rtmc i,.rtmct small{display:none}.rtmw{grid-template-columns:24px repeat(7,minmax(0,1fr))}.rtnowc{grid-template-columns:1fr}.rthead,.rtallrow,.rtbody{grid-template-columns:46px repeat(var(--n),minmax(92px,1fr))}.rtgrid.one .rthead,.rtgrid.one .rtallrow,.rtgrid.one .rtbody{grid-template-columns:46px minmax(0,1fr)}}
+/* ===== jardim interior, mandala e bússola vivas */
+.jdlay+.g2c{align-items:start}.jdlay{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start;margin:12px 0 14px}
+@media (max-width:1100px){.jdlay{grid-template-columns:minmax(0,1fr)}}
+.jdmain{padding:10px}.jdscene{border-radius:12px;overflow:hidden;border:1px solid var(--line)}.jdscene svg{display:block;width:100%;height:auto}
+.jdaside{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}.jdaside h3{display:flex;gap:8px;align-items:center;margin:2px 0 6px;font-size:17px}
+@media (max-width:1100px){.jdaside{position:static;max-height:none}}
+.jdplaces{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.jdplaces .chip{display:inline-flex;gap:5px;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:12.5px;cursor:pointer;color:var(--ink-2)}
+.jdplaces .chip.on{border-color:var(--accent);color:var(--ink);background:color-mix(in srgb,var(--accent) 12%,var(--surface))}.jdplaces .chip.lk{opacity:.6}.jdplaces .ico svg{width:14px;height:14px}
+.jdstat{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:8px 0 4px}.jdstat b{font-size:16px}.jdstat span{color:var(--muted);font-size:12.5px;text-align:right}
+.jdbar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:2px 0 10px}.jdbar i{display:block;height:100%;background:var(--c,var(--accent));border-radius:99px;transition:width .6s}
+.jdtab{font-size:12.5px;margin:6px 0}.jdtab td,.jdtab th{padding:4px 6px}
+.jdlist{display:grid;gap:6px;margin:8px 0}.jdli{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;cursor:pointer;color:var(--ink)}
+.jdli:hover{border-color:var(--accent)}.jdli small{color:var(--muted)}.jdasks{padding-left:18px;margin:6px 0 10px;display:grid;gap:6px}
+.jdrules{list-style:none;padding:0;margin:6px 0;display:grid;gap:8px;font-size:13px}.jdrules li{display:flex;gap:8px;align-items:flex-start}
+.jdmarks,.jdjour{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px;font-size:13px}.jdmarks li,.jdjour li{display:flex;gap:8px;align-items:baseline}.jdmarks small,.jdjour small{color:var(--muted);min-width:42px}
+.jdparts{padding-left:0;list-style:none;display:grid;gap:8px;margin:8px 0}.jdparts li{border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:grid;gap:4px}.jdparts li>div{display:flex;justify-content:space-between;gap:8px}
+.jdparts li.ok{border-color:color-mix(in srgb,var(--jp-tao) 50%,var(--line));background:color-mix(in srgb,var(--jp-tao) 7%,transparent)}.jdparts li.can{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 20%,transparent)}
+.jdparts small{color:var(--muted)}.jdaxes{display:grid;gap:4px;margin:8px 0}.jdaxes>div{display:grid;grid-template-columns:52px 1fr 40px;gap:8px;align-items:center;font-size:12.5px}.jdaxes .jdbar{margin:0}
+.jdsvg .jd-hot{cursor:pointer;outline:none}.jdsvg .jd-hot:focus-visible{outline:none}.jdsvg .jd-hot:focus-visible>*:not(text){filter:drop-shadow(0 0 4px var(--accent))}
+.jdsvg .jd-hot.on{filter:drop-shadow(0 0 6px rgba(255,236,150,.9))}.jdsvg .jd-hot:hover{filter:brightness(1.06) drop-shadow(0 0 3px rgba(255,255,255,.6))}
+.jd-ground{fill:#9cc47a}.jd-meadow{fill:#8fbd6c;opacity:.6}.jd-hill{fill:#88b56a}.jd-mnt{fill:#7d9a8a}.jd-mnt2{fill:#a9bcc6}.jd-sun{fill:#fff1a8}.jd-star{fill:#fff;animation:jdtw 3s ease-in-out infinite}
+.jd-soil{fill:#7a6142;opacity:.45}.jd-stem{stroke:#5c7a3a;stroke-width:2.4;fill:none}.jd-trunk{fill:#7a5a3a}.jd-root{stroke:#7a5a3a;stroke-width:1.6;opacity:.7}.jd-node{stroke:#6d6a3c;stroke-width:1.2}.jd-bamboo{stroke-linecap:round}
+.jd-fruit{stroke:#fff;stroke-width:.8}.jd-lbl{font-size:12.5px;font-weight:700;fill:#24331f;paint-order:stroke;stroke:rgba(255,255,255,.7);stroke-width:3px}.jd-sub{font-size:11px;font-weight:600;fill:#3a4a33;paint-order:stroke;stroke:rgba(255,255,255,.75);stroke-width:3px}
+.jd-sway{transform-box:fill-box;transform-origin:50% 100%;animation:jdsway var(--d,5s) ease-in-out infinite alternate}.jd-dorm{filter:saturate(.35)}
+.jd-plant path{stroke-width:1.6;fill:none}.jd-seed{animation:jdpulse 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.jd-drops ellipse{fill:#5fb3ff;animation:jddrop 1.1s ease-in 3 both}
+.jd-water{fill:none;stroke:#5ea9de;stroke-linecap:round}.jd-flow{fill:none;stroke:#e8f6ff;stroke-dasharray:10 40;stroke-linecap:round;opacity:.3;animation:jdflow 4s linear infinite}.jd-hitw{fill:none;stroke:transparent;stroke-width:30}
+.jd-pond{fill:#6bb4e0;stroke:#4f97c4;stroke-width:1.5}.jd-pad{fill:#4e9a52}.jd-lotus .jd-lc{fill:#fbd0e2}.jd-lotus path{fill:#f4a6c6;stroke:#d06d98;stroke-width:.8;animation:jdbloom 1.4s ease-out both;transform-box:fill-box;transform-origin:50% 100%}
+.jd-cam{fill:none;stroke:#e6d2a5;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}.jd-cam.jd-off{stroke:#b9b39a;stroke-width:5;stroke-dasharray:3 9;opacity:.8}.jd-cam.jd-ready{stroke:#ffe08a;animation:jdready 1.6s ease-in-out infinite}
+.jd-open .jd-cam{animation:jdopen 1.4s ease-out both}.jd-arch{fill:none;stroke:#8a6a44;stroke-width:6}.jd-arch.jd-ruin{stroke-dasharray:4 6;opacity:.6}.jd-deck{stroke:#a57f50;stroke-width:5}
+.jd-cliff{fill:#a9a49a;stroke:#8d887e}.jd-crack{stroke:#8d887e;stroke-width:1.5;fill:none}.jd-rock{fill:#8e8a82;stroke:#6d6961;stroke-width:1.4}.jd-block{fill:#d9d2c3;stroke:#a59d8c}.jd-ready-ring{fill:none;stroke:#ffe08a;stroke-width:2.5;stroke-dasharray:5 5;animation:jdready 1.6s ease-in-out infinite}
+.jd-hit .jd-rock,.jd-shop.jd-hit .jd-wood{animation:jdshake .45s ease-in-out 2}.jd-log{fill:#9a6b3f;stroke:#6e4a28}.jd-ring{fill:none;stroke:#d7b385;stroke-width:1}.jd-plank{fill:#d8b07a;stroke:#a77c47;stroke-width:.8}
+.jd-wood{fill:#b48a5a;stroke:#86633c}.jd-post{stroke:#6e4a28;stroke-width:3.5;stroke-linecap:round}.jd-stone{fill:#ddd5c4;stroke:#a59d8c}.jd-joint{stroke:#a59d8c;stroke-width:1}.jd-cap{fill:#cbbfa6;stroke:#a59d8c}
+.jd-roof{fill:#a65f3f;stroke:#7c4228}.jd-door{fill:#3a2c22}.jd-glass{fill:#f1ecff;stroke:#a59d8c}.jd-bell{fill:#d6a640;stroke:#9c7524}.jd-plat{fill:#b9cfa0;opacity:.8}.jd-altar{fill:#cbbfa6}
+.jd-flame path{fill:#ffb347;filter:drop-shadow(0 0 4px #ffcc66);transform-box:fill-box;transform-origin:50% 100%;animation:jdflick 1.2s ease-in-out infinite alternate}.jd-ember path{fill:#9d958a}
+.jd-ghost{opacity:.5}.jd-ghost *{fill:none!important;stroke:#5b6b55!important;stroke-dasharray:3 4;stroke-width:1!important;filter:none!important}
+.jd-pop{animation:jdpop .9s cubic-bezier(.2,1.4,.4,1) both;transform-box:fill-box;transform-origin:50% 100%}
+.jd-mosaic{fill:#efe6cf;stroke:#b7a77f;stroke-width:2}.jd-mosaic2{fill:none;stroke:#cdbd94;stroke-dasharray:2 4}.jd-rose{fill:#c9b07a}.jd-rose.sm{fill:#d9c9a0}
+.jd-needle{transform-box:view-box;transform-origin:430px 410px;transition:transform 1s}.jd-kiosk{fill:#e8dcc0;stroke:#8a6a44;stroke-width:2}.jd-mini{fill:var(--jp-med);opacity:.7}
+.jd-gatebar{fill:none;stroke:#a65f3f;stroke-width:6;stroke-linecap:round}
+.jd-fog{fill:#eef2f4;opacity:.8;animation:jdfog 9s ease-in-out infinite alternate}.jd-lock rect{fill:#6b6b6b}.jd-lock path{stroke:#6b6b6b;stroke-width:2.4}.jd-fogg{pointer-events:none}
+.jd-fly{fill:#fff59a;filter:drop-shadow(0 0 4px #fff59a);animation:jdfly 4s ease-in-out infinite alternate}.jd-bfly path{fill:#f2a64b;stroke:#b4620c;stroke-width:.6;animation:jdfly 5s ease-in-out infinite alternate}
+.jd-nightveil{fill:#0b1430;opacity:.38;pointer-events:none}.jd-duskveil{fill:#f08a4b;opacity:.1;pointer-events:none}.jd-leaf{pointer-events:none}
+.sky-noite .jd-lbl,.sky-noite .jd-sub{fill:#f3f3f3;stroke:rgba(0,0,0,.55)}
+@keyframes jdsway{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}@keyframes jdtw{50%{opacity:.3}}@keyframes jdpulse{50%{transform:scale(1.25)}}
+@keyframes jddrop{from{transform:translateY(-14px);opacity:0}30%{opacity:1}to{transform:translateY(46px);opacity:0}}@keyframes jdflow{to{stroke-dashoffset:-56}}
+@keyframes jdbloom{from{transform:scale(.2);opacity:0}}@keyframes jdready{50%{opacity:.45}}@keyframes jdopen{from{stroke-dasharray:0 900}to{stroke-dasharray:900 0}}
+@keyframes jdshake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}@keyframes jdflick{from{transform:scaleY(.9) skewX(-3deg)}to{transform:scaleY(1.12) skewX(3deg)}}
+@keyframes jdpop{from{transform:translateY(-30px) scale(.9);opacity:0}}@keyframes jdfog{to{transform:translateX(14px);opacity:.6}}@keyframes jdfly{to{transform:translate(18px,-14px)}}
+.jmctl,.bmctl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:center;margin:0 0 8px}.jmrange{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}.jmrange input{width:180px}
+.jmx{max-width:680px;margin:10px auto 0;border:1px solid var(--line);border-left:4px solid var(--c,var(--accent));border-radius:10px;padding:10px 12px;display:grid;gap:6px}.jmx>b{display:flex;gap:6px;align-items:center}.jmx p{margin:0}
+p.jmx{border:0;padding:0;text-align:center}
+.jm-p.on path{stroke-width:3.4;filter:drop-shadow(0 0 5px var(--c,rgba(0,0,0,.25)))}.jm-c.on circle{stroke-width:3.2}
+.jmandala.anim .jm-p{animation:jmgrow .7s cubic-bezier(.2,1.2,.4,1) both;animation-delay:calc(var(--i) * 28ms)}
+@keyframes jmgrow{from{opacity:0;transform:translate(260px,260px) scale(.2)}}
+.jm-pg{transform-box:view-box;transform-origin:260px 260px}.jmandala.breath .jm-pg{animation:jmbr 10s ease-in-out 6}
+@keyframes jmbr{0%{transform:scale(.84)}40%{transform:scale(1.05)}100%{transform:scale(.84)}}
+.jm-in,.jm-out{opacity:0}.breath .jm-in{animation:jmtin 10s linear 6}.breath .jm-out{animation:jmtout 10s linear 6}
+@keyframes jmtin{0%,38%{opacity:1}40%,100%{opacity:0}}@keyframes jmtout{0%,38%{opacity:0}40%,98%{opacity:1}100%{opacity:0}}
+.jmandala.mini{width:min(100%,300px)}
+.bmc-ng{transform-box:view-box;transform-origin:300px 300px;transition:transform .7s cubic-bezier(.3,1.3,.5,1)}.bmc-ng.spin{transition:transform 1.8s cubic-bezier(.15,.75,.2,1)}
+.bmc-new{fill:none;stroke:var(--accent);stroke-width:1.4;stroke-dasharray:3 3;animation:jdready 2.4s ease-in-out infinite}.bmc-web{fill:none;stroke-width:1.2;opacity:.4}.bmc-web.hot{stroke-width:2.6;opacity:.95}
+.bmc-wedge0{fill:transparent;stroke-width:1.2;stroke-dasharray:4 5;opacity:.55}.bmc-wedge{opacity:.28;stroke:none;transition:opacity .2s}.bmc-wedge:hover{opacity:.45}.bmlegend{text-align:center;margin:6px 0 0}
+@media (prefers-reduced-motion:reduce){.jd-sway,.jd-flow,.jd-star,.jd-fog,.jd-fly,.jd-bfly path,.jd-flame path,.jd-seed,.jd-ready-ring,.jd-cam.jd-ready,.bmc-new,.jmandala.anim .jm-p{animation:none!important}.bmc-ng,.bmc-ng.spin,.jd-needle{transition:none}}
+@media (max-width:640px){.jdscene{overflow-x:auto;overscroll-behavior-x:contain}.jdscene svg{min-width:700px}.jdmain{padding:6px}.jdplaces .chip{font-size:12px;padding:4px 8px}.jmrange input{width:130px}}
 </style>
 
 <div class="app">
@@ -1611,13 +1676,13 @@ function applyLists() {
 const relArea = r => ({ "Família": "Família", "Parceria": "Amor & parceria", "Amizade": "Amizades & social", "Trabalho": "Carreira", "Mentoria": "Carreira", "Comunidade": "Propósito & espiritualidade" }[r] || "Amizades & social");
 
 /* ================================================================ estado */
-const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx", "rotina", "rotinaModelos"];
+const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx", "rotina", "rotinaModelos", "jardim"];
 const EMPTY = () => ({
   cfg: { nome: "", moeda: "€", metaPoup: .2, metaReserva: 6, usoSobra: .7, maxParcela: .3, metaSono: 7.5, metaTreinos: 4, metaPassos: 8000, metaEstudo: 24, metaLivros: 12, metaLazer: 6, alertaDocs: 90, alertaAniv: 30, mentorNivel: "default", mentorTom: "Direto e caloroso", mentorNotion: true },
   lanc: [], orc: {}, patr: {}, saude: {}, habitos: [], marks: {}, roda: {}, alvo: {}, revisao: {}, metas: [], tarefas: [],
   pessoas: [], contatos: [], aprend: [], estudo: [], lazer: [], sonhos: [], docs: [], rotinas: [], assin: [], comp: [], cand: [], prio: ["", "", ""],
   diario: [], mentores: {}, listas: DEFAULT_LISTS(), regras: [], areasCfg: {}, integ: { notion: { pai: null, hist: [], tarefas: null } },
-  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {}, rotina: [], rotinaModelos: [],
+  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {}, rotina: [], rotinaModelos: [], jardim: { pedras: [], talhos: [], templo: {}, folhas: [], cam: {} },
 });
 let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0, DBH = null;
 applyLists();
@@ -1867,6 +1932,7 @@ function exampleData() {
   exampleLazer(D);
   exampleAprofunda(D);
   exampleRedesenho(D);
+  exampleJardim(D);
   return D;
 }
 
@@ -2203,6 +2269,23 @@ function exampleRedesenho(D) {
   for (const b of D.rotina) for (let k = 1; k <= 20; k++) { const x = addDays(TODAY, -k); if ((k + b.titulo.length) % 5) b.feitos[x] = 1; }
   D.hojeCtx = { [TODAY]: { humor: 4, energia: "media", tempo: 60, grana: "pouco" } };
   D.oport = [{ id: id(), titulo: "Vaga de BIM Coordinator infra", empresa: "Engenharia Beta", tipo: "Vaga", estagio: "Conversa", contato: work[0]?.nome || "", prazo: d(5), passo: "Enviar portfólio atualizado" }, { id: id(), titulo: "Palestra no encontro buildingSMART local", empresa: "Comunidade", tipo: "Evento", estagio: "Ideia", contato: "", prazo: d(30), passo: "Propor tema" }];
+}
+
+/* jardim interior de exemplo: quatro caminhos abertos, cinco pedras lavradas, duas brutas, tábuas talhadas e metade do templo (tudo fictício) */
+function exampleJardim(D) {
+  const id = () => Math.random().toString(36).slice(2, 10), d = n => addDays(TODAY, n);
+  const mk = (nome, val, c, dias, lav) => ({ id: id(), nome, val, criada: d(c), marcas: dias.map(([k, txt]) => ({ data: d(k), txt })), lav: lav == null ? null : d(lav), at: parse(d(c)).getTime() });
+  const pedras = [
+    mk("Impaciência", "paciencia", -58, [[-57, "Na fila do correio respirei antes de reclamar."], [-54, "Esperei o colega terminar de falar."], [-51, "Percebi a pressa no trânsito e baixei o ritmo."]], -50),
+    mk("Maledicência", "gentileza", -48, [[-47, "Mudei de assunto quando começaram a falar mal de alguém."], [-44, "Segurei um comentário irônico."], [-42, "Elogiei em vez de criticar."]], -41),
+    mk("Pressa", "temperanca", -40, [[-39, "Almocei sem celular."], [-37, "Fiz uma coisa de cada vez de manhã."], [-36, "Saí 10 min antes para não correr."]], -35),
+    mk("Orgulho", "humildade", -33, [[-32, "Pedi ajuda num cálculo em vez de insistir sozinho."], [-29, "Admiti um erro na reunião."], [-26, "Agradeci uma correção."]], -25),
+    mk("Ansiedade com o futuro", "equilibrio", -22, [[-21, "Voltei à respiração quando pensei no contrato."], [-19, "Escrevi o que dependia de mim."], [-17, "Deixei a dúvida para amanhã, sem ruminar."]], -16),
+    mk("Comparação", "desprendimento", -10, [[-8, "Notei a inveja vendo o post de um colega e desejei o bem a ele."], [-3, "Lembrei do meu próprio caminho."]], null),
+    mk("Irritação no trânsito", "paciencia", -4, [[-2, "Buzinaram; respirei três vezes."]], null)];
+  const tal = [["med", -45, "A meditação está tirando as rebarbas da minha reatividade."], ["esp", -38, "A prece da noite está me deixando mais leve para perdoar."], ["med", -30, "Percebo antes quando a mente começa a correr."], ["tao", -24, "Estou aprendendo a não forçar o que ainda não amadureceu."], ["bud", -18, "Mettā está amaciando o jeito que falo comigo mesmo."], ["med", -12, "A atenção está virando um hábito, não um esforço."], ["esp", -6, "Servir no sábado me lembra que não sou o centro."]];
+  const talhos = tal.map(([pid, k, texto]) => { const r = { id: id(), data: d(k), at: parse(d(k)).getTime(), tipo: "aprendizado", texto, tambem: [], priv: false, origem: "jardim" }; ((D.jornada.p[pid] ||= {}).refl ||= []).push(r); return { id: id(), data: d(k), pid, refl: r.id }; });
+  D.jardim = { cam: { margem: d(-62), ponte: d(-55), escada: d(-49), mirante: d(-40) }, pedras, talhos, templo: { alicerce: d(-24), piso: d(-15), col_esp: d(-11), col_med: d(-6) }, folhas: [d(-30), d(-21), d(-9), d(-2)].map(x => ({ data: x, at: parse(x).getTime() })) };
 }
 
 
@@ -2980,7 +3063,7 @@ const SUBS = {
   lazer: [["inicio", "Início"], ["leitura", "Leitura"], ["filmes", "Filmes e séries"], ["jogos", "Jogos"], ["viagens", "Viagens"], ["cafe", "Café"], ["aviacao", "Aviação"], ["estudos", "Estudos"], ["existencial", "Existencial"]],
   carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["caderno", "Caderno técnico"], ["rede", "Rede profissional"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
-  jornada: [["inicio", "Início"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
+  jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   rotina: [["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
 };
@@ -6779,23 +6862,48 @@ function bmSet(d, patch, label) { const e = { n: {}, ...(bmEx()[d] || {}) }; S.b
 /* ---------------------------------------------------------------- desenho */
 const bmAxPill = id => { const a = bmAx(id); return `<span class="bmax" style="--c:${a.cor}">${esc(a.rumo)} · ${esc(a.nome)}</span>`; };
 const bmChip = (id, on) => { const v = bmV(id), a = bmAx(v.ax); return `<button type="button" class="bmchip${on ? " on" : ""}" data-bmv="${v.id}" style="--c:${a.cor}">${esc(v.nome)}</button>`; };
+/* camadas: pratica (cor = notas do exame), tecido (as ligações "tece com"), equilibrio (quanto cada rumo se estende) */
+const bmVistos = () => (S.bussola ||= { foco: [] }).vistos ||= {};
+function bmPos(v, C = 300, R = 200) { const SPREAD = { 3: 24, 4: 26, 5: 22 }, ang = { norte: -90, leste: 0, sul: 90, oeste: 180 }; if (v.ax === "centro") return [C, C, -90]; const vs = BM_V.filter(x => x.ax === v.ax), i = vs.indexOf(v), deg = ang[v.ax] + (i - (vs.length - 1) / 2) * (SPREAD[vs.length] || 20), t = deg * Math.PI / 180; return [C + (R - 20) * Math.cos(t), C + (R - 20) * Math.sin(t), deg]; }
 function bmCompass(sc) {
-  const W = 600, C = 300, R = 200, SPREAD = { 3: 24, 4: 26, 5: 22 }, sel = BM.sel || bmFoco()[0] || "consciencia", ang = { norte: -90, leste: 0, sul: 90, oeste: 180 };
+  const W = 600, C = 300, R = 200, sel = BM.sel || bmFoco()[0] || "consciencia", ang = { norte: -90, leste: 0, sul: 90, oeste: 180 }, lay = BM.lay || "pratica", vis0 = bmVistos();
   let g = `<circle cx="${C}" cy="${C}" r="${R + 46}" class="bmc-o"/><circle cx="${C}" cy="${C}" r="${R - 70}" class="bmc-i"/>`;
   for (let k = 0; k < 72; k++) { const a = k * 5 * Math.PI / 180, r1 = R + 46, r2 = r1 - (k % 18 === 0 ? 14 : k % 2 ? 4 : 8); g += `<line x1="${(C + r1 * Math.cos(a)).toFixed(1)}" y1="${(C + r1 * Math.sin(a)).toFixed(1)}" x2="${(C + r2 * Math.cos(a)).toFixed(1)}" y2="${(C + r2 * Math.sin(a)).toFixed(1)}" class="bmc-t"/>`; }
+  if (lay === "equilibrio") for (const a of BM_AX.filter(a => a.id !== "centro")) { const s = sc.ax[a.id], r1 = 44, t0 = (ang[a.id] - 40) * Math.PI / 180, t1 = (ang[a.id] + 40) * Math.PI / 180;
+    const wedge = r2 => `M${(C + r1 * Math.cos(t0)).toFixed(1)} ${(C + r1 * Math.sin(t0)).toFixed(1)}L${(C + r2 * Math.cos(t0)).toFixed(1)} ${(C + r2 * Math.sin(t0)).toFixed(1)}A${r2.toFixed(1)} ${r2.toFixed(1)} 0 0 1 ${(C + r2 * Math.cos(t1)).toFixed(1)} ${(C + r2 * Math.sin(t1)).toFixed(1)}L${(C + r1 * Math.cos(t1)).toFixed(1)} ${(C + r1 * Math.sin(t1)).toFixed(1)}A${r1} ${r1} 0 0 0 ${(C + r1 * Math.cos(t0)).toFixed(1)} ${(C + r1 * Math.sin(t0)).toFixed(1)}Z`, tip = `${esc(a.rumo)} · ${esc(a.nome)}: ${s == null ? "sem notas no exame em 4 semanas" : pct(s)}`;
+    g += `<path d="${wedge(r1 + 150)}" class="bmc-wedge0" style="stroke:${a.cor}" data-tip="${tip}"/>${s ? `<path d="${wedge(r1 + 150 * s)}" class="bmc-wedge" style="fill:${a.cor}" data-tip="${tip}"/>` : ""}`;
+    if (s == null) { const tm = ang[a.id] * Math.PI / 180; g += `<text x="${(C + 150 * Math.cos(tm)).toFixed(1)}" y="${(C + 150 * Math.sin(tm) + 4).toFixed(1)}" text-anchor="middle" class="bmc-axs">sem notas</text>`; }
+  }
+  if (lay === "tecido") { const seen = new Set();
+    for (const v of BM_V) for (const o of v.liga) { const k = [v.id, o].sort().join("|"); if (seen.has(k) || !bmV(o)) continue; seen.add(k); const [x1, y1] = bmPos(v), [x2, y2] = bmPos(bmV(o)), hot = v.id === sel || o === sel;
+      g += `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}Q${C} ${C} ${x2.toFixed(1)} ${y2.toFixed(1)}" class="bmc-web${hot ? " hot" : ""}" style="stroke:${hot ? bmAx(bmV(sel).ax).cor : "var(--line-2)"}"/>`; } }
   for (const a of BM_AX.filter(a => a.id !== "centro")) { const t = ang[a.id] * Math.PI / 180, r = a.id === "leste" || a.id === "oeste" ? 100 : 92, x = C + r * Math.cos(t), y = C + r * Math.sin(t);
     g += `<text x="${x.toFixed(1)}" y="${(y - 3).toFixed(1)}" text-anchor="middle" class="bmc-ax" style="fill:${a.cor}">${esc(a.rumo.toUpperCase())}</text><text x="${x.toFixed(1)}" y="${(y + 12).toFixed(1)}" text-anchor="middle" class="bmc-axs">${esc(a.nome)}</text>`; }
-  const v0 = bmV(sel), ta = v0.ax === "centro" ? -90 : ang[v0.ax];
+  const v0 = bmV(sel), ta = v0.ax === "centro" ? -90 : bmPos(v0)[2];
   BM_V.filter(v => v.ax !== "centro").forEach(v => {
-    const vs = BM_V.filter(x => x.ax === v.ax), i = vs.indexOf(v), t = (ang[v.ax] + (i - (vs.length - 1) / 2) * (SPREAD[vs.length] || 20)) * Math.PI / 180, r = R - 20, x = C + r * Math.cos(t), y = C + r * Math.sin(t), s = sc.val[v.id], col = bmAx(v.ax).cor, on = sel === v.id, foc = bmFoco().includes(v.id);
+    const [x, y, deg] = bmPos(v), t = deg * Math.PI / 180, r = R - 20, s = sc.val[v.id], col = bmAx(v.ax).cor, on = sel === v.id, foc = bmFoco().includes(v.id), novo = !vis0[v.id];
     const lx = C + (r + 18) * Math.cos(t), ly = C + (r + 18) * Math.sin(t), cs = Math.cos(t), an = cs > .35 ? "start" : cs < -.35 ? "end" : "middle", dy = Math.sin(t) > .5 ? 12 : Math.sin(t) < -.5 ? -4 : 4;
-    g += `<g class="bmc-v click${on ? " on" : ""}" data-bmv="${v.id}" role="button" tabindex="0" aria-label="${esc(v.nome)}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on ? 12 : 10}" style="fill:${col};fill-opacity:${s == null ? .18 : (.25 + .75 * s).toFixed(2)};stroke:${col}"${foc ? ' class="foc"' : ""}/><text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${an}" class="bmc-l">${esc(v.nome)}</text></g>`;
+    const lit = lay === "tecido" ? (on || v0.liga.includes(v.id) || v.liga.includes(sel) ? .9 : .15) : s == null ? .18 : .25 + .75 * s;
+    g += `<g class="bmc-v click${on ? " on" : ""}${novo ? " novo" : ""}" data-bmv="${v.id}" role="button" tabindex="0" aria-label="${esc(v.nome)}" data-tip="${esc(v.nome)} · ${s == null ? "sem notas em 4 semanas" : `prática ${pct(s)} em 4 semanas`}${foc ? " · em foco" : ""}${novo ? " · ainda não explorado" : ""}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="21" fill="transparent"/>${novo ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="16" class="bmc-new"/>` : ""}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on ? 12 : 10}" style="fill:${col};fill-opacity:${lit.toFixed(2)};stroke:${col}"${foc ? ' class="foc"' : ""}/><text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${an}" class="bmc-l">${esc(v.nome)}</text></g>`;
   });
-  const tt = ta * Math.PI / 180, nx = C + 64 * Math.cos(tt), ny = C + 64 * Math.sin(tt), px = -Math.sin(tt) * 7, py = Math.cos(tt) * 7;
-  g += `<path d="M${nx.toFixed(1)},${ny.toFixed(1)} L${(C + px).toFixed(1)},${(C + py).toFixed(1)} L${(C - px).toFixed(1)},${(C - py).toFixed(1)}Z" class="bmc-n"/>`;
+  const prev = BM.ang0 ?? ta, to = prev + ((((ta - prev) % 360) + 540) % 360) - 180;
+  g += `<g class="bmc-ng" data-to="${to.toFixed(1)}" style="transform:rotate(${prev.toFixed(1)}deg)"><path d="M${C + 64},${C} L${C},${C + 7} L${C},${C - 7}Z" class="bmc-n"/></g>`;
+  BM.ang0 = to; setTimeout(bmNeedle, 30);
   const sc0 = sc.val.consciencia;
-  g += `<g class="bmc-v click${sel === "consciencia" ? " on" : ""}" data-bmv="consciencia" role="button" tabindex="0" aria-label="Consciência"><circle cx="${C}" cy="${C}" r="34" class="bmc-c" style="fill-opacity:${sc0 == null ? .25 : (.3 + .7 * sc0).toFixed(2)}"/><text x="${C}" y="${C + 4}" text-anchor="middle" class="bmc-cl">Consciência</text></g>`;
-  return `<div class="bmcomp">${svgWrap(W, W, g, "Bússola moral: os 17 valores em quatro rumos e a consciência no centro; a cor mais forte indica valor mais praticado nas últimas 4 semanas")}</div>`;
+  g += `<g class="bmc-v click${sel === "consciencia" ? " on" : ""}${vis0.consciencia ? "" : " novo"}" data-bmv="consciencia" role="button" tabindex="0" aria-label="Consciência" data-tip="Consciência · ${sc0 == null ? "sem notas em 4 semanas" : `prática ${pct(sc0)} em 4 semanas`}"><circle cx="${C}" cy="${C}" r="34" class="bmc-c" style="fill-opacity:${sc0 == null ? .25 : (.3 + .7 * sc0).toFixed(2)}"/><text x="${C}" y="${C + 4}" text-anchor="middle" class="bmc-cl">Consciência</text></g>`;
+  const nv = BM_V.filter(v => vis0[v.id]).length;
+  return `<div class="bmctl"><div class="segs" role="group" aria-label="Camada da bússola">${[["pratica", "Prática"], ["tecido", "Tecido"], ["equilibrio", "Equilíbrio"]].map(([k, l]) => `<button type="button" class="seg" data-act="bmlay" data-v="${k}" aria-pressed="${lay === k}">${l}</button>`).join("")}</div>
+    <button type="button" class="btn sm" data-act="bmspin"${BM.spin ? " disabled" : ""}>${ic("compass")}Sortear um rumo</button><span class="muted small">${nv} de ${BM_V.length} valores explorados</span></div>
+    <div class="bmcomp lay-${lay}">${svgWrap(W, W, g, "Bússola moral: os 17 valores em quatro rumos e a consciência no centro; a cor mais forte indica valor mais praticado nas últimas 4 semanas")}</div>
+    <p class="muted small bmlegend">${lay === "tecido" ? "As linhas são o “tece com” de cada valor; as do valor escolhido ficam coloridas." : lay === "equilibrio" ? "Cada rumo se estende conforme a prática dos seus valores nas notas do exame das últimas 4 semanas." : "Mais forte, mais praticado nas últimas 4 semanas. O anel tracejado marca o que você ainda não explorou."}</p>`;
+}
+function bmNeedle() { const el = $(".bmc-ng"); if (el && !BM.spin) el.style.transform = `rotate(${el.dataset.to}deg)`; }
+function bmSpin() {
+  if (BM.spin) return; const el = $(".bmc-ng"); const cur = BM.sel || bmFoco()[0] || "consciencia", pool = BM_V.filter(v => v.ax !== "centro" && v.id !== cur), pick = pool[Math.floor(Math.random() * pool.length)];
+  const target = bmPos(pick)[2], prev = BM.ang0 ?? -90, to = prev + 720 + ((((target - prev) % 360) + 360) % 360);
+  BM.spin = true; const b = $('[data-act="bmspin"]'); if (b) b.disabled = true;
+  if (el) { el.classList.add("spin"); el.style.transform = `rotate(${to}deg)`; }
+  setTimeout(() => { BM.spin = false; BM.ang0 = to; BM.sel = pick.id; bmVistos()[pick.id] ||= TODAY; touch("bussola", { noUndo: true, noRender: true }); render(); toast(`${pick.nome}: ${pick.perg}`); }, el ? 1900 : 0);
 }
 function bmDetail(v, sc) {
   const a = bmAx(v.ax), foc = bmFoco().includes(v.id), s = sc.val[v.id];
@@ -6814,7 +6922,7 @@ function pBussola(R) {
   const sc = bmScores(28), v = bmV(BM.sel || bmFoco()[0] || "consciencia"), wk = bmWeeks(12), st = bmStreak();
   return `<p class="lead">Um instrumento para orientar decisões e acompanhar a evolução: 17 valores em quatro rumos (o sentido, o outro, o coração e o próprio), com a consciência no centro. Cada valor traz o que dizem o Espiritismo, o Estoicismo, o Taoísmo, o Confucionismo e o Budismo, um princípio de ação, uma prática e uma pergunta. Escolha até três para pôr em foco; o exame da noite mede o caminho.</p>
     ${kpiRow([kmini("var(--accent)", "Valores em foco", bmFoco().length ? bmFoco().map(id => esc(bmV(id).nome)).join(", ") : "nenhum", bmFoco().length ? `${bmFoco().length} de 3` : "toque num valor e ponha em foco"), kmini("var(--a-pro)", "Prática · 4 semanas", sc.idx == null ? "–" : pct(sc.idx), "média das notas do exame (0 a 2)"), kmini("var(--a-men)", "Consciência · 4 semanas", `${sc.dias} de 28`, "noites com exame"), kmini("var(--a-amo)", "Exames seguidos", st, st ? "noites" : "comece hoje")])}
-    ${vis("bmcomp", "A bússola", bmCompass(sc), { sub: "toque num valor; a cor mais forte é o mais praticado nas últimas 4 semanas, e a agulha aponta o valor escolhido", cls: "bigvis" })}
+    ${vis("bmcomp", "A bússola", bmCompass(sc), { sub: "toque num valor para explorar; troque a camada para ver o tecido entre os valores ou o equilíbrio dos rumos, e a agulha aponta o valor escolhido", cls: "bigvis" })}
     <div class="g2c bmmap">
       ${bmDetail(v, sc)}
       ${panel(`${ic("list")}Os 17 valores`, BM_AX.map(a => `<div class="bmrow"><span class="bmrl" style="--c:${a.cor}"><b>${esc(a.rumo)} · ${esc(a.nome)}</b><small>${esc(a.sub)}</small></span><div class="row wrap">${BM_V.filter(x => x.ax === a.id).map(x => bmChip(x.id, x.id === v.id)).join("")}</div></div>`).join("") + `<p class="muted small">Os 14 valores que você escolheu, mais três que eles pedem: Humildade (o antídoto da superioridade), Caridade (o amor em ação) e Temperança (o comedimento).</p>`)}
@@ -6891,7 +6999,9 @@ Decisão que está considerando: ${dr.dec || "ainda nenhuma"}`;
 /* ---------------------------------------------------------------- eventos */
 function bmClick(t) {
   const ds = t.dataset, a = ds.act;
-  if (ds.bmv && !a) { BM.sel = ds.bmv; if (PAGE !== "jornada" || SUB !== "bussola") setHash("jornada", "bussola"); else render(); return true; }
+  if (a === "bmlay") { BM.lay = ds.v; render(); return true; }
+  if (a === "bmspin") { bmSpin(); return true; }
+  if (ds.bmv && !a) { BM.sel = ds.bmv; if (!bmVistos()[ds.bmv]) { bmVistos()[ds.bmv] = TODAY; touch("bussola", { noUndo: true, noRender: true }); } if (PAGE !== "jornada" || SUB !== "bussola") setHash("jornada", "bussola"); else render(); return true; }
   if (a === "bmfoco") { const f = bmFoco(), i = f.indexOf(ds.id); let msg; if (i >= 0) f.splice(i, 1); else { if (f.length >= 3) { msg = `${bmV(f[0]).nome} saiu do foco`; f.shift(); } f.push(ds.id); } touch("bussola", { label: "Valores em foco" }); if (msg) toast(msg); return true; }
   if (a === "bmhab") { const nome = ds.hab; if ((S.habitos || []).some(h => norm(h.nome) === norm(nome))) { toast("Esse hábito já está na sua lista."); return true; } S.habitos.push({ id: uid(), nome, area: AREAS.find(x => /prop/i.test(x)) || AREAS[0], meta: 5 }); touch("habitos", { label: "Hábito da Bússola" }); undoToast(`Hábito criado: ${nome}`); return true; }
   if (a === "bmnota") { const d = BM.dia || TODAY, e = bmEx()[d] || { n: {} }, v = +ds.v, cur = e.n?.[ds.id]; bmSet(d, { n: { ...(e.n || {}), [ds.id]: cur === v ? null : v } }, "Nota do exame"); render(); return true; }
@@ -7446,19 +7556,67 @@ function jTools(mid, live, base) {
 /* ---------------------------------------------------------------- desenho: mandala e lótus */
 function jPetal(r0, r1, w) { const m = (r0 + r1) / 2; return `M0 ${-r0}C${w} ${-(r0 + (m - r0) * .55)} ${w * .9} ${-(m + (r1 - m) * .45)} 0 ${-r1}C${-w * .9} ${-(m + (r1 - m) * .45)} ${-w} ${-(r0 + (m - r0) * .55)} 0 ${-r0}Z`; }
 const J_FILL = [0, .28, .58, .92];
-function jMandala() {
-  const W = 520, C = 260, ang = { esp: -90, med: 0, bud: 90, tao: 180 }, sc = bmScores(28);
-  let g = `<circle cx="${C}" cy="${C}" r="236" class="jm-o"/><circle cx="${C}" cy="${C}" r="168" class="jm-i"/>`;
-  for (const pid of J_ORDER) {
-    const D = J_PIL[pid], a0 = ang[pid], mo = jMoonInfo(pid);
-    D.est.forEach((e, i) => { const v = jEstV(pid, e.id), a = a0 + (i - 2) * 15 + 90;
-      g += `<g class="jm-p click" data-act="jgo" data-go="jornada.${D.sub}" role="button" tabindex="0" aria-label="${esc(D.nome)}: ${esc(e.nome)}, ${J_EST[v][1]}" transform="translate(${C} ${C}) rotate(${a})"><path d="${jPetal(64, 158, 13)}" style="fill:${D.cor};fill-opacity:${J_FILL[v]};stroke:${D.cor}"${v ? "" : ' stroke-dasharray="3 3"'}/></g>`; });
-    const t = a0 * Math.PI / 180, x = C + 200 * Math.cos(t), y = C + 200 * Math.sin(t);
-    g += `<g class="jm-l click" data-act="jgo" data-go="jornada.${D.sub}" role="button" tabindex="0" aria-label="Abrir ${esc(D.nome)}" style="--c:${D.cor}"><g transform="translate(${(x - 12.5).toFixed(1)} ${(y - 30).toFixed(1)})">${jMoon(mo.f, 11, D.cor).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g><text x="${x.toFixed(1)}" y="${(y + 12).toFixed(1)}" text-anchor="middle" class="jm-t" style="fill:${D.cor}">${esc(D.nome)}</text></g>`;
-  }
-  g += `<g class="jm-c click" data-act="jgo" data-go="jornada.bussola" role="button" tabindex="0" aria-label="Bússola moral"><circle cx="${C}" cy="${C}" r="50"/><text x="${C}" y="${C - 3}" text-anchor="middle" class="jm-ct">Bússola</text><text x="${C}" y="${C + 14}" text-anchor="middle" class="jm-cs">${sc.idx == null ? "sem exames" : "prática " + pct(sc.idx)}</text></g>`;
-  return `<div class="jmandala">${svgWrap(W, W, g, "Mandala da jornada: cinco pétalas por pilar, uma para cada estação do caminho; quanto mais cheia, mais florescida. A lua mostra o ritmo das últimas 4 semanas e a bússola fica no centro")}</div>`;
+/* camadas da mandala: est (estações hoje), ritmo (pétala i = semana i das últimas 5, mais cheia com mais dias), hist (estações num mês passado) */
+J.mlay = "est"; J.mback = 0; J.manim = true;
+window.addEventListener("hashchange", () => { J.manim = true; J.breath = false; clearInterval(J.mrt); });
+function jEstAt(pid, sid, d) {
+  const P = jP(pid), h = P.estHist.filter(x => x.sid === sid).sort((a, b) => a.data < b.data ? -1 : a.data > b.data ? 1 : 0);
+  if (h.length) { const last = h.filter(x => x.data <= d).at(-1); return last ? last.para : h[0].de; }
+  const e = P.est[sid]; if (!e) return 0; return !e.at || iso(new Date(e.at)) <= d ? e.v : 0;
 }
+const jmBackDate = () => addDays(TODAY, -30 * (J.mback || 0));
+const jmBackTxt = () => J.mback ? `${fmtDY(jmBackDate())} · há ${plural(J.mback, "mês", "meses")}` : "hoje";
+function jmWeekFill(pid, i) { const ws = addDays(weekStart(TODAY), -7 * (4 - i)); return jActDays(pid, ws, addDays(ws, 6)).size; }
+function jMandala(o = {}) {
+  const W = 520, C = 260, ang = { esp: -90, med: 0, bud: 90, tao: 180 }, sc = bmScores(28), lay = o.mini ? "est" : J.mlay || "est", hd = lay === "hist" ? jmBackDate() : null, it = !o.mini;
+  let g = `<circle cx="${C}" cy="${C}" r="236" class="jm-o"/><circle cx="${C}" cy="${C}" r="168" class="jm-i"/><g class="jm-pg">`, k = 0;
+  for (const pid of J_ORDER) {
+    const D = J_PIL[pid], a0 = ang[pid];
+    D.est.forEach((e, i) => { const v = hd ? jEstAt(pid, e.id, hd) : jEstV(pid, e.id), a = a0 + (i - 2) * 15 + 90, key = `${pid}|${e.id}`, on = it && J.msel === key;
+      const wk = lay === "ritmo" ? jmWeekFill(pid, i) : 0, fo = lay === "ritmo" ? (wk ? .14 + .8 * Math.min(1, wk / 5) : 0) : J_FILL[v];
+      const tip = lay === "ritmo" ? `${D.nome} · semana de ${fmtD(addDays(weekStart(TODAY), -7 * (4 - i)))}: ${plural(wk, "dia", "dias")}` : `${D.nome} · ${e.nome}: ${J_EST[v][1]}${hd ? ` em ${fmtD(hd)}` : ""}`;
+      g += `<g class="jm-p${it ? " click" : ""}${on ? " on" : ""}"${it ? ` data-act="jmsel" data-k="${key}" role="button" tabindex="0" data-tip="${esc(tip)}"` : ""} aria-label="${esc(D.nome)}: ${esc(e.nome)}, ${J_EST[v][1]}" transform="translate(${C} ${C}) rotate(${a})" style="--i:${k++}"><path d="${jPetal(64, 158, 13)}" style="fill:${D.cor};fill-opacity:${fo};stroke:${D.cor}"${(lay === "ritmo" ? wk : v) ? "" : ' stroke-dasharray="3 3"'}/></g>`; });
+  }
+  g += `</g>`;
+  for (const pid of J_ORDER) { const D = J_PIL[pid], a0 = ang[pid], mo = jMoonInfo(pid), t = a0 * Math.PI / 180, x = C + 200 * Math.cos(t), y = C + 200 * Math.sin(t);
+    g += `<g class="jm-l${it ? " click" : ""}"${it ? ` data-act="jgo" data-go="jornada.${D.sub}" role="button" tabindex="0"` : ""} aria-label="Abrir ${esc(D.nome)}" style="--c:${D.cor}"><g transform="translate(${(x - 12.5).toFixed(1)} ${(y - 30).toFixed(1)})">${jMoon(mo.f, 11, D.cor).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g><text x="${x.toFixed(1)}" y="${(y + 12).toFixed(1)}" text-anchor="middle" class="jm-t" style="fill:${D.cor}">${esc(D.nome)}</text></g>`; }
+  const br = it && J.breath;
+  g += `<g class="jm-c${it ? " click" : ""}${it && J.msel === "centro" ? " on" : ""}"${it ? ` data-act="jmsel" data-k="centro" role="button" tabindex="0" data-tip="Centro: a Bússola. Toque para respirar ou abrir"` : ""} aria-label="Centro da mandala: Bússola moral"><circle cx="${C}" cy="${C}" r="50"/>${br ? `<text x="${C}" y="${C + 5}" text-anchor="middle" class="jm-ct jm-in">inspire</text><text x="${C}" y="${C + 5}" text-anchor="middle" class="jm-ct jm-out">expire</text>` : `<text x="${C}" y="${C - 3}" text-anchor="middle" class="jm-ct">${lay === "hist" ? (J.mback ? `há ${J.mback} m` : "hoje") : "Bússola"}</text><text x="${C}" y="${C + 14}" text-anchor="middle" class="jm-cs">${lay === "ritmo" ? "5 semanas" : sc.idx == null ? "sem exames" : "prática " + pct(sc.idx)}</text>`}</g>`;
+  const cls = ["jmandala", o.mini ? "mini" : "", it && J.manim ? "anim" : "", br ? "breath" : "", "lay-" + lay].filter(Boolean).join(" ");
+  if (it && J.manim) setTimeout(() => { J.manim = false; }, 0);
+  return `<div class="${cls}">${svgWrap(W, W, g, "Mandala da jornada: cinco pétalas por pilar, uma para cada estação do caminho; quanto mais cheia, mais florescida. A lua mostra o ritmo das últimas 4 semanas e a bússola fica no centro")}</div>`;
+}
+function jmExplorer() {
+  const k = J.msel;
+  if (J.breathDone) return `<div class="jmx"><b>${ic("breath")}Um minuto de respiração com a mandala.</b><p class="muted">Seis ciclos de 10 segundos: 4 para inspirar, 6 para expirar.</p><div class="row wrap"><button type="button" class="btn sm primary" data-act="jmsess">${ic("check")}Registrar como sessão de meditação</button><button type="button" class="btn sm ghost" data-act="jmsel" data-k="">${ic("x")}Fechar</button></div></div>`;
+  if (!k) return `<p class="jmx muted small">${ic("info")}Toque numa pétala para explorar a estação, ou no centro para respirar com a mandala.</p>`;
+  if (k === "centro") { const sc = bmScores(28);
+    return `<div class="jmx"><b>${ic("compass")}O centro: a Bússola moral</b><p class="muted">${bmFoco().length ? `Em foco: ${bmFoco().map(id => esc(bmV(id).nome)).join(", ")}.` : "Nenhum valor em foco."} ${sc.idx == null ? "Sem exames nas últimas 4 semanas." : `Prática nas últimas 4 semanas: ${pct(sc.idx)} em ${plural(sc.dias, "noite", "noites")}.`}</p>
+      <div class="row wrap"><button type="button" class="btn sm primary" data-act="jmbreath"${J.breath ? " disabled" : ""}>${ic("breath")}${J.breath ? "Respirando…" : "Respirar 1 minuto"}</button><button type="button" class="btn sm" data-act="jgo" data-go="jornada.bussola">${ic("compass")}Abrir a Bússola</button></div></div>`; }
+  const [pid, sid] = k.split("|"), D = J_PIL[pid], e = D.est.find(x => x.id === sid); if (!e) return "";
+  const v = jEstV(pid, sid), h = jP(pid).estHist.filter(x => x.sid === sid).slice(-4).reverse();
+  return `<div class="jmx" style="--c:${D.cor}"><b style="color:${D.cor}">${ic(D.ico)}${esc(D.nome)} · ${esc(e.nome)}</b><p>${esc(e.desc)}</p><p class="small muted">${ic("flag")}Sinal de florescimento: ${esc(e.sinal)}</p>
+    <div class="segs" role="group" aria-label="Onde estou">${J_EST.map(([n, l]) => `<button type="button" class="seg" data-act="jest" data-p="${pid}" data-s="${sid}" data-v="${n}" aria-pressed="${v === n}">${l}</button>`).join("")}</div>
+    ${h.length ? `<p class="small muted">História: ${h.map(x => `${fmtD(x.data)} ${J_EST[x.de][1]} → ${J_EST[x.para][1]}`).join(" · ")}</p>` : ""}
+    <div class="row wrap"><a class="btn sm" href="#jornada.${D.sub}">${ic("arrow")}Abrir ${esc(D.nome)}</a><button type="button" class="btn sm ghost" data-act="jmsel" data-k="">${ic("x")}Fechar</button></div></div>`;
+}
+function jMandalaBox() {
+  const lay = J.mlay || "est";
+  return `<div class="jmctl"><div class="segs" role="group" aria-label="Camada da mandala">${[["est", "Estações"], ["ritmo", "Ritmo"], ["hist", "Evolução"]].map(([k, l]) => `<button type="button" class="seg" data-act="jmlay" data-v="${k}" aria-pressed="${lay === k}">${l}</button>`).join("")}</div>
+    ${lay === "hist" ? `<label class="jmrange"><input type="range" id="jm_back" min="0" max="12" step="1" value="${12 - (J.mback || 0)}" aria-label="Mês"><span id="jm_backl">${jmBackTxt()}</span></label><button type="button" class="btn sm" data-act="jmplay">${ic("refresh")}Ver florescer</button>` : ""}</div>
+    ${jMandala()}${jmExplorer()}`;
+}
+function jmPaint() { const el = $(".jmandala:not(.mini)"); if (el) el.outerHTML = jMandala(); const r = $("#jm_back"); if (r) r.value = 12 - (J.mback || 0); const l = $("#jm_backl"); if (l) l.textContent = jmBackTxt(); }
+function jmClick(t) {
+  const ds = t.dataset, a = ds.act; if (!a?.startsWith("jm")) return false;
+  if (a === "jmlay") { J.mlay = ds.v; clearInterval(J.mrt); if (ds.v !== "hist") J.mback = 0; render(); return true; }
+  if (a === "jmsel") { J.msel = J.msel === ds.k ? "" : ds.k; J.breathDone = false; render(); return true; }
+  if (a === "jmplay") { clearInterval(J.mrt); J.mback = 12; jmPaint(); J.mrt = setInterval(() => { if (J.mlay !== "hist" || !$(".jmandala")) { clearInterval(J.mrt); return; } J.mback--; jmPaint(); if (J.mback <= 0) clearInterval(J.mrt); }, 420); return true; }
+  if (a === "jmbreath") { J.breath = true; J.msel = "centro"; render(); clearTimeout(J.bt); J.bt = setTimeout(() => { if (!J.breath) return; J.breath = false; J.breathDone = true; if (PAGE === "jornada" && SUB === "inicio") render(); }, 60000); return true; }
+  if (a === "jmsess") { jData().sess.push({ id: uid(), at: Date.now(), data: TODAY, pid: "med", tec: "Respiração (ānāpānasati)", min: 1, qual: "", antes: "", depois: "", notas: "Respiração com a mandala" }); J.breathDone = false; J.msel = ""; touch("jornada", { label: "Sessão de respiração" }); toast("1 minuto registrado em Meditação"); return true; }
+  return false;
+}
+function jmInput(t) { if (t.id !== "jm_back") return false; clearInterval(J.mrt); J.mback = 12 - +t.value; jmPaint(); return true; }
 function jLotus(pid, size = 120) {
   const D = J_PIL[pid], C = 60; let g = "";
   D.est.forEach((e, i) => { const v = jEstV(pid, e.id); g += `<path transform="translate(${C} ${C + 8}) rotate(${(i - 2) * 30})" d="${jPetal(4, 52, 12)}" style="fill:${D.cor};fill-opacity:${J_FILL[v]};stroke:${D.cor}"${v ? "" : ' stroke-dasharray="3 3"'}/>`; });
@@ -7493,6 +7651,7 @@ function jChat(mid, o = {}) {
 /* ---------------------------------------------------------------- páginas */
 function pJornada(R) {
   if (SUB === "inicio") return jInicio();
+  if (SUB === "jardim") return pJardim();
   if (J_SUB2P[SUB]) return jPilar(J_SUB2P[SUB]);
   if (SUB === "confluencias") return jConf();
   if (SUB === "praticas") return jPraticas();
@@ -7511,7 +7670,7 @@ function jInicio() {
   const Q = J.q;
   return `<p class="lead">Um espaço para acompanhar e aprofundar o seu caminho pelos quatro pilares que orientam a sua vida, com um mentor para cada um, um lugar onde eles se encontram e a Bússola moral no centro. Não é um formulário: volte quando quiser, escreva o que viveu e converse.</p>
     ${kpiRow([kmini("var(--jp-med)", "Dias na jornada · 4 semanas", `${all.size} de 28`, `${plural(tot, "registro-dia", "registros-dia")} somando os pilares`), kmini(viva[1] ? J_PIL[viva[0]].cor : "var(--muted)", "Pilar mais vivo", viva[1] ? esc(J_PIL[viva[0]].nome) : "–", viva[1] ? `${jMoonInfo(viva[0]).nome} · ${plural(viva[1], "dia", "dias")}` : "comece por qualquer um"), kmini("var(--jp-bud)", "Estações florescendo", `${flor} de 20`, "autoavaliação, sem pressa"), kmini("var(--jp-esp)", "Reflexões · 30 dias", rmes, rmes ? "continue escrevendo" : "a primeira está a um toque")])}
-    ${vis("jmandala", "Mandala da jornada", jMandala(), { sub: "cada pétala é uma estação do caminho; a lua mostra o ritmo de 4 semanas; toque para entrar", cls: "bigvis" })}
+    ${vis("jmandala", "Mandala da jornada", jMandalaBox(), { sub: "cada pétala é uma estação do caminho; a lua mostra o ritmo de 4 semanas; toque numa pétala para explorar", cls: "bigvis" })}
     <div class="g2c jhome">
       ${panel(`${ic("sun")}Hoje na jornada`, `<div class="jday" style="--c:${D.cor}"><span class="jtag">${ic(D.ico)}${esc(D.nome)}</span><blockquote class="jquote">${esc(q)}<cite>${esc(src)}</cite></blockquote><p class="bmq">${ic("info")}<span>${esc(jQuestion(pid))}</span></p></div>
         <div class="flbl">Uma reflexão rápida</div><textarea class="jta" rows="3" data-jq="1" placeholder="O que você viveu, percebeu ou aprendeu?">${esc(Q.txt)}</textarea>
@@ -9156,7 +9315,7 @@ const TAB_INFO = {
   painel: { cor: "var(--accent)", cena: "waves", foto: "Microfone de mesa ao lado de um caderno aberto", missao: "Registrar o essencial do dia em um minuto, por texto ou voz, e conferir antes que vá para as abas.", resolve: "Registro diário que não acontece porque dá trabalho.", entra: "O que você fala ou escreve.", sai: "Saúde, Finanças, Hábitos, Jornada, Lazer, Diário e Tarefas.", manual: ["Fale ou escreva o dia no campo grande; os campos se preenchem sozinhos.", "Use o microfone de um campo para ditar só aquele valor.", "“Revisar e salvar” mostra o que é novo, o que substitui e o que parece repetido.", "Um único Desfazer volta tudo o que o painel salvou."] },
   rotina: { cor: "var(--a-car)", cena: "calendar", foto: "Agenda de papel aberta na semana, com blocos coloridos de meia hora e uma xícara de café", missao: "Desenhar o dia em blocos de 30 minutos: o que você planeja, o que já está na agenda e o que de fato fez.", resolve: "Dias que somem em tarefas soltas e planos que não cabem no relógio.", entra: "Seus blocos, a Agenda (e o Google Calendar) e as tarefas com prazo.", sai: "Idiomas (o plano desconta os blocos), Hoje (a rotina do dia).", manual: ["Escolha Dia, Semana ou Mês no topo; ‹ › mudam o período e Hoje volta para hoje.", "No calendário pequeno, clique num dia para ver as horas dele, ou no número da semana para ver a semana inteira.", "Clique numa meia hora para criar um bloco de 30 min; arraste por várias para criar um bloco maior.", "Clique num bloco para editar, marcar como feito ou excluir. “Repetir” cria rotinas diárias, de dias úteis ou semanais.", "Os compromissos da Agenda e do Google aparecem tracejados: são editados na Agenda."] },
   diario: { cor: "var(--a-men)", cena: "notebook", foto: "Caderno de capa de couro aberto, caneta tinteiro e xícara de café", missao: "O lugar das palavras: o que aconteceu, o que você sentiu e o que aprendeu, ligado às pessoas, temas e metas.", resolve: "Memória do que viveu e padrões que só aparecem escritos.", entra: "Seus textos, @pessoas, #temas e comandos “/”.", sai: "Cruzamentos, Capítulos, mentores (se você permitir).", manual: ["@ menciona uma pessoa, # marca um tema, [[ liga a uma meta ou tarefa.", "Linhas começando com / registram dados (ex.: /gasto 12 almoço).", "Em Perguntar, busque por significado: “quando me senti sozinho?”."] },
-  jornada: { cor: "var(--jp-med)", cena: "lotus", foto: "Flor de lótus num lago parado ao amanhecer", missao: "Cultivar a vida interior em quatro caminhos (Espiritismo, meditação, Taoísmo e Budismo) e a bússola moral que orienta as decisões.", resolve: "Prática espiritual que fica solta, sem continuidade nem reflexão.", entra: "Sessões de prática, reflexões, exame da noite, decisões.", sai: "Métricas de prática nos Cruzamentos e o Hoje.", manual: ["Comece pela aba de um pilar e registre a estação em que você está.", "Práticas guarda programas guiados e sessões (com estado antes e depois).", "A Bússola moral tem o exame da noite e as oito perguntas antes de decidir."] },
+  jornada: { cor: "var(--jp-med)", cena: "lotus", foto: "Flor de lótus num lago parado ao amanhecer", missao: "Cultivar a vida interior em quatro caminhos (Espiritismo, meditação, Taoísmo e Budismo) e a bússola moral que orienta as decisões.", resolve: "Prática espiritual que fica solta, sem continuidade nem reflexão.", entra: "Sessões de prática, reflexões, exame da noite, decisões.", sai: "Métricas de prática nos Cruzamentos e o Hoje.", manual: ["Comece pela aba de um pilar e registre a estação em que você está.", "Saúde espiritual é o jardim: cada árvore cresce com um pilar, o rio com o exame da noite, e o templo com as inclinações que você trabalha.", "Na mandala, toque numa pétala para explorar; as camadas mostram ritmo e evolução.", "Práticas guarda programas guiados e sessões (com estado antes e depois).", "A Bússola moral tem o exame da noite e as oito perguntas antes de decidir."] },
   mentores: { cor: "var(--accent)", cena: "spark", foto: "Mesa de conversa com duas cadeiras e luz suave", missao: "Um conselheiro por área, que lê os seus dados (só os que você liberar) e lembra do que vocês combinaram.", resolve: "Conselho genérico que ignora a sua situação real.", entra: "Os dados das áreas liberadas em Privacidade.", sai: "Tarefas, metas e hábitos que você aceitar.", manual: ["Escolha o mentor da área; o Conselho vê todas.", "As propostas só viram tarefa quando você aceita.", "Privacidade controla o que cada mentor pode ler."] },
   cruz: { cor: "var(--a-apr)", cena: "scatter", foto: "Fios coloridos se cruzando num tear", missao: "Descobrir o que anda junto na sua vida: sono e humor, gastos e estresse, prática e foco.", resolve: "Intuições sobre si que nunca são conferidas.", entra: "As séries diárias de todas as abas.", sai: "Ideias para Experimentos.", manual: ["Escolha duas métricas ou deixe o Atlas procurar as relações mais fortes.", "Correlação não é causa: teste em Experimentos antes de mudar a rotina."] },
   fin: { cor: "var(--a-fin)", cena: "growth", foto: "Mesa com caderno de contas, calculadora e moedas de euro e real", missao: "Saber para onde vai o dinheiro, quanto sobra e se o futuro está sendo construído, em euro e em real.", resolve: "Fim de mês sem saber o que aconteceu e decisões grandes sem número.", entra: "Lançamentos, orçamento, patrimônio, salário (Carreira), contas da casa.", sai: "Futuro financeiro, Visão geral, mentor de Finanças.", manual: ["Lançamentos: registre ou importe extratos; categorias aprendem com você.", "Orçamento & patrimônio: teto por categoria, assinaturas e o patrimônio do fim do mês.", "Futuro financeiro: reserva, TFR e previdência com as contas feitas.", "Itália & Brasil: contas dos dois países e o total em euro na cotação do dia."] },
@@ -10281,6 +10440,360 @@ document.addEventListener("click", e => { if (PAGE === "rotina" && RT.pick && !e
 /* a linha do “agora” anda sozinha */
 setInterval(() => { if (PAGE !== "rotina") return; const el = $(".rtcol.today .rtnow"); if (!el) return; const m = nowMin(); el.style.top = `${m / 30 * rtSH()}px`; const s = el.querySelector("span"); if (s) s.textContent = m2hm(m); }, 30e3);
 
+/* ================================================================ saúde espiritual: o jardim interior
+   Um jardim que cresce com o que a jornada já registra, sem pontos inventados:
+   - quatro árvores, uma por pilar: crescem com as estações do caminho, reflexões, sessões e notas do cotidiano;
+     o verde depende dos dias com o pilar nas últimas 2 semanas (sem cuidado a árvore dorme, nunca morre);
+     os frutos são as reflexões dos últimos 30 dias. Regar = escrever uma reflexão, que vai para o pilar.
+   - o rio corre com as noites de exame da Bússola (14 dias); vagalumes (ou borboletas de dia) são os exames da semana;
+     soltar uma folha no rio é um gesto de desapego: o texto não é guardado, só a data.
+   - o lago de lótus floresce com os dias de meditação ou prática budista na semana.
+   - pedra bruta = uma imperfeição nomeada; cada golpe de cinzel é um dia em que você a percebeu e trabalhou
+     (ou em que praticou o valor-antídoto no exame da noite); com 3 dias, ela pode ser lavrada.
+   - madeira bruta = sessões de prática; 3 toras + uma frase sobre o que a prática esculpe viram uma tábua.
+   - o templo é construído com pedras lavradas e tábuas, em ordem, e algumas partes pedem algo da jornada.
+   - cinco caminhos se abrem com marcos da jornada; a Bússola é a rosa dos ventos da praça e a Mandala, o vitral do templo.
+   Dados: jardim = { pedras: [{id, nome, val, criada, marcas:[{data, txt}], lav}], talhos: [{id, data, pid, refl}], templo: {parte: data},
+   folhas: [{data, at}], cam: {id: data} }. */
+const JD = { sel: "portao", txt: {}, fx: null, h: null };
+const jdData = () => { const d = (S.jardim ||= {}); d.pedras ||= []; d.talhos ||= []; d.templo ||= {}; d.folhas ||= []; d.cam ||= {}; return d; };
+const JD_ARV = {
+  esp: { nome: "Oliveira", x: 105, y: 352, sim: "Árvore da paz: cresce devagar, vive séculos e dá fruto para os outros, como a caridade." },
+  med: { nome: "Bambu", x: 238, y: 318, sim: "Oco por dentro e flexível ao vento: a mente que se esvazia e não quebra." },
+  tao: { nome: "Pinheiro", x: 135, y: 488, sim: "Verde no inverno: a constância que não força, símbolo taoista de longevidade." },
+  bud: { nome: "Figueira-bodhi", x: 282, y: 470, sim: "A árvore sob a qual Siddhartha despertou: sentar-se e ver com clareza." } };
+const JD_EST = [[0, "semente"], [3, "broto"], [10, "muda"], [22, "árvore jovem"], [38, "árvore adulta"], [55, "em flor"]];
+const JD_ENS = {
+  rio: ["A bondade suprema é como a água: beneficia as dez mil coisas e não disputa.", "Tao Te Ching, 8"],
+  folha: ["Todas as coisas condicionadas são impermanentes; quem vê isso com sabedoria se afasta do sofrimento.", "Dhammapada, 277"],
+  pedra: ["Reconhece-se o verdadeiro espírita pela sua transformação moral e pelos esforços que emprega para domar suas más inclinações.", "O Evangelho segundo o Espiritismo, cap. XVII, item 4"],
+  madeira: ["Os irrigadores conduzem a água; os flecheiros endireitam a flecha; os carpinteiros moldam a madeira; os sábios moldam a si mesmos.", "Dhammapada, 80"],
+  lotus: ["Como o lótus nasce na lama e floresce limpo acima da água, assim quem desperta vive no mundo sem se manchar por ele.", "imagem do Budismo, a partir do Anguttara Nikaya"] };
+const JD_TEMPLO = [
+  { id: "alicerce", nome: "Alicerce", p: 3, m: 0, sim: "Humildade: tudo o que vier depois se apoia aqui.", ens: ["Todo aquele que ouve estas minhas palavras e as pratica será comparado a um homem prudente, que edificou a sua casa sobre a rocha.", "Mateus 7, 24"] },
+  { id: "piso", nome: "Piso e altar", p: 2, m: 1, req: ["alicerce"], sim: "O chão de cada dia: a prática pequena e repetida. A chama do altar acende nas noites de exame.", ens: ["A árvore que mal se abraça nasce de um broto minúsculo; a torre de nove andares começa com um monte de terra.", "Tao Te Ching, 64"] },
+  ...J_ORDER.map(pid => ({ id: "col_" + pid, nome: `Coluna de ${J_PIL[pid].nome}`, p: 1, m: 1, req: ["piso"], pid, sim: `Um dos quatro apoios. Pede a ${JD_ARV[pid].nome} ao menos em muda.`, ens: J_PIL[pid].ens[0],
+    cond: { t: `${JD_ARV[pid].nome} (${J_PIL[pid].nome}) ao menos em muda`, ok: () => jdTree(pid).s >= 2 } })),
+  { id: "telhado", nome: "Telhado", p: 0, m: 3, req: ["col_esp", "col_med", "col_tao", "col_bud"], sim: "O abrigo que os quatro caminhos sustentam juntos.", ens: ["Abrem-se portas e janelas para fazer um cômodo; é o vazio dentro dele que o torna útil.", "Tao Te Ching, 11"] },
+  { id: "portal", nome: "Portal", p: 1, m: 1, req: ["piso"], sim: "A entrada guardada pelos valores que você escolheu.", ens: ["A mente precede todas as coisas; a mente é o seu chefe, e por ela são feitas.", "Dhammapada, 1"],
+    cond: { t: "ao menos um valor em foco na Bússola", ok: () => bmFoco().length > 0 } },
+  { id: "vitral", nome: "Vitral da mandala", p: 2, m: 0, req: ["telhado"], sim: "A luz entra pela mandala: o que você já vê em si.", ens: ["Conhece-te a ti mesmo.", "O Livro dos Espíritos, q. 919"],
+    cond: { t: "5 estações da mandala ao menos brotando", ok: () => jdBrot() >= 5 } },
+  { id: "sino", nome: "Sino", p: 0, m: 1, req: ["telhado"], sim: "O chamado de volta ao presente.", ens: ["Cada vez que o sino toca, pare, respire e volte para casa em si mesmo.", "prática do sino da atenção plena, no zen"],
+    cond: { t: "um programa guiado concluído", ok: () => J_PROG.some(pr => jProgInfo(pr)?.fim) } }];
+const JD_CAM = [
+  { id: "bosque", nome: "Trilha do bosque", area: "as quatro árvores", t: "aberto desde o começo", prog: () => [1, 1], d: "M430 410 C380 405 330 400 230 395" },
+  { id: "margem", nome: "Descida à margem", area: "o rio e o lago de lótus", t: "1 reflexão em qualquer pilar", prog: () => [J_ORDER.reduce((s, p) => s + jP(p).refl.length, 0), 1], d: "M440 440 C460 470 470 485 492 488" },
+  { id: "ponte", nome: "Ponte da pedreira", area: "a pedreira e a oficina", t: "3 noites de exame da Bússola", prog: () => [Object.keys(bmEx()).length, 3], d: "M470 405 C520 400 560 396 586 394 L632 392 C680 394 720 405 770 420" },
+  { id: "escada", nome: "Escadaria do templo", area: "o templo", t: "1 pedra lavrada", prog: () => [jdData().pedras.filter(p => p.lav).length, 1], d: "M432 368 C440 340 455 310 478 276" },
+  { id: "mirante", nome: "Subida ao mirante", area: "a mandala e a bússola vistas do alto", t: "as quatro árvores ao menos em broto", prog: () => [J_ORDER.filter(p => jdTree(p).s >= 1).length, 4], d: "M200 392 C185 330 170 260 120 186" }];
+const JD_AREA = { margem: ["rio", "lago"], ponte: ["pedreira", "oficina", "ped"], escada: ["templo"], mirante: ["mirante"] };
+
+/* ---------------------------------------------------------------- o que cresce e por quê */
+function jdTree(pid) {
+  const P = jP(pid), est = jEstSum(pid), sess = jData().sess.filter(x => x.pid === pid).length;
+  const parts = [["estações do caminho (2 por nível)", 2 * est, 30], ["reflexões", Math.min(20, P.refl.length), 20], ["sessões de prática", Math.min(20, sess), 20], ["notas do cotidiano", Math.min(10, P.cot.length), 10]];
+  const g = sum(parts.map(p => p[1])); let s = 0; JD_EST.forEach(([t], i) => { if (g >= t) s = i; });
+  const dias = jActDays(pid, addDays(TODAY, -13), TODAY).size, nx = JD_EST[s + 1];
+  return { pid, g, s, nome: JD_EST[s][1], parts, dias, v: Math.min(1, dias / 7), dorm: dias === 0, frutos: P.refl.filter(r => r.data >= addDays(TODAY, -29)).length, prox: nx?.[1] || null, falta: nx ? nx[0] - g : 0, pr: nx ? (g - JD_EST[s][0]) / (nx[0] - JD_EST[s][0]) : 1,
+    plantas: P.prat.filter(x => x.status === "ativa").length };
+}
+const jdBrot = () => J_ORDER.reduce((s, p) => s + J_PIL[p].est.filter(e => jEstV(p, e.id) >= 2).length, 0);
+function jdRio() { const n = Array.from({ length: 14 }, (_, i) => addDays(TODAY, -i)).filter(d => bmEx()[d]).length; return { n, f: n / 14, st: n === 0 ? "parado" : n < 5 ? "fio d'água" : n < 10 ? "correndo" : "cheio" }; }
+const jdLotus = () => new Set(jData().sess.filter(x => x.data >= addDays(TODAY, -6) && (x.pid === "med" || x.pid === "bud")).map(x => x.data)).size;
+const jdVaga = () => Array.from({ length: 7 }, (_, i) => addDays(TODAY, -i)).filter(d => bmEx()[d]).length;
+const jdChama = () => !!(bmEx()[TODAY] || bmEx()[addDays(TODAY, -1)]);
+function jdMarks(p) {
+  const m = new Map((p.marcas || []).map(x => [x.data, { data: x.data, txt: x.txt, ex: false }]));
+  if (p.val) for (const [d, e] of Object.entries(bmEx())) if (d >= p.criada && e.n?.[p.val] === 2 && !m.has(d)) m.set(d, { data: d, txt: `praticou ${bmV(p.val)?.nome || "o antídoto"} no exame da noite`, ex: true });
+  return [...m.values()].sort((a, b) => a.data < b.data ? -1 : 1);
+}
+function jdStock() {
+  const D = jdData(), lav = D.pedras.filter(p => p.lav).length, tab = D.talhos.length, built = JD_TEMPLO.filter(t => D.templo[t.id]);
+  return { lav, tab, pedras: lav - sum(built.map(t => t.p)), tabuas: tab - sum(built.map(t => t.m)), toras: Math.max(0, jData().sess.length - 3 * tab), brutas: D.pedras.filter(p => !p.lav).length };
+}
+function jdCan(t) {
+  const D = jdData(), st = jdStock(), falta = [];
+  for (const r of t.req || []) if (!D.templo[r]) falta.push(`antes: ${JD_TEMPLO.find(x => x.id === r).nome.toLowerCase()}`);
+  if (st.pedras < t.p) falta.push(`${plural(t.p - st.pedras, "pedra lavrada", "pedras lavradas")} a mais`);
+  if (st.tabuas < t.m) falta.push(`${plural(t.m - st.tabuas, "tábua", "tábuas")} a mais`);
+  if (t.cond && !t.cond.ok()) falta.push(t.cond.t);
+  return { ok: !falta.length, falta };
+}
+const jdCamOpen = id => id === "bosque" || !!jdData().cam[id];
+const jdCamReady = c => { const [a, b] = c.prog(); return a >= b; };
+function jdLocked(k) { const area = k.split(":")[0]; for (const [cam, as] of Object.entries(JD_AREA)) if (as.includes(area) && !jdCamOpen(cam)) return JD_CAM.find(c => c.id === cam); return null; }
+function jdSeason() { const m = +TODAY.slice(5, 7); return m >= 3 && m <= 5 ? ["primavera", "#79c25f"] : m >= 6 && m <= 8 ? ["verão", "#3e9447"] : m >= 9 && m <= 11 ? ["outono", "#b59f3a"] : ["inverno", "#5f8a64"]; }
+function jdLeaf(T, ever) { if (T.dorm) return "#9b9682"; const base = ever ? "#2f7d4f" : jdSeason()[1]; return `color-mix(in srgb,${base} ${Math.round(45 + 55 * T.v)}%,#9b9682)`; }
+function jdHour() { return JD.h ?? new Date().getHours(); }
+function jdSky() { const h = jdHour(); return h >= 5 && h < 7 ? "aurora" : h >= 7 && h < 17 ? "dia" : h >= 17 && h < 20 ? "entardecer" : "noite"; }
+function jdMoonF() { const ph = (((Date.now() - Date.UTC(2000, 0, 6, 18, 14)) / 864e5) % 29.530588853 + 29.530588853) % 29.530588853 / 29.530588853; return ph; }
+
+/* ---------------------------------------------------------------- desenho */
+const jdR = (s, i) => { const x = Math.sin((s + 1) * 12.9898 + i * 78.233) * 43758.5453; return x - Math.floor(x); };
+function jdTreeSVG(T, fx) {
+  const pid = T.pid, A = JD_ARV[pid], col = J_PIL[pid].cor, s = T.s, z = [0, 0, 0, .72, .9, 1.04][s], H = 150 * z, x = A.x, y = A.y, leaf = jdLeaf(T, pid === "tao"), sel = JD.sel === "arv:" + pid;
+  let g = `<ellipse cx="${x}" cy="${y + 3}" rx="${26 + s * 7}" ry="${6 + s * 1.4}" class="jd-soil"/>`, cv = "", fr = [];
+  if (s === 0) g += `<ellipse cx="${x}" cy="${y - 1}" rx="5.5" ry="4" style="fill:${col}" class="jd-seed"/>`;
+  else if (s <= 2) { const h = s === 1 ? 22 : 44; cv += `<path d="M${x} ${y}q3 ${-h / 2} 0 ${-h}" class="jd-stem"/>`; for (const k of s === 1 ? [h] : [h * .5, h * .78, h]) for (const sg of [-1, 1]) cv += `<ellipse cx="${x + sg * 9}" cy="${y - k + 2}" rx="10" ry="4.4" transform="rotate(${sg * -30} ${x + sg * 7} ${y - k + 2})" style="fill:${leaf}"/>`; }
+  else if (pid === "esp") {
+    g += `<path d="M${x - 6} ${y}C${x - 9} ${y - H * .3} ${x + 7} ${y - H * .38} ${x + 1} ${y - H * .56}L${x + 7} ${y - H * .56}C${x + 12} ${y - H * .36} ${x + 2} ${y - H * .26} ${x + 6} ${y}Z" class="jd-trunk"/>`;
+    for (const [dx, dy, rx, ry] of [[-24, .6, 32, 20], [22, .64, 33, 21], [0, .82, 36, 23]]) cv += `<ellipse cx="${x + dx * z}" cy="${y - H * dy}" rx="${rx * z}" ry="${ry * z}" style="fill:color-mix(in srgb,${leaf} 72%,#c4cdb4)"/>`;
+    fr = [[-26, .6], [20, .66], [-6, .84], [10, .78], [30, .6], [-14, .7], [4, .9], [-30, .66]].map(([dx, dy]) => [x + dx * z, y - H * dy]);
+  } else if (pid === "med") {
+    const n = s, dxs = [-14, 2, 16, -26, 28], hs = [1, .86, .94, .72, .78];
+    for (let i = 0; i < n; i++) { const xx = x + dxs[i] * z, hh = H * hs[i];
+      cv += `<line x1="${xx}" y1="${y}" x2="${xx + 2}" y2="${y - hh}" class="jd-bamboo" style="stroke:color-mix(in srgb,${leaf} 60%,#c7b25a);stroke-width:${5.5 * z}"/>`;
+      for (let k = 18 * z; k < hh - 6; k += 18 * z) cv += `<line x1="${xx - 3 * z}" y1="${y - k}" x2="${xx + 3 * z + 1}" y2="${y - k}" class="jd-node"/>`;
+      for (const r of [-38, 30, -64, 58]) cv += `<ellipse cx="${xx + 2 + Math.sign(r) * 9 * z}" cy="${y - hh + 6}" rx="${13 * z}" ry="${2.6}" transform="rotate(${r} ${xx + 2} ${y - hh + 6})" style="fill:${leaf}"/>`; }
+    fr = [[-14, .9], [2, .78], [16, .86], [-26, .64], [28, .7], [-10, .5], [8, .58], [20, .42]].map(([dx, dy]) => [x + dx * z + 6, y - H * dy]);
+  } else if (pid === "tao") {
+    g += `<rect x="${x - 4 * z}" y="${y - H * .32}" width="${8 * z}" height="${H * .32}" class="jd-trunk"/>`;
+    for (const [w, b, t] of [[74, .26, .58], [58, .46, .78], [40, .66, 1]]) cv += `<path d="M${x - w * z / 2} ${y - H * b}L${x} ${y - H * t}L${x + w * z / 2} ${y - H * b}Z" style="fill:${leaf}"/>`;
+    fr = [[-18, .32], [16, .34], [-10, .52], [12, .5], [0, .7], [-6, .84], [22, .3], [-24, .3]].map(([dx, dy]) => [x + dx * z, y - H * dy]);
+  } else {
+    g += `<path d="M${x - 10 * z} ${y}C${x - 6 * z} ${y - H * .3} ${x - 4 * z} ${y - H * .4} ${x - 3} ${y - H * .55}L${x + 3} ${y - H * .55}C${x + 4 * z} ${y - H * .4} ${x + 6 * z} ${y - H * .3} ${x + 10 * z} ${y}Z" class="jd-trunk"/>`;
+    for (const dx of [-26, -10, 12, 28]) g += `<line x1="${x + dx * z}" y1="${y - H * .52}" x2="${x + dx * z * 1.1}" y2="${y - H * .08}" class="jd-root"/>`;
+    cv += `<path d="M${x} ${y - H * .48}C${x - 70 * z} ${y - H * .5} ${x - 62 * z} ${y - H * 1.02} ${x} ${y - H * .9}C${x + 62 * z} ${y - H * 1.02} ${x + 70 * z} ${y - H * .5} ${x} ${y - H * .48}Z" style="fill:${leaf}"/>`;
+    fr = [[-34, .64], [30, .62], [-14, .78], [14, .76], [0, .62], [-40, .74], [38, .74], [0, .86]].map(([dx, dy]) => [x + dx * z, y - H * dy]);
+  }
+  if (s >= 3) { cv += fr.slice(0, Math.min(8, T.frutos)).map(([fx1, fy]) => `<circle cx="${fx1.toFixed(1)}" cy="${fy.toFixed(1)}" r="3.4" class="jd-fruit" style="fill:${col}"/>`).join("");
+    if (s === 5) cv += Array.from({ length: 7 }, (_, i) => { const a = jdR(i, pid.length) * 6.28, r = 24 * z + jdR(i + 3, 2) * 18 * z, cx = x + Math.cos(a) * r, cy = y - H * .7 + Math.sin(a) * r * .6; return `<g class="jd-flower"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4" style="fill:color-mix(in srgb,${col} 55%,#fff)"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="1.5" fill="#f6d36b"/></g>`; }).join(""); }
+  const pl = Array.from({ length: Math.min(5, T.plantas) }, (_, i) => { const px = x + [-36, 34, -48, 46, -24][i], py = y + [6, 8, -2, 0, 12][i]; return `<g class="jd-plant"><path d="M${px} ${py}v-9" style="stroke:${col}"/><ellipse cx="${px - 4}" cy="${py - 8}" rx="4" ry="2" style="fill:${col}"/><ellipse cx="${px + 4}" cy="${py - 10}" rx="4" ry="2" style="fill:${col}"/></g>`; }).join("");
+  const drops = fx ? `<g class="jd-drops">${[-14, 0, 14].map((d, i) => `<ellipse cx="${x + d}" cy="${y - Math.max(30, H)}" rx="2.6" ry="4" style="animation-delay:${i * .18}s"/>`).join("")}</g>` : "";
+  return `<g class="jd-hot jd-tree${sel ? " on" : ""}${T.dorm ? " jd-dorm" : ""}" data-act="jdsel" data-k="arv:${pid}" role="button" tabindex="0" aria-label="${esc(A.nome)} de ${esc(J_PIL[pid].nome)}: ${T.nome}" data-tip="${esc(A.nome)} · ${esc(J_PIL[pid].nome)} · ${T.nome}${T.dorm ? " (dormindo)" : ""}">
+    <rect x="${x - 50}" y="${y - Math.max(40, H + 10)}" width="100" height="${Math.max(40, H + 10) + 14}" fill="transparent"/>${g}<g class="${T.dorm ? "" : "jd-sway"}" style="--d:${(4.2 + J_ORDER.indexOf(pid) * .7).toFixed(1)}s">${cv}</g>${pl}${drops}
+    <text x="${x}" y="${y + 22}" text-anchor="middle" class="jd-lbl">${esc(A.nome)}</text><text x="${x}" y="${y + 34}" text-anchor="middle" class="jd-sub" style="fill:${col}">${T.nome}</text></g>`;
+}
+function jdTemploSVG() {
+  const D = jdData().templo, fx = JD.fx?.k === "build" ? JD.fx.id : "", c = id => D[id] ? `jd-t-on${fx === id ? " jd-pop" : ""}` : "jd-ghost", sel = JD.sel === "templo", lock = !jdCamOpen("escada");
+  let g = `<ellipse cx="480" cy="262" rx="128" ry="17" class="jd-plat"/>`;
+  g += `<g class="${c("alicerce")}"><rect x="385" y="238" width="190" height="22" class="jd-stone"/>${D.alicerce ? [415, 450, 485, 520, 555].map(x => `<line x1="${x}" y1="238" x2="${x}" y2="260" class="jd-joint"/>`).join("") + `<line x1="385" y1="249" x2="575" y2="249" class="jd-joint"/>` : ""}</g>`;
+  g += `<g class="${c("piso")}"><rect x="398" y="226" width="164" height="12" class="jd-wood"/></g>`;
+  [["esp", 412], ["med", 452], ["tao", 496], ["bud", 536]].forEach(([pid, x]) => { g += `<g class="${c("col_" + pid)}"><rect x="${x}" y="152" width="12" height="74" class="jd-stone"/><rect x="${x - 3}" y="146" width="18" height="7" style="${D["col_" + pid] ? `fill:${J_PIL[pid].cor}` : ""}" class="jd-cap"/></g>`; });
+  g += `<g class="${c("portal")}"><path d="M466 226V190a14 14 0 0 1 28 0V226Z" class="jd-door"/></g>`;
+  if (D.piso) g += `<g class="${jdChama() ? "jd-flame" : "jd-ember"}"><rect x="474" y="216" width="12" height="10" class="jd-altar"/><path d="M480 214c-5-5-3-10 0-15c3 5 5 10 0 15Z"/></g>`;
+  g += `<g class="${c("telhado")}"><path d="M384 152L480 100L576 152Z" class="jd-roof"/><rect x="390" y="146" width="180" height="8" class="jd-wood"/></g>`;
+  const vit = D.vitral ? J_ORDER.flatMap((pid, k) => J_PIL[pid].est.map((e, i) => { const a = (k * 5 + i) * 18 - 90; return `<path d="${jPetal(2, 11, 3)}" transform="translate(480 130) rotate(${a + 90})" style="fill:${J_PIL[pid].cor};fill-opacity:${J_FILL[jEstV(pid, e.id)]};stroke:${J_PIL[pid].cor};stroke-width:.6"/>`; })).join("") : "";
+  g += `<g class="${c("vitral")}"><circle cx="480" cy="130" r="13" class="jd-glass"/>${vit}</g>`;
+  g += `<g class="${c("sino")}"><line x1="600" y1="240" x2="600" y2="176" class="jd-post"/><line x1="588" y1="176" x2="612" y2="176" class="jd-post"/><path d="M592 196q0-14 8-14t8 14Z" class="jd-bell"/></g>`;
+  const n = JD_TEMPLO.filter(t => D[t.id]).length;
+  return `<g class="jd-hot jd-templo${sel ? " on" : ""}${lock ? " jd-lockd" : ""}" data-act="jdsel" data-k="templo" role="button" tabindex="0" aria-label="Templo: ${n} de ${JD_TEMPLO.length} partes" data-tip="Templo · ${n} de ${JD_TEMPLO.length} partes"><rect x="370" y="92" width="250" height="180" fill="transparent"/>${g}</g>`;
+}
+function jdScene() {
+  const sky = jdSky(), R = jdRio(), T = Object.fromEntries(J_ORDER.map(p => [p, jdTree(p)])), D = jdData(), st = jdStock(), fx = JD.fx, night = sky === "noite";
+  const SKY = { aurora: ["#f6c8a8", "#c9d8f0"], dia: ["#9cc8f0", "#dcecf7"], entardecer: ["#f2a46b", "#f5d6a8"], noite: ["#0e1a3a", "#283a6a"] }[sky];
+  const RIVER = "M960 118C900 190 760 232 690 300S604 372 606 420S556 515 612 558S664 610 640 642";
+  let g = `<defs><linearGradient id="jdsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${SKY[0]}"/><stop offset="1" stop-color="${SKY[1]}"/></linearGradient><filter id="jdblur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter><radialGradient id="jdglow"><stop offset="0" stop-color="#fff6b0"/><stop offset="1" stop-color="#fff6b0" stop-opacity="0"/></radialGradient></defs>`;
+  g += `<rect width="1000" height="640" fill="url(#jdsky)"/>`;
+  let top = "";
+  if (night || sky === "aurora") top += Array.from({ length: 34 }, (_, i) => `<circle cx="${(jdR(i, 1) * 1000).toFixed(0)}" cy="${(jdR(i, 2) * 110).toFixed(0)}" r="${(.6 + jdR(i, 3) * 1.1).toFixed(1)}" class="jd-star" style="animation-delay:${(jdR(i, 4) * 3).toFixed(1)}s"/>`).join("");
+  if (night || sky === "aurora" || sky === "entardecer") { const f = jdMoonF(), ill = (1 - Math.cos(2 * Math.PI * f)) / 2;
+    top += `<g class="jd-moon" data-tip="Lua de hoje: ${f < .03 || f > .97 ? "nova" : f < .22 ? "crescente" : f < .28 ? "quarto crescente" : f < .47 ? "gibosa crescente" : f < .53 ? "cheia" : f < .72 ? "gibosa minguante" : f < .78 ? "quarto minguante" : "minguante"} (${Math.round(ill * 100)}% iluminada)"><circle cx="860" cy="52" r="26" fill="#fdf6d8" opacity=".14"/>${jMoon(ill, 18, "#fdf6d8").replace(/^<svg[^>]*>/, `<svg x="840" y="32" width="40" height="40" viewBox="0 0 39 39">`)}</g>`; }
+  else g += `<circle cx="860" cy="58" r="44" fill="url(#jdglow)" opacity=".7"/><circle cx="860" cy="58" r="18" class="jd-sun"/>`;
+  g += `<path d="M0 150L90 92L170 132L260 78L350 128L430 96L520 136L610 84L700 130L790 90L880 126L1000 88V180H0Z" class="jd-mnt2"/><path d="M0 172L120 128L230 160L330 120L420 150L540 118L650 156L760 124L880 152L1000 130V200H0Z" class="jd-mnt"/>`;
+  g += `<rect x="0" y="168" width="1000" height="472" class="jd-ground"/><ellipse cx="200" cy="420" rx="230" ry="150" class="jd-meadow"/><ellipse cx="110" cy="168" rx="90" ry="40" class="jd-hill"/>`;
+  /* rio e lago */
+  const w = 12 + 16 * R.f, lago = jdCamOpen("margem");
+  g += `<g class="jd-hot jd-rio${JD.sel === "rio" ? " on" : ""}" data-act="jdsel" data-k="rio" role="button" tabindex="0" aria-label="Rio: ${R.st}" data-tip="Rio · ${R.st} · ${R.n} de 14 noites de exame"><path d="${RIVER}" class="jd-hitw"/><path id="jdriver" d="${RIVER}" class="jd-water" style="stroke-width:${w.toFixed(1)}"/>${R.n ? `<path d="${RIVER}" class="jd-flow" style="stroke-width:${(w * .45).toFixed(1)};animation-duration:${(7 - 5 * R.f).toFixed(1)}s"/>` : ""}</g>`;
+  const nl = jdLotus();
+  g += `<g class="jd-hot jd-lago${JD.sel === "lago" ? " on" : ""}" data-act="jdsel" data-k="lago" role="button" tabindex="0" aria-label="Lago de lótus: ${nl} de 7 flores" data-tip="Lago de lótus · ${nl} de 7 flores esta semana"><ellipse cx="552" cy="502" rx="74" ry="30" class="jd-pond"/>${Array.from({ length: 7 }, (_, i) => { const lx = 500 + i * 17 + jdR(i, 9) * 6, ly = 492 + jdR(i, 7) * 22; return `<ellipse cx="${lx.toFixed(0)}" cy="${ly.toFixed(0)}" rx="7" ry="3.4" class="jd-pad"/>${i < nl ? `<g class="jd-lotus" style="animation-delay:${i * .25}s"><path d="M${lx.toFixed(0)} ${(ly - 1).toFixed(0)}c-9-3-10-12-9-15c4 1 7 6 9 10c2-4 5-9 9-10c1 3 0 12-9 15Z"/><path d="M${lx.toFixed(0)} ${(ly - 1).toFixed(0)}c-3-4-3-11 0-16c3 5 3 12 0 16Z" class="jd-lc"/></g>` : ""}`; }).join("")}</g>`;
+  /* caminhos */
+  for (const c of JD_CAM) { const op = jdCamOpen(c.id), rd = !op && jdCamReady(c), cls = op ? "jd-cam" : rd ? "jd-cam jd-ready" : "jd-cam jd-off", [a, b] = c.prog();
+    g += `<g class="jd-hot${JD.sel === "cam:" + c.id ? " on" : ""}${JD.fx?.k === "cam" && JD.fx.id === c.id ? " jd-open" : ""}" data-act="jdsel" data-k="cam:${c.id}" role="button" tabindex="0" aria-label="${esc(c.nome)}: ${op ? "aberto" : rd ? "pronto para abrir" : `fechado, ${Math.min(a, b)} de ${b}`}" data-tip="${esc(c.nome)} · ${op ? "aberto" : rd ? "pronto para abrir" : `${c.t} (${Math.min(a, b)} de ${b})`}"><path d="${c.d}" class="jd-hitw"/><path d="${c.d}" class="${cls}"/></g>`; }
+  g += `<path d="M430 640C430 560 430 500 430 452" class="jd-cam"/>`;
+  if (jdCamOpen("ponte")) g += `<g class="jd-bridge"><path d="M584 398Q608 380 634 396" class="jd-arch"/><line x1="586" y1="392" x2="632" y2="390" class="jd-deck"/></g>`;
+  else g += `<path d="M584 398Q608 380 634 396" class="jd-arch jd-ruin"/>`;
+  /* pedreira e oficina */
+  const brutas = D.pedras.filter(p => !p.lav), POS = [[752, 418], [806, 402], [860, 420], [912, 404], [834, 452]];
+  g += `<g class="jd-hot jd-quarry${JD.sel === "pedreira" ? " on" : ""}" data-act="jdsel" data-k="pedreira" role="button" tabindex="0" aria-label="Pedreira: ${plural(brutas.length, "pedra bruta", "pedras brutas")}" data-tip="Pedreira · ${plural(brutas.length, "pedra bruta", "pedras brutas")} · ${plural(st.pedras, "lavrada", "lavradas")} no estoque"><path d="M700 380L712 300L768 252L866 240L1000 258V482L900 474L820 462L736 446Z" class="jd-cliff"/><path d="M760 300L800 280M880 270L930 290M720 360L745 340" class="jd-crack"/>
+    ${Array.from({ length: Math.min(12, Math.max(0, st.pedras)) }, (_, i) => `<rect x="${928 + (i % 3) * 18}" y="${446 - Math.floor(i / 3) * 10}" width="16" height="9" class="jd-block"/>`).join("")}</g>`;
+  brutas.slice(0, 5).forEach((p, i) => { const [x, y] = POS[i], k = jdMarks(p).length, pts = Array.from({ length: 7 }, (_, j) => { const a = j / 7 * 6.283, r = 15 + jdR(j, p.id.length + i) * 7 - k * 1.6; return `${(x + Math.cos(a) * r * 1.2).toFixed(1)},${(y + Math.sin(a) * r * .8).toFixed(1)}`; }).join(" ");
+    g += `<g class="jd-hot jd-raw${JD.sel === "ped:" + p.id ? " on" : ""}${JD.fx?.id === p.id ? " jd-hit" : ""}" data-act="jdsel" data-k="ped:${p.id}" role="button" tabindex="0" aria-label="Pedra bruta: ${esc(p.nome)}, ${k} de 3 golpes" data-tip="${esc(p.nome)} · ${Math.min(k, 3)} de 3 golpes"><polygon points="${pts}" class="jd-rock"/>${k >= 3 ? `<circle cx="${x}" cy="${y}" r="24" class="jd-ready-ring"/>` : ""}<text x="${x}" y="${y + 30}" text-anchor="middle" class="jd-sub">${esc(trunc(p.nome, 14))}</text></g>`; });
+  g += `<g class="jd-hot jd-shop${JD.sel === "oficina" ? " on" : ""}${JD.fx?.k === "talho" ? " jd-hit" : ""}" data-act="jdsel" data-k="oficina" role="button" tabindex="0" aria-label="Oficina: ${plural(st.toras, "tora", "toras")} e ${plural(st.tabuas, "tábua", "tábuas")}" data-tip="Oficina · ${plural(st.toras, "tora", "toras")} · ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")}"><rect x="740" y="500" width="240" height="120" rx="10" fill="transparent"/><rect x="830" y="538" width="64" height="8" class="jd-wood"/><line x1="836" y1="546" x2="836" y2="570" class="jd-post"/><line x1="888" y1="546" x2="888" y2="570" class="jd-post"/>
+    ${Array.from({ length: Math.min(10, st.toras) }, (_, i) => { const row = i < 4 ? 0 : i < 7 ? 1 : i < 9 ? 2 : 3, k = i - [0, 4, 7, 9][row]; return `<circle cx="${770 + k * 15 + row * 7.5}" cy="${590 - row * 13}" r="7.5" class="jd-log"/><circle cx="${770 + k * 15 + row * 7.5}" cy="${590 - row * 13}" r="3" class="jd-ring"/>`; }).join("")}
+    ${Array.from({ length: Math.min(8, Math.max(0, st.tabuas)) }, (_, i) => `<rect x="908" y="${594 - i * 6}" width="58" height="5" class="jd-plank"/>`).join("")}<text x="860" y="616" text-anchor="middle" class="jd-lbl">Oficina</text></g>`;
+  /* praça da bússola */
+  const v = bmDayValue(), ang = { norte: -90, leste: 0, sul: 90, oeste: 180, centro: -90 }[v.ax];
+  g += `<g class="jd-hot jd-plaza${JD.sel === "praca" ? " on" : ""}" data-act="jdsel" data-k="praca" role="button" tabindex="0" aria-label="Praça da Bússola: valor do dia, ${esc(v.nome)}" data-tip="Praça da Bússola · valor do dia: ${esc(v.nome)}"><circle cx="430" cy="410" r="44" class="jd-mosaic"/><circle cx="430" cy="410" r="30" class="jd-mosaic2"/>
+    ${[0, 45, 90, 135, 180, 225, 270, 315].map(a => { const r = a % 90 ? 22 : 38, t = (a - 90) * Math.PI / 180; return `<path d="M430 410L${(430 + Math.cos(t - .14) * 9).toFixed(1)} ${(410 + Math.sin(t - .14) * 9).toFixed(1)}L${(430 + Math.cos(t) * r).toFixed(1)} ${(410 + Math.sin(t) * r).toFixed(1)}L${(430 + Math.cos(t + .14) * 9).toFixed(1)} ${(410 + Math.sin(t + .14) * 9).toFixed(1)}Z" class="jd-rose${a % 90 ? " sm" : ""}"/>`; }).join("")}
+    <g class="jd-needle" style="transform:rotate(${ang + 90}deg)"><path d="M430 380L436 410L430 416L424 410Z" style="fill:${bmAx(v.ax).cor}"/></g><text x="430" y="372" text-anchor="middle" class="jd-sub">N</text><text x="430" y="472" text-anchor="middle" class="jd-lbl">Bússola</text></g>`;
+  /* mirante */
+  g += `<g class="jd-hot jd-mir${JD.sel === "mirante" ? " on" : ""}" data-act="jdsel" data-k="mirante" role="button" tabindex="0" aria-label="Mirante" data-tip="Mirante · a mandala e a bússola vistas do alto"><rect x="60" y="120" width="110" height="70" fill="transparent"/><path d="M96 170V146L110 134L124 146V170" class="jd-kiosk"/><circle cx="110" cy="152" r="6" class="jd-mini"/><text x="110" y="190" text-anchor="middle" class="jd-lbl">Mirante</text></g>`;
+  /* árvores */
+  for (const pid of [...J_ORDER].sort((a, b) => JD_ARV[a].y - JD_ARV[b].y)) g += jdTreeSVG(T[pid], JD.fx?.k === "rega" && JD.fx.id === pid);
+  g += jdTemploSVG();
+  /* portão */
+  g += `<g class="jd-hot jd-gate${JD.sel === "portao" ? " on" : ""}" data-act="jdsel" data-k="portao" role="button" tabindex="0" aria-label="Portão: como o jardim funciona" data-tip="Portão · como o jardim funciona"><rect x="396" y="588" width="68" height="52" fill="transparent"/><line x1="404" y1="636" x2="404" y2="596" class="jd-post"/><line x1="456" y1="636" x2="456" y2="596" class="jd-post"/><path d="M396 598Q430 586 464 598" class="jd-gatebar"/><line x1="400" y1="606" x2="460" y2="606" class="jd-post"/></g>`;
+  /* névoa sobre o que ainda está fechado */
+  const FOG = { margem: [[552, 500, 96, 46]], ponte: [[850, 420, 170, 90], [860, 560, 140, 60]], escada: [[480, 185, 140, 95]], mirante: [[110, 158, 80, 50]] };
+  for (const [cam, es] of Object.entries(FOG)) if (!jdCamOpen(cam)) g += `<g class="jd-fogg"><g filter="url(#jdblur)">${es.map(([x, y, rx, ry], i) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" class="jd-fog" style="animation-delay:${i * 1.3}s"/>`).join("")}</g><g transform="translate(${es[0][0] - 8} ${es[0][1] - 10})" class="jd-lock"><rect x="0" y="8" width="16" height="12" rx="2"/><path d="M3 8V5a5 5 0 0 1 10 0V8" fill="none"/></g></g>`;
+  /* vagalumes ou borboletas: as noites de exame da semana */
+  const nv = jdVaga();
+  if (night) g += `<rect width="1000" height="640" class="jd-nightveil"/>`;
+  if (sky === "entardecer") g += `<rect width="1000" height="640" class="jd-duskveil"/>`;
+  g += top + Array.from({ length: nv }, (_, i) => { const x = 160 + jdR(i, 11) * 420, y = 300 + jdR(i, 12) * 200; return night || sky === "entardecer" ? `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="2.6" class="jd-fly" style="animation-delay:${(i * .7).toFixed(1)}s"/>` : `<g class="jd-bfly" style="animation-delay:${(i * .9).toFixed(1)}s"><path d="M${x.toFixed(0)} ${y.toFixed(0)}l-6-5q-2 6 6 5l6-5q2 6-6 5Z"/></g>`; }).join("");
+  return `<div class="jdscene">${svgWrap(1000, 640, g, `Jardim interior: árvores ${J_ORDER.map(p => `${JD_ARV[p].nome} ${T[p].nome}`).join(", ")}; rio ${R.st}; templo com ${JD_TEMPLO.filter(t => D.templo[t.id]).length} de ${JD_TEMPLO.length} partes`, "chart jdsvg sky-" + sky)}</div>`;
+}
+
+/* ---------------------------------------------------------------- painéis */
+function jdAsks() {
+  const out = [], D = jdData(), st = jdStock();
+  for (const c of JD_CAM) if (!jdCamOpen(c.id) && jdCamReady(c)) out.push([100, `Abrir: ${c.nome}`, `leva até ${c.area}`, "cam:" + c.id]);
+  for (const t of JD_TEMPLO) if (!D.templo[t.id] && jdCamOpen("escada") && jdCan(t).ok) { out.push([90, `Construir: ${t.nome}`, t.sim, "templo"]); break; }
+  for (const p of D.pedras) if (!p.lav && jdMarks(p).length >= 3) out.push([85, `Lavrar a pedra: ${p.nome}`, "três golpes já foram dados", "ped:" + p.id]);
+  if (!bmEx()[TODAY]) out.push([jdHour() >= 18 ? 75 : 55, "Fazer o exame da noite", `rio ${jdRio().st}: ${jdRio().n} de 14 noites; cada exame o faz correr`, "rio"]);
+  const T = J_ORDER.map(jdTree).sort((a, b) => a.v - b.v)[0];
+  if (T.v < 1) out.push([60 + (1 - T.v) * 10, `Regar a ${JD_ARV[T.pid].nome}`, T.dorm ? `dorme: nenhum dia com ${J_PIL[T.pid].nome} em 2 semanas` : `${plural(T.dias, "dia", "dias")} com ${J_PIL[T.pid].nome} em 2 semanas`, "arv:" + T.pid]);
+  if (jdCamOpen("ponte") && st.toras >= 3) out.push([50, "Talhar uma tábua", `${plural(st.toras, "tora", "toras")} esperando na oficina`, "oficina"]);
+  const semMarca = D.pedras.find(p => !p.lav && !(p.marcas || []).some(m => m.data === TODAY) && jdMarks(p).length < 3);
+  if (jdCamOpen("ponte") && semMarca) out.push([45, `Observar: ${semMarca.nome}`, "quando apareceu hoje, e o que você fez?", "ped:" + semMarca.id]);
+  if (jdCamOpen("ponte") && !D.pedras.length) out.push([40, "Extrair a primeira pedra", "nomeie uma inclinação para trabalhar", "pedreira"]);
+  return out.sort((a, b) => b[0] - a[0]).slice(0, 3);
+}
+const jdEns = ([q, src]) => `<blockquote class="jquote sm">${esc(q)}<cite>${esc(src)}</cite></blockquote>`;
+const jdBack = () => `<button type="button" class="btn sm ghost" data-act="jdsel" data-k="portao">${ic("back")}Voltar ao portão</button>`;
+function jdLockPanel(c, oque) {
+  const [a, b] = c.prog(), rd = a >= b;
+  return `<h3>${ic("lock")}${esc(oque)}</h3><p>Para chegar até ${esc(c.area)}, abra a <b>${esc(c.nome)}</b>.</p><p class="muted">Pede: ${esc(c.t)}. Agora: <b>${Math.min(a, b)} de ${b}</b>.</p><div class="jdbar"><i style="width:${Math.round(100 * Math.min(1, a / b))}%"></i></div>
+    ${rd ? `<button type="button" class="btn primary" data-act="jdcam" data-id="${c.id}">${ic("unlock")}Abrir o caminho</button>` : ""}${jdBack()}`;
+}
+function jdAside() {
+  const k = JD.sel || "portao", [area, id] = k.split(":"), D = jdData(), st = jdStock(), lk = jdLocked(k);
+  if (lk && area !== "cam") return jdLockPanel(lk, { rio: "O rio", lago: "O lago de lótus", pedreira: "A pedreira", oficina: "A oficina", ped: "A pedreira", templo: "O templo", mirante: "O mirante" }[area]);
+  if (area === "arv") {
+    const T = jdTree(id), A = JD_ARV[id], P = J_PIL[id], q = jQuestion(id);
+    return `<h3 style="color:${P.cor}">${ic(P.ico)}${esc(A.nome)} · ${esc(P.nome)}</h3><p class="muted">${esc(A.sim)}</p>
+      <div class="jdstat"><b>${T.nome}</b>${T.prox ? `<span>faltam ${T.falta} pontos para ${T.prox}</span>` : "<span>estágio máximo</span>"}</div><div class="jdbar" style="--c:${P.cor}"><i style="width:${Math.round(100 * T.pr)}%"></i></div>
+      <table class="dt jdtab"><tbody>${T.parts.map(([l, v, mx]) => `<tr><td>${esc(l)}</td><td class="num">${v} / ${mx}</td></tr>`).join("")}<tr><th>crescimento</th><th class="num">${T.g}</th></tr></tbody></table>
+      <p class="small">${T.dorm ? `${ic("moon")}<b>Dormindo:</b> nenhum dia com ${esc(P.nome)} nas últimas 2 semanas. Ela não morre; acorda com o primeiro cuidado.` : `${ic("leaf")}<b>Verde:</b> ${plural(T.dias, "dia", "dias")} com ${esc(P.nome)} nas últimas 2 semanas (7 já deixam a copa plena).`}<br>${ic("star")}<b>Frutos:</b> ${plural(T.frutos, "reflexão", "reflexões")} em 30 dias.${T.plantas ? ` <b>Mudas ao pé:</b> ${plural(T.plantas, "prática ativa", "práticas ativas")}.` : ""}</p>
+      <div class="flbl">Regar com uma reflexão</div><p class="bmq">${ic("info")}<span>${esc(q)}</span></p>
+      <textarea class="jta" rows="3" data-jdt="rega:${id}" placeholder="Escreva o que essa pergunta desperta. Vai para as reflexões de ${esc(P.nome)}.">${esc(JD.txt["rega:" + id] || "")}</textarea>
+      <div class="row wrap"><button type="button" class="btn sm primary" data-act="jdrega" data-p="${id}">${ic("leaf")}Regar</button><a class="btn sm ghost" href="#jornada.${P.sub}">${ic("arrow")}Abrir o pilar</a></div>`;
+  }
+  if (area === "rio") {
+    const R = jdRio(), nf = D.folhas.length, hoje = D.folhas.filter(f => f.data === TODAY).length;
+    return `<h3>${ic("wave")}O rio</h3><p class="muted">Corre com as noites de exame da Bússola: consciência que volta todos os dias ao próprio leito.</p>
+      <div class="jdstat"><b>${R.st}</b><span>${R.n} de 14 noites com exame</span></div><div class="jdbar" style="--c:#4f9fd8"><i style="width:${Math.round(100 * R.f)}%"></i></div>
+      ${jdEns(JD_ENS.rio)}<a class="btn sm" href="#jornada.exame">${ic("moon")}Fazer o exame da noite</a>
+      <div class="flbl">Soltar uma folha</div><p class="small muted">Escreva o que você entrega ao rio: uma mágoa, uma preocupação, um apego. A folha leva o texto embora: ele <b>não é guardado</b> em lugar nenhum, só a data.</p>
+      <textarea class="jta" rows="2" id="jd_folha" data-jdt="folha" placeholder="O que eu solto hoje…">${esc(JD.txt.folha || "")}</textarea>
+      <div class="row wrap"><button type="button" class="btn sm primary" data-act="jdfolha">${ic("leaf")}Soltar no rio</button><span class="muted small">${plural(nf, "folha solta", "folhas soltas")}${hoje ? `, ${hoje} hoje` : ""}</span></div>${jdEns(JD_ENS.folha)}`;
+  }
+  if (area === "lago") { const n = jdLotus(), ss = jData().sess.filter(x => x.data >= addDays(TODAY, -6) && (x.pid === "med" || x.pid === "bud"));
+    return `<h3>${ic("lotus")}O lago de lótus</h3><p class="muted">Uma flor para cada dia da última semana com sessão de meditação ou de prática budista.</p><div class="jdstat"><b>${n} de 7 flores</b><span>${plural(ss.length, "sessão", "sessões")}, ${sum(ss.map(x => +x.min || 0))} min</span></div>
+      ${jdEns(JD_ENS.lotus)}<a class="btn sm" href="#jornada.praticas">${ic("plus")}Registrar uma sessão</a>`; }
+  if (area === "pedreira" || area === "ped") {
+    const p = area === "ped" ? D.pedras.find(x => x.id === id) : null;
+    if (p) { const ms = jdMarks(p), k = ms.length, hj = (p.marcas || []).find(m => m.data === TODAY);
+      return `<h3>${ic("box")}Pedra bruta: ${esc(p.nome)}</h3><p class="muted">Extraída ${relDay(p.criada)}${p.val ? `; antídoto: <b>${esc(bmV(p.val)?.nome || "")}</b> (os dias em que você o pratica no exame da noite também contam)` : ""}.</p>
+        <div class="jdstat"><b>${p.lav ? "lavrada" : `${Math.min(k, 3)} de 3 golpes`}</b><span>${p.lav ? fmtD(p.lav) : "um golpe por dia em que você percebe e trabalha"}</span></div><div class="jdbar" style="--c:#a08a6a"><i style="width:${Math.round(100 * Math.min(1, k / 3))}%"></i></div>
+        ${ms.length ? `<ul class="jdmarks">${ms.map(m => `<li><small>${fmtD(m.data)}</small> ${m.ex ? ic("compass") : ic("edit")}<span>${esc(m.txt || "percebi")}</span></li>`).join("")}</ul>` : ""}
+        ${p.lav ? jdEns(JD_ENS.pedra) : `<div class="flbl">Golpe de cinzel</div><textarea class="jta" rows="2" data-jdt="marca:${p.id}" placeholder="Quando ${esc(p.nome.toLowerCase())} apareceu hoje, e o que você fez com isso?">${esc(JD.txt["marca:" + p.id] ?? hj?.txt ?? "")}</textarea>
+        <div class="row wrap"><button type="button" class="btn sm${k >= 3 ? "" : " primary"}" data-act="jdmarca" data-id="${p.id}">${ic("edit")}${hj ? "Atualizar o golpe de hoje" : "Dar o golpe de hoje"}</button>${k >= 3 ? `<button type="button" class="btn sm primary" data-act="jdlavra" data-id="${p.id}">${ic("star")}Lavrar a pedra</button>` : ""}<button type="button" class="btn sm ghost" data-act="jdpdel" data-id="${p.id}">${ic("trash")}Devolver à montanha</button></div>`}
+        <button type="button" class="btn sm ghost" data-act="jdsel" data-k="pedreira">${ic("back")}Pedreira</button>`; }
+    const br = D.pedras.filter(x => !x.lav), lv = D.pedras.filter(x => x.lav);
+    return `<h3>${ic("box")}A pedreira</h3><p class="muted">Cada pedra bruta é uma inclinação que você decidiu trabalhar (a reforma íntima). Ela vira pedra lavrada depois de três dias em que você a percebeu e agiu, e as pedras lavradas constroem o templo.</p>
+      <div class="jdstat"><b>${plural(br.length, "pedra bruta", "pedras brutas")}</b><span>${plural(lv.length, "lavrada", "lavradas")} ao todo · ${plural(Math.max(0, st.pedras), "no estoque", "no estoque")}</span></div>
+      ${br.length ? `<div class="jdlist">${br.map(x => `<button type="button" class="jdli" data-act="jdsel" data-k="ped:${x.id}"><b>${esc(x.nome)}</b><small>${Math.min(3, jdMarks(x).length)} de 3</small></button>`).join("")}</div>` : ""}
+      <div class="flbl">Extrair uma pedra</div>${br.length >= 5 ? `<p class="small muted">Cinco pedras brutas de uma vez já é muito: lavre uma antes de extrair outra.</p>` : `<div class="form f1"><label>Inclinação a trabalhar<input type="text" maxlength="40" data-jdt="pnome" value="${esc(JD.txt.pnome || "")}" placeholder="impaciência, maledicência, orgulho…"></label>
+      <label>Valor-antídoto (opcional)<select data-jdt="pval"><option value="">nenhum</option>${BM_V.map(v => `<option value="${v.id}"${JD.txt.pval === v.id ? " selected" : ""}>${esc(v.nome)}</option>`).join("")}</select></label></div><button type="button" class="btn sm primary" data-act="jdpedra">${ic("plus")}Extrair</button>`}
+      ${jdEns(JD_ENS.pedra)}`;
+  }
+  if (area === "oficina") {
+    const tl = D.talhos.slice().reverse().slice(0, 5), pid = JD.txt.tpid || "med";
+    return `<h3>${ic("brief")}A oficina</h3><p class="muted">A madeira bruta vem das sessões de prática: cada sessão registrada é uma tora. Três toras e uma frase sobre o que a prática está esculpindo em você viram uma tábua (e a frase vira um aprendizado no pilar).</p>
+      <div class="jdstat"><b>${plural(st.toras, "tora", "toras")}</b><span>${plural(Math.max(0, st.tabuas), "tábua", "tábuas")} no estoque · ${plural(D.talhos.length, "talhada", "talhadas")} ao todo</span></div>
+      <div class="flbl">Talhar uma tábua</div><div class="form f1"><label>Pilar<select data-jdt="tpid">${J_ORDER.map(p => `<option value="${p}"${p === pid ? " selected" : ""}>${esc(J_PIL[p].nome)}</option>`).join("")}</select></label></div>
+      <textarea class="jta" rows="2" data-jdt="talho" placeholder="O que a prática está esculpindo em mim?">${esc(JD.txt.talho || "")}</textarea>
+      <div class="row wrap"><button type="button" class="btn sm primary" data-act="jdtalho"${st.toras >= 3 ? "" : " disabled"}>${ic("edit")}Talhar (3 toras)</button>${st.toras < 3 ? `<a class="btn sm ghost" href="#jornada.praticas">${ic("plus")}Registrar uma sessão</a>` : ""}</div>
+      ${tl.length ? `<ul class="jdmarks">${tl.map(t => { const r = jP(t.pid).refl.find(x => x.id === t.refl); return `<li><small>${fmtD(t.data)}</small><span style="color:${J_PIL[t.pid].cor}">${esc(J_PIL[t.pid].nome)}</span><span>${esc(trunc(r?.texto || "", 90))}</span></li>`; }).join("")}</ul>` : ""}${jdEns(JD_ENS.madeira)}`;
+  }
+  if (area === "templo") {
+    const T = D.templo;
+    return `<h3>${ic("house")}O templo</h3><p class="muted">Construído em ordem, com o que você lavrou e talhou. Algumas partes pedem algo da jornada.</p>
+      <div class="jdstat"><b>${JD_TEMPLO.filter(t => T[t.id]).length} de ${JD_TEMPLO.length} partes</b><span>estoque: ${plural(Math.max(0, st.pedras), "pedra", "pedras")} · ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")}</span></div>
+      ${T.piso ? `<p class="small">${ic("flame")}A chama do altar está <b>${jdChama() ? "acesa" : "apagada"}</b>: ela acende quando há exame da noite hoje ou ontem.</p>` : ""}
+      <ol class="jdparts">${JD_TEMPLO.map(t => { const c = jdCan(t); return `<li class="${T[t.id] ? "ok" : c.ok ? "can" : ""}"><div><b>${esc(t.nome)}</b><small>${t.p ? plural(t.p, "pedra", "pedras") : ""}${t.p && t.m ? " + " : ""}${t.m ? plural(t.m, "tábua", "tábuas") : ""}</small></div>
+        ${T[t.id] ? `<details><summary>${ic("check")}construído ${fmtD(T[t.id])}</summary><p class="small">${esc(t.sim)}</p>${jdEns(t.ens)}</details>` : c.ok ? `<p class="small">${esc(t.sim)}</p><button type="button" class="btn sm primary" data-act="jdbuild" data-id="${t.id}">${ic("plus")}Construir</button>` : `<small class="muted">falta: ${esc(c.falta.join("; "))}</small>`}</li>`; }).join("")}</ol>`;
+  }
+  if (area === "praca") {
+    const v = bmDayValue(), sc = bmScores(28);
+    return `<h3>${ic("compass")}A praça da Bússola</h3><p class="muted">No centro do jardim, a rosa dos ventos: os quatro rumos da Bússola moral orientam o jardim. A agulha aponta o rumo do valor do dia.</p>
+      <div class="jdstat" style="--c:${bmAx(v.ax).cor}"><b>${esc(v.nome)}</b><span>${esc(bmAx(v.ax).rumo)} · ${esc(bmAx(v.ax).nome)}</span></div><p><b>${esc(v.acao)}</b></p><p class="bmq">${ic("info")}<span>${esc(v.perg)}</span></p>
+      <div class="jdaxes">${BM_AX.map(a => { const s = sc.ax[a.id]; return `<div><span style="color:${a.cor}">${esc(a.rumo)}</span><div class="jdbar" style="--c:${a.cor}"><i style="width:${s == null ? 0 : Math.round(100 * s)}%"></i></div><small>${s == null ? "–" : pct(s)}</small></div>`; }).join("")}</div>
+      <p class="small muted">Prática de cada rumo nas notas do exame das últimas 4 semanas.</p><div class="row wrap"><a class="btn sm" href="#jornada.exame">${ic("moon")}Exame da noite</a><a class="btn sm ghost" href="#jornada.bussola">${ic("compass")}Abrir a Bússola</a></div>`;
+  }
+  if (area === "mirante") return `<h3>${ic("eye")}O mirante</h3><p class="muted">Do alto, o jardim inteiro: a mandala mostra as estações dos quatro caminhos; a bússola, os valores.</p>${jMandala({ mini: true })}
+      <div class="row wrap"><a class="btn sm" href="#jornada.inicio">${ic("lotus")}Explorar a mandala</a><a class="btn sm ghost" href="#jornada.bussola">${ic("compass")}Explorar a bússola</a></div>`;
+  if (area === "cam") { const c = JD_CAM.find(x => x.id === id), [a, b] = c.prog(), op = jdCamOpen(id);
+    return `<h3>${ic(op ? "unlock" : "lock")}${esc(c.nome)}</h3><p>Leva a ${esc(c.area)}.</p>${op ? `<p class="muted">${id === "bosque" ? "Aberta desde o primeiro dia." : `Aberta em ${fmtD(jdData().cam[id])}.`}</p>` : `<p class="muted">Pede: ${esc(c.t)}. Agora: <b>${Math.min(a, b)} de ${b}</b>.</p><div class="jdbar"><i style="width:${Math.round(100 * Math.min(1, a / b))}%"></i></div>${a >= b ? `<button type="button" class="btn primary" data-act="jdcam" data-id="${id}">${ic("unlock")}Abrir o caminho</button>` : ""}`}${jdBack()}`; }
+  const asks = jdAsks();
+  return `<h3>${ic("sprout")}O seu jardim interior</h3><p class="muted">Tudo aqui cresce com o que você já vive na jornada: nada de pontos inventados. Toque em qualquer parte do jardim.</p>
+    <div class="flbl">O que o jardim pede hoje</div>${asks.length ? `<ol class="jdasks">${asks.map(([, t, s, kk]) => `<li><button type="button" class="jdli" data-act="jdsel" data-k="${kk}"><b>${esc(t)}</b><small>${esc(s)}</small></button></li>`).join("")}</ol>` : `<p class="muted">Nada urgente. Passeie.</p>`}
+    <div class="flbl">Como cada coisa cresce</div><ul class="jdrules">
+      <li>${ic("leaf")}<span><b>Árvores</b>: estações do caminho, reflexões, sessões e notas do pilar. O verde vem dos dias com o pilar em 2 semanas. Regar é escrever uma reflexão.</span></li>
+      <li>${ic("wave")}<span><b>Rio</b>: noites de exame da Bússola em 14 dias. <b>Lótus</b>: dias de meditação ou prática budista na semana. <b>Vagalumes</b>: exames da semana.</span></li>
+      <li>${ic("box")}<span><b>Pedras</b>: uma inclinação nomeada; 3 dias percebidos e trabalhados a lavram. <b>Madeira</b>: cada sessão de prática é uma tora; 3 viram uma tábua.</span></li>
+      <li>${ic("house")}<span><b>Templo</b>: pedras e tábuas, em ordem. <b>Caminhos</b>: abrem com marcos da jornada.</span></li></ul>`;
+}
+function jdJournal() {
+  const D = jdData(), ev = [];
+  for (const [id, d] of Object.entries(D.cam)) { const c = JD_CAM.find(x => x.id === id); if (c) ev.push([d, "unlock", `Caminho aberto: ${c.nome}`]); }
+  for (const p of D.pedras) { ev.push([p.criada, "box", `Pedra extraída: ${p.nome}`]); if (p.lav) ev.push([p.lav, "star", `Pedra lavrada: ${p.nome}`]); }
+  for (const t of D.talhos) ev.push([t.data, "edit", `Tábua talhada (${J_PIL[t.pid]?.nome || ""})`]);
+  for (const t of JD_TEMPLO) if (D.templo[t.id]) ev.push([D.templo[t.id], "house", `Templo: ${t.nome}`]);
+  const fd = {}; for (const f of D.folhas) fd[f.data] = (fd[f.data] || 0) + 1; for (const [d, n] of Object.entries(fd)) ev.push([d, "leaf", `${plural(n, "folha solta", "folhas soltas")} no rio`]);
+  ev.sort((a, b) => a[0] < b[0] ? 1 : -1);
+  return ev.length ? `<ul class="jdjour">${ev.slice(0, 14).map(([d, i, t]) => `<li><small>${fmtD(d)}</small>${ic(i)}<span>${esc(t)}</span></li>`).join("")}</ul>` : `<div class="empty">Os marcos do jardim aparecem aqui: caminhos abertos, pedras lavradas, partes do templo.</div>`;
+}
+function pJardim() {
+  const T = J_ORDER.map(jdTree), R = jdRio(), D = jdData(), st = jdStock(), nb = JD_TEMPLO.filter(t => D.templo[t.id]).length, nc = JD_CAM.filter(c => jdCamOpen(c.id)).length, [est] = jdSeason();
+  const places = [["portao", "Portão", "sprout"], ...J_ORDER.map(p => ["arv:" + p, JD_ARV[p].nome, J_PIL[p].ico]), ["rio", "Rio", "wave"], ["lago", "Lótus", "lotus"], ["praca", "Bússola", "compass"], ["pedreira", "Pedreira", "box"], ["oficina", "Oficina", "brief"], ["templo", "Templo", "house"], ["mirante", "Mirante", "eye"]];
+  setTimeout(() => { const sc = $(".jdscene"); if (sc && sc.scrollWidth > sc.clientWidth) { sc.scrollLeft = JD.sx ?? (sc.scrollWidth - sc.clientWidth) / 2; sc.addEventListener("scroll", () => { JD.sx = sc.scrollLeft; }, { passive: true });
+    if (JD.center) { const el = sc.querySelector(`[data-k="${JD.sel}"]`); if (el) { const r = el.getBoundingClientRect(), rs = sc.getBoundingClientRect(); sc.scrollLeft += r.left + r.width / 2 - (rs.left + rs.width / 2); JD.sx = sc.scrollLeft; } } } JD.center = false; }, 0);
+  setTimeout(() => { if (JD.fx && Date.now() - JD.fx.at > 200) JD.fx = null; if (JD.scroll && innerWidth < 1100) { JD.scroll = false; $(".jdaside")?.scrollIntoView({ block: "start", behavior: "smooth" }); } }, 2200);
+  return `<p class="lead">Saúde espiritual: um jardim que é seu e responde ao seu cultivo. Cada árvore é um dos quatro caminhos, o rio é a consciência de cada noite, as pedras são as inclinações que você trabalha, e o templo vai se erguendo com o que você lavra. É ${est}; à noite os vagalumes aparecem e a lua é a de hoje.</p>
+    ${kpiRow([kmini("var(--jp-tao)", "Árvores", `${sum(T.map(t => t.s))} de 20`, `estágios somados · ${T.filter(t => t.dorm).length ? `${T.filter(t => t.dorm).length} dormindo` : "todas acordadas"}`), kmini("#4f9fd8", "Rio", R.st, `${R.n} de 14 noites de exame`), kmini("var(--jp-bud)", "Templo", `${nb} de ${JD_TEMPLO.length}`, `${plural(Math.max(0, st.pedras), "pedra", "pedras")} e ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")} no estoque`), kmini("var(--jp-med)", "Caminhos", `${nc} de ${JD_CAM.length}`, JD_CAM.some(c => !jdCamOpen(c.id) && jdCamReady(c)) ? "há um pronto para abrir" : "abrem com marcos da jornada")])}
+    <div class="jdlay"><section class="pn jdmain">${jdScene()}<div class="jdplaces" role="toolbar" aria-label="Lugares do jardim">${places.map(([k, l, i]) => `<button type="button" class="chip${JD.sel === k ? " on" : ""}${jdLocked(k) ? " lk" : ""}" data-act="jdsel" data-k="${k}">${ic(jdLocked(k) ? "lock" : i)}${esc(l)}</button>`).join("")}</div></section>
+      <aside class="pn jdaside" aria-live="polite">${jdAside()}</aside></div>
+    <div class="g2c">${panel(`${ic("clock")}Diário do jardim`, jdJournal())}${panel(`${ic("list")}O jardim e a jornada`, `<table class="dt jdtab"><thead><tr><th>No jardim</th><th>Na jornada</th><th class="num">Agora</th></tr></thead><tbody>
+      ${J_ORDER.map(p => { const t = T[J_ORDER.indexOf(p)]; return `<tr><td>${esc(JD_ARV[p].nome)}</td><td>${esc(J_PIL[p].nome)}: estações, reflexões, sessões e notas</td><td class="num">${t.g} pts · ${t.nome}</td></tr>`; }).join("")}
+      <tr><td>Rio</td><td>Noites de exame da Bússola, 14 dias</td><td class="num">${R.n}</td></tr><tr><td>Lótus</td><td>Dias com meditação ou Budismo, 7 dias</td><td class="num">${jdLotus()}</td></tr><tr><td>Vagalumes</td><td>Exames, 7 dias</td><td class="num">${jdVaga()}</td></tr>
+      <tr><td>Toras</td><td>Sessões de prática (menos 3 por tábua)</td><td class="num">${st.toras}</td></tr><tr><td>Pedras lavradas</td><td>Inclinações trabalhadas em 3 dias</td><td class="num">${st.lav}</td></tr><tr><td>Vitral</td><td>Estações da mandala ao menos brotando</td><td class="num">${jdBrot()} de 20</td></tr></tbody></table>`)}</div>`;
+}
+
+/* ---------------------------------------------------------------- ações */
+function jdFolhaAnim() {
+  const svg = $(".jdsvg"), p = $("#jdriver"); if (!svg || !p) return;
+  const ns = "http://www.w3.org/2000/svg", g = document.createElementNS(ns, "g"); g.setAttribute("class", "jd-leaf");
+  g.innerHTML = `<path d="M-10 0Q0-7 10 0Q0 7-10 0Z" fill="#c98a2b"/><path d="M-10 0H10" stroke="#7a4f18" stroke-width="1"/>`;
+  const an = document.createElementNS(ns, "animateMotion"); an.setAttribute("dur", "5s"); an.setAttribute("fill", "freeze"); an.setAttribute("rotate", "auto"); an.setAttribute("begin", "indefinite"); an.setAttribute("path", p.getAttribute("d")); an.setAttribute("keyPoints", "0.42;1"); an.setAttribute("keyTimes", "0;1"); an.setAttribute("calcMode", "linear");
+  g.appendChild(an); svg.appendChild(g); try { an.beginElement(); } catch {} setTimeout(() => g.remove(), 5200);
+}
+function jdClick(t) {
+  const ds = t.dataset, a = ds.act; if (!a?.startsWith("jd")) return false;
+  const D = jdData();
+  if (a === "jdsel") { JD.sel = ds.k; JD.scroll = true; JD.center = !!t.closest(".jdplaces"); render(); return true; }
+  if (a === "jdrega") { const pid = ds.p, r = jSaveRefl(pid, JD.txt["rega:" + pid], "reflexão", [], false, { origem: "jardim" }); if (!r) return true; JD.txt["rega:" + pid] = ""; JD.fx = { k: "rega", id: pid, at: Date.now() }; touch("jornada", { label: "Árvore regada" }); toast(`${JD_ARV[pid].nome} regada · reflexão guardada em ${J_PIL[pid].nome}`); return true; }
+  if (a === "jdfolha") { D.folhas.push({ data: TODAY, at: Date.now() }); JD.txt.folha = ""; const el = $("#jd_folha"); if (el) el.value = ""; touch("jardim", { label: "Folha solta", noUndo: true, noRender: true }); jdFolhaAnim(); toast("A folha seguiu o rio. O texto não foi guardado."); setTimeout(() => { if (PAGE === "jornada" && SUB === "jardim") render(); }, 5300); return true; }
+  if (a === "jdpedra") { const nome = String(JD.txt.pnome || "").trim().slice(0, 40); if (!nome) { toast("Dê um nome à inclinação."); return true; } if (D.pedras.filter(p => !p.lav).length >= 5) { toast("Lavre uma pedra antes de extrair outra."); return true; }
+    const p = { id: uid(), nome: nome[0].toUpperCase() + nome.slice(1), val: BM_V.some(v => v.id === JD.txt.pval) ? JD.txt.pval : "", criada: TODAY, marcas: [], at: Date.now() }; D.pedras.push(p); JD.txt.pnome = ""; JD.txt.pval = ""; JD.sel = "ped:" + p.id; JD.fx = { k: "pedra", id: p.id, at: Date.now() }; touch("jardim", { label: "Pedra extraída" }); return true; }
+  if (a === "jdmarca") { const p = D.pedras.find(x => x.id === ds.id); if (!p) return true; const k = "marca:" + p.id, hj = (p.marcas ||= []).find(m => m.data === TODAY), txt = String(JD.txt[k] ?? hj?.txt ?? "").trim();
+    if (!txt) { toast(`Escreva quando ${p.nome.toLowerCase()} apareceu e o que você fez.`); return true; }
+    if (hj) hj.txt = txt.slice(0, 600); else p.marcas.push({ data: TODAY, txt: txt.slice(0, 600) }); delete JD.txt[k]; JD.fx = { k: "golpe", id: p.id, at: Date.now() }; touch("jardim", { label: "Golpe de cinzel" });
+    const n = jdMarks(p).length; toast(n >= 3 ? "Três golpes: a pedra já pode ser lavrada" : `Golpe dado: ${Math.min(n, 3)} de 3`); return true; }
+  if (a === "jdlavra") { const p = D.pedras.find(x => x.id === ds.id); if (!p || p.lav || jdMarks(p).length < 3) return true; p.lav = TODAY; JD.sel = "pedreira"; JD.fx = { k: "lavra", id: p.id, at: Date.now() }; touch("jardim", { label: "Pedra lavrada" }); toast(`Pedra lavrada: ${p.nome}. Ela vai para o estoque do templo.`); return true; }
+  if (a === "jdpdel") { D.pedras = D.pedras.filter(x => x.id !== ds.id); JD.sel = "pedreira"; touch("jardim", { label: "Pedra devolvida" }); undoToast("Pedra devolvida à montanha"); return true; }
+  if (a === "jdtalho") { const st = jdStock(); if (st.toras < 3) { toast("São precisas 3 toras: cada sessão de prática é uma."); return true; } const pid = J_ORDER.includes(JD.txt.tpid) ? JD.txt.tpid : "med", r = jSaveRefl(pid, JD.txt.talho, "aprendizado", [], false, { origem: "jardim" }); if (!r) return true;
+    D.talhos.push({ id: uid(), data: TODAY, pid, refl: r.id }); JD.txt.talho = ""; JD.fx = { k: "talho", id: "oficina", at: Date.now() }; touch("jardim", "jornada", { label: "Tábua talhada" }); toast(`Tábua talhada · aprendizado guardado em ${J_PIL[pid].nome}`); return true; }
+  if (a === "jdbuild") { const t = JD_TEMPLO.find(x => x.id === ds.id); if (!t || D.templo[t.id] || !jdCan(t).ok) return true; D.templo[t.id] = TODAY; JD.fx = { k: "build", id: t.id, at: Date.now() }; touch("jardim", { label: `Templo: ${t.nome}` }); toast(`${t.nome} construído. ${t.sim}`); return true; }
+  if (a === "jdcam") { const c = JD_CAM.find(x => x.id === ds.id); if (!c || jdCamOpen(c.id) || !jdCamReady(c)) return true; D.cam[c.id] = TODAY; JD.fx = { k: "cam", id: c.id, at: Date.now() }; JD.sel = { margem: "rio", ponte: "pedreira", escada: "templo", mirante: "mirante" }[c.id] || "portao"; touch("jardim", { label: `Caminho aberto: ${c.nome}` }); toast(`${c.nome} aberta: agora você chega a ${c.area}.`); return true; }
+  return false;
+}
+function jdInput(t) { const k = t.dataset.jdt; if (!k) return false; JD.txt[k] = t.value; return true; }
+function jdChange(t) { const k = t.dataset.jdt; if (!k) return false; JD.txt[k] = t.value; return true; }
+
 
 /* ================================================================ render */
 let RELAYOUT = false;
@@ -10313,7 +10826,7 @@ function render() {
     ajustes: () => ["Ajustes", "Metas, áreas, listas, mentores e aparência", pAjustes],
     lazer: () => ["Lazer", { inicio: "Oito temas, cada um com um mentor que conversa no seu nível", existencial: "Os quatro mentores da Jornada, dentro do Lazer" }[SUB] || (lzDiv(SUB)?.mid ? `${esc(lzDiv(SUB).nome)} com ${esc(MENTOR_DEF[lzDiv(SUB).mid].nome)}` : ""), pLazerHub],
     carreira: () => ["Carreira", { panorama: "Onde você está, aonde quer chegar, como e com o quê", avaliacao: "O retrato de hoje: perfil, competências, pontos fortes e gaps", portfolio: "Os projetos que provam o que você sabe", decisoes: "Cenários comparados com os seus critérios e pesos", mercado: "Referências de mercado e o dossiê para negociar", objetivos: "O norte, as trilhas e os objetivos com prazo", geotecnia: "Uma frente nova, no seu ritmo", plano: "Do gap à ação, com marcos verificáveis", biblioteca: "Normas, cursos, livros e ferramentas por tópico", caderno: "Caderno técnico de engenharia", rede: "Contatos, cadência e oportunidades" }[SUB] || "", pCarreiraHub],
-    jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", confluencias: "Onde os quatro caminhos se encontram", praticas: "Programas guiados, sessões de prática e o que elas mudam", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
+    jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", jardim: "Saúde espiritual: o jardim interior que cresce com a sua jornada", confluencias: "Onde os quatro caminhos se encontram", praticas: "Programas guiados, sessões de prática e o que elas mudam", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
     semana: () => ["Fechamento da semana", `Semana de ${wkLabel(fsWk())}`, pSemana],
     radar: () => ["Radar", "Alertas antes que aconteçam, com evidência do seu histórico e conferência depois", pRadar],
     exp: () => ["Experimentos", "Teste uma mudança e meça o efeito em você", pExp],
@@ -10398,7 +10911,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (rtClick(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (rtClick(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -10464,7 +10977,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
+  if (rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -10479,7 +10992,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (rtChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (rtChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

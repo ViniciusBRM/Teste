@@ -305,19 +305,67 @@ function jTools(mid, live, base) {
 /* ---------------------------------------------------------------- desenho: mandala e lótus */
 function jPetal(r0, r1, w) { const m = (r0 + r1) / 2; return `M0 ${-r0}C${w} ${-(r0 + (m - r0) * .55)} ${w * .9} ${-(m + (r1 - m) * .45)} 0 ${-r1}C${-w * .9} ${-(m + (r1 - m) * .45)} ${-w} ${-(r0 + (m - r0) * .55)} 0 ${-r0}Z`; }
 const J_FILL = [0, .28, .58, .92];
-function jMandala() {
-  const W = 520, C = 260, ang = { esp: -90, med: 0, bud: 90, tao: 180 }, sc = bmScores(28);
-  let g = `<circle cx="${C}" cy="${C}" r="236" class="jm-o"/><circle cx="${C}" cy="${C}" r="168" class="jm-i"/>`;
-  for (const pid of J_ORDER) {
-    const D = J_PIL[pid], a0 = ang[pid], mo = jMoonInfo(pid);
-    D.est.forEach((e, i) => { const v = jEstV(pid, e.id), a = a0 + (i - 2) * 15 + 90;
-      g += `<g class="jm-p click" data-act="jgo" data-go="jornada.${D.sub}" role="button" tabindex="0" aria-label="${esc(D.nome)}: ${esc(e.nome)}, ${J_EST[v][1]}" transform="translate(${C} ${C}) rotate(${a})"><path d="${jPetal(64, 158, 13)}" style="fill:${D.cor};fill-opacity:${J_FILL[v]};stroke:${D.cor}"${v ? "" : ' stroke-dasharray="3 3"'}/></g>`; });
-    const t = a0 * Math.PI / 180, x = C + 200 * Math.cos(t), y = C + 200 * Math.sin(t);
-    g += `<g class="jm-l click" data-act="jgo" data-go="jornada.${D.sub}" role="button" tabindex="0" aria-label="Abrir ${esc(D.nome)}" style="--c:${D.cor}"><g transform="translate(${(x - 12.5).toFixed(1)} ${(y - 30).toFixed(1)})">${jMoon(mo.f, 11, D.cor).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g><text x="${x.toFixed(1)}" y="${(y + 12).toFixed(1)}" text-anchor="middle" class="jm-t" style="fill:${D.cor}">${esc(D.nome)}</text></g>`;
-  }
-  g += `<g class="jm-c click" data-act="jgo" data-go="jornada.bussola" role="button" tabindex="0" aria-label="Bússola moral"><circle cx="${C}" cy="${C}" r="50"/><text x="${C}" y="${C - 3}" text-anchor="middle" class="jm-ct">Bússola</text><text x="${C}" y="${C + 14}" text-anchor="middle" class="jm-cs">${sc.idx == null ? "sem exames" : "prática " + pct(sc.idx)}</text></g>`;
-  return `<div class="jmandala">${svgWrap(W, W, g, "Mandala da jornada: cinco pétalas por pilar, uma para cada estação do caminho; quanto mais cheia, mais florescida. A lua mostra o ritmo das últimas 4 semanas e a bússola fica no centro")}</div>`;
+/* camadas da mandala: est (estações hoje), ritmo (pétala i = semana i das últimas 5, mais cheia com mais dias), hist (estações num mês passado) */
+J.mlay = "est"; J.mback = 0; J.manim = true;
+window.addEventListener("hashchange", () => { J.manim = true; J.breath = false; clearInterval(J.mrt); });
+function jEstAt(pid, sid, d) {
+  const P = jP(pid), h = P.estHist.filter(x => x.sid === sid).sort((a, b) => a.data < b.data ? -1 : a.data > b.data ? 1 : 0);
+  if (h.length) { const last = h.filter(x => x.data <= d).at(-1); return last ? last.para : h[0].de; }
+  const e = P.est[sid]; if (!e) return 0; return !e.at || iso(new Date(e.at)) <= d ? e.v : 0;
 }
+const jmBackDate = () => addDays(TODAY, -30 * (J.mback || 0));
+const jmBackTxt = () => J.mback ? `${fmtDY(jmBackDate())} · há ${plural(J.mback, "mês", "meses")}` : "hoje";
+function jmWeekFill(pid, i) { const ws = addDays(weekStart(TODAY), -7 * (4 - i)); return jActDays(pid, ws, addDays(ws, 6)).size; }
+function jMandala(o = {}) {
+  const W = 520, C = 260, ang = { esp: -90, med: 0, bud: 90, tao: 180 }, sc = bmScores(28), lay = o.mini ? "est" : J.mlay || "est", hd = lay === "hist" ? jmBackDate() : null, it = !o.mini;
+  let g = `<circle cx="${C}" cy="${C}" r="236" class="jm-o"/><circle cx="${C}" cy="${C}" r="168" class="jm-i"/><g class="jm-pg">`, k = 0;
+  for (const pid of J_ORDER) {
+    const D = J_PIL[pid], a0 = ang[pid];
+    D.est.forEach((e, i) => { const v = hd ? jEstAt(pid, e.id, hd) : jEstV(pid, e.id), a = a0 + (i - 2) * 15 + 90, key = `${pid}|${e.id}`, on = it && J.msel === key;
+      const wk = lay === "ritmo" ? jmWeekFill(pid, i) : 0, fo = lay === "ritmo" ? (wk ? .14 + .8 * Math.min(1, wk / 5) : 0) : J_FILL[v];
+      const tip = lay === "ritmo" ? `${D.nome} · semana de ${fmtD(addDays(weekStart(TODAY), -7 * (4 - i)))}: ${plural(wk, "dia", "dias")}` : `${D.nome} · ${e.nome}: ${J_EST[v][1]}${hd ? ` em ${fmtD(hd)}` : ""}`;
+      g += `<g class="jm-p${it ? " click" : ""}${on ? " on" : ""}"${it ? ` data-act="jmsel" data-k="${key}" role="button" tabindex="0" data-tip="${esc(tip)}"` : ""} aria-label="${esc(D.nome)}: ${esc(e.nome)}, ${J_EST[v][1]}" transform="translate(${C} ${C}) rotate(${a})" style="--i:${k++}"><path d="${jPetal(64, 158, 13)}" style="fill:${D.cor};fill-opacity:${fo};stroke:${D.cor}"${(lay === "ritmo" ? wk : v) ? "" : ' stroke-dasharray="3 3"'}/></g>`; });
+  }
+  g += `</g>`;
+  for (const pid of J_ORDER) { const D = J_PIL[pid], a0 = ang[pid], mo = jMoonInfo(pid), t = a0 * Math.PI / 180, x = C + 200 * Math.cos(t), y = C + 200 * Math.sin(t);
+    g += `<g class="jm-l${it ? " click" : ""}"${it ? ` data-act="jgo" data-go="jornada.${D.sub}" role="button" tabindex="0"` : ""} aria-label="Abrir ${esc(D.nome)}" style="--c:${D.cor}"><g transform="translate(${(x - 12.5).toFixed(1)} ${(y - 30).toFixed(1)})">${jMoon(mo.f, 11, D.cor).replace(/^<svg[^>]*>|<\/svg>$/g, "")}</g><text x="${x.toFixed(1)}" y="${(y + 12).toFixed(1)}" text-anchor="middle" class="jm-t" style="fill:${D.cor}">${esc(D.nome)}</text></g>`; }
+  const br = it && J.breath;
+  g += `<g class="jm-c${it ? " click" : ""}${it && J.msel === "centro" ? " on" : ""}"${it ? ` data-act="jmsel" data-k="centro" role="button" tabindex="0" data-tip="Centro: a Bússola. Toque para respirar ou abrir"` : ""} aria-label="Centro da mandala: Bússola moral"><circle cx="${C}" cy="${C}" r="50"/>${br ? `<text x="${C}" y="${C + 5}" text-anchor="middle" class="jm-ct jm-in">inspire</text><text x="${C}" y="${C + 5}" text-anchor="middle" class="jm-ct jm-out">expire</text>` : `<text x="${C}" y="${C - 3}" text-anchor="middle" class="jm-ct">${lay === "hist" ? (J.mback ? `há ${J.mback} m` : "hoje") : "Bússola"}</text><text x="${C}" y="${C + 14}" text-anchor="middle" class="jm-cs">${lay === "ritmo" ? "5 semanas" : sc.idx == null ? "sem exames" : "prática " + pct(sc.idx)}</text>`}</g>`;
+  const cls = ["jmandala", o.mini ? "mini" : "", it && J.manim ? "anim" : "", br ? "breath" : "", "lay-" + lay].filter(Boolean).join(" ");
+  if (it && J.manim) setTimeout(() => { J.manim = false; }, 0);
+  return `<div class="${cls}">${svgWrap(W, W, g, "Mandala da jornada: cinco pétalas por pilar, uma para cada estação do caminho; quanto mais cheia, mais florescida. A lua mostra o ritmo das últimas 4 semanas e a bússola fica no centro")}</div>`;
+}
+function jmExplorer() {
+  const k = J.msel;
+  if (J.breathDone) return `<div class="jmx"><b>${ic("breath")}Um minuto de respiração com a mandala.</b><p class="muted">Seis ciclos de 10 segundos: 4 para inspirar, 6 para expirar.</p><div class="row wrap"><button type="button" class="btn sm primary" data-act="jmsess">${ic("check")}Registrar como sessão de meditação</button><button type="button" class="btn sm ghost" data-act="jmsel" data-k="">${ic("x")}Fechar</button></div></div>`;
+  if (!k) return `<p class="jmx muted small">${ic("info")}Toque numa pétala para explorar a estação, ou no centro para respirar com a mandala.</p>`;
+  if (k === "centro") { const sc = bmScores(28);
+    return `<div class="jmx"><b>${ic("compass")}O centro: a Bússola moral</b><p class="muted">${bmFoco().length ? `Em foco: ${bmFoco().map(id => esc(bmV(id).nome)).join(", ")}.` : "Nenhum valor em foco."} ${sc.idx == null ? "Sem exames nas últimas 4 semanas." : `Prática nas últimas 4 semanas: ${pct(sc.idx)} em ${plural(sc.dias, "noite", "noites")}.`}</p>
+      <div class="row wrap"><button type="button" class="btn sm primary" data-act="jmbreath"${J.breath ? " disabled" : ""}>${ic("breath")}${J.breath ? "Respirando…" : "Respirar 1 minuto"}</button><button type="button" class="btn sm" data-act="jgo" data-go="jornada.bussola">${ic("compass")}Abrir a Bússola</button></div></div>`; }
+  const [pid, sid] = k.split("|"), D = J_PIL[pid], e = D.est.find(x => x.id === sid); if (!e) return "";
+  const v = jEstV(pid, sid), h = jP(pid).estHist.filter(x => x.sid === sid).slice(-4).reverse();
+  return `<div class="jmx" style="--c:${D.cor}"><b style="color:${D.cor}">${ic(D.ico)}${esc(D.nome)} · ${esc(e.nome)}</b><p>${esc(e.desc)}</p><p class="small muted">${ic("flag")}Sinal de florescimento: ${esc(e.sinal)}</p>
+    <div class="segs" role="group" aria-label="Onde estou">${J_EST.map(([n, l]) => `<button type="button" class="seg" data-act="jest" data-p="${pid}" data-s="${sid}" data-v="${n}" aria-pressed="${v === n}">${l}</button>`).join("")}</div>
+    ${h.length ? `<p class="small muted">História: ${h.map(x => `${fmtD(x.data)} ${J_EST[x.de][1]} → ${J_EST[x.para][1]}`).join(" · ")}</p>` : ""}
+    <div class="row wrap"><a class="btn sm" href="#jornada.${D.sub}">${ic("arrow")}Abrir ${esc(D.nome)}</a><button type="button" class="btn sm ghost" data-act="jmsel" data-k="">${ic("x")}Fechar</button></div></div>`;
+}
+function jMandalaBox() {
+  const lay = J.mlay || "est";
+  return `<div class="jmctl"><div class="segs" role="group" aria-label="Camada da mandala">${[["est", "Estações"], ["ritmo", "Ritmo"], ["hist", "Evolução"]].map(([k, l]) => `<button type="button" class="seg" data-act="jmlay" data-v="${k}" aria-pressed="${lay === k}">${l}</button>`).join("")}</div>
+    ${lay === "hist" ? `<label class="jmrange"><input type="range" id="jm_back" min="0" max="12" step="1" value="${12 - (J.mback || 0)}" aria-label="Mês"><span id="jm_backl">${jmBackTxt()}</span></label><button type="button" class="btn sm" data-act="jmplay">${ic("refresh")}Ver florescer</button>` : ""}</div>
+    ${jMandala()}${jmExplorer()}`;
+}
+function jmPaint() { const el = $(".jmandala:not(.mini)"); if (el) el.outerHTML = jMandala(); const r = $("#jm_back"); if (r) r.value = 12 - (J.mback || 0); const l = $("#jm_backl"); if (l) l.textContent = jmBackTxt(); }
+function jmClick(t) {
+  const ds = t.dataset, a = ds.act; if (!a?.startsWith("jm")) return false;
+  if (a === "jmlay") { J.mlay = ds.v; clearInterval(J.mrt); if (ds.v !== "hist") J.mback = 0; render(); return true; }
+  if (a === "jmsel") { J.msel = J.msel === ds.k ? "" : ds.k; J.breathDone = false; render(); return true; }
+  if (a === "jmplay") { clearInterval(J.mrt); J.mback = 12; jmPaint(); J.mrt = setInterval(() => { if (J.mlay !== "hist" || !$(".jmandala")) { clearInterval(J.mrt); return; } J.mback--; jmPaint(); if (J.mback <= 0) clearInterval(J.mrt); }, 420); return true; }
+  if (a === "jmbreath") { J.breath = true; J.msel = "centro"; render(); clearTimeout(J.bt); J.bt = setTimeout(() => { if (!J.breath) return; J.breath = false; J.breathDone = true; if (PAGE === "jornada" && SUB === "inicio") render(); }, 60000); return true; }
+  if (a === "jmsess") { jData().sess.push({ id: uid(), at: Date.now(), data: TODAY, pid: "med", tec: "Respiração (ānāpānasati)", min: 1, qual: "", antes: "", depois: "", notas: "Respiração com a mandala" }); J.breathDone = false; J.msel = ""; touch("jornada", { label: "Sessão de respiração" }); toast("1 minuto registrado em Meditação"); return true; }
+  return false;
+}
+function jmInput(t) { if (t.id !== "jm_back") return false; clearInterval(J.mrt); J.mback = 12 - +t.value; jmPaint(); return true; }
 function jLotus(pid, size = 120) {
   const D = J_PIL[pid], C = 60; let g = "";
   D.est.forEach((e, i) => { const v = jEstV(pid, e.id); g += `<path transform="translate(${C} ${C + 8}) rotate(${(i - 2) * 30})" d="${jPetal(4, 52, 12)}" style="fill:${D.cor};fill-opacity:${J_FILL[v]};stroke:${D.cor}"${v ? "" : ' stroke-dasharray="3 3"'}/>`; });
@@ -352,6 +400,7 @@ function jChat(mid, o = {}) {
 /* ---------------------------------------------------------------- páginas */
 function pJornada(R) {
   if (SUB === "inicio") return jInicio();
+  if (SUB === "jardim") return pJardim();
   if (J_SUB2P[SUB]) return jPilar(J_SUB2P[SUB]);
   if (SUB === "confluencias") return jConf();
   if (SUB === "praticas") return jPraticas();
@@ -370,7 +419,7 @@ function jInicio() {
   const Q = J.q;
   return `<p class="lead">Um espaço para acompanhar e aprofundar o seu caminho pelos quatro pilares que orientam a sua vida, com um mentor para cada um, um lugar onde eles se encontram e a Bússola moral no centro. Não é um formulário: volte quando quiser, escreva o que viveu e converse.</p>
     ${kpiRow([kmini("var(--jp-med)", "Dias na jornada · 4 semanas", `${all.size} de 28`, `${plural(tot, "registro-dia", "registros-dia")} somando os pilares`), kmini(viva[1] ? J_PIL[viva[0]].cor : "var(--muted)", "Pilar mais vivo", viva[1] ? esc(J_PIL[viva[0]].nome) : "–", viva[1] ? `${jMoonInfo(viva[0]).nome} · ${plural(viva[1], "dia", "dias")}` : "comece por qualquer um"), kmini("var(--jp-bud)", "Estações florescendo", `${flor} de 20`, "autoavaliação, sem pressa"), kmini("var(--jp-esp)", "Reflexões · 30 dias", rmes, rmes ? "continue escrevendo" : "a primeira está a um toque")])}
-    ${vis("jmandala", "Mandala da jornada", jMandala(), { sub: "cada pétala é uma estação do caminho; a lua mostra o ritmo de 4 semanas; toque para entrar", cls: "bigvis" })}
+    ${vis("jmandala", "Mandala da jornada", jMandalaBox(), { sub: "cada pétala é uma estação do caminho; a lua mostra o ritmo de 4 semanas; toque numa pétala para explorar", cls: "bigvis" })}
     <div class="g2c jhome">
       ${panel(`${ic("sun")}Hoje na jornada`, `<div class="jday" style="--c:${D.cor}"><span class="jtag">${ic(D.ico)}${esc(D.nome)}</span><blockquote class="jquote">${esc(q)}<cite>${esc(src)}</cite></blockquote><p class="bmq">${ic("info")}<span>${esc(jQuestion(pid))}</span></p></div>
         <div class="flbl">Uma reflexão rápida</div><textarea class="jta" rows="3" data-jq="1" placeholder="O que você viveu, percebeu ou aprendeu?">${esc(Q.txt)}</textarea>

@@ -188,23 +188,48 @@ function bmSet(d, patch, label) { const e = { n: {}, ...(bmEx()[d] || {}) }; S.b
 /* ---------------------------------------------------------------- desenho */
 const bmAxPill = id => { const a = bmAx(id); return `<span class="bmax" style="--c:${a.cor}">${esc(a.rumo)} · ${esc(a.nome)}</span>`; };
 const bmChip = (id, on) => { const v = bmV(id), a = bmAx(v.ax); return `<button type="button" class="bmchip${on ? " on" : ""}" data-bmv="${v.id}" style="--c:${a.cor}">${esc(v.nome)}</button>`; };
+/* camadas: pratica (cor = notas do exame), tecido (as ligações "tece com"), equilibrio (quanto cada rumo se estende) */
+const bmVistos = () => (S.bussola ||= { foco: [] }).vistos ||= {};
+function bmPos(v, C = 300, R = 200) { const SPREAD = { 3: 24, 4: 26, 5: 22 }, ang = { norte: -90, leste: 0, sul: 90, oeste: 180 }; if (v.ax === "centro") return [C, C, -90]; const vs = BM_V.filter(x => x.ax === v.ax), i = vs.indexOf(v), deg = ang[v.ax] + (i - (vs.length - 1) / 2) * (SPREAD[vs.length] || 20), t = deg * Math.PI / 180; return [C + (R - 20) * Math.cos(t), C + (R - 20) * Math.sin(t), deg]; }
 function bmCompass(sc) {
-  const W = 600, C = 300, R = 200, SPREAD = { 3: 24, 4: 26, 5: 22 }, sel = BM.sel || bmFoco()[0] || "consciencia", ang = { norte: -90, leste: 0, sul: 90, oeste: 180 };
+  const W = 600, C = 300, R = 200, sel = BM.sel || bmFoco()[0] || "consciencia", ang = { norte: -90, leste: 0, sul: 90, oeste: 180 }, lay = BM.lay || "pratica", vis0 = bmVistos();
   let g = `<circle cx="${C}" cy="${C}" r="${R + 46}" class="bmc-o"/><circle cx="${C}" cy="${C}" r="${R - 70}" class="bmc-i"/>`;
   for (let k = 0; k < 72; k++) { const a = k * 5 * Math.PI / 180, r1 = R + 46, r2 = r1 - (k % 18 === 0 ? 14 : k % 2 ? 4 : 8); g += `<line x1="${(C + r1 * Math.cos(a)).toFixed(1)}" y1="${(C + r1 * Math.sin(a)).toFixed(1)}" x2="${(C + r2 * Math.cos(a)).toFixed(1)}" y2="${(C + r2 * Math.sin(a)).toFixed(1)}" class="bmc-t"/>`; }
+  if (lay === "equilibrio") for (const a of BM_AX.filter(a => a.id !== "centro")) { const s = sc.ax[a.id], r1 = 44, t0 = (ang[a.id] - 40) * Math.PI / 180, t1 = (ang[a.id] + 40) * Math.PI / 180;
+    const wedge = r2 => `M${(C + r1 * Math.cos(t0)).toFixed(1)} ${(C + r1 * Math.sin(t0)).toFixed(1)}L${(C + r2 * Math.cos(t0)).toFixed(1)} ${(C + r2 * Math.sin(t0)).toFixed(1)}A${r2.toFixed(1)} ${r2.toFixed(1)} 0 0 1 ${(C + r2 * Math.cos(t1)).toFixed(1)} ${(C + r2 * Math.sin(t1)).toFixed(1)}L${(C + r1 * Math.cos(t1)).toFixed(1)} ${(C + r1 * Math.sin(t1)).toFixed(1)}A${r1} ${r1} 0 0 0 ${(C + r1 * Math.cos(t0)).toFixed(1)} ${(C + r1 * Math.sin(t0)).toFixed(1)}Z`, tip = `${esc(a.rumo)} · ${esc(a.nome)}: ${s == null ? "sem notas no exame em 4 semanas" : pct(s)}`;
+    g += `<path d="${wedge(r1 + 150)}" class="bmc-wedge0" style="stroke:${a.cor}" data-tip="${tip}"/>${s ? `<path d="${wedge(r1 + 150 * s)}" class="bmc-wedge" style="fill:${a.cor}" data-tip="${tip}"/>` : ""}`;
+    if (s == null) { const tm = ang[a.id] * Math.PI / 180; g += `<text x="${(C + 150 * Math.cos(tm)).toFixed(1)}" y="${(C + 150 * Math.sin(tm) + 4).toFixed(1)}" text-anchor="middle" class="bmc-axs">sem notas</text>`; }
+  }
+  if (lay === "tecido") { const seen = new Set();
+    for (const v of BM_V) for (const o of v.liga) { const k = [v.id, o].sort().join("|"); if (seen.has(k) || !bmV(o)) continue; seen.add(k); const [x1, y1] = bmPos(v), [x2, y2] = bmPos(bmV(o)), hot = v.id === sel || o === sel;
+      g += `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}Q${C} ${C} ${x2.toFixed(1)} ${y2.toFixed(1)}" class="bmc-web${hot ? " hot" : ""}" style="stroke:${hot ? bmAx(bmV(sel).ax).cor : "var(--line-2)"}"/>`; } }
   for (const a of BM_AX.filter(a => a.id !== "centro")) { const t = ang[a.id] * Math.PI / 180, r = a.id === "leste" || a.id === "oeste" ? 100 : 92, x = C + r * Math.cos(t), y = C + r * Math.sin(t);
     g += `<text x="${x.toFixed(1)}" y="${(y - 3).toFixed(1)}" text-anchor="middle" class="bmc-ax" style="fill:${a.cor}">${esc(a.rumo.toUpperCase())}</text><text x="${x.toFixed(1)}" y="${(y + 12).toFixed(1)}" text-anchor="middle" class="bmc-axs">${esc(a.nome)}</text>`; }
-  const v0 = bmV(sel), ta = v0.ax === "centro" ? -90 : ang[v0.ax];
+  const v0 = bmV(sel), ta = v0.ax === "centro" ? -90 : bmPos(v0)[2];
   BM_V.filter(v => v.ax !== "centro").forEach(v => {
-    const vs = BM_V.filter(x => x.ax === v.ax), i = vs.indexOf(v), t = (ang[v.ax] + (i - (vs.length - 1) / 2) * (SPREAD[vs.length] || 20)) * Math.PI / 180, r = R - 20, x = C + r * Math.cos(t), y = C + r * Math.sin(t), s = sc.val[v.id], col = bmAx(v.ax).cor, on = sel === v.id, foc = bmFoco().includes(v.id);
+    const [x, y, deg] = bmPos(v), t = deg * Math.PI / 180, r = R - 20, s = sc.val[v.id], col = bmAx(v.ax).cor, on = sel === v.id, foc = bmFoco().includes(v.id), novo = !vis0[v.id];
     const lx = C + (r + 18) * Math.cos(t), ly = C + (r + 18) * Math.sin(t), cs = Math.cos(t), an = cs > .35 ? "start" : cs < -.35 ? "end" : "middle", dy = Math.sin(t) > .5 ? 12 : Math.sin(t) < -.5 ? -4 : 4;
-    g += `<g class="bmc-v click${on ? " on" : ""}" data-bmv="${v.id}" role="button" tabindex="0" aria-label="${esc(v.nome)}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on ? 12 : 10}" style="fill:${col};fill-opacity:${s == null ? .18 : (.25 + .75 * s).toFixed(2)};stroke:${col}"${foc ? ' class="foc"' : ""}/><text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${an}" class="bmc-l">${esc(v.nome)}</text></g>`;
+    const lit = lay === "tecido" ? (on || v0.liga.includes(v.id) || v.liga.includes(sel) ? .9 : .15) : s == null ? .18 : .25 + .75 * s;
+    g += `<g class="bmc-v click${on ? " on" : ""}${novo ? " novo" : ""}" data-bmv="${v.id}" role="button" tabindex="0" aria-label="${esc(v.nome)}" data-tip="${esc(v.nome)} · ${s == null ? "sem notas em 4 semanas" : `prática ${pct(s)} em 4 semanas`}${foc ? " · em foco" : ""}${novo ? " · ainda não explorado" : ""}"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="21" fill="transparent"/>${novo ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="16" class="bmc-new"/>` : ""}<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on ? 12 : 10}" style="fill:${col};fill-opacity:${lit.toFixed(2)};stroke:${col}"${foc ? ' class="foc"' : ""}/><text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${an}" class="bmc-l">${esc(v.nome)}</text></g>`;
   });
-  const tt = ta * Math.PI / 180, nx = C + 64 * Math.cos(tt), ny = C + 64 * Math.sin(tt), px = -Math.sin(tt) * 7, py = Math.cos(tt) * 7;
-  g += `<path d="M${nx.toFixed(1)},${ny.toFixed(1)} L${(C + px).toFixed(1)},${(C + py).toFixed(1)} L${(C - px).toFixed(1)},${(C - py).toFixed(1)}Z" class="bmc-n"/>`;
+  const prev = BM.ang0 ?? ta, to = prev + ((((ta - prev) % 360) + 540) % 360) - 180;
+  g += `<g class="bmc-ng" data-to="${to.toFixed(1)}" style="transform:rotate(${prev.toFixed(1)}deg)"><path d="M${C + 64},${C} L${C},${C + 7} L${C},${C - 7}Z" class="bmc-n"/></g>`;
+  BM.ang0 = to; setTimeout(bmNeedle, 30);
   const sc0 = sc.val.consciencia;
-  g += `<g class="bmc-v click${sel === "consciencia" ? " on" : ""}" data-bmv="consciencia" role="button" tabindex="0" aria-label="Consciência"><circle cx="${C}" cy="${C}" r="34" class="bmc-c" style="fill-opacity:${sc0 == null ? .25 : (.3 + .7 * sc0).toFixed(2)}"/><text x="${C}" y="${C + 4}" text-anchor="middle" class="bmc-cl">Consciência</text></g>`;
-  return `<div class="bmcomp">${svgWrap(W, W, g, "Bússola moral: os 17 valores em quatro rumos e a consciência no centro; a cor mais forte indica valor mais praticado nas últimas 4 semanas")}</div>`;
+  g += `<g class="bmc-v click${sel === "consciencia" ? " on" : ""}${vis0.consciencia ? "" : " novo"}" data-bmv="consciencia" role="button" tabindex="0" aria-label="Consciência" data-tip="Consciência · ${sc0 == null ? "sem notas em 4 semanas" : `prática ${pct(sc0)} em 4 semanas`}"><circle cx="${C}" cy="${C}" r="34" class="bmc-c" style="fill-opacity:${sc0 == null ? .25 : (.3 + .7 * sc0).toFixed(2)}"/><text x="${C}" y="${C + 4}" text-anchor="middle" class="bmc-cl">Consciência</text></g>`;
+  const nv = BM_V.filter(v => vis0[v.id]).length;
+  return `<div class="bmctl"><div class="segs" role="group" aria-label="Camada da bússola">${[["pratica", "Prática"], ["tecido", "Tecido"], ["equilibrio", "Equilíbrio"]].map(([k, l]) => `<button type="button" class="seg" data-act="bmlay" data-v="${k}" aria-pressed="${lay === k}">${l}</button>`).join("")}</div>
+    <button type="button" class="btn sm" data-act="bmspin"${BM.spin ? " disabled" : ""}>${ic("compass")}Sortear um rumo</button><span class="muted small">${nv} de ${BM_V.length} valores explorados</span></div>
+    <div class="bmcomp lay-${lay}">${svgWrap(W, W, g, "Bússola moral: os 17 valores em quatro rumos e a consciência no centro; a cor mais forte indica valor mais praticado nas últimas 4 semanas")}</div>
+    <p class="muted small bmlegend">${lay === "tecido" ? "As linhas são o “tece com” de cada valor; as do valor escolhido ficam coloridas." : lay === "equilibrio" ? "Cada rumo se estende conforme a prática dos seus valores nas notas do exame das últimas 4 semanas." : "Mais forte, mais praticado nas últimas 4 semanas. O anel tracejado marca o que você ainda não explorou."}</p>`;
+}
+function bmNeedle() { const el = $(".bmc-ng"); if (el && !BM.spin) el.style.transform = `rotate(${el.dataset.to}deg)`; }
+function bmSpin() {
+  if (BM.spin) return; const el = $(".bmc-ng"); const cur = BM.sel || bmFoco()[0] || "consciencia", pool = BM_V.filter(v => v.ax !== "centro" && v.id !== cur), pick = pool[Math.floor(Math.random() * pool.length)];
+  const target = bmPos(pick)[2], prev = BM.ang0 ?? -90, to = prev + 720 + ((((target - prev) % 360) + 360) % 360);
+  BM.spin = true; const b = $('[data-act="bmspin"]'); if (b) b.disabled = true;
+  if (el) { el.classList.add("spin"); el.style.transform = `rotate(${to}deg)`; }
+  setTimeout(() => { BM.spin = false; BM.ang0 = to; BM.sel = pick.id; bmVistos()[pick.id] ||= TODAY; touch("bussola", { noUndo: true, noRender: true }); render(); toast(`${pick.nome}: ${pick.perg}`); }, el ? 1900 : 0);
 }
 function bmDetail(v, sc) {
   const a = bmAx(v.ax), foc = bmFoco().includes(v.id), s = sc.val[v.id];
@@ -223,7 +248,7 @@ function pBussola(R) {
   const sc = bmScores(28), v = bmV(BM.sel || bmFoco()[0] || "consciencia"), wk = bmWeeks(12), st = bmStreak();
   return `<p class="lead">Um instrumento para orientar decisões e acompanhar a evolução: 17 valores em quatro rumos (o sentido, o outro, o coração e o próprio), com a consciência no centro. Cada valor traz o que dizem o Espiritismo, o Estoicismo, o Taoísmo, o Confucionismo e o Budismo, um princípio de ação, uma prática e uma pergunta. Escolha até três para pôr em foco; o exame da noite mede o caminho.</p>
     ${kpiRow([kmini("var(--accent)", "Valores em foco", bmFoco().length ? bmFoco().map(id => esc(bmV(id).nome)).join(", ") : "nenhum", bmFoco().length ? `${bmFoco().length} de 3` : "toque num valor e ponha em foco"), kmini("var(--a-pro)", "Prática · 4 semanas", sc.idx == null ? "–" : pct(sc.idx), "média das notas do exame (0 a 2)"), kmini("var(--a-men)", "Consciência · 4 semanas", `${sc.dias} de 28`, "noites com exame"), kmini("var(--a-amo)", "Exames seguidos", st, st ? "noites" : "comece hoje")])}
-    ${vis("bmcomp", "A bússola", bmCompass(sc), { sub: "toque num valor; a cor mais forte é o mais praticado nas últimas 4 semanas, e a agulha aponta o valor escolhido", cls: "bigvis" })}
+    ${vis("bmcomp", "A bússola", bmCompass(sc), { sub: "toque num valor para explorar; troque a camada para ver o tecido entre os valores ou o equilíbrio dos rumos, e a agulha aponta o valor escolhido", cls: "bigvis" })}
     <div class="g2c bmmap">
       ${bmDetail(v, sc)}
       ${panel(`${ic("list")}Os 17 valores`, BM_AX.map(a => `<div class="bmrow"><span class="bmrl" style="--c:${a.cor}"><b>${esc(a.rumo)} · ${esc(a.nome)}</b><small>${esc(a.sub)}</small></span><div class="row wrap">${BM_V.filter(x => x.ax === a.id).map(x => bmChip(x.id, x.id === v.id)).join("")}</div></div>`).join("") + `<p class="muted small">Os 14 valores que você escolheu, mais três que eles pedem: Humildade (o antídoto da superioridade), Caridade (o amor em ação) e Temperança (o comedimento).</p>`)}
@@ -300,7 +325,9 @@ Decisão que está considerando: ${dr.dec || "ainda nenhuma"}`;
 /* ---------------------------------------------------------------- eventos */
 function bmClick(t) {
   const ds = t.dataset, a = ds.act;
-  if (ds.bmv && !a) { BM.sel = ds.bmv; if (PAGE !== "jornada" || SUB !== "bussola") setHash("jornada", "bussola"); else render(); return true; }
+  if (a === "bmlay") { BM.lay = ds.v; render(); return true; }
+  if (a === "bmspin") { bmSpin(); return true; }
+  if (ds.bmv && !a) { BM.sel = ds.bmv; if (!bmVistos()[ds.bmv]) { bmVistos()[ds.bmv] = TODAY; touch("bussola", { noUndo: true, noRender: true }); } if (PAGE !== "jornada" || SUB !== "bussola") setHash("jornada", "bussola"); else render(); return true; }
   if (a === "bmfoco") { const f = bmFoco(), i = f.indexOf(ds.id); let msg; if (i >= 0) f.splice(i, 1); else { if (f.length >= 3) { msg = `${bmV(f[0]).nome} saiu do foco`; f.shift(); } f.push(ds.id); } touch("bussola", { label: "Valores em foco" }); if (msg) toast(msg); return true; }
   if (a === "bmhab") { const nome = ds.hab; if ((S.habitos || []).some(h => norm(h.nome) === norm(nome))) { toast("Esse hábito já está na sua lista."); return true; } S.habitos.push({ id: uid(), nome, area: AREAS.find(x => /prop/i.test(x)) || AREAS[0], meta: 5 }); touch("habitos", { label: "Hábito da Bússola" }); undoToast(`Hábito criado: ${nome}`); return true; }
   if (a === "bmnota") { const d = BM.dia || TODAY, e = bmEx()[d] || { n: {} }, v = +ds.v, cur = e.n?.[ds.id]; bmSet(d, { n: { ...(e.n || {}), [ds.id]: cur === v ? null : v } }, "Nota do exame"); render(); return true; }
