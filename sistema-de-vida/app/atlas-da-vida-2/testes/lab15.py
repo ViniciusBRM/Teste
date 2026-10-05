@@ -22,7 +22,7 @@ async def main():
             chk("O que o jardim pede hoje" in await pg.text_content(".jdaside"), "o portão explica e ordena o que fazer")
             # regar
             await pg.click(".jd-tree[data-k='arv:esp'] rect"); await pg.wait_for_timeout(150)
-            chk("Oliveira" in await pg.inner_text(".jdaside") and "estações do caminho" in await pg.inner_text(".jdaside"), "tocar na árvore mostra de onde vem o crescimento")
+            chk("Ameixeira" in await pg.inner_text(".jdaside") and "estações do caminho" in await pg.inner_text(".jdaside"), "tocar na árvore mostra de onde vem o crescimento")
             await pg.click("[data-act=jdrega]"); await pg.wait_for_timeout(100)
             chk(await pg.evaluate("jP('esp').refl.length") == 0, "regar sem escrever não guarda nada")
             await pg.fill("[data-jdt='rega:esp']", "Hoje perdoei sem esforço."); await pg.click("[data-act=jdrega]"); await pg.wait_for_timeout(200)
@@ -50,7 +50,7 @@ async def main():
             chk(await pg.evaluate("document.querySelectorAll('.jd-fly').length") == 3 and await pg.evaluate("!!document.querySelector('.jd-nightveil')") and await pg.evaluate("!!document.querySelector('.jd-moon')"), "à noite: lua de hoje e um vagalume por exame da semana")
             await pg.evaluate("JD.h = 10; render()"); await pg.wait_for_timeout(150)
             chk(await pg.evaluate("document.querySelectorAll('.jd-bfly').length") == 3 and not await pg.evaluate("!!document.querySelector('.jd-fly')"), "de dia viram borboletas")
-            await sel(pg, "pedreira"); chk("Ponte da pedreira" in await pg.inner_text(".jdaside"), "pedreira fechada até 3 noites de exame")
+            await sel(pg, "pedreira"); chk("Ponte do centro" in await pg.inner_text(".jdaside"), "pedreira fechada até 3 noites de exame")
             await pg.click("[data-act=jdcam][data-id=ponte]"); await pg.wait_for_timeout(200)
             chk(await pg.evaluate("jdCamOpen('ponte')") and await pg.evaluate("!!document.querySelector('.jd-bridge')"), "a ponte aparece sobre o rio")
             # pedra
@@ -164,8 +164,8 @@ async def main():
                     ov = await overflow(pg); chk(ov[0] <= ov[1], f"390 px: sem rolagem lateral da página {ov}")
                     chk(await pg.evaluate("(s => s.scrollWidth > s.clientWidth && s.scrollLeft > 0)(document.querySelector('.jdscene'))"), "390 px: o jardim rola de lado por dentro, centrado")
                     l0 = await pg.evaluate("document.querySelector('.jdscene').scrollLeft")
-                    await pg.click(".jdplaces [data-k='arv:esp']"); await pg.wait_for_timeout(300)
-                    chk(await pg.evaluate("document.querySelector('.jdscene').scrollLeft") < l0, "390 px: escolher a Oliveira leva a vista até ela")
+                    await pg.click(".jdplaces [data-k='arv:tao']"); await pg.wait_for_timeout(300)
+                    chk(await pg.evaluate("document.querySelector('.jdscene').scrollLeft") < l0, "390 px: escolher o Pinheiro (oeste) leva a vista até ele")
                     await pg.click(".jdplaces [data-k=templo]"); await pg.wait_for_timeout(300)
                     chk("O templo" in await pg.inner_text(".jdaside"), "390 px: os lugares em botões abrem o painel")
             finally:

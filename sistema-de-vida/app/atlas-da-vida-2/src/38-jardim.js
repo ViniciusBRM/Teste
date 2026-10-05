@@ -16,10 +16,10 @@
 const JD = { sel: "portao", txt: {}, fx: null, h: null };
 const jdData = () => { const d = (S.jardim ||= {}); d.pedras ||= []; d.talhos ||= []; d.templo ||= {}; d.folhas ||= []; d.cam ||= {}; return d; };
 const JD_ARV = {
-  esp: { nome: "Oliveira", x: 105, y: 352, sim: "Árvore da paz: cresce devagar, vive séculos e dá fruto para os outros, como a caridade." },
-  med: { nome: "Bambu", x: 238, y: 318, sim: "Oco por dentro e flexível ao vento: a mente que se esvazia e não quebra." },
-  tao: { nome: "Pinheiro", x: 135, y: 488, sim: "Verde no inverno: a constância que não força, símbolo taoista de longevidade." },
-  bud: { nome: "Figueira-bodhi", x: 282, y: 470, sim: "A árvore sob a qual Siddhartha despertou: sentar-se e ver com clareza." } };
+  esp: { nome: "Ameixeira", art: "a", x: 500, y: 178, lx: 556, ly: 140, an: "start", sim: "Floresce no inverno, em galho nu, e renasce a cada ano: a fé que persevera e o Espírito que recomeça. Na pintura chinesa, a ameixeira é a primeira flor depois do frio." },
+  med: { nome: "Bambu", art: "o", x: 892, y: 588, lx: 892, ly: 612, sim: "Oco por dentro e flexível ao vento: a mente que se esvazia e não quebra." },
+  tao: { nome: "Pinheiro", art: "o", x: 112, y: 588, lx: 112, ly: 612, sim: "Verde no inverno: a constância que não força, símbolo taoista de longevidade." },
+  bud: { nome: "Figueira-bodhi", art: "a", x: 500, y: 958, lx: 584, ly: 905, an: "start", sim: "A árvore sob a qual Siddhartha despertou: sentar-se e ver com clareza." } };
 const JD_EST = [[0, "semente"], [3, "broto"], [10, "muda"], [22, "árvore jovem"], [38, "árvore adulta"], [55, "em flor"]];
 const JD_ENS = {
   rio: ["A bondade suprema é como a água: beneficia as dez mil coisas e não disputa.", "Tao Te Ching, 8"],
@@ -40,11 +40,11 @@ const JD_TEMPLO = [
   { id: "sino", nome: "Sino", p: 0, m: 1, req: ["telhado"], sim: "O chamado de volta ao presente.", ens: ["Cada vez que o sino toca, pare, respire e volte para casa em si mesmo.", "prática do sino da atenção plena, no zen"],
     cond: { t: "um programa guiado concluído", ok: () => J_PROG.some(pr => jProgInfo(pr)?.fim) } }];
 const JD_CAM = [
-  { id: "bosque", nome: "Trilha do bosque", area: "as quatro árvores", t: "aberto desde o começo", prog: () => [1, 1], d: "M430 410 C380 405 330 400 230 395" },
-  { id: "margem", nome: "Descida à margem", area: "o rio e o lago de lótus", t: "1 reflexão em qualquer pilar", prog: () => [J_ORDER.reduce((s, p) => s + jP(p).refl.length, 0), 1], d: "M440 440 C460 470 470 485 492 488" },
-  { id: "ponte", nome: "Ponte da pedreira", area: "a pedreira e a oficina", t: "3 noites de exame da Bússola", prog: () => [Object.keys(bmEx()).length, 3], d: "M470 405 C520 400 560 396 586 394 L632 392 C680 394 720 405 770 420" },
-  { id: "escada", nome: "Escadaria do templo", area: "o templo", t: "1 pedra lavrada", prog: () => [jdData().pedras.filter(p => p.lav).length, 1], d: "M432 368 C440 340 455 310 478 276" },
-  { id: "mirante", nome: "Subida ao mirante", area: "a mandala e a bússola vistas do alto", t: "as quatro árvores ao menos em broto", prog: () => [J_ORDER.filter(p => jdTree(p).s >= 1).length, 4], d: "M200 392 C185 330 170 260 120 186" }];
+  { id: "bosque", nome: "Caminho circular", area: "os quatro pilares", t: "aberto desde o começo", prog: () => [1, 1], d: "M822 500A322 322 0 1 1 178 500A322 322 0 1 1 822 500" },
+  { id: "margem", nome: "Descida à margem", area: "o rio e o lago de lótus", t: "1 reflexão em qualquer pilar", prog: () => [J_ORDER.reduce((s, p) => s + jP(p).refl.length, 0), 1], d: "M803 612C730 640 640 660 566 656" },
+  { id: "ponte", nome: "Ponte do centro", area: "a pedreira e a oficina", t: "3 noites de exame da Bússola", prog: () => [Object.keys(bmEx()).length, 3], d: "M406 506H594" },
+  { id: "escada", nome: "Escadaria do templo", area: "o templo", t: "1 pedra lavrada", prog: () => [jdData().pedras.filter(p => p.lav).length, 1], d: "M198 392C280 404 360 404 436 400" },
+  { id: "mirante", nome: "Subida ao mirante", area: "a mandala e a bússola vistas do alto", t: "as quatro árvores ao menos em broto", prog: () => [J_ORDER.filter(p => jdTree(p).s >= 1).length, 4], d: "M779 338C800 310 806 290 800 272" }];
 const JD_AREA = { margem: ["rio", "lago"], ponte: ["pedreira", "oficina", "ped"], escada: ["templo"], mirante: ["mirante"] };
 
 /* ---------------------------------------------------------------- o que cresce e por quê */
@@ -82,116 +82,158 @@ const jdCamOpen = id => id === "bosque" || !!jdData().cam[id];
 const jdCamReady = c => { const [a, b] = c.prog(); return a >= b; };
 function jdLocked(k) { const area = k.split(":")[0]; for (const [cam, as] of Object.entries(JD_AREA)) if (as.includes(area) && !jdCamOpen(cam)) return JD_CAM.find(c => c.id === cam); return null; }
 function jdSeason() { const m = +TODAY.slice(5, 7); return m >= 3 && m <= 5 ? ["primavera", "#79c25f"] : m >= 6 && m <= 8 ? ["verão", "#3e9447"] : m >= 9 && m <= 11 ? ["outono", "#b59f3a"] : ["inverno", "#5f8a64"]; }
-function jdLeaf(T, ever) { if (T.dorm) return "#9b9682"; const base = ever ? "#2f7d4f" : jdSeason()[1]; return `color-mix(in srgb,${base} ${Math.round(45 + 55 * T.v)}%,#9b9682)`; }
 function jdHour() { return JD.h ?? new Date().getHours(); }
 function jdSky() { const h = jdHour(); return h >= 5 && h < 7 ? "aurora" : h >= 7 && h < 17 ? "dia" : h >= 17 && h < 20 ? "entardecer" : "noite"; }
 function jdMoonF() { const ph = (((Date.now() - Date.UTC(2000, 0, 6, 18, 14)) / 864e5) % 29.530588853 + 29.530588853) % 29.530588853 / 29.530588853; return ph; }
 
-/* ---------------------------------------------------------------- desenho */
+/* ---------------------------------------------------------------- desenho: jardim circular em yin-yang, em tinta-aguada
+   Disco de raio 300 no centro (500, 500): o yin (tinta) e o yang (papel) separados pelo rio, que corre no S.
+   O olho do yang (500, 350) guarda o templo; o olho do yin (500, 650) é o lago de lótus; no centro, onde as forças se
+   encontram, a Bússola, atravessada pela ponte. Os quatro pilares ficam nos pontos cardeais, como na mandala
+   (Espiritismo ao norte, Meditação a leste, Budismo ao sul, Taoísmo a oeste); nas diagonais, a pedreira, o mirante,
+   a oficina e o portão da lua. Tudo pintado com pincel: traço com bordas irregulares (filtro jdink) e aguadas (jdwash). */
+const INK = "#26221e", PAPER = "#f2ead9", SEAL = "#b23a2a";
 const jdR = (s, i) => { const x = Math.sin((s + 1) * 12.9898 + i * 78.233) * 43758.5453; return x - Math.floor(x); };
+const jdStroke = (d, w, op = .85, extra = "") => `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${w}" stroke-opacity="${op}" stroke-linecap="round" stroke-linejoin="round" filter="url(#jdink)"${extra}/>`;
+const jdSealSym = { esp: `<path d="M0 6c-5-3-4-8 0-12c4 4 5 9 0 12Z" fill="${PAPER}"/>`, med: `<path d="M-5.5 2a6 6 0 1 1 9 2" fill="none" stroke="${PAPER}" stroke-width="2.2" stroke-linecap="round"/>`,
+  tao: `<circle r="6" fill="none" stroke="${PAPER}" stroke-width="1.4"/><path d="M0-6a3 3 0 0 1 0 6a3 3 0 0 0 0 6a6 6 0 0 1 0-12Z" fill="${PAPER}"/>`,
+  bud: `<circle r="5.5" fill="none" stroke="${PAPER}" stroke-width="1.4"/>${[0, 45, 90, 135].map(a => `<line x1="0" y1="-5.5" x2="0" y2="5.5" stroke="${PAPER}" stroke-width="1.1" transform="rotate(${a})"/>`).join("")}<circle r="1.6" fill="${PAPER}"/>` };
+const jdSeal = (x, y, pid, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})" class="jd-seal"><rect x="-10" y="-10" width="20" height="20" rx="3" fill="${SEAL}" filter="url(#jdink)"/>${jdSealSym[pid]}</g>`;
+function jdLeaf(T) { if (T.dorm) return "#8f8a7f"; const tint = { primavera: "#6f9a58", verão: "#4b7a48", outono: "#9a8a3e", inverno: "#5a6e60" }[jdSeason()[0]]; return `color-mix(in srgb,${tint} ${Math.round(18 + 42 * T.v)}%,${INK})`; }
+const jdBlade = (x, y, a, len, w = .2) => `<path d="M0 0Q${len * .5} ${-len * w} ${len} 0Q${len * .5} ${len * w * .6} 0 0Z" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(0)})"/>`;
 function jdTreeSVG(T, fx) {
-  const pid = T.pid, A = JD_ARV[pid], col = J_PIL[pid].cor, s = T.s, z = [0, 0, 0, .72, .9, 1.04][s], H = 150 * z, x = A.x, y = A.y, leaf = jdLeaf(T, pid === "tao"), sel = JD.sel === "arv:" + pid;
-  let g = `<ellipse cx="${x}" cy="${y + 3}" rx="${26 + s * 7}" ry="${6 + s * 1.4}" class="jd-soil"/>`, cv = "", fr = [];
-  if (s === 0) g += `<ellipse cx="${x}" cy="${y - 1}" rx="5.5" ry="4" style="fill:${col}" class="jd-seed"/>`;
-  else if (s <= 2) { const h = s === 1 ? 22 : 44; cv += `<path d="M${x} ${y}q3 ${-h / 2} 0 ${-h}" class="jd-stem"/>`; for (const k of s === 1 ? [h] : [h * .5, h * .78, h]) for (const sg of [-1, 1]) cv += `<ellipse cx="${x + sg * 9}" cy="${y - k + 2}" rx="10" ry="4.4" transform="rotate(${sg * -30} ${x + sg * 7} ${y - k + 2})" style="fill:${leaf}"/>`; }
+  const pid = T.pid, A = JD_ARV[pid], col = J_PIL[pid].cor, s = T.s, z = [0, 0, 0, .8, .93, 1.05][s], H = 160 * z, x = A.x, y = A.y, leaf = jdLeaf(T), fo = T.dorm ? .35 : .45 + .45 * T.v, sel = JD.sel === "arv:" + pid;
+  let g = `<ellipse cx="${x}" cy="${y + 2}" rx="${30 + s * 6}" ry="${5 + s}" class="jd-soil" filter="url(#jdwash)"/>`, cv = "", fr = [];
+  if (s === 0) g += `<circle cx="${x}" cy="${y - 3}" r="5" fill="${INK}" class="jd-seed"/>`;
+  else if (s <= 2) { const h = s === 1 ? 34 : 64; cv += jdStroke(`M${x} ${y}q5 ${-h / 2} -1 ${-h}`, 3); cv += `<g fill="${leaf}" fill-opacity="${fo}">${(s === 1 ? [h * .6, h] : [h * .4, h * .62, h * .82, h]).flatMap(k => [jdBlade(x, y - k, -150, 22), jdBlade(x, y - k, -30, 22)]).join("")}</g>`; }
   else if (pid === "esp") {
-    g += `<path d="M${x - 6} ${y}C${x - 9} ${y - H * .3} ${x + 7} ${y - H * .38} ${x + 1} ${y - H * .56}L${x + 7} ${y - H * .56}C${x + 12} ${y - H * .36} ${x + 2} ${y - H * .26} ${x + 6} ${y}Z" class="jd-trunk"/>`;
-    for (const [dx, dy, rx, ry] of [[-24, .6, 32, 20], [22, .64, 33, 21], [0, .82, 36, 23]]) cv += `<ellipse cx="${x + dx * z}" cy="${y - H * dy}" rx="${rx * z}" ry="${ry * z}" style="fill:color-mix(in srgb,${leaf} 72%,#c4cdb4)"/>`;
-    fr = [[-26, .6], [20, .66], [-6, .84], [10, .78], [30, .6], [-14, .7], [4, .9], [-30, .66]].map(([dx, dy]) => [x + dx * z, y - H * dy]);
+    /* ameixeira: tronco nodoso, galhos em ângulo, flores no galho nu (floresce no inverno) */
+    g += jdStroke(`M${x - 4} ${y}C${x - 12} ${y - H * .25} ${x + 12} ${y - H * .4} ${x - 2} ${y - H * .62}`, 11 * z, .9) + jdStroke(`M${x - 2} ${y - H * .62}C${x - 10} ${y - H * .74} ${x - 26 * z} ${y - H * .8} ${x - 44 * z} ${y - H * .98}`, 5 * z) + jdStroke(`M${x + 2} ${y - H * .42}C${x + 20 * z} ${y - H * .5} ${x + 34 * z} ${y - H * .66} ${x + 52 * z} ${y - H * .78}L${x + 64 * z} ${y - H * .96}`, 4.5 * z) + jdStroke(`M${x - 2} ${y - H * .62}L${x + 6 * z} ${y - H}`, 3 * z, .8) + jdStroke(`M${x - 30 * z} ${y - H * .84}L${x - 22 * z} ${y - H * 1.02}`, 2, .7);
+    const pts = [[-44, .98], [-30, .9], [-36, .82], [-22, 1.02], [6, 1], [2, .86], [20, .52], [34, .64], [46, .72], [56, .86], [64, .96], [-14, .74], [12, .9], [40, .82], [-8, .66], [28, .58]], nb = T.dorm ? 2 : Math.round(5 + 11 * T.v);
+    cv += pts.slice(0, nb).map(([dx, dy], i) => { const cx = x + dx * z, cy = y - H * dy; return `<g class="jd-blos" style="animation-delay:${(i * .2).toFixed(1)}s">${[0, 72, 144, 216, 288].map(a => `<circle cx="${(cx + Math.cos(a * Math.PI / 180) * 2.6).toFixed(1)}" cy="${(cy + Math.sin(a * Math.PI / 180) * 2.6).toFixed(1)}" r="2.3" fill="#d4606a" fill-opacity=".8"/>`).join("")}<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="1" fill="${INK}"/></g>`; }).join("");
+    fr = [[-30, .9], [46, .72], [6, 1], [20, .52], [-14, .74], [56, .86], [-36, .82], [34, .64]].map(([dx, dy]) => [x + dx * z + 4, y - H * dy + 5]);
   } else if (pid === "med") {
-    const n = s, dxs = [-14, 2, 16, -26, 28], hs = [1, .86, .94, .72, .78];
-    for (let i = 0; i < n; i++) { const xx = x + dxs[i] * z, hh = H * hs[i];
-      cv += `<line x1="${xx}" y1="${y}" x2="${xx + 2}" y2="${y - hh}" class="jd-bamboo" style="stroke:color-mix(in srgb,${leaf} 60%,#c7b25a);stroke-width:${5.5 * z}"/>`;
-      for (let k = 18 * z; k < hh - 6; k += 18 * z) cv += `<line x1="${xx - 3 * z}" y1="${y - k}" x2="${xx + 3 * z + 1}" y2="${y - k}" class="jd-node"/>`;
-      for (const r of [-38, 30, -64, 58]) cv += `<ellipse cx="${xx + 2 + Math.sign(r) * 9 * z}" cy="${y - hh + 6}" rx="${13 * z}" ry="${2.6}" transform="rotate(${r} ${xx + 2} ${y - hh + 6})" style="fill:${leaf}"/>`; }
-    fr = [[-14, .9], [2, .78], [16, .86], [-26, .64], [28, .7], [-10, .5], [8, .58], [20, .42]].map(([dx, dy]) => [x + dx * z + 6, y - H * dy]);
+    /* bambu: colmos em segmentos, folhas em lâmina, mais escuras na frente */
+    const dxs = [-10, 8, 22, -24, 34], hs = [1, .88, .72, .8, .62];
+    for (let i = 0; i < s; i++) { const xx = x + dxs[i] * z, hh = H * hs[i], seg = 22 * z, op = i < 2 ? .85 : .45;
+      for (let k = 0; k * seg < hh - 4; k++) cv += `<line x1="${xx + k * .4}" y1="${y - k * seg - 2}" x2="${xx + (k + 1) * .4}" y2="${y - Math.min(hh, (k + 1) * seg) + 2}" stroke="${INK}" stroke-opacity="${op}" stroke-width="${6 * z}" stroke-linecap="butt" filter="url(#jdink)"/><path d="M${xx - 4 * z} ${y - (k + 1) * seg + 2}q${4 * z} -3 ${8 * z} 0" stroke="${INK}" stroke-opacity="${op}" fill="none" stroke-width="1.4"/>`;
+      cv += `<g fill="${leaf}" fill-opacity="${(fo * (i < 2 ? 1 : .7)).toFixed(2)}">${[[0, -160, 30], [0, -125, 26], [0, -20, 28], [.25, 175, 24], [.25, -10, 22], [.45, 200, 20]].map(([dy, a, l], j) => jdBlade(xx + 2, y - hh * (1 - dy) + 4, a + jdR(i, j) * 16, l * z + 6, .17)).join("")}</g>`; }
+    fr = [[-10, .96], [8, .84], [22, .7], [-24, .76], [34, .6], [-6, .7], [14, .58], [0, .5]].map(([dx, dy]) => [x + dx * z + 8, y - H * dy]);
   } else if (pid === "tao") {
-    g += `<rect x="${x - 4 * z}" y="${y - H * .32}" width="${8 * z}" height="${H * .32}" class="jd-trunk"/>`;
-    for (const [w, b, t] of [[74, .26, .58], [58, .46, .78], [40, .66, 1]]) cv += `<path d="M${x - w * z / 2} ${y - H * b}L${x} ${y - H * t}L${x + w * z / 2} ${y - H * b}Z" style="fill:${leaf}"/>`;
-    fr = [[-18, .32], [16, .34], [-10, .52], [12, .5], [0, .7], [-6, .84], [22, .3], [-24, .3]].map(([dx, dy]) => [x + dx * z, y - H * dy]);
+    /* pinheiro: tronco torcido e copas planas como nuvens, com agulhas em leque */
+    g += jdStroke(`M${x + 4} ${y}C${x - 10} ${y - H * .3} ${x + 18} ${y - H * .5} ${x - 6} ${y - H * .78}C${x - 14} ${y - H * .9} ${x - 4} ${y - H * .98} ${x + 6} ${y - H}`, 9 * z, .9) + jdStroke(`M${x + 6} ${y - H * .48}C${x + 30 * z} ${y - H * .5} ${x + 44 * z} ${y - H * .58} ${x + 60 * z} ${y - H * .56}`, 4 * z) + jdStroke(`M${x - 4} ${y - H * .7}C${x - 24 * z} ${y - H * .72} ${x - 40 * z} ${y - H * .78} ${x - 56 * z} ${y - H * .76}`, 3.5 * z);
+    for (const [dx, dy, w] of [[58, .58, 34], [-54, .78, 32], [4, 1.02, 30], [-10, .5, 22]]) { const cx = x + dx * z, cy = y - H * dy, rw = w * z;
+      cv += `<ellipse cx="${cx}" cy="${cy}" rx="${rw}" ry="${rw * .32}" fill="${leaf}" fill-opacity="${(fo * .8).toFixed(2)}" filter="url(#jdwash)"/><g stroke="${INK}" stroke-opacity="${(fo * .9).toFixed(2)}" stroke-width="1">${Array.from({ length: 9 }, (_, k) => { const a = Math.PI + k / 8 * Math.PI; return `<line x1="${cx}" y1="${cy + 2}" x2="${(cx + Math.cos(a) * rw).toFixed(1)}" y2="${(cy + Math.sin(a) * rw * .55).toFixed(1)}"/>`; }).join("")}</g>`; }
+    fr = [[58, .6], [-54, .8], [4, 1.04], [-10, .52], [70, .56], [-66, .76], [14, 1], [46, .62]].map(([dx, dy]) => [x + dx * z, y - H * dy + 4]);
   } else {
-    g += `<path d="M${x - 10 * z} ${y}C${x - 6 * z} ${y - H * .3} ${x - 4 * z} ${y - H * .4} ${x - 3} ${y - H * .55}L${x + 3} ${y - H * .55}C${x + 4 * z} ${y - H * .4} ${x + 6 * z} ${y - H * .3} ${x + 10 * z} ${y}Z" class="jd-trunk"/>`;
-    for (const dx of [-26, -10, 12, 28]) g += `<line x1="${x + dx * z}" y1="${y - H * .52}" x2="${x + dx * z * 1.1}" y2="${y - H * .08}" class="jd-root"/>`;
-    cv += `<path d="M${x} ${y - H * .48}C${x - 70 * z} ${y - H * .5} ${x - 62 * z} ${y - H * 1.02} ${x} ${y - H * .9}C${x + 62 * z} ${y - H * 1.02} ${x + 70 * z} ${y - H * .5} ${x} ${y - H * .48}Z" style="fill:${leaf}"/>`;
-    fr = [[-34, .64], [30, .62], [-14, .78], [14, .76], [0, .62], [-40, .74], [38, .74], [0, .86]].map(([dx, dy]) => [x + dx * z, y - H * dy]);
+    /* figueira-bodhi: tronco largo, raízes aéreas e folhas em coração */
+    g += jdStroke(`M${x - 9 * z} ${y}C${x - 6 * z} ${y - H * .3} ${x - 4} ${y - H * .42} ${x - 2} ${y - H * .56}`, 12 * z, .9) + jdStroke(`M${x + 9 * z} ${y}C${x + 6 * z} ${y - H * .3} ${x + 4} ${y - H * .42} ${x + 2} ${y - H * .56}`, 6 * z, .7);
+    for (const dx of [-30, -14, 16, 32]) g += jdStroke(`M${x + dx * z} ${y - H * .55}q${dx * .1} ${H * .25} ${dx * .15} ${H * .5}`, 1.2, .5);
+    const heart = (cx, cy, a, r) => `<path d="M0 ${r}C${-r * 1.3} ${-r * .1} ${-r * .5} ${-r * 1.1} 0 ${-r * .4}C${r * .5} ${-r * 1.1} ${r * 1.3} ${-r * .1} 0 ${r}Z" transform="translate(${cx.toFixed(1)} ${cy.toFixed(1)}) rotate(${a.toFixed(0)})"/>`;
+    cv += `<g fill="${leaf}" fill-opacity="${(fo * .85).toFixed(2)}" stroke="${INK}" stroke-opacity=".55" stroke-width=".9">${Array.from({ length: 26 }, (_, i) => { const a = jdR(i, 5) * Math.PI, r = 10 + jdR(i, 6) * 44; return heart(x + Math.cos(a) * r * z * 1.25, y - H * .66 - Math.sin(a) * r * z * .62, (jdR(i, 7) - .5) * 70 + 180, 10 * z + 3); }).join("")}</g>`;
+    fr = [[-34, .64], [30, .62], [-14, .8], [14, .78], [0, .66], [-44, .7], [44, .7], [0, .9]].map(([dx, dy]) => [x + dx * z, y - H * dy]);
   }
-  if (s >= 3) { cv += fr.slice(0, Math.min(8, T.frutos)).map(([fx1, fy]) => `<circle cx="${fx1.toFixed(1)}" cy="${fy.toFixed(1)}" r="3.4" class="jd-fruit" style="fill:${col}"/>`).join("");
-    if (s === 5) cv += Array.from({ length: 7 }, (_, i) => { const a = jdR(i, pid.length) * 6.28, r = 24 * z + jdR(i + 3, 2) * 18 * z, cx = x + Math.cos(a) * r, cy = y - H * .7 + Math.sin(a) * r * .6; return `<g class="jd-flower"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="4" style="fill:color-mix(in srgb,${col} 55%,#fff)"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="1.5" fill="#f6d36b"/></g>`; }).join(""); }
-  const pl = Array.from({ length: Math.min(5, T.plantas) }, (_, i) => { const px = x + [-36, 34, -48, 46, -24][i], py = y + [6, 8, -2, 0, 12][i]; return `<g class="jd-plant"><path d="M${px} ${py}v-9" style="stroke:${col}"/><ellipse cx="${px - 4}" cy="${py - 8}" rx="4" ry="2" style="fill:${col}"/><ellipse cx="${px + 4}" cy="${py - 10}" rx="4" ry="2" style="fill:${col}"/></g>`; }).join("");
-  const drops = fx ? `<g class="jd-drops">${[-14, 0, 14].map((d, i) => `<ellipse cx="${x + d}" cy="${y - Math.max(30, H)}" rx="2.6" ry="4" style="animation-delay:${i * .18}s"/>`).join("")}</g>` : "";
+  if (s >= 3) { cv += fr.slice(0, Math.min(8, T.frutos)).map(([fx1, fy]) => `<circle cx="${fx1.toFixed(1)}" cy="${fy.toFixed(1)}" r="3.3" class="jd-fruit" style="fill:${col}"/>`).join("");
+    if (s === 5) cv += Array.from({ length: 5 }, (_, i) => `<circle cx="${(x - 40 + jdR(i, 21) * 80).toFixed(0)}" cy="${(y - H * (.3 + jdR(i, 22) * .5)).toFixed(0)}" r="2.2" fill="#d4606a" fill-opacity=".7" class="jd-petal" style="animation-delay:${i * 1.1}s"/>`).join(""); }
+  const pl = Array.from({ length: Math.min(5, T.plantas) }, (_, i) => { const px = x + [-38, 36, -50, 48, -26][i], py = y + [4, 6, -2, 0, 9][i]; return `<g fill="${col}" fill-opacity=".7">${jdBlade(px, py, -120, 11)}${jdBlade(px, py, -60, 11)}${jdBlade(px, py, -90, 8)}</g>`; }).join("");
+  const drops = fx ? `<g class="jd-drops">${[-14, 0, 14].map((d, i) => `<ellipse cx="${x + d}" cy="${y - Math.max(30, H)}" rx="2.4" ry="4" style="animation-delay:${i * .18}s"/>`).join("")}</g>` : "";
+  const lx = A.lx ?? x, ly = A.ly ?? y + 22, an = A.an || "middle", sx = an === "start" ? lx - 16 : an === "end" ? lx + 16 : lx - 46;
   return `<g class="jd-hot jd-tree${sel ? " on" : ""}${T.dorm ? " jd-dorm" : ""}" data-act="jdsel" data-k="arv:${pid}" role="button" tabindex="0" aria-label="${esc(A.nome)} de ${esc(J_PIL[pid].nome)}: ${T.nome}" data-tip="${esc(A.nome)} · ${esc(J_PIL[pid].nome)} · ${T.nome}${T.dorm ? " (dormindo)" : ""}">
-    <rect x="${x - 50}" y="${y - Math.max(40, H + 10)}" width="100" height="${Math.max(40, H + 10) + 14}" fill="transparent"/>${g}<g class="${T.dorm ? "" : "jd-sway"}" style="--d:${(4.2 + J_ORDER.indexOf(pid) * .7).toFixed(1)}s">${cv}</g>${pl}${drops}
-    <text x="${x}" y="${y + 22}" text-anchor="middle" class="jd-lbl">${esc(A.nome)}</text><text x="${x}" y="${y + 34}" text-anchor="middle" class="jd-sub" style="fill:${col}">${T.nome}</text></g>`;
+    <rect x="${x - 62}" y="${y - Math.max(48, H + 14)}" width="124" height="${Math.max(48, H + 14) + 14}" fill="transparent"/>${g}<g class="${T.dorm ? "" : "jd-sway"}" style="--d:${(4.4 + J_ORDER.indexOf(pid) * .7).toFixed(1)}s">${cv}</g>${pl}${drops}
+    ${jdSeal(sx, ly - 4, pid, .9)}<text x="${lx}" y="${ly}" text-anchor="${an}" class="jd-lbl">${esc(J_PIL[pid].nome)}</text><text x="${lx}" y="${ly + 13}" text-anchor="${an}" class="jd-sub">${esc(A.nome)} · ${T.nome}</text></g>`;
 }
 function jdTemploSVG() {
+  /* pavilhão chinês no olho do yang: plataforma, piso e altar, quatro colunas, porta da lua, telhado de beirais curvos, vitral redondo, sino */
   const D = jdData().templo, fx = JD.fx?.k === "build" ? JD.fx.id : "", c = id => D[id] ? `jd-t-on${fx === id ? " jd-pop" : ""}` : "jd-ghost", sel = JD.sel === "templo", lock = !jdCamOpen("escada");
-  let g = `<ellipse cx="480" cy="262" rx="128" ry="17" class="jd-plat"/>`;
-  g += `<g class="${c("alicerce")}"><rect x="385" y="238" width="190" height="22" class="jd-stone"/>${D.alicerce ? [415, 450, 485, 520, 555].map(x => `<line x1="${x}" y1="238" x2="${x}" y2="260" class="jd-joint"/>`).join("") + `<line x1="385" y1="249" x2="575" y2="249" class="jd-joint"/>` : ""}</g>`;
-  g += `<g class="${c("piso")}"><rect x="398" y="226" width="164" height="12" class="jd-wood"/></g>`;
-  [["esp", 412], ["med", 452], ["tao", 496], ["bud", 536]].forEach(([pid, x]) => { g += `<g class="${c("col_" + pid)}"><rect x="${x}" y="152" width="12" height="74" class="jd-stone"/><rect x="${x - 3}" y="146" width="18" height="7" style="${D["col_" + pid] ? `fill:${J_PIL[pid].cor}` : ""}" class="jd-cap"/></g>`; });
-  g += `<g class="${c("portal")}"><path d="M466 226V190a14 14 0 0 1 28 0V226Z" class="jd-door"/></g>`;
-  if (D.piso) g += `<g class="${jdChama() ? "jd-flame" : "jd-ember"}"><rect x="474" y="216" width="12" height="10" class="jd-altar"/><path d="M480 214c-5-5-3-10 0-15c3 5 5 10 0 15Z"/></g>`;
-  g += `<g class="${c("telhado")}"><path d="M384 152L480 100L576 152Z" class="jd-roof"/><rect x="390" y="146" width="180" height="8" class="jd-wood"/></g>`;
-  const vit = D.vitral ? J_ORDER.flatMap((pid, k) => J_PIL[pid].est.map((e, i) => { const a = (k * 5 + i) * 18 - 90; return `<path d="${jPetal(2, 11, 3)}" transform="translate(480 130) rotate(${a + 90})" style="fill:${J_PIL[pid].cor};fill-opacity:${J_FILL[jEstV(pid, e.id)]};stroke:${J_PIL[pid].cor};stroke-width:.6"/>`; })).join("") : "";
-  g += `<g class="${c("vitral")}"><circle cx="480" cy="130" r="13" class="jd-glass"/>${vit}</g>`;
-  g += `<g class="${c("sino")}"><line x1="600" y1="240" x2="600" y2="176" class="jd-post"/><line x1="588" y1="176" x2="612" y2="176" class="jd-post"/><path d="M592 196q0-14 8-14t8 14Z" class="jd-bell"/></g>`;
+  let g = `<circle cx="500" cy="350" r="64" class="jd-eye" filter="url(#jdwash)"/>`;
+  g += `<g class="${c("alicerce")}"><path d="M436 400L564 400L556 414L444 414Z" class="jd-stone"/><path d="M484 414h32M480 419h40M476 424h48" class="jd-step"/></g>`;
+  g += `<g class="${c("piso")}"><rect x="444" y="392" width="112" height="8" class="jd-wood"/></g>`;
+  [["esp", 452], ["med", 474], ["tao", 521], ["bud", 543]].forEach(([pid, x]) => { g += `<g class="${c("col_" + pid)}"><rect x="${x}" y="350" width="5.5" height="42" class="jd-col"/><rect x="${x - 2}" y="346" width="9.5" height="5" style="${D["col_" + pid] ? `fill:${J_PIL[pid].cor}` : ""}" class="jd-cap"/></g>`; });
+  g += `<g class="${c("portal")}"><circle cx="500" cy="374" r="15" class="jd-door"/></g>`;
+  if (D.piso) g += `<g class="${jdChama() ? "jd-flame" : "jd-ember"}"><rect x="495" y="383" width="10" height="9" class="jd-altar"/><path d="M500 382c-5-5-3-10 0-15c3 5 5 10 0 15Z"/></g>`;
+  g += `<g class="${c("telhado")}"><path d="M426 340C452 340 476 330 500 312C524 330 548 340 574 340C568 345 566 348 560 350L440 350C434 348 432 345 426 340Z" class="jd-roof"/><path d="M426 340q-6-6-4-12M574 340q6-6 4-12" class="jd-eave"/><path d="M494 312h12" class="jd-eave"/></g>`;
+  const vit = D.vitral ? J_ORDER.flatMap((pid, k) => J_PIL[pid].est.map((e, i) => `<path d="${jPetal(1.5, 8, 2.4)}" transform="translate(500 332) rotate(${(k * 5 + i) * 18})" style="fill:${J_PIL[pid].cor};fill-opacity:${J_FILL[jEstV(pid, e.id)]};stroke:${J_PIL[pid].cor};stroke-width:.5"/>`)).join("") : "";
+  g += `<g class="${c("vitral")}"><circle cx="500" cy="332" r="9.5" class="jd-glass"/>${vit}</g>`;
+  g += `<g class="${c("sino")}"><line x1="568" y1="344" x2="568" y2="356" class="jd-cord"/><path d="M562 366q0-11 6-11t6 11Z" class="jd-bell"/></g>`;
   const n = JD_TEMPLO.filter(t => D[t.id]).length;
-  return `<g class="jd-hot jd-templo${sel ? " on" : ""}${lock ? " jd-lockd" : ""}" data-act="jdsel" data-k="templo" role="button" tabindex="0" aria-label="Templo: ${n} de ${JD_TEMPLO.length} partes" data-tip="Templo · ${n} de ${JD_TEMPLO.length} partes"><rect x="370" y="92" width="250" height="180" fill="transparent"/>${g}</g>`;
+  return `<g class="jd-hot jd-templo${sel ? " on" : ""}${lock ? " jd-lockd" : ""}" data-act="jdsel" data-k="templo" role="button" tabindex="0" aria-label="Templo: ${n} de ${JD_TEMPLO.length} partes" data-tip="Templo · ${n} de ${JD_TEMPLO.length} partes"><circle cx="500" cy="358" r="72" fill="transparent"/>${g}</g>`;
 }
 function jdScene() {
-  const sky = jdSky(), R = jdRio(), T = Object.fromEntries(J_ORDER.map(p => [p, jdTree(p)])), D = jdData(), st = jdStock(), fx = JD.fx, night = sky === "noite";
-  const SKY = { aurora: ["#f6c8a8", "#c9d8f0"], dia: ["#9cc8f0", "#dcecf7"], entardecer: ["#f2a46b", "#f5d6a8"], noite: ["#0e1a3a", "#283a6a"] }[sky];
-  const RIVER = "M960 118C900 190 760 232 690 300S604 372 606 420S556 515 612 558S664 610 640 642";
-  let g = `<defs><linearGradient id="jdsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${SKY[0]}"/><stop offset="1" stop-color="${SKY[1]}"/></linearGradient><filter id="jdblur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter><radialGradient id="jdglow"><stop offset="0" stop-color="#fff6b0"/><stop offset="1" stop-color="#fff6b0" stop-opacity="0"/></radialGradient></defs>`;
-  g += `<rect width="1000" height="640" fill="url(#jdsky)"/>`;
+  const sky = jdSky(), R = jdRio(), T = Object.fromEntries(J_ORDER.map(p => [p, jdTree(p)])), D = jdData(), st = jdStock(), night = sky === "noite";
+  const RIVER = "M500 200A150 150 0 0 1 500 500A150 150 0 0 0 500 800";
+  let g = `<defs>
+    <filter id="jdink" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4.5"/></filter>
+    <filter id="jdwash" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".022" numOctaves="3" seed="8" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="16" result="d"/><feGaussianBlur in="d" stdDeviation="2.4"/></filter>
+    <filter id="jdblur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="jdgrain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="2"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .24  0 0 0 .09 0"/></filter>
+    <radialGradient id="jdyin" cx="62%" cy="58%" r="70%"><stop offset="0" stop-color="${INK}" stop-opacity=".9"/><stop offset=".6" stop-color="${INK}" stop-opacity=".74"/><stop offset="1" stop-color="${INK}" stop-opacity=".5"/></radialGradient>
+    <radialGradient id="jdyang" cx="40%" cy="40%" r="70%"><stop offset="0" stop-color="#fbf6ea"/><stop offset="1" stop-color="#e9dcc2"/></radialGradient></defs>`;
+  g += `<rect width="1000" height="1000" fill="${PAPER}"/><rect width="1000" height="1000" filter="url(#jdgrain)"/>`;
+  /* nuvens auspiciosas e o sol ou a lua, fora do círculo */
+  const cloud = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})" class="jd-cloud">${jdStroke("M0 0c0-14 20-14 20 0c0-18 28-18 28 0c0-12 18-12 18 0M6 0c0 6 8 6 8 0M30 0c0 7 10 7 10 0", 2.2, .45)}</g>`;
+  g += cloud(54, 132, 1.2) + cloud(840, 900, 1.1) + cloud(70, 905, .9) + cloud(780, 70, .8);
   let top = "";
-  if (night || sky === "aurora") top += Array.from({ length: 34 }, (_, i) => `<circle cx="${(jdR(i, 1) * 1000).toFixed(0)}" cy="${(jdR(i, 2) * 110).toFixed(0)}" r="${(.6 + jdR(i, 3) * 1.1).toFixed(1)}" class="jd-star" style="animation-delay:${(jdR(i, 4) * 3).toFixed(1)}s"/>`).join("");
+  if (night || sky === "aurora") top += Array.from({ length: 26 }, (_, i) => { const a = jdR(i, 1) * 6.283, r = 478 + jdR(i, 2) * 220, x = 500 + Math.cos(a) * r, y = 500 + Math.sin(a) * r; return x < 0 || x > 1000 || y < 0 || y > 1000 ? "" : `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(.8 + jdR(i, 3)).toFixed(1)}" class="jd-star" style="animation-delay:${(jdR(i, 4) * 3).toFixed(1)}s"/>`; }).join("");
   if (night || sky === "aurora" || sky === "entardecer") { const f = jdMoonF(), ill = (1 - Math.cos(2 * Math.PI * f)) / 2;
-    top += `<g class="jd-moon" data-tip="Lua de hoje: ${f < .03 || f > .97 ? "nova" : f < .22 ? "crescente" : f < .28 ? "quarto crescente" : f < .47 ? "gibosa crescente" : f < .53 ? "cheia" : f < .72 ? "gibosa minguante" : f < .78 ? "quarto minguante" : "minguante"} (${Math.round(ill * 100)}% iluminada)"><circle cx="860" cy="52" r="26" fill="#fdf6d8" opacity=".14"/>${jMoon(ill, 18, "#fdf6d8").replace(/^<svg[^>]*>/, `<svg x="840" y="32" width="40" height="40" viewBox="0 0 39 39">`)}</g>`; }
-  else g += `<circle cx="860" cy="58" r="44" fill="url(#jdglow)" opacity=".7"/><circle cx="860" cy="58" r="18" class="jd-sun"/>`;
-  g += `<path d="M0 150L90 92L170 132L260 78L350 128L430 96L520 136L610 84L700 130L790 90L880 126L1000 88V180H0Z" class="jd-mnt2"/><path d="M0 172L120 128L230 160L330 120L420 150L540 118L650 156L760 124L880 152L1000 130V200H0Z" class="jd-mnt"/>`;
-  g += `<rect x="0" y="168" width="1000" height="472" class="jd-ground"/><ellipse cx="200" cy="420" rx="230" ry="150" class="jd-meadow"/><ellipse cx="110" cy="168" rx="90" ry="40" class="jd-hill"/>`;
-  /* rio e lago */
-  const w = 12 + 16 * R.f, lago = jdCamOpen("margem");
-  g += `<g class="jd-hot jd-rio${JD.sel === "rio" ? " on" : ""}" data-act="jdsel" data-k="rio" role="button" tabindex="0" aria-label="Rio: ${R.st}" data-tip="Rio · ${R.st} · ${R.n} de 14 noites de exame"><path d="${RIVER}" class="jd-hitw"/><path id="jdriver" d="${RIVER}" class="jd-water" style="stroke-width:${w.toFixed(1)}"/>${R.n ? `<path d="${RIVER}" class="jd-flow" style="stroke-width:${(w * .45).toFixed(1)};animation-duration:${(7 - 5 * R.f).toFixed(1)}s"/>` : ""}</g>`;
-  const nl = jdLotus();
-  g += `<g class="jd-hot jd-lago${JD.sel === "lago" ? " on" : ""}" data-act="jdsel" data-k="lago" role="button" tabindex="0" aria-label="Lago de lótus: ${nl} de 7 flores" data-tip="Lago de lótus · ${nl} de 7 flores esta semana"><ellipse cx="552" cy="502" rx="74" ry="30" class="jd-pond"/>${Array.from({ length: 7 }, (_, i) => { const lx = 500 + i * 17 + jdR(i, 9) * 6, ly = 492 + jdR(i, 7) * 22; return `<ellipse cx="${lx.toFixed(0)}" cy="${ly.toFixed(0)}" rx="7" ry="3.4" class="jd-pad"/>${i < nl ? `<g class="jd-lotus" style="animation-delay:${i * .25}s"><path d="M${lx.toFixed(0)} ${(ly - 1).toFixed(0)}c-9-3-10-12-9-15c4 1 7 6 9 10c2-4 5-9 9-10c1 3 0 12-9 15Z"/><path d="M${lx.toFixed(0)} ${(ly - 1).toFixed(0)}c-3-4-3-11 0-16c3 5 3 12 0 16Z" class="jd-lc"/></g>` : ""}`; }).join("")}</g>`;
-  /* caminhos */
+    top += `<g class="jd-moon" data-tip="Lua de hoje: ${f < .03 || f > .97 ? "nova" : f < .22 ? "crescente" : f < .28 ? "quarto crescente" : f < .47 ? "gibosa crescente" : f < .53 ? "cheia" : f < .72 ? "gibosa minguante" : f < .78 ? "quarto minguante" : "minguante"} (${Math.round(ill * 100)}% iluminada)"><circle cx="925" cy="78" r="34" fill="#fdf6d8" opacity=".16" filter="url(#jdblur)"/>${jMoon(ill, 24, "#fdf6d8").replace(/^<svg[^>]*>/, `<svg x="899" y="52" width="52" height="52" viewBox="0 0 51 51">`)}</g>`; }
+  else g += `<circle cx="925" cy="80" r="30" fill="${SEAL}" fill-opacity=".82" filter="url(#jdwash)" class="jd-sun"/>`;
+  /* título vertical e selo do jardim */
+  g += `<text x="38" y="300" class="jd-title" transform="rotate(90 38 300)">jardim interior</text>${jdSeal(38, 262, "tao", 1.1)}`;
+  /* anel enso e o caminho circular */
+  g += `<circle cx="500" cy="500" r="468" fill="none" stroke="${INK}" stroke-width="13" stroke-opacity=".82" stroke-dasharray="2700 240" stroke-linecap="round" transform="rotate(-62 500 500)" filter="url(#jdink)"/><circle cx="500" cy="500" r="458" fill="none" stroke="${INK}" stroke-width="3" stroke-opacity=".35" stroke-dasharray="40 14 90 22 160 30" filter="url(#jdink)"/>`;
+  /* yin e yang */
+  g += `<circle cx="500" cy="500" r="302" fill="url(#jdyang)"/><path d="M500 200A300 300 0 0 1 500 800A150 150 0 0 1 500 500A150 150 0 0 0 500 200Z" fill="url(#jdyin)" filter="url(#jdwash)" class="jd-yin"/>`;
+  g += `<circle cx="500" cy="500" r="301" fill="none" stroke="${INK}" stroke-width="4" stroke-opacity=".7" filter="url(#jdink)"/>`;
+  /* caminhos (o circular é o bosque) */
   for (const c of JD_CAM) { const op = jdCamOpen(c.id), rd = !op && jdCamReady(c), cls = op ? "jd-cam" : rd ? "jd-cam jd-ready" : "jd-cam jd-off", [a, b] = c.prog();
-    g += `<g class="jd-hot${JD.sel === "cam:" + c.id ? " on" : ""}${JD.fx?.k === "cam" && JD.fx.id === c.id ? " jd-open" : ""}" data-act="jdsel" data-k="cam:${c.id}" role="button" tabindex="0" aria-label="${esc(c.nome)}: ${op ? "aberto" : rd ? "pronto para abrir" : `fechado, ${Math.min(a, b)} de ${b}`}" data-tip="${esc(c.nome)} · ${op ? "aberto" : rd ? "pronto para abrir" : `${c.t} (${Math.min(a, b)} de ${b})`}"><path d="${c.d}" class="jd-hitw"/><path d="${c.d}" class="${cls}"/></g>`; }
-  g += `<path d="M430 640C430 560 430 500 430 452" class="jd-cam"/>`;
-  if (jdCamOpen("ponte")) g += `<g class="jd-bridge"><path d="M584 398Q608 380 634 396" class="jd-arch"/><line x1="586" y1="392" x2="632" y2="390" class="jd-deck"/></g>`;
-  else g += `<path d="M584 398Q608 380 634 396" class="jd-arch jd-ruin"/>`;
-  /* pedreira e oficina */
-  const brutas = D.pedras.filter(p => !p.lav), POS = [[752, 418], [806, 402], [860, 420], [912, 404], [834, 452]];
-  g += `<g class="jd-hot jd-quarry${JD.sel === "pedreira" ? " on" : ""}" data-act="jdsel" data-k="pedreira" role="button" tabindex="0" aria-label="Pedreira: ${plural(brutas.length, "pedra bruta", "pedras brutas")}" data-tip="Pedreira · ${plural(brutas.length, "pedra bruta", "pedras brutas")} · ${plural(st.pedras, "lavrada", "lavradas")} no estoque"><path d="M700 380L712 300L768 252L866 240L1000 258V482L900 474L820 462L736 446Z" class="jd-cliff"/><path d="M760 300L800 280M880 270L930 290M720 360L745 340" class="jd-crack"/>
-    ${Array.from({ length: Math.min(12, Math.max(0, st.pedras)) }, (_, i) => `<rect x="${928 + (i % 3) * 18}" y="${446 - Math.floor(i / 3) * 10}" width="16" height="9" class="jd-block"/>`).join("")}</g>`;
-  brutas.slice(0, 5).forEach((p, i) => { const [x, y] = POS[i], k = jdMarks(p).length, pts = Array.from({ length: 7 }, (_, j) => { const a = j / 7 * 6.283, r = 15 + jdR(j, p.id.length + i) * 7 - k * 1.6; return `${(x + Math.cos(a) * r * 1.2).toFixed(1)},${(y + Math.sin(a) * r * .8).toFixed(1)}`; }).join(" ");
-    g += `<g class="jd-hot jd-raw${JD.sel === "ped:" + p.id ? " on" : ""}${JD.fx?.id === p.id ? " jd-hit" : ""}" data-act="jdsel" data-k="ped:${p.id}" role="button" tabindex="0" aria-label="Pedra bruta: ${esc(p.nome)}, ${k} de 3 golpes" data-tip="${esc(p.nome)} · ${Math.min(k, 3)} de 3 golpes"><polygon points="${pts}" class="jd-rock"/>${k >= 3 ? `<circle cx="${x}" cy="${y}" r="24" class="jd-ready-ring"/>` : ""}<text x="${x}" y="${y + 30}" text-anchor="middle" class="jd-sub">${esc(trunc(p.nome, 14))}</text></g>`; });
-  g += `<g class="jd-hot jd-shop${JD.sel === "oficina" ? " on" : ""}${JD.fx?.k === "talho" ? " jd-hit" : ""}" data-act="jdsel" data-k="oficina" role="button" tabindex="0" aria-label="Oficina: ${plural(st.toras, "tora", "toras")} e ${plural(st.tabuas, "tábua", "tábuas")}" data-tip="Oficina · ${plural(st.toras, "tora", "toras")} · ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")}"><rect x="740" y="500" width="240" height="120" rx="10" fill="transparent"/><rect x="830" y="538" width="64" height="8" class="jd-wood"/><line x1="836" y1="546" x2="836" y2="570" class="jd-post"/><line x1="888" y1="546" x2="888" y2="570" class="jd-post"/>
-    ${Array.from({ length: Math.min(10, st.toras) }, (_, i) => { const row = i < 4 ? 0 : i < 7 ? 1 : i < 9 ? 2 : 3, k = i - [0, 4, 7, 9][row]; return `<circle cx="${770 + k * 15 + row * 7.5}" cy="${590 - row * 13}" r="7.5" class="jd-log"/><circle cx="${770 + k * 15 + row * 7.5}" cy="${590 - row * 13}" r="3" class="jd-ring"/>`; }).join("")}
-    ${Array.from({ length: Math.min(8, Math.max(0, st.tabuas)) }, (_, i) => `<rect x="908" y="${594 - i * 6}" width="58" height="5" class="jd-plank"/>`).join("")}<text x="860" y="616" text-anchor="middle" class="jd-lbl">Oficina</text></g>`;
-  /* praça da bússola */
+    g += `<g class="jd-hot${JD.sel === "cam:" + c.id ? " on" : ""}${JD.fx?.k === "cam" && JD.fx.id === c.id ? " jd-open" : ""}" data-act="jdsel" data-k="cam:${c.id}" role="button" tabindex="0" aria-label="${esc(c.nome)}: ${op ? "aberto" : rd ? "pronto para abrir" : `fechado, ${Math.min(a, b)} de ${b}`}" data-tip="${esc(c.nome)} · ${op ? "aberto" : rd ? "pronto para abrir" : `${c.t} (${Math.min(a, b)} de ${b})`}"><path d="${c.d}" class="jd-hitw"/><path d="${c.d}" class="jd-cambed"/><path d="${c.d}" class="${cls}"/></g>`; }
+  g += `<path d="M234 766L272 728" class="jd-cambed"/><path d="M234 766L272 728" class="jd-cam"/>`;
+  /* o rio no S, entre as forças opostas */
+  const w = 10 + 14 * R.f;
+  g += `<g class="jd-hot jd-rio${JD.sel === "rio" ? " on" : ""}" data-act="jdsel" data-k="rio" role="button" tabindex="0" aria-label="Rio: ${R.st}" data-tip="Rio · ${R.st} · ${R.n} de 14 noites de exame"><path d="${RIVER}" class="jd-hitw"/><path id="jdriver" d="${RIVER}" class="jd-water" style="stroke-width:${w.toFixed(1)}" filter="url(#jdwash)"/>${R.n ? `<path d="${RIVER}" class="jd-flow" style="stroke-width:${(w * .35).toFixed(1)};animation-duration:${(7 - 5 * R.f).toFixed(1)}s"/>` : ""}${[0, 1, 2].map(i => `<path d="M${492 + i * 4} ${215 + i * 8}q8 -4 16 0" class="jd-ripple"/>`).join("")}</g>`;
+  /* olho do yin: lago de lótus */
+  const nl = jdLotus();
+  g += `<g class="jd-hot jd-lago${JD.sel === "lago" ? " on" : ""}" data-act="jdsel" data-k="lago" role="button" tabindex="0" aria-label="Lago de lótus: ${nl} de 7 flores" data-tip="Lago de lótus · ${nl} de 7 flores esta semana"><circle cx="500" cy="650" r="62" class="jd-pondeye" filter="url(#jdwash)"/>
+    ${Array.from({ length: 7 }, (_, i) => { const a = i / 7 * 6.283 + .4, r = i === 6 ? 0 : 36, lx = 500 + Math.cos(a) * r, ly = 650 + Math.sin(a) * r * .8; return `<g><ellipse cx="${lx.toFixed(0)}" cy="${ly.toFixed(0)}" rx="12" ry="7" class="jd-pad" filter="url(#jdink)"/><path d="M${lx.toFixed(0)} ${ly.toFixed(0)}l10 -3" stroke="${PAPER}" stroke-width="1.4"/>${i < nl ? `<g class="jd-lotus" style="animation-delay:${i * .25}s"><path d="M${lx.toFixed(0)} ${(ly - 2).toFixed(0)}c-9-3-10-12-9-15c4 1 7 6 9 10c2-4 5-9 9-10c1 3 0 12-9 15Z"/><path d="M${lx.toFixed(0)} ${(ly - 2).toFixed(0)}c-3-4-3-11 0-16c3 5 3 12 0 16Z" class="jd-lc"/></g>` : ""}</g>`; }).join("")}</g>`;
+  /* centro: a ponte atravessa o rio e a Bússola marca o ponto de equilíbrio */
+  if (jdCamOpen("ponte")) g += `<g class="jd-bridge"><path d="M440 506Q470 486 500 486Q530 486 560 506" class="jd-arch"/><path d="M440 506H560" class="jd-deck"/></g>`;
+  else g += `<path d="M440 506Q470 486 500 486Q530 486 560 506" class="jd-arch jd-ruin"/>`;
   const v = bmDayValue(), ang = { norte: -90, leste: 0, sul: 90, oeste: 180, centro: -90 }[v.ax];
-  g += `<g class="jd-hot jd-plaza${JD.sel === "praca" ? " on" : ""}" data-act="jdsel" data-k="praca" role="button" tabindex="0" aria-label="Praça da Bússola: valor do dia, ${esc(v.nome)}" data-tip="Praça da Bússola · valor do dia: ${esc(v.nome)}"><circle cx="430" cy="410" r="44" class="jd-mosaic"/><circle cx="430" cy="410" r="30" class="jd-mosaic2"/>
-    ${[0, 45, 90, 135, 180, 225, 270, 315].map(a => { const r = a % 90 ? 22 : 38, t = (a - 90) * Math.PI / 180; return `<path d="M430 410L${(430 + Math.cos(t - .14) * 9).toFixed(1)} ${(410 + Math.sin(t - .14) * 9).toFixed(1)}L${(430 + Math.cos(t) * r).toFixed(1)} ${(410 + Math.sin(t) * r).toFixed(1)}L${(430 + Math.cos(t + .14) * 9).toFixed(1)} ${(410 + Math.sin(t + .14) * 9).toFixed(1)}Z" class="jd-rose${a % 90 ? " sm" : ""}"/>`; }).join("")}
-    <g class="jd-needle" style="transform:rotate(${ang + 90}deg)"><path d="M430 380L436 410L430 416L424 410Z" style="fill:${bmAx(v.ax).cor}"/></g><text x="430" y="372" text-anchor="middle" class="jd-sub">N</text><text x="430" y="472" text-anchor="middle" class="jd-lbl">Bússola</text></g>`;
-  /* mirante */
-  g += `<g class="jd-hot jd-mir${JD.sel === "mirante" ? " on" : ""}" data-act="jdsel" data-k="mirante" role="button" tabindex="0" aria-label="Mirante" data-tip="Mirante · a mandala e a bússola vistas do alto"><rect x="60" y="120" width="110" height="70" fill="transparent"/><path d="M96 170V146L110 134L124 146V170" class="jd-kiosk"/><circle cx="110" cy="152" r="6" class="jd-mini"/><text x="110" y="190" text-anchor="middle" class="jd-lbl">Mirante</text></g>`;
-  /* árvores */
-  for (const pid of [...J_ORDER].sort((a, b) => JD_ARV[a].y - JD_ARV[b].y)) g += jdTreeSVG(T[pid], JD.fx?.k === "rega" && JD.fx.id === pid);
+  g += `<g class="jd-hot jd-plaza${JD.sel === "praca" ? " on" : ""}" data-act="jdsel" data-k="praca" role="button" tabindex="0" aria-label="Bússola no centro: valor do dia, ${esc(v.nome)}" data-tip="Bússola · valor do dia: ${esc(v.nome)}"><circle cx="500" cy="500" r="34" class="jd-mosaic" filter="url(#jdink)"/><circle cx="500" cy="500" r="24" class="jd-mosaic2"/>
+    ${[0, 45, 90, 135, 180, 225, 270, 315].map(a => { const r = a % 90 ? 17 : 29, t = (a - 90) * Math.PI / 180; return `<path d="M500 500L${(500 + Math.cos(t - .16) * 7).toFixed(1)} ${(500 + Math.sin(t - .16) * 7).toFixed(1)}L${(500 + Math.cos(t) * r).toFixed(1)} ${(500 + Math.sin(t) * r).toFixed(1)}L${(500 + Math.cos(t + .16) * 7).toFixed(1)} ${(500 + Math.sin(t + .16) * 7).toFixed(1)}Z" class="jd-rose${a % 90 ? " sm" : ""}"/>`; }).join("")}
+    <g class="jd-needle" style="transform:rotate(${ang + 90}deg)"><path d="M500 474L504 500L500 505L496 500Z" fill="${SEAL}"/></g></g>`;
+  /* noroeste: a pedreira (pedras de estudioso e pedras brutas) */
+  const brutas = D.pedras.filter(p => !p.lav), POS = [[150, 282], [212, 300], [268, 268], [300, 214], [116, 222]];
+  g += `<g class="jd-hot jd-quarry${JD.sel === "pedreira" ? " on" : ""}" data-act="jdsel" data-k="pedreira" role="button" tabindex="0" aria-label="Pedreira: ${plural(brutas.length, "pedra bruta", "pedras brutas")}" data-tip="Pedreira · ${plural(brutas.length, "pedra bruta", "pedras brutas")} · ${plural(Math.max(0, st.pedras), "lavrada", "lavradas")} no estoque">
+    <path d="M150 248C132 210 150 176 136 146C150 118 182 120 192 100C214 110 222 140 238 152C252 182 230 206 244 236C226 254 180 260 150 248Z" class="jd-rockw" filter="url(#jdwash)"/>${jdStroke("M150 248C132 210 150 176 136 146C150 118 182 120 192 100C214 110 222 140 238 152C252 182 230 206 244 236", 3, .8)}
+    <ellipse cx="178" cy="160" rx="9" ry="13" class="jd-hole"/><ellipse cx="206" cy="196" rx="7" ry="10" class="jd-hole"/><ellipse cx="170" cy="214" rx="6" ry="5" class="jd-hole"/>${jdStroke("M224 170q10 20 0 44M150 190q-6 14 4 30", 1.6, .5)}
+    ${Array.from({ length: Math.min(12, Math.max(0, st.pedras)) }, (_, i) => `<rect x="${60 + (i % 3) * 17}" y="${300 - Math.floor(i / 3) * 10}" width="15" height="8.5" class="jd-block"/>`).join("")}<text x="190" y="88" text-anchor="middle" class="jd-lbl">Pedreira</text></g>`;
+  brutas.slice(0, 5).forEach((p, i) => { const [x, y] = POS[i], k = jdMarks(p).length, pts = Array.from({ length: 7 }, (_, j) => { const a = j / 7 * 6.283, r = 13 + jdR(j, p.id.length + i) * 7 - k * 1.5; return `${(x + Math.cos(a) * r * 1.2).toFixed(1)},${(y + Math.sin(a) * r * .8).toFixed(1)}`; }).join(" ");
+    g += `<g class="jd-hot jd-raw${JD.sel === "ped:" + p.id ? " on" : ""}${JD.fx?.id === p.id ? " jd-hit" : ""}" data-act="jdsel" data-k="ped:${p.id}" role="button" tabindex="0" aria-label="Pedra bruta: ${esc(p.nome)}, ${k} de 3 golpes" data-tip="${esc(p.nome)} · ${Math.min(k, 3)} de 3 golpes"><polygon points="${pts}" class="jd-rock" filter="url(#jdink)"/>${k >= 3 ? `<circle cx="${x}" cy="${y}" r="22" class="jd-ready-ring"/>` : ""}<text x="${x}" y="${y + 26}" text-anchor="middle" class="jd-sub">${esc(trunc(p.nome, 14))}</text></g>`; });
+  /* nordeste: o mirante sobre montanhas na névoa */
+  g += `<g class="jd-hot jd-mir${JD.sel === "mirante" ? " on" : ""}" data-act="jdsel" data-k="mirante" role="button" tabindex="0" aria-label="Mirante" data-tip="Mirante · a mandala e a bússola vistas do alto">
+    <path d="M700 250C730 200 750 160 778 130C796 160 806 190 836 220C850 236 868 244 880 252Z" class="jd-mnt2" filter="url(#jdwash)"/><path d="M736 268C760 236 786 210 808 176C828 214 846 240 872 270Z" class="jd-mnt" filter="url(#jdwash)"/>${jdStroke("M778 130C796 160 806 190 836 220M808 176C828 214 846 240 872 270", 2.2, .7)}
+    <path d="M726 238h140M712 256h120" class="jd-mist"/><g transform="translate(778 122)"><path d="M-12 0q12-6 24 0" class="jd-eave"/><line x1="-7" y1="0" x2="-7" y2="8" class="jd-cord"/><line x1="7" y1="0" x2="7" y2="8" class="jd-cord"/><circle cx="0" cy="4" r="3" class="jd-mini"/></g><text x="822" y="296" text-anchor="middle" class="jd-lbl">Mirante</text></g>`;
+  /* sudeste: a oficina, com toras e tábuas */
+  g += `<g class="jd-hot jd-shop${JD.sel === "oficina" ? " on" : ""}${JD.fx?.k === "talho" ? " jd-hit" : ""}" data-act="jdsel" data-k="oficina" role="button" tabindex="0" aria-label="Oficina: ${plural(st.toras, "tora", "toras")} e ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")}" data-tip="Oficina · ${plural(st.toras, "tora", "toras")} · ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")}"><rect x="690" y="700" width="230" height="200" fill="transparent"/>
+    <path d="M770 760L812 730L854 760Z" class="jd-thatch" filter="url(#jdwash)"/>${jdStroke("M766 762C790 752 800 740 812 730C824 740 834 752 858 762", 3.2, .85)}<line x1="778" y1="762" x2="778" y2="800" class="jd-post"/><line x1="846" y1="762" x2="846" y2="800" class="jd-post"/><rect x="792" y="782" width="40" height="5" class="jd-wood"/>
+    ${Array.from({ length: Math.min(10, st.toras) }, (_, i) => { const row = i < 4 ? 0 : i < 7 ? 1 : i < 9 ? 2 : 3, k = i - [0, 4, 7, 9][row], cx = 716 + k * 14 + row * 7, cy = 846 - row * 12; return `<circle cx="${cx}" cy="${cy}" r="7" class="jd-log" filter="url(#jdink)"/><circle cx="${cx}" cy="${cy}" r="2.6" class="jd-ring"/>`; }).join("")}
+    ${Array.from({ length: Math.min(8, Math.max(0, st.tabuas)) }, (_, i) => `<rect x="808" y="${846 - i * 5.5}" width="56" height="4.5" class="jd-plank"/>`).join("")}<text x="790" y="880" text-anchor="middle" class="jd-lbl">Oficina</text></g>`;
+  /* sudoeste: o portão da lua */
+  g += `<g class="jd-hot jd-gate${JD.sel === "portao" ? " on" : ""}" data-act="jdsel" data-k="portao" role="button" tabindex="0" aria-label="Portão da lua: como o jardim funciona" data-tip="Portão da lua · como o jardim funciona"><rect x="150" y="750" width="120" height="120" fill="transparent"/>
+    <path d="M160 790h104v60h-104Z" class="jd-wall" filter="url(#jdink)"/><path d="M154 790q58 -10 116 0" class="jd-eave"/><circle cx="212" cy="824" r="22" class="jd-moongate"/>${jdStroke("M190 846a22 22 0 1 1 44 0", 2.4, .85)}<text x="212" y="886" text-anchor="middle" class="jd-lbl">Portão da lua</text></g>`;
+  /* os quatro pilares, nos pontos cardeais */
+  for (const pid of J_ORDER) g += jdTreeSVG(T[pid], JD.fx?.k === "rega" && JD.fx.id === pid);
   g += jdTemploSVG();
-  /* portão */
-  g += `<g class="jd-hot jd-gate${JD.sel === "portao" ? " on" : ""}" data-act="jdsel" data-k="portao" role="button" tabindex="0" aria-label="Portão: como o jardim funciona" data-tip="Portão · como o jardim funciona"><rect x="396" y="588" width="68" height="52" fill="transparent"/><line x1="404" y1="636" x2="404" y2="596" class="jd-post"/><line x1="456" y1="636" x2="456" y2="596" class="jd-post"/><path d="M396 598Q430 586 464 598" class="jd-gatebar"/><line x1="400" y1="606" x2="460" y2="606" class="jd-post"/></g>`;
   /* névoa sobre o que ainda está fechado */
-  const FOG = { margem: [[552, 500, 96, 46]], ponte: [[850, 420, 170, 90], [860, 560, 140, 60]], escada: [[480, 185, 140, 95]], mirante: [[110, 158, 80, 50]] };
+  const FOG = { margem: [[500, 650, 80, 72]], ponte: [[196, 220, 120, 110], [790, 800, 120, 100]], escada: [[500, 352, 92, 84]], mirante: [[800, 210, 105, 90]] };
   for (const [cam, es] of Object.entries(FOG)) if (!jdCamOpen(cam)) g += `<g class="jd-fogg"><g filter="url(#jdblur)">${es.map(([x, y, rx, ry], i) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" class="jd-fog" style="animation-delay:${i * 1.3}s"/>`).join("")}</g><g transform="translate(${es[0][0] - 8} ${es[0][1] - 10})" class="jd-lock"><rect x="0" y="8" width="16" height="12" rx="2"/><path d="M3 8V5a5 5 0 0 1 10 0V8" fill="none"/></g></g>`;
   /* vagalumes ou borboletas: as noites de exame da semana */
   const nv = jdVaga();
-  if (night) g += `<rect width="1000" height="640" class="jd-nightveil"/>`;
-  if (sky === "entardecer") g += `<rect width="1000" height="640" class="jd-duskveil"/>`;
-  g += top + Array.from({ length: nv }, (_, i) => { const x = 160 + jdR(i, 11) * 420, y = 300 + jdR(i, 12) * 200; return night || sky === "entardecer" ? `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="2.6" class="jd-fly" style="animation-delay:${(i * .7).toFixed(1)}s"/>` : `<g class="jd-bfly" style="animation-delay:${(i * .9).toFixed(1)}s"><path d="M${x.toFixed(0)} ${y.toFixed(0)}l-6-5q-2 6 6 5l6-5q2 6-6 5Z"/></g>`; }).join("");
-  return `<div class="jdscene">${svgWrap(1000, 640, g, `Jardim interior: árvores ${J_ORDER.map(p => `${JD_ARV[p].nome} ${T[p].nome}`).join(", ")}; rio ${R.st}; templo com ${JD_TEMPLO.filter(t => D.templo[t.id]).length} de ${JD_TEMPLO.length} partes`, "chart jdsvg sky-" + sky)}</div>`;
+  if (night) g += `<rect width="1000" height="1000" class="jd-nightveil"/>`;
+  if (sky === "entardecer") g += `<rect width="1000" height="1000" class="jd-duskveil"/>`;
+  g += top + Array.from({ length: nv }, (_, i) => { const a = jdR(i, 11) * 6.283, r = 120 + jdR(i, 12) * 200, x = 500 + Math.cos(a) * r, y = 500 + Math.sin(a) * r; return night || sky === "entardecer" ? `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="2.8" class="jd-fly" style="animation-delay:${(i * .7).toFixed(1)}s"/>` : `<g class="jd-bfly" style="animation-delay:${(i * .9).toFixed(1)}s"><path d="M${x.toFixed(0)} ${y.toFixed(0)}l-7-6q-2 7 7 6l7-6q2 7-7 6Z"/></g>`; }).join("");
+  return `<div class="jdscene">${svgWrap(1000, 1000, g, `Jardim interior em forma de yin-yang: ${J_ORDER.map(p => `${JD_ARV[p].nome} (${J_PIL[p].nome}) ${T[p].nome}`).join(", ")}; rio ${R.st}; templo com ${JD_TEMPLO.filter(t => D.templo[t.id]).length} de ${JD_TEMPLO.length} partes`, "chart jdsvg sky-" + sky)}</div>`;
 }
 
 /* ---------------------------------------------------------------- painéis */
@@ -202,7 +244,7 @@ function jdAsks() {
   for (const p of D.pedras) if (!p.lav && jdMarks(p).length >= 3) out.push([85, `Lavrar a pedra: ${p.nome}`, "três golpes já foram dados", "ped:" + p.id]);
   if (!bmEx()[TODAY]) out.push([jdHour() >= 18 ? 75 : 55, "Fazer o exame da noite", `rio ${jdRio().st}: ${jdRio().n} de 14 noites; cada exame o faz correr`, "rio"]);
   const T = J_ORDER.map(jdTree).sort((a, b) => a.v - b.v)[0];
-  if (T.v < 1) out.push([60 + (1 - T.v) * 10, `Regar a ${JD_ARV[T.pid].nome}`, T.dorm ? `dorme: nenhum dia com ${J_PIL[T.pid].nome} em 2 semanas` : `${plural(T.dias, "dia", "dias")} com ${J_PIL[T.pid].nome} em 2 semanas`, "arv:" + T.pid]);
+  if (T.v < 1) out.push([60 + (1 - T.v) * 10, `Regar ${JD_ARV[T.pid].art} ${JD_ARV[T.pid].nome}`, T.dorm ? `dorme: nenhum dia com ${J_PIL[T.pid].nome} em 2 semanas` : `${plural(T.dias, "dia", "dias")} com ${J_PIL[T.pid].nome} em 2 semanas`, "arv:" + T.pid]);
   if (jdCamOpen("ponte") && st.toras >= 3) out.push([50, "Talhar uma tábua", `${plural(st.toras, "tora", "toras")} esperando na oficina`, "oficina"]);
   const semMarca = D.pedras.find(p => !p.lav && !(p.marcas || []).some(m => m.data === TODAY) && jdMarks(p).length < 3);
   if (jdCamOpen("ponte") && semMarca) out.push([45, `Observar: ${semMarca.nome}`, "quando apareceu hoje, e o que você fez?", "ped:" + semMarca.id]);
@@ -307,11 +349,11 @@ function jdJournal() {
 }
 function pJardim() {
   const T = J_ORDER.map(jdTree), R = jdRio(), D = jdData(), st = jdStock(), nb = JD_TEMPLO.filter(t => D.templo[t.id]).length, nc = JD_CAM.filter(c => jdCamOpen(c.id)).length, [est] = jdSeason();
-  const places = [["portao", "Portão", "sprout"], ...J_ORDER.map(p => ["arv:" + p, JD_ARV[p].nome, J_PIL[p].ico]), ["rio", "Rio", "wave"], ["lago", "Lótus", "lotus"], ["praca", "Bússola", "compass"], ["pedreira", "Pedreira", "box"], ["oficina", "Oficina", "brief"], ["templo", "Templo", "house"], ["mirante", "Mirante", "eye"]];
+  const places = [["portao", "Portão da lua", "sprout"], ...J_ORDER.map(p => ["arv:" + p, JD_ARV[p].nome, J_PIL[p].ico]), ["rio", "Rio", "wave"], ["lago", "Lótus", "lotus"], ["praca", "Bússola", "compass"], ["pedreira", "Pedreira", "box"], ["oficina", "Oficina", "brief"], ["templo", "Templo", "house"], ["mirante", "Mirante", "eye"]];
   setTimeout(() => { const sc = $(".jdscene"); if (sc && sc.scrollWidth > sc.clientWidth) { sc.scrollLeft = JD.sx ?? (sc.scrollWidth - sc.clientWidth) / 2; sc.addEventListener("scroll", () => { JD.sx = sc.scrollLeft; }, { passive: true });
     if (JD.center) { const el = sc.querySelector(`[data-k="${JD.sel}"]`); if (el) { const r = el.getBoundingClientRect(), rs = sc.getBoundingClientRect(); sc.scrollLeft += r.left + r.width / 2 - (rs.left + rs.width / 2); JD.sx = sc.scrollLeft; } } } JD.center = false; }, 0);
   setTimeout(() => { if (JD.fx && Date.now() - JD.fx.at > 200) JD.fx = null; if (JD.scroll && innerWidth < 1100) { JD.scroll = false; $(".jdaside")?.scrollIntoView({ block: "start", behavior: "smooth" }); } }, 2200);
-  return `<p class="lead">Saúde espiritual: um jardim que é seu e responde ao seu cultivo. Cada árvore é um dos quatro caminhos, o rio é a consciência de cada noite, as pedras são as inclinações que você trabalha, e o templo vai se erguendo com o que você lavra. É ${est}; à noite os vagalumes aparecem e a lua é a de hoje.</p>
+  return `<p class="lead">Saúde espiritual: um jardim circular, pintado a tinta, em forma de yin-yang. O rio corre no S entre as forças opostas; no olho do yang ergue-se o templo, no olho do yin floresce o lago de lótus, e no centro, onde tudo se equilibra, está a Bússola. Os quatro pilares guardam os pontos cardeais, como na mandala. É ${est}; à noite os vagalumes aparecem e a lua é a de hoje.</p>
     ${kpiRow([kmini("var(--jp-tao)", "Árvores", `${sum(T.map(t => t.s))} de 20`, `estágios somados · ${T.filter(t => t.dorm).length ? `${T.filter(t => t.dorm).length} dormindo` : "todas acordadas"}`), kmini("#4f9fd8", "Rio", R.st, `${R.n} de 14 noites de exame`), kmini("var(--jp-bud)", "Templo", `${nb} de ${JD_TEMPLO.length}`, `${plural(Math.max(0, st.pedras), "pedra", "pedras")} e ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")} no estoque`), kmini("var(--jp-med)", "Caminhos", `${nc} de ${JD_CAM.length}`, JD_CAM.some(c => !jdCamOpen(c.id) && jdCamReady(c)) ? "há um pronto para abrir" : "abrem com marcos da jornada")])}
     <div class="jdlay"><section class="pn jdmain">${jdScene()}<div class="jdplaces" role="toolbar" aria-label="Lugares do jardim">${places.map(([k, l, i]) => `<button type="button" class="chip${JD.sel === k ? " on" : ""}${jdLocked(k) ? " lk" : ""}" data-act="jdsel" data-k="${k}">${ic(jdLocked(k) ? "lock" : i)}${esc(l)}</button>`).join("")}</div></section>
       <aside class="pn jdaside" aria-live="polite">${jdAside()}</aside></div>
