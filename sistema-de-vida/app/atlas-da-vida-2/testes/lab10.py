@@ -64,13 +64,13 @@ async def main():
             # texto do dia preenche os campos
             await pg.fill("#pd_txt", "Ontem dormi sete e meia, humor 4, corri 30 min e gastei 18 euros no almoço. Meditei 15 min. Preciso ligar para o banco até sexta")
             await pg.wait_for_timeout(450)
-            st = await pg.evaluate("({ date: PD.date, v: PD.v, g: PD.gastos.map(g => [g.v, g.d, g.src]), h: PD.habs, x: PD.extras })")
+            st = await pg.evaluate("({ date: PD.date, v: PD.v, g: PD.gastos.map(g => [g.v, g.d, g.src]), h: PD.habs, x: PD.extras, tar: PD.L.tar.map(r => r.t) })")
             chk(st["date"] == Y, f"'ontem' no texto muda o dia para {Y}: {st['date']}")
             chk(st["v"]["sono"] == "7,5" and st["v"]["humor"] == "4" and st["v"]["treino"] == "Corrida" and st["v"]["min"] == "30", f"sono, humor e treino saem do texto: {st['v']}")
             chk(st["g"] == [["18", "no almoço", "texto"]] or (st["g"] and st["g"][0][0] == "18" and "almoço" in st["g"][0][1]), f"o gasto sai do texto: {st['g']}")
             chk(st["v"]["ppid"] == "med" and st["v"]["pmin"] == "15", "a prática da jornada sai do texto (meditei 15 min)")
             chk(st["h"].get("h1") is True, "o hábito Meditar é marcado pelo texto")
-            chk(any(x.startswith("/tarefa") for x in st["x"]), f"o que não é campo vira registro extra (tarefa): {st['x']}")
+            chk(any("banco" in t for t in st["tar"]), f"a tarefa do texto vai para a seção Tarefas do painel: {st['tar']}")
             chk(await pg.evaluate("document.querySelector('[data-pdbox=\"sono\"] .pdsrc')?.textContent") == "do texto", "o campo diz que veio do texto")
             # o que se digita no campo prevalece sobre o texto
             await pg.click("[data-pdday='%s']" % T); await pg.wait_for_timeout(200)

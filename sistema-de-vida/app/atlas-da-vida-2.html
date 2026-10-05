@@ -966,7 +966,7 @@ tr.dim td{opacity:.5}
 .bmax{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;letter-spacing:.02em;color:var(--c);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 10%,transparent);border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:middle}
 .bmchip{border:1px solid color-mix(in srgb,var(--c) 40%,var(--line-2));background:var(--surface);color:var(--ink-2);border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer}
 .bmchip:hover{border-color:var(--c);color:var(--ink)}.bmchip.on{background:color-mix(in srgb,var(--c) 22%,var(--surface));border-color:var(--c);color:var(--ink);font-weight:600}
-.bmcomp{max-width:600px;margin:0 auto}.bmcomp svg{width:100%;height:auto;display:block}
+.bmcomp{max-width:min(100%,78vh,920px);margin:0 auto}.bmcomp svg{width:100%;height:auto;display:block}
 .bmc-o{fill:color-mix(in srgb,var(--surface-2) 70%,transparent);stroke:var(--line-2);stroke-width:1.2}.bmc-i{fill:none;stroke:var(--line);stroke-dasharray:3 4}
 .bmc-t{stroke:var(--line-2);stroke-width:1}.bmc-o,.bmc-i,.bmc-t,.bmc-ax,.bmc-n{pointer-events:none}.bmc-ax{font-size:13px;font-weight:700;letter-spacing:.06em}
 .bmc-v{cursor:pointer}.bmc-v circle{stroke-width:1.6;transition:r .15s}.bmc-v circle.foc{stroke-width:3.5}.bmc-v.on circle{stroke:var(--ink);stroke-width:2.5}
@@ -1066,7 +1066,7 @@ tr.dim td{opacity:.5}
 .jmem{margin:0 14px 8px;font-size:13px}.jmem summary{cursor:pointer;display:flex;align-items:center;gap:6px;font-weight:600;color:var(--ink-2)}.jmem summary .ico{width:15px;height:15px}.jmem .mems{max-height:320px;overflow:auto;margin-top:8px}
 .jpriv{margin:0;padding:0 14px 14px;display:flex;gap:6px;align-items:flex-start}.jpriv .ico{width:14px;height:14px;flex:none;margin-top:1px}
 .jintro p{max-width:46ch}
-.jmandala{max-width:540px;margin:0 auto}.jmandala svg{width:100%;height:auto;display:block}
+.jmandala{max-width:min(100%,78vh,920px);margin:0 auto}.jmandala svg{width:100%;height:auto;display:block}
 .jm-o{fill:color-mix(in srgb,var(--surface-2) 65%,transparent);stroke:var(--line-2)}.jm-i{fill:none;stroke:var(--line);stroke-dasharray:2 5}
 .jm-p path{stroke-width:1.3;transition:fill-opacity .2s}.jm-p:hover path,.jm-p:focus path{stroke-width:2.6}.jm-p,.jm-l,.jm-c{cursor:pointer;outline:none}
 .jm-t{font-size:15px;font-weight:700;letter-spacing:.02em}.jm-l:hover .jm-t{text-decoration:underline}
@@ -1335,6 +1335,20 @@ tr.dim td{opacity:.5}
 .exbtn.on{border-color:var(--warn);color:var(--ink)}.exbtn.on .exsw{background:color-mix(in srgb,var(--warn) 55%,var(--surface-3))}.exbtn.on .exsw::after{left:13px;background:var(--warn)}
 .banner.exb{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
 @media (max-width:640px){.exbtn span{display:none}}
+
+/* mandala e bússola crescem com a tela: ocupam a linha inteira em telas largas e abrem em tela cheia */
+@media (min-width:1100px){.vis.bigvis{grid-column:1/-1}}
+#focusdlg .jmandala,#focusdlg .bmcomp{max-width:min(100%,82vh)}
+
+/* painel do dia: todas as abas */
+.pdmapa{display:flex;flex-wrap:wrap;gap:6px;position:sticky;top:0;z-index:4;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(6px);padding:6px 0 8px;margin:-4px 0 2px}
+.pdmc{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;border:1px solid var(--line-2);font-size:12.5px;color:var(--ink-2);text-decoration:none;position:relative;background:var(--surface)}
+.pdmc .ico{width:14px;height:14px}.pdmc.ok{border-color:color-mix(in srgb,var(--good) 50%,var(--line));color:var(--good)}.pdmc.pend{border-color:var(--accent);color:var(--ink)}
+.pdmc i{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.pdlr{display:grid;grid-template-columns:minmax(0,1fr) 28px;gap:6px;align-items:center;margin-bottom:6px}.pdlr.pdl3{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 28px}.pdlr.pdl4{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) 72px 28px}
+.pdlr .pdsrc,.pdlr .pdmsg{grid-column:1/-1;justify-self:start}.pdck{display:flex;margin:4px 0}.pdck span{display:flex;flex-direction:column}.pdck small{font-size:11.5px}
+.pdg{grid-template-columns:minmax(0,.8fr) minmax(0,.7fr) minmax(0,1.3fr) minmax(0,1fr) 28px}
+@media (max-width:760px){.pdg{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 28px}.pdg .pdgt{grid-column:1/3}.pdg select:not(.pdgt){grid-column:1/3}.pdlr.pdl4{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 28px}.pdlr.pdl4 input{grid-column:1/3}}
 </style>
 
 <div class="app">
@@ -1532,7 +1546,7 @@ const EMPTY = () => ({
   diario: [], mentores: {}, listas: DEFAULT_LISTS(), regras: [], areasCfg: {}, integ: { notion: { pai: null, hist: [], tarefas: null } },
   experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {},
 });
-let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0;
+let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0, DBH = null;
 applyLists();
 
 /* memória de cálculo: invalida a cada mudança de dados */
@@ -1602,7 +1616,7 @@ async function loadStore() {
   try {
     const db = await window.claude?.use?.("db"), user = db ? await window.claude.use("user") : null, id = user ? await user.id() : null;
     if (db && id) {
-      const col = db.collection("data/users/" + id); const snap = await col.limit(1000).get(); STORE = { kind: "db", col };
+      DBH = db; const col = db.collection("data/users/" + id); const snap = await col.limit(1000).get(); STORE = { kind: "db", col };
       /* o banco entrega documentos congelados: copia antes de usar, senão qualquer edição falha ("object is not extensible") */
       const docs = {}; for (const d of snap.docs) docs[d.id] = JSON.parse(JSON.stringify(d.data() ?? null));
       for (const k of KEYS) { const m = docs["s_" + k]; if (!m) continue;
@@ -4713,7 +4727,7 @@ function pInteg(R) {
   const pai = S.integ?.notion?.pai, hist = S.integ?.notion?.hist || [], on = !!MCP && NT.status !== "off";
   const res = (list, act) => list.map(x => `<div class="nres"><div><b>${esc(x.title || "Sem título")}</b><small>${esc([x.type, x.path, x.timestamp && fmtDY(String(x.timestamp).slice(0, 10))].filter(Boolean).join(" · "))}</small>${x.highlight ? `<p>${esc(trunc(String(x.highlight).replace(/\*\*/g, ""), 160))}</p>` : ""}</div><div class="row">${act(x)}</div></div>`).join("");
   return `<p class="lead">O Atlas conversa com outros apps de duas formas: ao vivo com o Notion, pelo conector da sua conta Claude, e por arquivos nos formatos que Google Agenda, Apple Health, Google Fit, Todoist, Obsidian, planilhas e bancos entendem. Onde dá, a troca vai e volta.</p>
-  <div class="g2c">${pIntegTwoWay(R)}
+  <div class="g2c">${gcPanel()}${pIntegTwoWay(R)}
     ${panel(`${ic("globe")}Notion <span class="pill ${st[0]}">${st[1]}</span>`, `${!on ? `<p class="note">O conector não está disponível nesta visualização. Abra o artefato no Claude com o Notion conectado em Configurações › Conectores.</p>` : ""}
       <div class="flbl">Destino das exportações</div><div class="row wrap"><span class="chip">${pai ? esc(pai.title) : "Rascunho privado (padrão)"}</span>${pai ? `<button type="button" class="lnk" data-act="ntpaiclear">usar rascunho privado</button>` : ""}</div>
       <div class="row"><input id="nt_pq" type="search" placeholder="Buscar página do Notion para usar como destino" value="${esc(NT.pq)}"${on ? "" : " disabled"}><button type="button" class="btn sm" data-act="ntpaisearch"${on ? "" : " disabled"}>${NT.busy === "pai" ? "Buscando…" : "Buscar"}</button></div>
@@ -6722,7 +6736,7 @@ function pBussola(R) {
   return `<p class="lead">Um instrumento para orientar decisões e acompanhar a evolução: 17 valores em quatro rumos (o sentido, o outro, o coração e o próprio), com a consciência no centro. Cada valor traz o que dizem o Espiritismo, o Estoicismo, o Taoísmo, o Confucionismo e o Budismo, um princípio de ação, uma prática e uma pergunta. Escolha até três para pôr em foco; o exame da noite mede o caminho.</p>
     ${kpiRow([kmini("var(--accent)", "Valores em foco", bmFoco().length ? bmFoco().map(id => esc(bmV(id).nome)).join(", ") : "nenhum", bmFoco().length ? `${bmFoco().length} de 3` : "toque num valor e ponha em foco"), kmini("var(--a-pro)", "Prática · 4 semanas", sc.idx == null ? "–" : pct(sc.idx), "média das notas do exame (0 a 2)"), kmini("var(--a-men)", "Consciência · 4 semanas", `${sc.dias} de 28`, "noites com exame"), kmini("var(--a-amo)", "Exames seguidos", st, st ? "noites" : "comece hoje")])}
     <div class="g2c bmmap">
-      ${vis("bmcomp", "A bússola", bmCompass(sc), { sub: "toque num valor; a cor mais forte é o mais praticado nas últimas 4 semanas, e a agulha aponta o valor escolhido", nofocus: true })}
+      ${vis("bmcomp", "A bússola", bmCompass(sc), { sub: "toque num valor; a cor mais forte é o mais praticado nas últimas 4 semanas, e a agulha aponta o valor escolhido", cls: "bigvis" })}
       ${bmDetail(v, sc)}
       ${panel(`${ic("list")}Os 17 valores`, BM_AX.map(a => `<div class="bmrow"><span class="bmrl" style="--c:${a.cor}"><b>${esc(a.rumo)} · ${esc(a.nome)}</b><small>${esc(a.sub)}</small></span><div class="row wrap">${BM_V.filter(x => x.ax === a.id).map(x => bmChip(x.id, x.id === v.id)).join("")}</div></div>`).join("") + `<p class="muted small">Os 14 valores que você escolheu, mais três que eles pedem: Humildade (o antídoto da superioridade), Caridade (o amor em ação) e Temperança (o comedimento).</p>`)}
       ${panel(`${ic("refresh")}Como os valores se tecem`, `<p class="muted">Não são uma lista: cada um prepara o seguinte, e o último devolve ao primeiro.</p><ol class="bmciclo">${BM_CICLO.map((id, i) => `<li>${bmChip(id)} <span>${esc(BM_CICLO_TXT[id])}${i === BM_CICLO.length - 1 ? "" : "…"}</span></li>`).join("")}</ol>`)}
@@ -7419,7 +7433,7 @@ function jInicio() {
   return `<p class="lead">Um espaço para acompanhar e aprofundar o seu caminho pelos quatro pilares que orientam a sua vida, com um mentor para cada um, um lugar onde eles se encontram e a Bússola moral no centro. Não é um formulário: volte quando quiser, escreva o que viveu e converse.</p>
     ${kpiRow([kmini("var(--jp-med)", "Dias na jornada · 4 semanas", `${all.size} de 28`, `${plural(tot, "registro-dia", "registros-dia")} somando os pilares`), kmini(viva[1] ? J_PIL[viva[0]].cor : "var(--muted)", "Pilar mais vivo", viva[1] ? esc(J_PIL[viva[0]].nome) : "–", viva[1] ? `${jMoonInfo(viva[0]).nome} · ${plural(viva[1], "dia", "dias")}` : "comece por qualquer um"), kmini("var(--jp-bud)", "Estações florescendo", `${flor} de 20`, "autoavaliação, sem pressa"), kmini("var(--jp-esp)", "Reflexões · 30 dias", rmes, rmes ? "continue escrevendo" : "a primeira está a um toque")])}
     <div class="g2c jhome">
-      ${vis("jmandala", "Mandala da jornada", jMandala(), { sub: "cada pétala é uma estação do caminho; a lua mostra o ritmo de 4 semanas; toque para entrar", nofocus: true })}
+      ${vis("jmandala", "Mandala da jornada", jMandala(), { sub: "cada pétala é uma estação do caminho; a lua mostra o ritmo de 4 semanas; toque para entrar", cls: "bigvis" })}
       ${panel(`${ic("sun")}Hoje na jornada`, `<div class="jday" style="--c:${D.cor}"><span class="jtag">${ic(D.ico)}${esc(D.nome)}</span><blockquote class="jquote">${esc(q)}<cite>${esc(src)}</cite></blockquote><p class="bmq">${ic("info")}<span>${esc(jQuestion(pid))}</span></p></div>
         <div class="flbl">Uma reflexão rápida</div><textarea class="jta" rows="3" data-jq="1" placeholder="O que você viveu, percebeu ou aprendeu?">${esc(Q.txt)}</textarea>
         <div class="row wrap jqrow">${J_ORDER.map(p => jChip(p, Q.p.includes(p), `data-act="jqp" data-p="${p}"`)).join("")}</div>
@@ -8648,11 +8662,11 @@ const PD_LBL = { humor: "Humor", energia: "Energia", estresse: "Estresse", sono:
 const PD_REQ_OPC = ["humor", "energia", "estresse", "sono", "passos", "treino", "gastos", "habitos", "texto"];
 const PD_REQ_DEF = ["humor", "sono"];
 const PD_KEYS = ["humor", "energia", "estresse", "sono", "passos", "treino", "min", "ppid", "pmin", "lzat", "lzh"];
-const pdNew = (date = TODAY) => ({ date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], step: "form", done: null, inf: [] });
+const pdNew = (date = TODAY) => ({ date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], L: { tar: [], cont: [], est: [], ler: [] }, chk: { tdone: {}, rot: {}, conta: {} }, step: "form", done: null, inf: [] });
 let PD = pdLoad() || pdNew();
 function pdLoad() { try { const v = JSON.parse(localStorage.getItem("atlas_painel") || "null"); return v && v.date && v.v ? { ...pdNew(v.date), ...v, step: "form", done: null } : null; } catch { return null; } }
 const pdStore = debounce(() => { if (EX_MODE) return; try { pdEmpty() ? localStorage.removeItem("atlas_painel") : localStorage.setItem("atlas_painel", JSON.stringify({ ...PD, done: null, step: "form" })); } catch {} }, 400);
-const pdEmpty = () => !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
+const pdEmpty = () => !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !pdLtotal() && !Object.values(PD.chk || {}).some(o => Object.keys(o).length) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
 const pdReq = () => Array.isArray(S.cfg.pdReq) ? S.cfg.pdReq : PD_REQ_DEF;
 const pdRev = () => S.cfg.pdRev !== false;
 const pdLang = () => S.cfg.pdLang || "pt-BR";
@@ -8764,6 +8778,7 @@ function pdCheck() {
   /* soma de horas do dia */
   const hs = (pdHours(V.sono) || 0) + (hasH ? pdHours(V.lzh) || 0 : 0) + ((pdMin(V.min) || 0) + (pdMin(V.pmin) || 0)) / 60;
   if (hs > 24 && !f.sono?.st?.startsWith("e")) set("sono", "warn", `Sono, lazer, treino e prática somam ${num(hs, 1)} h no dia: confira`);
+  pdCheck2(set, V);
   /* obrigatórios */
   const filled = { humor: V.humor !== "" && V.humor != null, energia: V.energia !== "" && V.energia != null, estresse: V.estresse !== "" && V.estresse != null, sono: V.sono !== "" && V.sono != null, passos: V.passos !== "" && V.passos != null, treino: !!V.treino,
     gastos: PD.gastos.some(g => String(g.v || "").trim()) || pdBase().gastos.length > 0, habitos: S.habitos.some(pdHabOn), texto: !!PD.text.trim() };
@@ -8778,7 +8793,7 @@ const PD_PRAT = [[/\b(meditei|meditacao|medita\w*|respirei|respiracao|atencao pl
 function pdParse(o = {}) {
   /* volta ao que as abas têm o que veio do texto antes; o que foi digitado ou falado no campo fica */
   for (const k of PD_KEYS) if (PD.src[k] === "texto") { PD.src[k] = ""; if (k !== "ppid") PD.v[k] = ""; }
-  PD.inf = []; PD.gastos = PD.gastos.filter(g => g.src !== "texto");
+  PD.inf = []; PD.gastos = PD.gastos.filter(g => g.src !== "texto"); pdReset2();
   for (const id of Object.keys(PD.hsrc)) if (PD.hsrc[id] === "texto") { delete PD.hsrc[id]; delete PD.habs[id]; }
   pdSyncBase();
   const txt = pdNorm(pdWords(PD.text)), extras = [];
@@ -8796,6 +8811,7 @@ function pdParse(o = {}) {
       /* o mesmo lazer já digitado no campo não vira um segundo registro */
       const fld = norm(String(PD.v.lzat || "")), at = norm(mm[2]); if (fld && (at.includes(fld) || fld.includes(at))) continue;
       if (!lz && PD.src.lzat !== "mao" && PD.src.lzh !== "mao" && PD.src.lzat !== "voz") { take("lzh", mm[1]); take("lzat", mm[2]); lz = true; } else extras.push(it.line); }
+    else if (pdParse2(c, a, take)) {}
     else extras.push(it.line);
   }
   /* prática da jornada: verbo + minutos no mesmo trecho */
@@ -8804,7 +8820,7 @@ function pdParse(o = {}) {
 }
 
 /* ---------------------------------------------------------------- o que vai ser salvo: uma linha por registro, comparada com o que o dia já tem */
-const PD_DEST = { saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
+const PD_DEST = { rotinas: ["Casa › Limpeza", "casa.limpeza"], contasCasa: ["Casa › Contas", "casa.contas"], saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
 function pdRows() {
   const d = PD.date, B = pdBase(d), C = pdCheck(), V = PD.v, rows = [], bad = k => C.f[k]?.st === "err";
   const ctx = { date: d, area: "", humor: +V.humor || null };
@@ -8819,8 +8835,9 @@ function pdRows() {
     if (tipo || mn) { const t = tipo || "Outro"; if (t !== B.treino || String(mn) !== String(B.min ?? "")) cmd("s.treino", `/treino ${t}${mn ? " " + mn : ""}`, { kind: B.treino ? "subst" : "novo", old: B.treino ? `${B.treino}${B.min ? " " + B.min + " min" : ""}` : "", dest: "saude" }); }
     else if (B.treino && PD.src.treino === "mao") rows.push({ id: "s.treino", txt: "Treino: apagar o registro do dia", kind: "apagar", old: B.treino, dest: "saude", on: true, apply: () => { const s = { ...(S.saude[d] || {}) }; delete s.treino; delete s.min; S.saude[d] = s; return ["saude"]; } }); }
   PD.gastos.forEach((g, i) => { if (!String(g.v || "").trim() || bad(`g${i}`)) return; const v = pdMoney(g.v), desc = String(g.d || "").trim().replace(/[:@#]/g, " ").trim();
-    const dup = B.gastos.find(l => Math.abs(l.valor - v) < .005 && (!desc || norm(l.desc) === norm(desc) || norm(l.cat) === norm(desc)));
-    cmd(`g.${g.id}`, `/gasto ${fmtDec(v)} ${g.cat ? g.cat + ": " : ""}${desc || (g.cat ? "" : "Gasto do dia")}`.trim(), { kind: dup ? "dup" : "novo", old: dup ? `já existe ${eur(dup.valor, 2)} · ${dup.desc}` : "", on: !dup, dest: "lanc" }); });
+    const tp = g.tipo || "Despesa", cmdn = { Receita: "receita", Aporte: "aporte" }[tp] || "gasto", dup = tp === "Despesa" ? B.gastos.find(l => Math.abs(l.valor - v) < .005 && (!desc || norm(l.desc) === norm(desc) || norm(l.cat) === norm(desc))) : S.lanc.find(l => l.data === d && l.tipo === tp && Math.abs(l.valor - v) < .005);
+    const cats = tp === "Receita" ? CAT_REC : tp === "Aporte" ? CAT_APO : Object.keys(CAT_DESP), cat = g.cat && cats.includes(g.cat) ? g.cat : "";
+    cmd(`g.${g.id}`, `/${cmdn} ${fmtDec(v)} ${cat ? cat + ": " : ""}${desc || (cat ? "" : tp === "Despesa" ? "Gasto do dia" : tp)}`.trim(), { kind: dup ? "dup" : "novo", old: dup ? `já existe ${eur(dup.valor, 2)} · ${dup.desc}` : "", on: !dup, dest: "lanc" }); });
   for (const h of S.habitos) { const has = !!S.marks[`${h.id}|${d}`]; if (!PD.hsrc[h.id]) continue; const want = !!PD.habs[h.id];
     if (want && !has) cmd(`h.${h.id}`, `/habito ${h.nome}`, { dest: "marks" });
     else if (!want && has) rows.push({ id: `h.${h.id}`, txt: `Hábito: desmarcar ${h.nome}`, kind: "apagar", old: "feito", dest: "marks", on: true, apply: () => { delete S.marks[`${h.id}|${d}`]; return ["marks"]; } }); }
@@ -8828,6 +8845,7 @@ function pdRows() {
     rows.push({ id: "j.sess", txt: `Prática: ${J_PIL[p].nome} · ${mn} min`, kind: dup ? "dup" : "novo", old: dup ? `já existe ${dup.tec} · ${dup.min} min` : "", dest: "jornada", on: !dup, apply: () => { jData().sess.push({ id: uid(), at: Date.now(), data: d, pid: p, tec: J_TEC[p][0], min: mn, qual: null, antes: null, depois: null, notas: "Painel do dia" }); return ["jornada"]; } }); }
   if (String(V.lzat || "").trim() && V.lzh !== "" && V.lzh != null && !bad("lzh") && !bad("lzat")) { const h = pdHours(V.lzh), at = String(V.lzat).trim(), dup = B.lz.find(x => norm(x.atividade) === norm(at));
     cmd("l.lz", `/lazer ${fmtDec(Math.round(h * 100) / 100)} ${at}`, { kind: dup ? "dup" : "novo", old: dup ? `já existe ${dup.atividade} · ${num(dup.horas, 1)} h` : "", on: !dup, dest: "lazer" }); }
+  pdRows2(rows, cmd, B, d, bad);
   (PD.extras || []).forEach((line, i) => { const c = norm(line.slice(1).split(/\s/)[0]), dest = { receita: "lanc", aporte: "lanc", tarefa: "tarefas", contato: "contatos", estudo: "estudo", ler: "aprend", meta: "metas", peso: "saude", lazer: "lazer" }[c] || "diario";
     const arg = norm(line.replace(/^\/\p{L}+\s+/u, "").replace(/^[\d.,]+\s*/, "")), dup = c === "tarefa" ? S.tarefas.some(t => t.status !== "Concluída" && norm(t.tarefa) === norm(line.replace(/^\/tarefa\s+/, "").replace(/\s+at[eé].*$/, "")))
       : c === "lazer" ? B.lz.some(x => norm(x.atividade).includes(arg) || arg.includes(norm(x.atividade))) : c === "estudo" ? S.estudo.some(x => x.data === d && arg.includes(norm(x.item))) : false;
@@ -8923,7 +8941,7 @@ function pPainel() {
   if (rev) return done + pdReviewHTML();
   const scale = k => { const inv = k === "estresse"; return `<div class="pdf pds ${pdSt(C, k)}" data-pdbox="${k}"><div class="pdfl"><span class="pdlab">${PD_LBL[k]}${pdReqMark(k)}</span>${pdSrcTag(k)}</div><div class="pdfi"><div class="mchips" role="group" aria-label="${PD_LBL[k]} de 1 a 5">${[1, 2, 3, 4, 5].map(v => `<button type="button" class="mchip m${inv ? 6 - v : v}" data-pdsc="${k}|${v}" aria-pressed="${String(V[k]) === String(v)}">${v}</button>`).join("")}</div>${pdMicBtn(k, PD_LBL[k].toLowerCase())}</div>${pdMsg(C, k)}</div>`; };
   const gl = PD.gastos.length ? PD.gastos : [];
-  const gastos = gl.map((g, i) => `<div class="pdg ${pdSt(C, `g${i}`)}"><input type="text" id="pd_gv${i}" data-pdg="${i}|v" inputmode="decimal" autocomplete="off" value="${esc(g.v)}" placeholder="12,50" aria-label="Valor do gasto ${i + 1}" aria-describedby="pdm_g${i}"${pdSt(C, `g${i}`) === "err" ? ' aria-invalid="true"' : ""}><input type="text" id="pd_gd${i}" data-pdg="${i}|d" autocomplete="off" value="${esc(g.d)}" placeholder="almoço, mercado…" aria-label="Descrição do gasto ${i + 1}"><select id="pd_gc${i}" data-pdg="${i}|cat" aria-label="Categoria do gasto ${i + 1}"><option value="">${esc(autoCat(g.d) ? "auto: " + autoCat(g.d) : "auto")}</option>${Object.keys(CAT_DESP).map(c => `<option${g.cat === c ? " selected" : ""}>${esc(c)}</option>`).join("")}</select><button type="button" class="vb" data-pdgdel="${i}" aria-label="Remover gasto ${i + 1}">${ic("x")}</button>${pdMsg(C, `g${i}`)}</div>`).join("");
+  const gastos = gl.map((g, i) => `<div class="pdg ${pdSt(C, `g${i}`)}"><select id="pd_gt${i}" data-pdg="${i}|tipo" class="pdgt" aria-label="Tipo ${i + 1}">${["Despesa", "Receita", "Aporte"].map(x => `<option${(g.tipo || "Despesa") === x ? " selected" : ""}>${x}</option>`).join("")}</select><input type="text" id="pd_gv${i}" data-pdg="${i}|v" inputmode="decimal" autocomplete="off" value="${esc(g.v)}" placeholder="12,50" aria-label="Valor do gasto ${i + 1}" aria-describedby="pdm_g${i}"${pdSt(C, `g${i}`) === "err" ? ' aria-invalid="true"' : ""}><input type="text" id="pd_gd${i}" data-pdg="${i}|d" autocomplete="off" value="${esc(g.d)}" placeholder="almoço, mercado…" aria-label="Descrição do gasto ${i + 1}"><select id="pd_gc${i}" data-pdg="${i}|cat" aria-label="Categoria do gasto ${i + 1}"><option value="">${esc((g.tipo || "Despesa") === "Despesa" && autoCat(g.d) ? "auto: " + autoCat(g.d) : "auto")}</option>${(g.tipo === "Receita" ? CAT_REC : g.tipo === "Aporte" ? CAT_APO : Object.keys(CAT_DESP)).map(c => `<option${g.cat === c ? " selected" : ""}>${esc(c)}</option>`).join("")}</select><button type="button" class="vb" data-pdgdel="${i}" aria-label="Remover gasto ${i + 1}">${ic("x")}</button>${pdMsg(C, `g${i}`)}</div>`).join("");
   const habs = S.habitos.map(h => { const on = pdHabOn(h); return `<button type="button" class="hbtn pdh${on ? " on" : ""}" data-pdhab="${h.id}" aria-pressed="${on}" style="--c:${acol(h.area)}"><span class="hck">${ic("check")}</span><span class="hn">${esc(h.nome)}${PD.hsrc[h.id] === "texto" ? "<small>do texto</small>" : ""}</span></button>`; }).join("");
   const rows = pdRows(), on = rows.filter(r => r.on), nSub = on.filter(r => r.kind === "subst" || r.kind === "apagar").length;
   const block = C.errs.length || C.missing.length;
@@ -8938,20 +8956,22 @@ function pPainel() {
       <p class="muted small">O texto preenche os campos abaixo. O que você digitar ou falar num campo prevalece sobre o texto.</p>
     </section>
     <section class="pn pdform" aria-label="Campos do dia">
-      <div class="pdrow3">${scale("humor")}${scale("energia")}${scale("estresse")}</div>
+      ${pdMapa(rows)}
+      <div class="pdrow3" id="sec_saude">${scale("humor")}${scale("energia")}${scale("estresse")}</div>
       <div class="pdrow3">
         ${pdField(C, "sono", "Sono (h)", pdIn("sono", "7,5 · 7h30"), pdMicBtn("sono", "sono"))}
         ${pdField(C, "passos", "Passos", pdIn("passos", "8000", "numeric"), pdMicBtn("passos", "passos"))}
         <div class="pdf ${pdSt(C, "min") || pdSt(C, "treino")}" data-pdbox="min"><div class="pdfl"><label for="pd_treino">Treino${pdReqMark("treino")}</label>${pdSrcTag("treino")}</div><div class="pdfi pdtr"><select id="pd_treino" data-pdf="treino" aria-label="Tipo de treino"><option value="">—</option>${TREINOS.map(t => `<option${V.treino === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select><input type="text" id="pd_min" data-pdf="min" inputmode="numeric" autocomplete="off" value="${esc(V.min ?? "")}" placeholder="min" aria-label="Minutos de treino" aria-describedby="pdm_min"${pdSt(C, "min") === "err" ? ' aria-invalid="true"' : ""}>${pdMicBtn("treino", "treino")}</div>${pdMsg(C, "min")}${C.f.treino ? pdMsg(C, "treino") : ""}</div>
       </div>
-      <div class="pdblk ${pdSt(C, "gastos")}" data-pdbox="gastos"><div class="pdfl"><span class="pdlab">${ic("coins")}Gastos${pdReqMark("gastos")}</span>${B.gastos.length ? `<small class="pdhint">Já neste dia: ${plural(B.gastos.length, "gasto", "gastos")}, ${eur(sum(B.gastos.map(l => l.valor)), 2)}</small>` : ""}</div>
+      <div class="pdblk ${pdSt(C, "gastos")}" data-pdbox="gastos" id="sec_din"><div class="pdfl"><span class="pdlab">${ic("coins")}Dinheiro: gastos, receitas e aportes${pdReqMark("gastos")}</span>${B.gastos.length ? `<small class="pdhint">Já neste dia: ${plural(B.gastos.length, "gasto", "gastos")}, ${eur(sum(B.gastos.map(l => l.valor)), 2)}</small>` : ""}</div>
         <div class="pdgs">${gastos}</div><div class="row wrap"><button type="button" class="btn sm" data-act="pdgadd">${ic("plus")}Gasto</button><button type="button" class="btn sm ghost${VOZ.on === "gasto" ? " on" : ""}" data-pdmic="gasto" aria-pressed="${VOZ.on === "gasto"}">${ic("mic")}Ditar gasto</button></div>${pdMsg(C, "gastos")}</div>
-      <div class="pdblk ${pdSt(C, "habitos")}" data-pdbox="habitos"><div class="pdfl"><span class="pdlab">${ic("repeat")}Hábitos${pdReqMark("habitos")}</span><small class="pdhint">${S.habitos.filter(pdHabOn).length} de ${S.habitos.length}</small></div>${habs ? `<div class="pdhabs">${habs}</div>` : `<div class="empty">Crie hábitos em <a class="lnk" href="#hab.marcar">Hábitos</a>.</div>`}${pdMsg(C, "habitos")}</div>
-      <div class="pdrow2">
+      <div class="pdblk ${pdSt(C, "habitos")}" data-pdbox="habitos" id="sec_hab"><div class="pdfl"><span class="pdlab">${ic("repeat")}Hábitos${pdReqMark("habitos")}</span><small class="pdhint">${S.habitos.filter(pdHabOn).length} de ${S.habitos.length}</small></div>${habs ? `<div class="pdhabs">${habs}</div>` : `<div class="empty">Crie hábitos em <a class="lnk" href="#hab.marcar">Hábitos</a>.</div>`}${pdMsg(C, "habitos")}</div>
+      <div class="pdrow2" id="sec_jor">
         <div class="pdf ${pdSt(C, "pmin")}" data-pdbox="pmin"><div class="pdfl"><label for="pd_pmin">${ic("lotus")}Prática da jornada</label>${pdSrcTag("pmin")}</div><div class="pdfi pdtr"><select id="pd_ppid" data-pdf="ppid" aria-label="Pilar">${J_ORDER.map(p => `<option value="${p}"${V.ppid === p ? " selected" : ""}>${esc(J_PIL[p].nome)}</option>`).join("")}</select><input type="text" id="pd_pmin" data-pdf="pmin" inputmode="numeric" autocomplete="off" value="${esc(V.pmin ?? "")}" placeholder="min" aria-label="Minutos de prática" aria-describedby="pdm_pmin"${pdSt(C, "pmin") === "err" ? ' aria-invalid="true"' : ""}>${pdMicBtn("prat", "a prática")}</div>${pdMsg(C, "pmin")}${sess}</div>
         <div class="pdf ${pdSt(C, "lzh") || pdSt(C, "lzat")}" data-pdbox="lzh"><div class="pdfl"><label for="pd_lzat">${ic("palette")}Lazer</label>${pdSrcTag("lzat")}</div><div class="pdfi pdtr"><input type="text" id="pd_lzat" data-pdf="lzat" autocomplete="off" value="${esc(V.lzat ?? "")}" placeholder="cinema, leitura…" aria-label="Atividade de lazer" aria-describedby="pdm_lzat"${pdSt(C, "lzat") === "err" ? ' aria-invalid="true"' : ""}><input type="text" id="pd_lzh" data-pdf="lzh" inputmode="decimal" autocomplete="off" value="${esc(V.lzh ?? "")}" placeholder="h" aria-label="Horas de lazer" aria-describedby="pdm_lzh"${pdSt(C, "lzh") === "err" ? ' aria-invalid="true"' : ""}>${pdMicBtn("lazer", "o lazer")}</div>${pdMsg(C, "lzat")}${pdMsg(C, "lzh")}${lzs}</div>
       </div>
-      <div class="pdblk"><label class="chk"><input type="checkbox" id="pd_diario"${PD.diario ? " checked" : ""}> ${ic("pen")}Guardar o texto do dia no Diário${pdReqMark("texto")}</label>${C.f.texto ? pdMsg(C, "texto") : ""}
+      ${pdMoreHTML(C)}
+      <div class="pdblk" id="sec_dia"><label class="chk"><input type="checkbox" id="pd_diario"${PD.diario ? " checked" : ""}> ${ic("pen")}Guardar o texto do dia no Diário${pdReqMark("texto")}</label>${C.f.texto ? pdMsg(C, "texto") : ""}
         ${(PD.extras || []).length ? `<div class="flbl">Outros registros achados no texto</div><div class="pdx">${PD.extras.map(line => { const r = runCmd(line, { date: d, area: "", humor: null }); return `<label class="chk"><input type="checkbox" data-pdx="${esc(line)}"${PD.xoff.includes(line) ? "" : " checked"}${r.ok ? "" : " disabled"}> ${esc(r.ok ? r.txt.replace(/ em \d{2}\/\d{2}(\/\d{2,4})?$/, "") : line + " · " + r.err)}</label>`; }).join("")}</div>` : ""}</div>
     </section>
     <footer class="pdfoot" id="pd_foot">${pdFootHTML(C, on, nSub, block)}</footer>
@@ -8995,12 +9015,12 @@ function pdPaint() {
   for (const b of $$("[data-pdhab]")) { const h = S.habitos.find(x => x.id === b.dataset.pdhab); if (h) { const on = pdHabOn(h); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); } }
   const dd = $("#pd_date"); if (dd && dd !== ae && dd.value !== PD.date) { render(); return; }
   /* a lista de gastos e os registros extras mudam de tamanho: redesenha a página quando a estrutura mudou */
-  if ($$(".pdg").length !== PD.gastos.length || $$("[data-pdx]").length !== (PD.extras || []).length) { render(); return; }
+  if ($$(".pdg").length !== PD.gastos.length || $$("[data-pdx]").length !== (PD.extras || []).length || $$(".pdlr").length !== pdLtotal()) { render(); return; }
   PD.gastos.forEach((g, i) => { for (const f of ["v", "d"]) { const el = document.getElementById(`pd_g${f}${i}`); if (el && el !== ae && el.value !== g[f]) el.value = g[f]; } });
   for (const s of $$(".pdsrc")) s.remove();
   for (const box of $$("[data-pdbox]")) { const k = { min: "treino", lzh: "lzat" }[box.dataset.pdbox] || box.dataset.pdbox, tag = pdSrcTag(k === "pmin" ? "pmin" : k); if (tag) box.querySelector(".pdfl")?.insertAdjacentHTML("beforeend", tag); }
   /* o rodapé muda por dentro: trocar os botões no meio de um clique (o campo perde o foco e valida) faria o clique se perder */
-  const rows = pdRows(), on = rows.filter(r => r.on), foot = $("#pd_foot");
+  const rows = pdRows(), on = rows.filter(r => r.on), foot = $("#pd_foot"), mp = $(".pdmapa"), mh = pdMapa(rows); if (mp && mp.outerHTML !== mh) mp.outerHTML = mh;
   foot.querySelector(".pdinfo").innerHTML = pdFootInfo(C, on, on.filter(r => r.kind === "subst" || r.kind === "apagar").length);
   const go = foot.querySelector('[data-act="pdrev"],[data-act="pdsave"]'), cl = foot.querySelector('[data-act="pdclear"]');
   if (go) go.disabled = !!(C.errs.length || C.missing.length) || !on.length; if (cl && !cl.dataset.c) cl.disabled = pdEmpty();
@@ -9010,15 +9030,17 @@ const pdParseDeb = debounce(() => { pdParse(); pdStore(); pdPaint(); }, 250);
 
 /* ---------------------------------------------------------------- eventos */
 function pdInput(t) {
+  if (pd2Input(t)) return true;
   if (t.id === "pd_txt") { PD.text = t.value; pdParseDeb(); return true; }
   if (t.dataset.pdf) { const k = t.dataset.pdf; PD.v[k] = t.value; PD.src[k] = "mao"; PD.inf = PD.inf.filter(x => x !== k); pdStore(); pdPaint(); return true; }
   if (t.dataset.pdg) { const [i, f] = t.dataset.pdg.split("|"), g = PD.gastos[+i]; if (g) { g[f] = t.value; g.src = "mao"; } pdStore(); if (f !== "cat") pdPaint(); return true; }
   return false;
 }
 function pdChange(t) {
+  if (pd2Change(t)) return true;
   if (t.id === "pd_date") { PD.date = t.value || TODAY; PD.dateSrc = "mao"; PD.off = []; pdSyncBase(); pdStore(); render(); return true; }
   if (t.dataset.pdf && t.tagName === "SELECT") { PD.v[t.dataset.pdf] = t.value; PD.src[t.dataset.pdf] = "mao"; pdStore(); pdPaint(); return true; }
-  if (t.dataset.pdg) { if (t.tagName === "SELECT") { const [i, f] = t.dataset.pdg.split("|"), g = PD.gastos[+i]; if (g) g[f] = t.value; pdStore(); pdPaint(); } return true; }
+  if (t.dataset.pdg) { if (t.tagName === "SELECT") { const [i, f] = t.dataset.pdg.split("|"), g = PD.gastos[+i]; if (g) { g[f] = t.value; if (f === "tipo") { g.cat = ""; g.src = "mao"; } } pdStore(); f === "tipo" ? render() : pdPaint(); } return true; }
   if (t.dataset.pdf || t.id === "pd_txt") return true;
   if (t.id === "pd_diario") { PD.diario = t.checked; pdStore(); pdPaint(); return true; }
   if (t.id === "pd_lang") { S.cfg.pdLang = t.value; stopVoice(); touch("cfg", { label: "Idioma da voz", noUndo: true }); return true; }
@@ -9028,6 +9050,7 @@ function pdChange(t) {
 }
 function pdClick(t) {
   const ds = t.dataset, a = ds.act;
+  if (pd2Click(t)) return true;
   if (ds.pdmic) { pdMic(ds.pdmic); return true; }
   if (a === "pdstop") { stopVoice(); VOZ.st = ""; VOZ.msg = ""; pdVoicePaint(); return true; }
   if (ds.pdsc) { const [k, v] = ds.pdsc.split("|"); PD.v[k] = String(PD.v[k]) === v ? "" : v; PD.src[k] = "mao"; PD.inf = PD.inf.filter(x => x !== k); pdStore(); pdPaint(); return true; }
@@ -9149,6 +9172,16 @@ function pMapa() {
 const HJ = { wx: null, wxSt: "", news: null, newsSt: "", skip: new Set(), fr: 0 };
 const hctx = () => (S.hojeCtx[TODAY] ||= {});
 const periodo = () => { const h = new Date().getHours(); return h < 12 ? "manha" : h < 18 ? "tarde" : "noite"; };
+/* a página pode não ter acesso à internet: cada busca desiste em 7 s */
+async function fetchT(u, ms = 7000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { return await fetch(u, { signal: c.signal }); } finally { clearTimeout(t); } }
+/* feed do dia: notícias e clima gravados no banco do Atlas por uma rotina externa (doc compartilhado feed/hoje); vale quando a página não alcança a internet */
+let FEED = null, FEED_ST = "";
+async function hjFeed() {
+  if (FEED_ST || (!DBH && !LOADED)) return; FEED_ST = "load";
+  try { const d = DBH ? await DBH.doc("feed/hoje").get() : null, v = d?.exists ? JSON.parse(JSON.stringify(d.data())) : null; FEED = v && v.dia ? v : null; } catch { FEED = null; }
+  FEED_ST = "ok"; if (PAGE === "hoje" && FEED) render();
+}
+const feedFresco = () => FEED && diff(TODAY, FEED.dia) <= 1;
 const PER_TXT = { manha: "manhã", tarde: "tarde", noite: "noite" };
 const cidade = () => S.cfg.cidade?.lat ? S.cfg.cidade : { nome: "Turim", lat: 45.0705, lon: 7.6868 };
 const WMO = c => c === 0 ? ["Céu limpo", "sun"] : c <= 2 ? ["Poucas nuvens", "sun"] : c === 3 ? ["Nublado", "wave"] : c <= 48 ? ["Neblina", "wave"] : c <= 57 ? ["Garoa", "wave"] : c <= 67 ? ["Chuva", "wave"] : c <= 77 ? ["Neve", "star"] : c <= 82 ? ["Pancadas de chuva", "wave"] : c <= 86 ? ["Neve", "star"] : ["Temporal", "bolt"];
@@ -9156,7 +9189,7 @@ async function hjWeather(force) {
   if (HJ.wxSt === "load" || (!force && (HJ.wx?.dia === TODAY || HJ.wxSt === "err"))) return;
   try { const v = JSON.parse(localStorage.getItem("atlas_wx") || "null"); if (!force && v?.dia === TODAY && v.at > Date.now() - 3 * 3600e3 && v.lat === cidade().lat) { HJ.wx = v; return; } } catch {}
   HJ.wxSt = "load"; const C = cidade();
-  try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${C.lat}&longitude=${C.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=1`);
+  try { const r = await fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${C.lat}&longitude=${C.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=1`);
     if (!r.ok) throw 0; const j = await r.json(); if (!j?.current || !j?.daily) throw 0;
     HJ.wx = { dia: TODAY, at: Date.now(), lat: C.lat, t: j.current.temperature_2m, sens: j.current.apparent_temperature, code: j.current.weather_code, vento: j.current.wind_speed_10m, max: j.daily.temperature_2m_max[0], min: j.daily.temperature_2m_min[0], chuva: j.daily.precipitation_probability_max[0], codeD: j.daily.weather_code[0], uv: j.daily.uv_index_max[0] };
     HJ.wxSt = "ok"; try { localStorage.setItem("atlas_wx", JSON.stringify(HJ.wx)); } catch {}
@@ -9167,18 +9200,18 @@ async function hjNews() {
   if (HJ.newsSt) return; HJ.newsSt = "load";
   try { const v = JSON.parse(localStorage.getItem("atlas_news") || "null"); if (v?.dia === TODAY && v.items?.length) { HJ.news = v.items; HJ.newsSt = "ok"; return; } } catch {}
   const feeds = [["Positive News", "https://www.positive.news/feed/"], ["Good News Network", "https://www.goodnewsnetwork.org/feed/"]], out = [];
-  await Promise.all(feeds.map(async ([src, u]) => { try { const r = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u)); if (!r.ok) return; const j = await r.json(); for (const it of (j.items || []).slice(0, 4)) out.push({ src, t: String(it.title || "").replace(/&#8217;/g, "’").replace(/&#8216;/g, "‘").replace(/&amp;/g, "&").replace(/&#8211;/g, "–"), link: it.link, data: String(it.pubDate || "").slice(0, 10), d: String(it.description || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 180) }); } catch {} }));
+  await Promise.all(feeds.map(async ([src, u]) => { try { const r = await fetchT("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u)); if (!r.ok) return; const j = await r.json(); for (const it of (j.items || []).slice(0, 4)) out.push({ src, t: String(it.title || "").replace(/&#8217;/g, "’").replace(/&#8216;/g, "‘").replace(/&amp;/g, "&").replace(/&#8211;/g, "–"), link: it.link, data: String(it.pubDate || "").slice(0, 10), d: String(it.description || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 180) }); } catch {} }));
   const items = out.filter(x => x.t && /^https?:/.test(x.link || "")).sort((a, b) => b.data.localeCompare(a.data));
   /* alterna as fontes para não vir tudo de uma */
   const pick = []; for (const src of ["Positive News", "Good News Network", "Positive News"]) { const x = items.find(i => i.src === src && !pick.includes(i)); if (x) pick.push(x); }
-  HJ.news = pick.length ? pick : null; HJ.newsSt = pick.length ? "ok" : "err";
+  HJ.news = pick.length ? pick : null; HJ.newsSt = pick.length ? "ok" : "err"; HJ.newsSrc = pick.length ? "net" : "";
   if (pick.length) try { localStorage.setItem("atlas_news", JSON.stringify({ dia: TODAY, items: pick })); } catch {}
   if (PAGE === "hoje") render();
 }
 /* o tempo: da internet, ou o que a pessoa marcou */
 function hjClima() {
-  const c = hctx(), w = HJ.wx?.dia === TODAY ? HJ.wx : null;
-  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
+  const c = hctx(), w = HJ.wx?.dia === TODAY ? HJ.wx : feedFresco() && FEED.clima && (FEED.clima.lat == null || Math.abs(FEED.clima.lat - cidade().lat) < .2) ? { ...FEED.clima, feed: true } : null;
+  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: w.feed ? "feed" : "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
   if (c.clima) { const base = { sol: [22, 10, "Sol"], nublado: [17, 30, "Nublado"], chuva: [13, 80, "Chuva"], frio: [3, 20, "Frio"], calor: [32, 10, "Calor"] }[c.clima] || [18, 20, "–"], t = isNum(c.temp) && c.temp !== "" ? +c.temp : base[0];
     return { fonte: "mao", t, sens: t, max: t + 3, min: t - 4, chuva: base[1], uv: c.clima === "sol" || c.clima === "calor" ? 6 : 2, vento: 0, txt: base[2], ico: c.clima === "chuva" ? "wave" : "sun", code: c.clima === "chuva" ? 63 : 1 }; }
   return null;
@@ -9290,7 +9323,8 @@ function hjAsk(c) {
   </section>`;
 }
 function pHoje2(R) {
-  const c = hctx(), W = hjClima(); hjWeather(); hjNews();
+  hjFeed(); const c = hctx(); hjWeather(); hjNews(); const W = hjClima();
+  const news = HJ.news?.length ? HJ.news : feedFresco() && FEED.news?.length ? FEED.news : null, newsFeed = !HJ.news?.length && !!news;
   const s = S.saude[TODAY] || {}, F = hjFrase(c), I = hjIdeias(c, W);
   const tasks = R.tar.filter(t => t.open && t.prazo && t.prazo <= TODAY).sort((a, b) => a.prazo.localeCompare(b.prazo)), doneToday = R.tar.filter(t => t.status === "Concluída" && t.concluida === TODAY);
   const CC = typeof casaCalc === "function" ? casaCalc() : null, contas = CC ? [...CC.atrasadas, ...CC.prox14.filter(v => v.dias <= 3)] : [];
@@ -9301,15 +9335,15 @@ function pHoje2(R) {
   return `<p class="hjlead">${esc(resumo)}.</p>
     ${hjAsk(c)}
     <div class="g2c hj2">
-      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "net" ? "Open-Meteo, agora" : "marcado por você") : HJ.wxSt === "load" ? "buscando…" : "sem dados"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · chuva ${W.chuva}%${W.fonte === "net" ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div><div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${HJ.wxSt === "err" ? "Não consegui buscar o clima nesta visualização. Marque o tempo lá fora em “Como você está agora?”." : "Buscando a previsão…"}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
+      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "net" ? "Open-Meteo, agora" : W.fonte === "feed" ? `Open-Meteo, às ${FEED.hora || "manhã"}` : "marcado por você") : HJ.wxSt === "load" ? "buscando…" : "sem dados"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · chuva ${W.chuva}%${W.fonte === "net" ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div><div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${HJ.wxSt === "err" ? "Não consegui buscar o clima nesta visualização. Marque o tempo lá fora em “Como você está agora?”." : "Buscando a previsão…"}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
       ${panel(`${ic("spark")}Para esta ${PER_TXT[periodo()]}`, `<blockquote class="hjq1"><p>${esc(F.f[0])}</p><cite>${esc(F.f[1])}</cite></blockquote><p class="hjconc">${esc(F.concreto)}</p><button type="button" class="lnk" data-act="hjfr">outra frase</button>`)}
       ${panel(`${ic("compass")}Ideias para sair da rotina <small>${I.pick.length} de ${IDEIAS.length}, filtradas pelo seu momento</small>`, `${I.motivos.length ? `<p class="muted small">${esc(I.motivos.join("; "))}.${I.total < 3 ? " Sobraram poucas: é uma limitação real do dia, não falta de opção na cidade." : ""}</p>` : ""}<div class="hjid">${I.pick.map(x => `<article class="hjidc"><b>${esc(x.t)}</b><p>${esc(x.d)}</p><div class="hjidm">${chip(CUSTO_TXT[x.cst])}${chip(x.min >= 60 ? `${num(x.min / 60, x.min % 60 ? 1 : 0)} h` : `${x.min} min`)}${chip(x.outd === 1 ? "ao ar livre" : x.outd ? "dentro ou fora" : "dentro")}</div>${x.why.length ? `<small>Por que hoje: ${esc(x.why.join(", "))}</small>` : ""}<div class="row"><button type="button" class="btn sm" data-hjvou="${esc(x.t)}">${ic("check")}Vou fazer</button><button type="button" class="lnk" data-hjskip="${esc(x.t)}">outra</button></div></article>`).join("") || `<div class="empty">Nenhuma ideia cabe nas respostas de agora. Com mais tempo livre ou orçamento, aparecem opções.</div>`}</div>`, { cls: "span2" })}
-      ${panel(`${ic("globe")}Notícias boas <small>jornalismo de soluções, em inglês</small>`, HJ.news?.length ? `<div class="hjnews">${HJ.news.map(n => `<a class="hjn" href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.t)}</b>${n.d ? `<span>${esc(n.d)}…</span>` : ""}<small>${esc(n.src)}${n.data ? " · " + fmtDY(n.data) : ""}</small></a>`).join("")}</div>` : HJ.newsSt === "load" ? `<div class="empty">Buscando…</div>` : `<div class="empty">Não consegui buscar as notícias nesta visualização. Abra direto: <a class="lnk" href="https://www.positive.news" target="_blank" rel="noopener">Positive News</a> · <a class="lnk" href="https://www.goodnewsnetwork.org" target="_blank" rel="noopener">Good News Network</a> · <a class="lnk" href="https://www.corriere.it/buone-notizie/" target="_blank" rel="noopener">Corriere · Buone Notizie</a></div>`)}
+      ${panel(`${ic("globe")}Notícias boas <small>jornalismo de soluções, em inglês</small>`, news ? `<div class="hjnews">${news.map(n => `<a class="hjn" href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.t)}</b>${n.d ? `<span>${esc(n.d)}…</span>` : ""}<small>${esc(n.src)}${n.data ? " · " + fmtDY(n.data) : ""}</small></a>`).join("")}</div>${newsFeed ? `<p class="muted small">Do resumo de ${fmtDY(FEED.dia)} gravado no Atlas.</p>` : ""}` : HJ.newsSt === "load" ? `<div class="empty">Buscando…</div>` : `<div class="empty">Não consegui buscar as notícias nesta visualização. Abra direto: <a class="lnk" href="https://www.positive.news" target="_blank" rel="noopener">Positive News</a> · <a class="lnk" href="https://www.goodnewsnetwork.org" target="_blank" rel="noopener">Good News Network</a> · <a class="lnk" href="https://www.corriere.it/buone-notizie/" target="_blank" rel="noopener">Corriere · Buone Notizie</a></div>`)}
       ${panel(`${ic("mic")}Registro do dia`, `<div class="hjreg">${reg.length || habs ? `${reg.map(([k, l]) => chip(`${l} ${k === "sono" ? num(s[k]) + " h" : k === "treino" ? s[k] : s[k] + "/5"}`, "good")).join("")}${habs ? chip(`${habs}/${S.habitos.length} hábitos`, "good") : ""}` : `<span class="muted">Nada registrado hoje ainda.</span>`}</div><a class="btn sm primary" href="#painel">${ic("mic")}Registrar no Painel do dia</a>`)}
       ${fpend ? `<div class="pn fscta span2"><div>${ic("week")}<b>Hora de fechar a semana de ${wkLabel(fwk)}</b><small>Uns 15 minutos.</small></div><a class="btn primary" href="#semana">Fechar a semana</a></div>` : ""}
       ${panel(`${ic("checksq")}Para hoje <small>${tasks.length ? tasks.length + " pendente(s)" : "em dia"}</small>`, `${tasks.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}"><span>${esc(t.tarefa)}<small class="st-${t.st}">${t.prazo < TODAY ? `atrasada ${relDay(t.prazo)}` : "vence hoje"}</small></span></label></div>`).join("")}${doneToday.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}" checked><span class="done">${esc(t.tarefa)}</span></label></div>`).join("")}${contas.map(v => `<div class="li"><span>${ic("house")}${esc(v.c.conta)} · ${eur(+v.c.valor || 0, 2)}</span>${pill(v.dias < 0 ? "crit" : "warn", v.dias < 0 ? "atrasada" : v.dias === 0 ? "hoje" : `em ${v.dias} d`)}</div>`).join("")}${!tasks.length && !doneToday.length && !contas.length ? `<div class="empty">Nada vencendo hoje.</div>` : ""}${quickBox("hj_tar", "Nova tarefa: Ligar para o banco até sexta !alta", "qtar", "Prazo, prioridade (!alta) e #área são opcionais.")}`)}
       ${panel(`${ic("flag")}Prioridades da semana`, `<div class="prio">${[0, 1, 2].map(i => `<label><span>${i + 1}</span><input id="prio${i}" type="text" data-prio="${i}" value="${esc(S.prio[i] || "")}" placeholder="O que mais importa"></label>`).join("")}</div>`)}
-      ${panel(`${ic("cal")}Próximos 7 dias`, agenda(R, 7))}
+      ${panel(`${ic("cal")}Próximos 7 dias`, agenda(R, 7), { act: S.integ?.gcal?.on ? `<button type="button" class="lnk" data-act="gcsync">${ic("refresh")}Google</button>` : `<a class="lnk" href="#integ">conectar Google Calendar</a>` })}
       ${bmHoje()}${jHoje()}
       ${exps.length ? panel(`${ic("flask")}Experimento de hoje`, exps.map(x => `<div class="hjexp"><b>${esc(x.titulo)}</b>${expToday(x, expAnalyze(x))}</div>`).join("")) : ""}
       ${al.length ? panel(`${ic("radar")}No radar`, al.map(a => alertCard(a, true)).join(""), { act: `<a class="lnk" href="#radar">ver tudo</a>` }) : ""}
@@ -9497,9 +9531,9 @@ const VIDA_CHECK = [
 ];
 async function vidaCot(force) {
   const F = fut(); if (!force && F.cot && F.cot.dia === TODAY) return;
-  try { const r = await fetch("https://api.frankfurter.dev/v1/latest?from=BRL&to=EUR"); if (!r.ok) throw 0; const j = await r.json(); const rate = +j?.rates?.EUR; if (!(rate > 0)) throw 0;
+  try { const r = await fetchT("https://api.frankfurter.dev/v1/latest?from=BRL&to=EUR"); if (!r.ok) throw 0; const j = await r.json(); const rate = +j?.rates?.EUR; if (!(rate > 0)) throw 0;
     F.cot = { rate, data: j.date, dia: TODAY, src: "BCE (frankfurter.dev)" }; touch("fut", { noUndo: true, label: "Cotação" }); }
-  catch { F.cotErr = TODAY; if (PAGE === "fin" && SUB === "vida") render(); }
+  catch { F.cotErr = TODAY; await hjFeed(); if (FEED?.cot?.rate > 0) { F.cot = { rate: +FEED.cot.rate, data: FEED.cot.data, dia: FEED.dia, src: "BCE, gravada no Atlas" }; touch("fut", { noUndo: true, label: "Cotação" }); return; } if (PAGE === "fin" && SUB === "vida") render(); }
 }
 const brl = v => "R$ " + (+v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 function pVida() {
@@ -9603,7 +9637,7 @@ function pIdiomas() {
   return `${kpiRow([kmini(LANG.en.cor, "Inglês · esta semana", `${P.reduce((s, p) => s + p.en + p.desl, 0)} min`, `${pe.ok === false ? "abaixo do necessário" : "no plano"}`, pe.ok === false ? "warn" : "good"), kmini(LANG.it.cor, "Italiano · esta semana", `${P.reduce((s, p) => s + p.it, 0)} min`, ""), kmini("var(--accent)", "Feito nas últimas 4 semanas", `${num(sum(idiSess("en", addDays(TODAY, -28)).concat(idiSess("it", addDays(TODAY, -28))).map(x => +x.horas || 0)), 1)} h`, "inglês + italiano"), kmini("var(--warn)", "Compromissos na janela", P.filter(p => p.busy).length, `dias com agenda entre ${I.janela.ini} e ${I.janela.fim}`)])}
   <div class="g2c">${card("en", pe)}${card("it", pi)}
     ${panel(`${ic("cal")}Plano dos próximos 7 dias <small>calculado com a sua disponibilidade e a Agenda</small>`, `<div class="hscroll"><table class="dt idpl"><thead><tr><th>Dia</th><th class="num">Livre</th><th>Inglês</th><th>Italiano</th></tr></thead><tbody>${P.map((p, k) => `<tr><td><b>${DOWL[p.dow].slice(0, 3)}</b> ${fmtD(p.d)}${p.busy ? `<div class="muted small">${p.ev.length} compromisso(s) na janela: −${p.busy} min</div>` : ""}</td><td class="num">${p.livre} min</td><td>${p.en ? `<b>${p.en} min</b> · ${esc(focoHoje("en", k))}: ${esc(ATIV[focoHoje("en", k)])}` : "–"}${p.desl ? `<div class="muted small">+ ${p.desl} min no deslocamento: ouvir podcast</div>` : ""}</td><td>${p.it ? `<b>${p.it} min</b> · ${esc(focoHoje("it", k + 2))}` : "–"}</td></tr>`).join("")}</tbody></table></div>
-      <details class="futd"><summary>Disponibilidade e janela</summary><div class="form f4">${[1, 2, 3, 4, 5, 6, 0].map(d => `<label>${DOWL[d].slice(0, 3)} (min)<input type="number" min="0" step="5" data-idid="${d}" value="${I.disp[d]}"></label>`).join("")}<label>Janela: início<input type="time" data-idi="janela.ini" value="${I.janela.ini}"></label><label>fim<input type="time" data-idi="janela.fim" value="${I.janela.fim}"></label><label>% para o inglês<input type="number" min="0" max="100" data-idi="peso" value="${I.peso}"></label><label>Deslocamento (min/dia útil)<input type="number" min="0" data-idi="desloc" value="${I.desloc}"></label></div></details>`, { cls: "span2" })}
+      <div class="row wrap"><button type="button" class="btn sm" data-act="gcestudo">${ic("cal")}Pôr os blocos da semana no Google Calendar</button></div><details class="futd"><summary>Disponibilidade e janela</summary><div class="form f4">${[1, 2, 3, 4, 5, 6, 0].map(d => `<label>${DOWL[d].slice(0, 3)} (min)<input type="number" min="0" step="5" data-idid="${d}" value="${I.disp[d]}"></label>`).join("")}<label>Janela: início<input type="time" data-idi="janela.ini" value="${I.janela.ini}"></label><label>fim<input type="time" data-idi="janela.fim" value="${I.janela.fim}"></label><label>% para o inglês<input type="number" min="0" max="100" data-idi="peso" value="${I.peso}"></label><label>Deslocamento (min/dia útil)<input type="number" min="0" data-idi="desloc" value="${I.desloc}"></label></div></details>`, { cls: "span2" })}
     ${panel(`${ic("plus")}Registrar sessão`, `<div class="form f4"><label>Idioma<select id="idl"><option value="en">Inglês</option><option value="it">Italiano</option></select></label><label>Minutos<input type="number" id="idm" min="5" step="5" value="30"></label><label>Habilidade<select id="idh">${HABS.map(h => `<option>${h}</option>`).join("")}</select></label><label>Recurso<input type="text" id="idr" placeholder="6 Minute English, Il Post…"></label></div><div class="row"><button type="button" class="btn sm primary" data-act="idsess">${ic("check")}Registrar</button></div><p class="muted small">Vai para Crescimento como sessão de estudo, junto com o resto do que você estuda.</p>`)}
     ${vis("idsem", "Minutos por semana", colChart(wks.map(w => fmtD(w)), [{ name: "Inglês", color: LANG.en.cor, data: serie("en") }, { name: "Italiano", color: LANG.it.cor, data: serie("it") }], { h: 200, w: 520, stacked: true, fmt: v => num(v, 0) }), { sub: "últimas 8 semanas", nofocus: true })}
     ${perc("en")}${perc("it")}
@@ -9694,6 +9728,164 @@ function exOff() {
 }
 const exToggle = () => EX_MODE ? exOff() : exOn();
 const exBanner = () => EX_MODE ? `<div class="banner exb">${ic("eye")}<span><b>Modo exemplo.</b> Todas as abas estão preenchidas com dados fictícios para mostrar como funcionam. Pode clicar e editar à vontade: nada é salvo, e os seus dados continuam guardados.</span><button type="button" class="btn sm primary" data-act="extog">Desligar o exemplo</button></div>` : "";
+
+/* ================================================================ Painel do dia, parte 2: o resto das abas do dia num formulário só
+   Tarefas (concluir e criar), pessoas, estudo e idiomas, leitura, casa (limpeza feita, conta paga), peso, receitas e aportes.
+   Tudo passa pela mesma revisão e pelo mesmo “desfazer” do painel. O texto e a voz preenchem estas seções também. */
+PD_KEYS.push("peso"); PD_LBL.peso = "Peso";
+const pdL = () => { PD.L ||= {}; for (const k of ["tar", "cont", "est", "ler"]) PD.L[k] ||= []; PD.chk ||= {}; for (const k of ["tdone", "rot", "conta"]) PD.chk[k] ||= {}; return PD.L; };
+const PD_SEC = [["sec_saude", "Saúde", "pulse"], ["sec_din", "Finanças", "coins"], ["sec_hab", "Hábitos", "repeat"], ["sec_tar", "Tarefas", "checksq"], ["sec_pes", "Pessoas", "users"], ["sec_est", "Estudo & idiomas", "book"], ["sec_jor", "Jornada & lazer", "lotus"], ["sec_casa", "Casa", "house"], ["sec_dia", "Diário", "pen"]];
+const CT_TIPOS = ["Encontro", "Ligação", "Videochamada", "Mensagem", "Evento / grupo"];
+const estItens = () => ["Inglês", "Italiano", ...S.aprend.filter(a => a.status === "Em andamento" && !/^(inglês|italiano)$/i.test(a.titulo)).map(a => a.titulo)];
+const lerItens = () => S.aprend.filter(a => a.status === "Em andamento" && (a.tipo === "Livro" || +a.total)).map(a => a.titulo);
+function pdTarefasDia(d = PD.date) { return S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= d).sort((a, b) => a.prazo.localeCompare(b.prazo)); }
+function pdCasaDia(d = PD.date) {
+  const rot = S.rotinas.filter(r => { const prox = r.ultima && +r.freq ? addDays(r.ultima, +r.freq) : d; return prox <= d && r.ultima !== d; });
+  const contas = []; for (const c of S.contasCasa || []) for (const v of contaOcorr(c, addDays(d, -30), addDays(d, 3))) if (!contaPaga(c, v)) contas.push({ c, v });
+  return { rot, contas };
+}
+/* estado do dia por aba: “ok” quando a aba já tem registro no dia, “pend” quando há algo no painel esperando para ir */
+function pdMapa(rows) {
+  const d = PD.date, B = pdBase(d), s = S.saude[d] || {}, has = id => rows.some(r => r.on && r.id.startsWith(id));
+  const st = { sec_saude: [["humor", "sono", "energia", "estresse", "passos", "treino", "peso"].some(k => s[k] != null && s[k] !== ""), has("s.")], sec_din: [S.lanc.some(l => l.data === d), has("g.")], sec_hab: [S.habitos.some(h => S.marks[`${h.id}|${d}`]), has("h.")],
+    sec_tar: [S.tarefas.some(t => t.concluida === d), has("t.")], sec_pes: [S.contatos.some(c => c.data === d), has("c.")], sec_est: [S.estudo.some(x => x.data === d), has("e.") || has("r.")],
+    sec_jor: [B.sess.length > 0 || B.lz.length > 0, has("j.") || has("l.")], sec_casa: [S.rotinas.some(r => r.ultima === d) || (S.contasCasa || []).some(c => Object.values(c.pagos || {}).includes(d)), has("k.")], sec_dia: [B.ent.length > 0, has("d.")] };
+  return `<nav class="pdmapa" aria-label="Abas do dia">${PD_SEC.map(([id, l, i]) => { const [ok, pend] = st[id] || []; return `<a href="#painel" class="pdmc${ok ? " ok" : ""}${pend ? " pend" : ""}" data-pdgo="${id}" title="${ok ? "já tem registro neste dia" : pend ? "há registros esperando para salvar" : "nada ainda"}">${ic(ok ? "check" : i)}<span>${l}</span>${pend ? "<i></i>" : ""}</a>`; }).join("")}</nav>`;
+}
+function pdMoreHTML(C) {
+  const L = pdL(), d = PD.date, tds = pdTarefasDia(), CD = pdCasaDia(), V = PD.v, s = S.saude[d] || {};
+  const del = (k, i) => `<button type="button" class="vb" data-pdldel="${k}|${i}" aria-label="Remover">${ic("x")}</button>`, src = r => r.src === "texto" ? `<em class="pdsrc s-texto">do texto</em>` : "";
+  const opt = (list, v) => `<option value=""></option>${list.map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("")}`;
+  const inp = (k, i, f, v, ph, mode = "text") => `<input type="text" data-pdl="${k}|${i}|${f}" id="pdl_${k}${i}${f}" value="${esc(v ?? "")}" placeholder="${ph}" inputmode="${mode}" autocomplete="off" aria-label="${ph}">`;
+  const sel = (k, i, f, list, v, lab) => `<select data-pdl="${k}|${i}|${f}" id="pdl_${k}${i}${f}" aria-label="${lab}">${opt(list, v)}</select>`;
+  return `
+    <div class="pdblk" id="sec_tar"><div class="pdfl"><span class="pdlab">${ic("checksq")}Tarefas</span><small class="pdhint">${tds.length ? `${tds.length} vencendo até ${fmtD(d)}` : "nada vencendo"}</small></div>
+      ${tds.map(t => `<label class="ckl pdck"><input type="checkbox" data-pdck="tdone|${t.id}"${PD.chk.tdone[t.id] ? " checked" : ""}><span>Concluí: ${esc(t.tarefa)}<small class="${t.prazo < d ? "st-crit" : "muted"}">${t.prazo < d ? "atrasada" : "vence hoje"}</small></span></label>`).join("")}
+      ${L.tar.map((r, i) => `<div class="pdlr">${inp("tar", i, "t", r.t, "Nova tarefa: ligar para o banco até sexta !alta")}${del("tar", i)}${src(r)}</div>`).join("")}
+      <button type="button" class="btn sm" data-pdladd="tar">${ic("plus")}Nova tarefa</button></div>
+    <div class="pdblk" id="sec_pes"><div class="pdfl"><span class="pdlab">${ic("users")}Pessoas com quem falou</span></div>
+      ${L.cont.map((r, i) => `<div class="pdlr pdl4">${sel("cont", i, "pessoa", S.pessoas.map(p => p.nome), r.pessoa, "Pessoa")}${sel("cont", i, "tipo", CT_TIPOS, r.tipo, "Tipo")}${inp("cont", i, "min", r.min, "min", "numeric")}${del("cont", i)}${src(r)}${r.pessoa || !r.raw ? "" : `<small class="pdmsg warn">Não achei “${esc(r.raw)}” em Relações</small>`}</div>`).join("")}
+      <button type="button" class="btn sm" data-pdladd="cont">${ic("plus")}Contato</button></div>
+    <div class="pdblk" id="sec_est"><div class="pdfl"><span class="pdlab">${ic("book")}Estudo, idiomas e leitura</span></div>
+      ${L.est.map((r, i) => `<div class="pdlr pdl3">${sel("est", i, "item", estItens(), r.item, "O que estudou")}${inp("est", i, "min", r.min, "min", "numeric")}${del("est", i)}${src(r)}</div>`).join("")}
+      ${L.ler.map((r, i) => `<div class="pdlr pdl3">${sel("ler", i, "item", lerItens(), r.item, "Livro ou curso")}${inp("ler", i, "pag", r.pag, "páginas/aulas", "numeric")}${del("ler", i)}${src(r)}</div>`).join("")}
+      <div class="row wrap"><button type="button" class="btn sm" data-pdladd="est">${ic("plus")}Estudo ou idioma</button><button type="button" class="btn sm" data-pdladd="ler">${ic("plus")}Leitura</button></div></div>
+    <div class="pdblk" id="sec_casa"><div class="pdfl"><span class="pdlab">${ic("house")}Casa</span><small class="pdhint">${CD.rot.length + CD.contas.length ? "o que está vencido ou vence em até 3 dias" : "nada pendente"}</small></div>
+      ${CD.rot.map(r => `<label class="ckl pdck"><input type="checkbox" data-pdck="rot|${r.id}"${PD.chk.rot[r.id] ? " checked" : ""}><span>Fiz: ${esc(r.rotina)}<small class="muted">${esc(r.nivel || "")}${r.min ? ` · ${r.min} min` : ""}</small></span></label>`).join("")}
+      ${CD.contas.map(({ c, v }) => `<label class="ckl pdck"><input type="checkbox" data-pdck="conta|${c.id}|${v}"${PD.chk.conta[`${c.id}|${v}`] ? " checked" : ""}><span>Paguei: ${esc(c.conta)} · ${eur(+c.valor || 0, 2)}<small class="${v < d ? "st-crit" : "muted"}">vence ${fmtD(v)}</small></span></label>`).join("")}</div>
+    <div class="pdrow3"><div class="pdf ${pdSt(C, "peso")}" data-pdbox="peso"><div class="pdfl"><label for="pd_peso">Peso (kg)</label>${s.peso ? `<em class="pdsrc">${num(s.peso)} salvo</em>` : ""}</div><div class="pdfi"><input type="text" id="pd_peso" data-pdf="peso" inputmode="decimal" autocomplete="off" value="${esc(V.peso ?? "")}" placeholder="72,5" aria-describedby="pdm_peso"></div>${pdMsg(C, "peso")}</div></div>`;
+}
+/* texto e voz: o que antes virava “outros registros” agora cai na seção da aba */
+function pdReset2() { const L = pdL(); for (const k of Object.keys(L)) L[k] = L[k].filter(r => r.src !== "texto"); }
+function pdParse2(c, a, take) {
+  const L = pdL();
+  if (c === "receita" || c === "aporte") { const mm = a.match(/^([\d.,]+)\s*(.*)$/); if (mm) PD.gastos.push({ id: uid(), v: mm[1], d: mm[2].replace(/^[^:]*:\s*/, "").trim(), cat: "", tipo: c === "receita" ? "Receita" : "Aporte", src: "texto" }); return true; }
+  if (c === "peso") { take("peso", a.trim()); return true; }
+  if (c === "tarefa") { L.tar.push({ id: uid(), t: a.trim(), src: "texto" }); return true; }
+  if (c === "contato") { const tk = (a.match(/@\[([^\]]+)\]|@(\S+)/) || []), nome = tk[1] || tk[2] || "", p = resolvePerson(nome), tipo = findIn(CT_TIPOS, a.replace(/@\[[^\]]*\]|@\S+/g, "").replace(/\d+/g, "").trim()) || "Encontro", mn = (a.replace(/@\[[^\]]*\]/g, "").match(/(\d{1,3})\s*$/) || [])[1] || "";
+    L.cont.push({ id: uid(), pessoa: p || "", raw: nome, tipo, min: mn, src: "texto" }); return true; }
+  if (c === "estudo") { const mm = a.match(/^([\d.,]+)\s*h?\s*(.*)$/i); if (mm) { const it = mm[2].trim(), item = estItens().find(x => norm(x) === norm(it)) || estItens().find(x => norm(it).includes(norm(x)) || norm(x).includes(norm(it))) || it; L.est.push({ id: uid(), item, min: String(Math.round(parseNum(mm[1]) * 60)), src: "texto" }); } return true; }
+  if (c === "ler") { const mm = a.match(/^(\d+)\s+(.*)$/); if (mm) L.ler.push({ id: uid(), item: lerItens().find(x => norm(x).includes(norm(mm[2]))) || mm[2], pag: mm[1], src: "texto" }); return true; }
+  return false;
+}
+function pdCheck2(set, V) {
+  if (V.peso !== "" && V.peso != null) { const v = pdMoney(V.peso); if (v == null || isNaN(v)) set("peso", "err", "Ex.: 72,5"); else if (v < 20 || v > 400) set("peso", "err", "Entre 20 e 400 kg"); else set("peso", "ok", ""); }
+  const L = pdL();
+  L.cont.forEach((r, i) => { if (r.min && !(+r.min > 0 && +r.min <= 900)) set(`cont${i}`, "err", "Minutos inválidos"); });
+  L.est.forEach((r, i) => { if (r.item && !(+r.min > 0 && +r.min <= 900)) set(`est${i}`, "err", "Informe os minutos"); });
+  L.ler.forEach((r, i) => { if (r.item && !(+r.pag > 0)) set(`ler${i}`, "err", "Informe as páginas"); });
+}
+function pdRows2(rows, cmd, B, d, bad) {
+  const L = pdL(), V = PD.v;
+  if (V.peso !== "" && V.peso != null && !bad("peso")) { const v = pdMoney(V.peso), old = S.saude[d]?.peso; if (old == null || Math.abs(old - v) > 1e-9) cmd("s.peso", `/peso ${fmtDec(v)}`, { kind: old == null ? "novo" : "subst", old: old == null ? "" : num(old) + " kg", dest: "saude" }); }
+  for (const t of S.tarefas) if (PD.chk.tdone[t.id] && t.status !== "Concluída") rows.push({ id: `t.done.${t.id}`, txt: `Tarefa concluída: ${t.tarefa}`, kind: "novo", dest: "tarefas", on: true, apply: () => { const x = S.tarefas.find(z => z.id === t.id); if (x) { x.status = "Concluída"; x.concluida = d; } return ["tarefas"]; } });
+  L.tar.forEach(r => { const t = String(r.t || "").trim(); if (t.length < 3) return; const dup = S.tarefas.some(x => x.status !== "Concluída" && norm(x.tarefa) === norm(t.replace(/\s+at[eé].*$/, "").replace(/!\w+/, "").trim())); cmd(`t.n.${r.id}`, `/tarefa ${t}`, { kind: dup ? "dup" : "novo", old: dup ? "tarefa igual já aberta" : "", on: !dup, dest: "tarefas" }); });
+  L.cont.forEach((r, i) => { if (!r.pessoa || bad(`cont${i}`)) return; const dup = S.contatos.some(c => c.data === d && c.pessoa === r.pessoa); cmd(`c.${r.id}`, `/contato ${personTok(r.pessoa)} ${r.tipo || "Encontro"}${r.min ? " " + r.min : ""}`, { kind: dup ? "dup" : "novo", old: dup ? "já há contato com essa pessoa neste dia" : "", on: !dup, dest: "contatos" }); });
+  L.est.forEach((r, i) => { if (!r.item || bad(`est${i}`)) return; const h = Math.round(+r.min / 60 * 100) / 100, lang = /^ingl/i.test(r.item) ? "en" : /^italia/i.test(r.item) ? "it" : null, dup = S.estudo.some(x => x.data === d && norm(x.item) === norm(r.item) && Math.abs(x.horas - h) < .01);
+    if (lang) rows.push({ id: `e.${r.id}`, txt: `${r.item}: ${r.min} min`, kind: dup ? "dup" : "novo", old: dup ? "sessão igual já registrada" : "", dest: "estudo", on: !dup, apply: () => { S.estudo.push({ id: uid(), data: d, item: LANG[lang].item, horas: h, lang, hab: "", rec: "", origem: "painel" }); return ["estudo"]; } });
+    else cmd(`e.${r.id}`, `/estudo ${fmtDec(h)} ${r.item}`, { kind: dup ? "dup" : "novo", old: dup ? "sessão igual já registrada" : "", on: !dup, dest: "estudo" }); });
+  L.ler.forEach((r, i) => { if (!r.item || bad(`ler${i}`)) return; cmd(`r.${r.id}`, `/ler ${+r.pag} ${r.item}`, { dest: "aprend" }); });
+  for (const r of S.rotinas) if (PD.chk.rot[r.id]) rows.push({ id: `k.r.${r.id}`, txt: `Casa: ${r.rotina} feita`, kind: "novo", dest: "rotinas", on: true, apply: () => { const x = S.rotinas.find(z => z.id === r.id); if (x) x.ultima = d; return ["rotinas"]; } });
+  for (const key of Object.keys(PD.chk.conta)) { if (!PD.chk.conta[key]) continue; const [cid, v] = key.split("|"), c = (S.contasCasa || []).find(z => z.id === cid); if (!c || contaPaga(c, v)) continue;
+    rows.push({ id: `k.c.${key}`, txt: `Conta paga: ${c.conta} · ${eur(+c.valor || 0, 2)}`, kind: "novo", dest: "contasCasa", on: true, apply: () => { const x = S.contasCasa.find(z => z.id === cid); x.pagos = { ...(x.pagos || {}), [v]: d }; const ks = ["contasCasa"], cat = /aluguel|condom/i.test(x.cat || "") ? "Moradia" : "Contas da casa";
+      if (+x.valor > 0 && cat in CAT_DESP) { S.lanc.push({ id: uid(), data: d, tipo: "Despesa", cat, desc: x.conta, valor: +x.valor, conta: x.debito === "Sim" ? "Conta corrente" : "PIX / transferência", origem: "casa" }); ks.push("lanc"); } return ks; } }); }
+}
+const pdLtotal = () => { const L = pdL(); return L.tar.length + L.cont.length + L.est.length + L.ler.length; };
+function pd2Click(t) {
+  const ds = t.dataset;
+  if (ds.pdgo) { document.getElementById(ds.pdgo)?.scrollIntoView({ behavior: "smooth", block: "start" }); return true; }
+  if (ds.pdladd) { const L = pdL(), k = ds.pdladd; L[k].push({ id: uid(), src: "mao", ...(k === "cont" ? { tipo: "Encontro" } : {}) }); pdStore(); render(); setTimeout(() => document.querySelector(`#sec_${{ tar: "tar", cont: "pes", est: "est", ler: "est" }[k]} .pdlr:last-of-type input, #sec_${{ tar: "tar", cont: "pes", est: "est", ler: "est" }[k]} .pdlr:last-of-type select`)?.focus(), 30); return true; }
+  if (ds.pdldel) { const [k, i] = ds.pdldel.split("|"); pdL()[k].splice(+i, 1); pdStore(); render(); return true; }
+  if (ds.pdck) { const [k, ...rest] = ds.pdck.split("|"), key = rest.join("|"); pdL(); if (t.checked) PD.chk[k][key] = 1; else delete PD.chk[k][key]; pdStore(); pdPaint(); return true; }
+  return false;
+}
+function pd2Input(t) { if (t.dataset.pdl) { const [k, i, f] = t.dataset.pdl.split("|"), r = pdL()[k][+i]; if (r) { r[f] = t.value; r.src = "mao"; } pdStore(); if (t.tagName !== "SELECT") pdPaint(); return true; } return false; }
+function pd2Change(t) { if (t.dataset.pdl) { if (t.tagName === "SELECT") { const [k, i, f] = t.dataset.pdl.split("|"), r = pdL()[k][+i]; if (r) { r[f] = t.value; r.src = "mao"; } pdStore(); pdPaint(); } return true; } return false; }
+
+/* ================================================================ Google Calendar ao vivo, pelo conector da conta Claude
+   Lê os próximos 30 dias (e o dia anterior) para a Agenda do Atlas (S.eventos, origem "gcal") e, só quando você pede, cria eventos:
+   os blocos de estudo do plano de Idiomas. A primeira chamada pede a sua permissão no próprio Claude. */
+const GCAL = { st: "", msg: "", busy: false };
+const GC_SRV = "Google Calendar";
+const gcInteg = () => { S.integ ||= {}; return (S.integ.gcal ||= {}); };
+const gcErr = e => ({ not_granted: "Você não liberou o Google Calendar para esta página.", needs_reauth: "O Google Calendar precisa ser reconectado nas configurações do Claude.", server_not_connected: "O Google Calendar não está conectado na sua conta Claude.", not_in_manifest: "Esta versão da página não tem acesso ao Google Calendar.", blocked_by_policy: "A sua organização bloqueou este conector.", cancelled: "Cancelado." }[e?.code] || `Não consegui falar com o Google Calendar (${e?.code || "erro"}).`);
+const tzLocal = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Rome"; } catch { return "Europe/Rome"; } };
+const hhmm = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+function gcMap(ev) {
+  const s = ev.start || {}, e = ev.end || {};
+  if (s.dateTime) { const a = new Date(s.dateTime), b = e.dateTime ? new Date(e.dateTime) : null; return { data: iso(a), hora: hhmm(a), fim: b ? hhmm(b) : "" }; }
+  const d0 = String(s.date || "").slice(0, 10), d1 = String(e.date || "").slice(0, 10); return { data: d0, hora: "", fim: "", ate: d1 && d1 > addDays(d0, 1) ? addDays(d1, -1) : "" };
+}
+async function gcSync(o = {}) {
+  if (!MCP) { GCAL.st = "off"; GCAL.msg = EX_MODE ? "Desligado no modo exemplo." : "O conector não está disponível nesta visualização."; if (!o.silent) toast(GCAL.msg); render(); return; }
+  if (GCAL.busy) return; GCAL.busy = true; GCAL.st = "load"; if (!o.silent) render();
+  const de = addDays(TODAY, -1), ate = addDays(TODAY, 30), evs = [];
+  try {
+    let tok = ""; for (let p = 0; p < 4; p++) {
+      const r = await MCP.callTool(GC_SRV, "list_events", { startTime: new Date(de + "T00:00:00").toISOString(), endTime: new Date(ate + "T23:59:59").toISOString(), orderBy: "startTime", pageSize: 250, timeZone: tzLocal(), ...(tok ? { pageToken: tok } : {}) }, { cache: false });
+      const pl = r?.payload || {}; for (const ev of pl.events || []) if (ev.status !== "cancelled" && ev.id) evs.push(ev); tok = pl.nextPageToken || ""; if (!tok) break; }
+    const keep = (S.eventos || []).filter(e => e.origem !== "gcal" || e.data < de || e.data > ate), novos = evs.map(ev => { const m = gcMap(ev); return { id: "gc_" + ev.id, uid: "gcal:" + ev.id, ...m, titulo: String(ev.summary || "(sem título)").slice(0, 200), local: String(ev.location || "").slice(0, 200), link: ev.htmlLink || "", origem: "gcal" }; }).filter(e => e.data);
+    S.eventos = [...keep, ...novos]; const G = gcInteg(); G.on = true; G.last = Date.now(); G.n = novos.length;
+    GCAL.st = "ok"; GCAL.msg = ""; touch("eventos", "integ", { label: "Google Calendar", noUndo: true }); if (!o.silent) toast(`${plural(novos.length, "compromisso", "compromissos")} do Google Calendar nos próximos 30 dias`);
+  } catch (e) { GCAL.st = "err"; GCAL.msg = gcErr(e); if (!o.silent) toast(GCAL.msg); render(); }
+  finally { GCAL.busy = false; }
+}
+/* sincroniza sozinho uma vez por abertura, se já foi conectado antes */
+function gcAuto() { const G = S.integ?.gcal; if (G?.on && MCP && !EX_MODE && (!G.last || Date.now() - G.last > 30 * 60e3)) gcSync({ silent: true }); }
+async function gcCriarEstudo() {
+  if (!MCP) { toast(EX_MODE ? "Desligue o modo exemplo para criar eventos." : "O conector não está disponível nesta visualização."); return; }
+  const I = idi(), P = idiPlano().filter(p => p.en + p.it > 0), ini = hm2m(I.janela.ini) ?? 1170; if (!P.length) { toast("Nenhum bloco de estudo no plano desta semana."); return; }
+  const ja = new Set((S.eventos || []).filter(e => /^Estudo · /.test(e.titulo)).map(e => e.data)), novos = P.filter(p => !ja.has(p.d));
+  if (!novos.length) { toast("Os blocos desta semana já estão na agenda."); return; }
+  GCAL.busy = true; toast(`Criando ${plural(novos.length, "bloco", "blocos")} no Google Calendar…`); let n = 0;
+  try {
+    for (const p of novos) {
+      /* começa no primeiro horário livre da janela, depois dos compromissos que caem nela */
+      let st = ini; for (const e of p.ev.sort((a, b) => (a.hora || "").localeCompare(b.hora || ""))) { const a = hm2m(e.hora), b = hm2m(e.fim) ?? (a != null ? a + 60 : null); if (a != null && a <= st && b > st) st = b; }
+      const min = p.en + p.it, a = new Date(`${p.d}T${pad(Math.floor(st / 60))}:${pad(st % 60)}:00`), b = new Date(a.getTime() + min * 60e3);
+      const titulo = `Estudo · ${p.en ? `inglês ${p.en} min` : ""}${p.en && p.it ? " + " : ""}${p.it ? `italiano ${p.it} min` : ""}`;
+      await MCP.callTool(GC_SRV, "create_event", { summary: titulo, startTime: a.toISOString(), endTime: b.toISOString(), description: "Criado pelo Atlas da Vida a partir do plano de Idiomas.", availability: "AVAILABILITY_BUSY", useDefaultReminders: true });
+      S.eventos.push({ id: uid(), uid: "atlas:" + p.d, data: p.d, hora: hhmm(a), fim: hhmm(b), titulo, local: "", origem: "gcal" }); n++;
+    }
+    toast(`${plural(n, "bloco criado", "blocos criados")} no Google Calendar`);
+  } catch (e) { toast(gcErr(e) + (n ? ` (${n} criados antes do erro)` : "")); }
+  finally { GCAL.busy = false; if (n) touch("eventos", { label: "Estudo na agenda" }); }
+}
+function gcPanel() {
+  const G = S.integ?.gcal || {}, on = !!MCP, n = (S.eventos || []).filter(e => e.origem === "gcal" && e.data >= TODAY).length;
+  const st = GCAL.st === "load" ? ["none", "Sincronizando…"] : GCAL.st === "err" ? ["crit", "Erro"] : G.on ? ["good", "Conectado"] : on ? ["none", "Não conectado"] : ["none", "Indisponível nesta visualização"];
+  return panel(`${ic("cal")}Google Calendar <span class="pill ${st[0]}">${st[1]}</span>`, `<p>Traz os seus compromissos dos próximos 30 dias para a Agenda do Atlas, usada pelo Hoje, pelo plano de Idiomas e pela semana. Só lê; eventos só são criados quando você pede (os blocos de estudo de Idiomas).</p>
+    ${GCAL.msg ? `<p class="note st-warn">${ic("info")}<span>${esc(GCAL.msg)}</span></p>` : ""}${G.last ? `<p class="muted small">Última sincronização: ${new Date(G.last).toLocaleString("pt-BR")} · ${plural(n, "compromisso futuro", "compromissos futuros")} vindos do Google.</p>` : ""}
+    <div class="row wrap"><button type="button" class="btn sm primary" data-act="gcsync"${on && !GCAL.busy ? "" : " disabled"}>${ic("refresh")}${G.on ? "Sincronizar agora" : "Conectar e sincronizar"}</button>${G.on ? `<button type="button" class="btn sm ghost" data-act="gcoff">Desconectar</button>` : ""}</div>
+    ${on ? "" : `<p class="muted small">Abra o Atlas no Claude com o Google Calendar conectado em Configurações › Conectores.</p>`}`);
+}
+function gcClick(t) {
+  const a = t.dataset.act;
+  if (a === "gcsync") { gcSync(); return true; }
+  if (a === "gcoff") { const G = gcInteg(); G.on = false; S.eventos = (S.eventos || []).filter(e => e.origem !== "gcal" || e.data < TODAY); touch("integ", "eventos", { label: "Google Calendar desconectado" }); return true; }
+  if (a === "gcestudo") { gcCriarEstudo(); return true; }
+  return false;
+}
 
 
 /* ================================================================ render */
@@ -9811,7 +10003,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (pdClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -9927,7 +10119,7 @@ window.addEventListener("resize", debounce(() => { const old = REPW; measureGrid
   const use = n => { try { return Promise.resolve(window.claude?.use?.(n)).catch(() => null); } catch { return Promise.resolve(null); } };
   use("sample").then(async s => { SAMPLE = s || null; if (s) { const lim = await s.limits().catch(() => null); TOOLS_MAX = lim?.tools ? (lim.tools.maxCount || 8) : 0; } if (["mentores", "mentor", "diario"].includes(PAGE)) render(); });
   use("downloads").then(d => { DL = d || null; });
-  use("mcp").then(async m => { MCP = m || null; await notionStatus(); if (PAGE === "integ") render(); });
+  use("mcp").then(async m => { MCP = m || null; await notionStatus(); if (PAGE === "integ") render(); gcAuto(); });
   const loaded = await loadStore();
   if (Object.keys(loaded).length) { const E = EMPTY(); S = { ...E, ...loaded, priv: { ...E.priv, ...(loaded.priv || {}) }, radar: { ...E.radar, ...(loaded.radar || {}) }, cfg: { ...E.cfg, ...(loaded.cfg || {}) }, integ: { ...E.integ, ...(loaded.integ || {}), notion: { ...E.integ.notion, ...(loaded.integ?.notion || {}) } }, listas: { ...E.listas, ...(loaded.listas || {}) } }; IS_EXAMPLE = false; }
   applyLists(); VER++; LOADED = true; snapAll(); UNDO.length = 0; REDO.length = 0;

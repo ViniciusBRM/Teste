@@ -215,7 +215,7 @@ function pInteg(R) {
   const pai = S.integ?.notion?.pai, hist = S.integ?.notion?.hist || [], on = !!MCP && NT.status !== "off";
   const res = (list, act) => list.map(x => `<div class="nres"><div><b>${esc(x.title || "Sem título")}</b><small>${esc([x.type, x.path, x.timestamp && fmtDY(String(x.timestamp).slice(0, 10))].filter(Boolean).join(" · "))}</small>${x.highlight ? `<p>${esc(trunc(String(x.highlight).replace(/\*\*/g, ""), 160))}</p>` : ""}</div><div class="row">${act(x)}</div></div>`).join("");
   return `<p class="lead">O Atlas conversa com outros apps de duas formas: ao vivo com o Notion, pelo conector da sua conta Claude, e por arquivos nos formatos que Google Agenda, Apple Health, Google Fit, Todoist, Obsidian, planilhas e bancos entendem. Onde dá, a troca vai e volta.</p>
-  <div class="g2c">${pIntegTwoWay(R)}
+  <div class="g2c">${gcPanel()}${pIntegTwoWay(R)}
     ${panel(`${ic("globe")}Notion <span class="pill ${st[0]}">${st[1]}</span>`, `${!on ? `<p class="note">O conector não está disponível nesta visualização. Abra o artefato no Claude com o Notion conectado em Configurações › Conectores.</p>` : ""}
       <div class="flbl">Destino das exportações</div><div class="row wrap"><span class="chip">${pai ? esc(pai.title) : "Rascunho privado (padrão)"}</span>${pai ? `<button type="button" class="lnk" data-act="ntpaiclear">usar rascunho privado</button>` : ""}</div>
       <div class="row"><input id="nt_pq" type="search" placeholder="Buscar página do Notion para usar como destino" value="${esc(NT.pq)}"${on ? "" : " disabled"}><button type="button" class="btn sm" data-act="ntpaisearch"${on ? "" : " disabled"}>${NT.busy === "pai" ? "Buscando…" : "Buscar"}</button></div>

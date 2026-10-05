@@ -72,9 +72,9 @@ const VIDA_CHECK = [
 ];
 async function vidaCot(force) {
   const F = fut(); if (!force && F.cot && F.cot.dia === TODAY) return;
-  try { const r = await fetch("https://api.frankfurter.dev/v1/latest?from=BRL&to=EUR"); if (!r.ok) throw 0; const j = await r.json(); const rate = +j?.rates?.EUR; if (!(rate > 0)) throw 0;
+  try { const r = await fetchT("https://api.frankfurter.dev/v1/latest?from=BRL&to=EUR"); if (!r.ok) throw 0; const j = await r.json(); const rate = +j?.rates?.EUR; if (!(rate > 0)) throw 0;
     F.cot = { rate, data: j.date, dia: TODAY, src: "BCE (frankfurter.dev)" }; touch("fut", { noUndo: true, label: "Cotação" }); }
-  catch { F.cotErr = TODAY; if (PAGE === "fin" && SUB === "vida") render(); }
+  catch { F.cotErr = TODAY; await hjFeed(); if (FEED?.cot?.rate > 0) { F.cot = { rate: +FEED.cot.rate, data: FEED.cot.data, dia: FEED.dia, src: "BCE, gravada no Atlas" }; touch("fut", { noUndo: true, label: "Cotação" }); return; } if (PAGE === "fin" && SUB === "vida") render(); }
 }
 const brl = v => "R$ " + (+v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 function pVida() {

@@ -22,7 +22,7 @@ async def main():
             chk("Modo exemplo" in await pg.inner_text("#savest"), "o status diz que nada é salvo")
             chk(await pg.evaluate("MCP === null && !NOTION_OK"), "Notion desligado no exemplo")
             for h in ["hoje", "painel", "carreira.rede", "casa.compras", "fin.vida", "idiomas", "jornada.meditacao", "lazer.cafe"]:
-                await pg.evaluate(f"location.hash='{h}'"); await pg.wait_for_timeout(200)
+                await pg.evaluate(f"location.hash='{h}'"); await pg.wait_for_timeout(900 if h == "hoje" else 200)
                 em = await pg.evaluate("[...document.querySelectorAll('.page .empty, .page .emptyb')].length")
                 chk(em == 0, f"{h} preenchida no exemplo")
             chk(await pg.evaluate("PD.text.startsWith('Dormi 7 e meia') && PD.gastos.length === 2"), "Painel do dia mostra um texto de exemplo já lido em campos")

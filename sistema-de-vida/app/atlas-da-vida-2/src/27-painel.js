@@ -6,11 +6,11 @@ const PD_LBL = { humor: "Humor", energia: "Energia", estresse: "Estresse", sono:
 const PD_REQ_OPC = ["humor", "energia", "estresse", "sono", "passos", "treino", "gastos", "habitos", "texto"];
 const PD_REQ_DEF = ["humor", "sono"];
 const PD_KEYS = ["humor", "energia", "estresse", "sono", "passos", "treino", "min", "ppid", "pmin", "lzat", "lzh"];
-const pdNew = (date = TODAY) => ({ date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], step: "form", done: null, inf: [] });
+const pdNew = (date = TODAY) => ({ date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], L: { tar: [], cont: [], est: [], ler: [] }, chk: { tdone: {}, rot: {}, conta: {} }, step: "form", done: null, inf: [] });
 let PD = pdLoad() || pdNew();
 function pdLoad() { try { const v = JSON.parse(localStorage.getItem("atlas_painel") || "null"); return v && v.date && v.v ? { ...pdNew(v.date), ...v, step: "form", done: null } : null; } catch { return null; } }
 const pdStore = debounce(() => { if (EX_MODE) return; try { pdEmpty() ? localStorage.removeItem("atlas_painel") : localStorage.setItem("atlas_painel", JSON.stringify({ ...PD, done: null, step: "form" })); } catch {} }, 400);
-const pdEmpty = () => !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
+const pdEmpty = () => !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !pdLtotal() && !Object.values(PD.chk || {}).some(o => Object.keys(o).length) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
 const pdReq = () => Array.isArray(S.cfg.pdReq) ? S.cfg.pdReq : PD_REQ_DEF;
 const pdRev = () => S.cfg.pdRev !== false;
 const pdLang = () => S.cfg.pdLang || "pt-BR";
@@ -122,6 +122,7 @@ function pdCheck() {
   /* soma de horas do dia */
   const hs = (pdHours(V.sono) || 0) + (hasH ? pdHours(V.lzh) || 0 : 0) + ((pdMin(V.min) || 0) + (pdMin(V.pmin) || 0)) / 60;
   if (hs > 24 && !f.sono?.st?.startsWith("e")) set("sono", "warn", `Sono, lazer, treino e prática somam ${num(hs, 1)} h no dia: confira`);
+  pdCheck2(set, V);
   /* obrigatórios */
   const filled = { humor: V.humor !== "" && V.humor != null, energia: V.energia !== "" && V.energia != null, estresse: V.estresse !== "" && V.estresse != null, sono: V.sono !== "" && V.sono != null, passos: V.passos !== "" && V.passos != null, treino: !!V.treino,
     gastos: PD.gastos.some(g => String(g.v || "").trim()) || pdBase().gastos.length > 0, habitos: S.habitos.some(pdHabOn), texto: !!PD.text.trim() };
@@ -136,7 +137,7 @@ const PD_PRAT = [[/\b(meditei|meditacao|medita\w*|respirei|respiracao|atencao pl
 function pdParse(o = {}) {
   /* volta ao que as abas têm o que veio do texto antes; o que foi digitado ou falado no campo fica */
   for (const k of PD_KEYS) if (PD.src[k] === "texto") { PD.src[k] = ""; if (k !== "ppid") PD.v[k] = ""; }
-  PD.inf = []; PD.gastos = PD.gastos.filter(g => g.src !== "texto");
+  PD.inf = []; PD.gastos = PD.gastos.filter(g => g.src !== "texto"); pdReset2();
   for (const id of Object.keys(PD.hsrc)) if (PD.hsrc[id] === "texto") { delete PD.hsrc[id]; delete PD.habs[id]; }
   pdSyncBase();
   const txt = pdNorm(pdWords(PD.text)), extras = [];
@@ -154,6 +155,7 @@ function pdParse(o = {}) {
       /* o mesmo lazer já digitado no campo não vira um segundo registro */
       const fld = norm(String(PD.v.lzat || "")), at = norm(mm[2]); if (fld && (at.includes(fld) || fld.includes(at))) continue;
       if (!lz && PD.src.lzat !== "mao" && PD.src.lzh !== "mao" && PD.src.lzat !== "voz") { take("lzh", mm[1]); take("lzat", mm[2]); lz = true; } else extras.push(it.line); }
+    else if (pdParse2(c, a, take)) {}
     else extras.push(it.line);
   }
   /* prática da jornada: verbo + minutos no mesmo trecho */
@@ -162,7 +164,7 @@ function pdParse(o = {}) {
 }
 
 /* ---------------------------------------------------------------- o que vai ser salvo: uma linha por registro, comparada com o que o dia já tem */
-const PD_DEST = { saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
+const PD_DEST = { rotinas: ["Casa › Limpeza", "casa.limpeza"], contasCasa: ["Casa › Contas", "casa.contas"], saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
 function pdRows() {
   const d = PD.date, B = pdBase(d), C = pdCheck(), V = PD.v, rows = [], bad = k => C.f[k]?.st === "err";
   const ctx = { date: d, area: "", humor: +V.humor || null };
@@ -177,8 +179,9 @@ function pdRows() {
     if (tipo || mn) { const t = tipo || "Outro"; if (t !== B.treino || String(mn) !== String(B.min ?? "")) cmd("s.treino", `/treino ${t}${mn ? " " + mn : ""}`, { kind: B.treino ? "subst" : "novo", old: B.treino ? `${B.treino}${B.min ? " " + B.min + " min" : ""}` : "", dest: "saude" }); }
     else if (B.treino && PD.src.treino === "mao") rows.push({ id: "s.treino", txt: "Treino: apagar o registro do dia", kind: "apagar", old: B.treino, dest: "saude", on: true, apply: () => { const s = { ...(S.saude[d] || {}) }; delete s.treino; delete s.min; S.saude[d] = s; return ["saude"]; } }); }
   PD.gastos.forEach((g, i) => { if (!String(g.v || "").trim() || bad(`g${i}`)) return; const v = pdMoney(g.v), desc = String(g.d || "").trim().replace(/[:@#]/g, " ").trim();
-    const dup = B.gastos.find(l => Math.abs(l.valor - v) < .005 && (!desc || norm(l.desc) === norm(desc) || norm(l.cat) === norm(desc)));
-    cmd(`g.${g.id}`, `/gasto ${fmtDec(v)} ${g.cat ? g.cat + ": " : ""}${desc || (g.cat ? "" : "Gasto do dia")}`.trim(), { kind: dup ? "dup" : "novo", old: dup ? `já existe ${eur(dup.valor, 2)} · ${dup.desc}` : "", on: !dup, dest: "lanc" }); });
+    const tp = g.tipo || "Despesa", cmdn = { Receita: "receita", Aporte: "aporte" }[tp] || "gasto", dup = tp === "Despesa" ? B.gastos.find(l => Math.abs(l.valor - v) < .005 && (!desc || norm(l.desc) === norm(desc) || norm(l.cat) === norm(desc))) : S.lanc.find(l => l.data === d && l.tipo === tp && Math.abs(l.valor - v) < .005);
+    const cats = tp === "Receita" ? CAT_REC : tp === "Aporte" ? CAT_APO : Object.keys(CAT_DESP), cat = g.cat && cats.includes(g.cat) ? g.cat : "";
+    cmd(`g.${g.id}`, `/${cmdn} ${fmtDec(v)} ${cat ? cat + ": " : ""}${desc || (cat ? "" : tp === "Despesa" ? "Gasto do dia" : tp)}`.trim(), { kind: dup ? "dup" : "novo", old: dup ? `já existe ${eur(dup.valor, 2)} · ${dup.desc}` : "", on: !dup, dest: "lanc" }); });
   for (const h of S.habitos) { const has = !!S.marks[`${h.id}|${d}`]; if (!PD.hsrc[h.id]) continue; const want = !!PD.habs[h.id];
     if (want && !has) cmd(`h.${h.id}`, `/habito ${h.nome}`, { dest: "marks" });
     else if (!want && has) rows.push({ id: `h.${h.id}`, txt: `Hábito: desmarcar ${h.nome}`, kind: "apagar", old: "feito", dest: "marks", on: true, apply: () => { delete S.marks[`${h.id}|${d}`]; return ["marks"]; } }); }
@@ -186,6 +189,7 @@ function pdRows() {
     rows.push({ id: "j.sess", txt: `Prática: ${J_PIL[p].nome} · ${mn} min`, kind: dup ? "dup" : "novo", old: dup ? `já existe ${dup.tec} · ${dup.min} min` : "", dest: "jornada", on: !dup, apply: () => { jData().sess.push({ id: uid(), at: Date.now(), data: d, pid: p, tec: J_TEC[p][0], min: mn, qual: null, antes: null, depois: null, notas: "Painel do dia" }); return ["jornada"]; } }); }
   if (String(V.lzat || "").trim() && V.lzh !== "" && V.lzh != null && !bad("lzh") && !bad("lzat")) { const h = pdHours(V.lzh), at = String(V.lzat).trim(), dup = B.lz.find(x => norm(x.atividade) === norm(at));
     cmd("l.lz", `/lazer ${fmtDec(Math.round(h * 100) / 100)} ${at}`, { kind: dup ? "dup" : "novo", old: dup ? `já existe ${dup.atividade} · ${num(dup.horas, 1)} h` : "", on: !dup, dest: "lazer" }); }
+  pdRows2(rows, cmd, B, d, bad);
   (PD.extras || []).forEach((line, i) => { const c = norm(line.slice(1).split(/\s/)[0]), dest = { receita: "lanc", aporte: "lanc", tarefa: "tarefas", contato: "contatos", estudo: "estudo", ler: "aprend", meta: "metas", peso: "saude", lazer: "lazer" }[c] || "diario";
     const arg = norm(line.replace(/^\/\p{L}+\s+/u, "").replace(/^[\d.,]+\s*/, "")), dup = c === "tarefa" ? S.tarefas.some(t => t.status !== "Concluída" && norm(t.tarefa) === norm(line.replace(/^\/tarefa\s+/, "").replace(/\s+at[eé].*$/, "")))
       : c === "lazer" ? B.lz.some(x => norm(x.atividade).includes(arg) || arg.includes(norm(x.atividade))) : c === "estudo" ? S.estudo.some(x => x.data === d && arg.includes(norm(x.item))) : false;
@@ -281,7 +285,7 @@ function pPainel() {
   if (rev) return done + pdReviewHTML();
   const scale = k => { const inv = k === "estresse"; return `<div class="pdf pds ${pdSt(C, k)}" data-pdbox="${k}"><div class="pdfl"><span class="pdlab">${PD_LBL[k]}${pdReqMark(k)}</span>${pdSrcTag(k)}</div><div class="pdfi"><div class="mchips" role="group" aria-label="${PD_LBL[k]} de 1 a 5">${[1, 2, 3, 4, 5].map(v => `<button type="button" class="mchip m${inv ? 6 - v : v}" data-pdsc="${k}|${v}" aria-pressed="${String(V[k]) === String(v)}">${v}</button>`).join("")}</div>${pdMicBtn(k, PD_LBL[k].toLowerCase())}</div>${pdMsg(C, k)}</div>`; };
   const gl = PD.gastos.length ? PD.gastos : [];
-  const gastos = gl.map((g, i) => `<div class="pdg ${pdSt(C, `g${i}`)}"><input type="text" id="pd_gv${i}" data-pdg="${i}|v" inputmode="decimal" autocomplete="off" value="${esc(g.v)}" placeholder="12,50" aria-label="Valor do gasto ${i + 1}" aria-describedby="pdm_g${i}"${pdSt(C, `g${i}`) === "err" ? ' aria-invalid="true"' : ""}><input type="text" id="pd_gd${i}" data-pdg="${i}|d" autocomplete="off" value="${esc(g.d)}" placeholder="almoço, mercado…" aria-label="Descrição do gasto ${i + 1}"><select id="pd_gc${i}" data-pdg="${i}|cat" aria-label="Categoria do gasto ${i + 1}"><option value="">${esc(autoCat(g.d) ? "auto: " + autoCat(g.d) : "auto")}</option>${Object.keys(CAT_DESP).map(c => `<option${g.cat === c ? " selected" : ""}>${esc(c)}</option>`).join("")}</select><button type="button" class="vb" data-pdgdel="${i}" aria-label="Remover gasto ${i + 1}">${ic("x")}</button>${pdMsg(C, `g${i}`)}</div>`).join("");
+  const gastos = gl.map((g, i) => `<div class="pdg ${pdSt(C, `g${i}`)}"><select id="pd_gt${i}" data-pdg="${i}|tipo" class="pdgt" aria-label="Tipo ${i + 1}">${["Despesa", "Receita", "Aporte"].map(x => `<option${(g.tipo || "Despesa") === x ? " selected" : ""}>${x}</option>`).join("")}</select><input type="text" id="pd_gv${i}" data-pdg="${i}|v" inputmode="decimal" autocomplete="off" value="${esc(g.v)}" placeholder="12,50" aria-label="Valor do gasto ${i + 1}" aria-describedby="pdm_g${i}"${pdSt(C, `g${i}`) === "err" ? ' aria-invalid="true"' : ""}><input type="text" id="pd_gd${i}" data-pdg="${i}|d" autocomplete="off" value="${esc(g.d)}" placeholder="almoço, mercado…" aria-label="Descrição do gasto ${i + 1}"><select id="pd_gc${i}" data-pdg="${i}|cat" aria-label="Categoria do gasto ${i + 1}"><option value="">${esc((g.tipo || "Despesa") === "Despesa" && autoCat(g.d) ? "auto: " + autoCat(g.d) : "auto")}</option>${(g.tipo === "Receita" ? CAT_REC : g.tipo === "Aporte" ? CAT_APO : Object.keys(CAT_DESP)).map(c => `<option${g.cat === c ? " selected" : ""}>${esc(c)}</option>`).join("")}</select><button type="button" class="vb" data-pdgdel="${i}" aria-label="Remover gasto ${i + 1}">${ic("x")}</button>${pdMsg(C, `g${i}`)}</div>`).join("");
   const habs = S.habitos.map(h => { const on = pdHabOn(h); return `<button type="button" class="hbtn pdh${on ? " on" : ""}" data-pdhab="${h.id}" aria-pressed="${on}" style="--c:${acol(h.area)}"><span class="hck">${ic("check")}</span><span class="hn">${esc(h.nome)}${PD.hsrc[h.id] === "texto" ? "<small>do texto</small>" : ""}</span></button>`; }).join("");
   const rows = pdRows(), on = rows.filter(r => r.on), nSub = on.filter(r => r.kind === "subst" || r.kind === "apagar").length;
   const block = C.errs.length || C.missing.length;
@@ -296,20 +300,22 @@ function pPainel() {
       <p class="muted small">O texto preenche os campos abaixo. O que você digitar ou falar num campo prevalece sobre o texto.</p>
     </section>
     <section class="pn pdform" aria-label="Campos do dia">
-      <div class="pdrow3">${scale("humor")}${scale("energia")}${scale("estresse")}</div>
+      ${pdMapa(rows)}
+      <div class="pdrow3" id="sec_saude">${scale("humor")}${scale("energia")}${scale("estresse")}</div>
       <div class="pdrow3">
         ${pdField(C, "sono", "Sono (h)", pdIn("sono", "7,5 · 7h30"), pdMicBtn("sono", "sono"))}
         ${pdField(C, "passos", "Passos", pdIn("passos", "8000", "numeric"), pdMicBtn("passos", "passos"))}
         <div class="pdf ${pdSt(C, "min") || pdSt(C, "treino")}" data-pdbox="min"><div class="pdfl"><label for="pd_treino">Treino${pdReqMark("treino")}</label>${pdSrcTag("treino")}</div><div class="pdfi pdtr"><select id="pd_treino" data-pdf="treino" aria-label="Tipo de treino"><option value="">—</option>${TREINOS.map(t => `<option${V.treino === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select><input type="text" id="pd_min" data-pdf="min" inputmode="numeric" autocomplete="off" value="${esc(V.min ?? "")}" placeholder="min" aria-label="Minutos de treino" aria-describedby="pdm_min"${pdSt(C, "min") === "err" ? ' aria-invalid="true"' : ""}>${pdMicBtn("treino", "treino")}</div>${pdMsg(C, "min")}${C.f.treino ? pdMsg(C, "treino") : ""}</div>
       </div>
-      <div class="pdblk ${pdSt(C, "gastos")}" data-pdbox="gastos"><div class="pdfl"><span class="pdlab">${ic("coins")}Gastos${pdReqMark("gastos")}</span>${B.gastos.length ? `<small class="pdhint">Já neste dia: ${plural(B.gastos.length, "gasto", "gastos")}, ${eur(sum(B.gastos.map(l => l.valor)), 2)}</small>` : ""}</div>
+      <div class="pdblk ${pdSt(C, "gastos")}" data-pdbox="gastos" id="sec_din"><div class="pdfl"><span class="pdlab">${ic("coins")}Dinheiro: gastos, receitas e aportes${pdReqMark("gastos")}</span>${B.gastos.length ? `<small class="pdhint">Já neste dia: ${plural(B.gastos.length, "gasto", "gastos")}, ${eur(sum(B.gastos.map(l => l.valor)), 2)}</small>` : ""}</div>
         <div class="pdgs">${gastos}</div><div class="row wrap"><button type="button" class="btn sm" data-act="pdgadd">${ic("plus")}Gasto</button><button type="button" class="btn sm ghost${VOZ.on === "gasto" ? " on" : ""}" data-pdmic="gasto" aria-pressed="${VOZ.on === "gasto"}">${ic("mic")}Ditar gasto</button></div>${pdMsg(C, "gastos")}</div>
-      <div class="pdblk ${pdSt(C, "habitos")}" data-pdbox="habitos"><div class="pdfl"><span class="pdlab">${ic("repeat")}Hábitos${pdReqMark("habitos")}</span><small class="pdhint">${S.habitos.filter(pdHabOn).length} de ${S.habitos.length}</small></div>${habs ? `<div class="pdhabs">${habs}</div>` : `<div class="empty">Crie hábitos em <a class="lnk" href="#hab.marcar">Hábitos</a>.</div>`}${pdMsg(C, "habitos")}</div>
-      <div class="pdrow2">
+      <div class="pdblk ${pdSt(C, "habitos")}" data-pdbox="habitos" id="sec_hab"><div class="pdfl"><span class="pdlab">${ic("repeat")}Hábitos${pdReqMark("habitos")}</span><small class="pdhint">${S.habitos.filter(pdHabOn).length} de ${S.habitos.length}</small></div>${habs ? `<div class="pdhabs">${habs}</div>` : `<div class="empty">Crie hábitos em <a class="lnk" href="#hab.marcar">Hábitos</a>.</div>`}${pdMsg(C, "habitos")}</div>
+      <div class="pdrow2" id="sec_jor">
         <div class="pdf ${pdSt(C, "pmin")}" data-pdbox="pmin"><div class="pdfl"><label for="pd_pmin">${ic("lotus")}Prática da jornada</label>${pdSrcTag("pmin")}</div><div class="pdfi pdtr"><select id="pd_ppid" data-pdf="ppid" aria-label="Pilar">${J_ORDER.map(p => `<option value="${p}"${V.ppid === p ? " selected" : ""}>${esc(J_PIL[p].nome)}</option>`).join("")}</select><input type="text" id="pd_pmin" data-pdf="pmin" inputmode="numeric" autocomplete="off" value="${esc(V.pmin ?? "")}" placeholder="min" aria-label="Minutos de prática" aria-describedby="pdm_pmin"${pdSt(C, "pmin") === "err" ? ' aria-invalid="true"' : ""}>${pdMicBtn("prat", "a prática")}</div>${pdMsg(C, "pmin")}${sess}</div>
         <div class="pdf ${pdSt(C, "lzh") || pdSt(C, "lzat")}" data-pdbox="lzh"><div class="pdfl"><label for="pd_lzat">${ic("palette")}Lazer</label>${pdSrcTag("lzat")}</div><div class="pdfi pdtr"><input type="text" id="pd_lzat" data-pdf="lzat" autocomplete="off" value="${esc(V.lzat ?? "")}" placeholder="cinema, leitura…" aria-label="Atividade de lazer" aria-describedby="pdm_lzat"${pdSt(C, "lzat") === "err" ? ' aria-invalid="true"' : ""}><input type="text" id="pd_lzh" data-pdf="lzh" inputmode="decimal" autocomplete="off" value="${esc(V.lzh ?? "")}" placeholder="h" aria-label="Horas de lazer" aria-describedby="pdm_lzh"${pdSt(C, "lzh") === "err" ? ' aria-invalid="true"' : ""}>${pdMicBtn("lazer", "o lazer")}</div>${pdMsg(C, "lzat")}${pdMsg(C, "lzh")}${lzs}</div>
       </div>
-      <div class="pdblk"><label class="chk"><input type="checkbox" id="pd_diario"${PD.diario ? " checked" : ""}> ${ic("pen")}Guardar o texto do dia no Diário${pdReqMark("texto")}</label>${C.f.texto ? pdMsg(C, "texto") : ""}
+      ${pdMoreHTML(C)}
+      <div class="pdblk" id="sec_dia"><label class="chk"><input type="checkbox" id="pd_diario"${PD.diario ? " checked" : ""}> ${ic("pen")}Guardar o texto do dia no Diário${pdReqMark("texto")}</label>${C.f.texto ? pdMsg(C, "texto") : ""}
         ${(PD.extras || []).length ? `<div class="flbl">Outros registros achados no texto</div><div class="pdx">${PD.extras.map(line => { const r = runCmd(line, { date: d, area: "", humor: null }); return `<label class="chk"><input type="checkbox" data-pdx="${esc(line)}"${PD.xoff.includes(line) ? "" : " checked"}${r.ok ? "" : " disabled"}> ${esc(r.ok ? r.txt.replace(/ em \d{2}\/\d{2}(\/\d{2,4})?$/, "") : line + " · " + r.err)}</label>`; }).join("")}</div>` : ""}</div>
     </section>
     <footer class="pdfoot" id="pd_foot">${pdFootHTML(C, on, nSub, block)}</footer>
@@ -353,12 +359,12 @@ function pdPaint() {
   for (const b of $$("[data-pdhab]")) { const h = S.habitos.find(x => x.id === b.dataset.pdhab); if (h) { const on = pdHabOn(h); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); } }
   const dd = $("#pd_date"); if (dd && dd !== ae && dd.value !== PD.date) { render(); return; }
   /* a lista de gastos e os registros extras mudam de tamanho: redesenha a página quando a estrutura mudou */
-  if ($$(".pdg").length !== PD.gastos.length || $$("[data-pdx]").length !== (PD.extras || []).length) { render(); return; }
+  if ($$(".pdg").length !== PD.gastos.length || $$("[data-pdx]").length !== (PD.extras || []).length || $$(".pdlr").length !== pdLtotal()) { render(); return; }
   PD.gastos.forEach((g, i) => { for (const f of ["v", "d"]) { const el = document.getElementById(`pd_g${f}${i}`); if (el && el !== ae && el.value !== g[f]) el.value = g[f]; } });
   for (const s of $$(".pdsrc")) s.remove();
   for (const box of $$("[data-pdbox]")) { const k = { min: "treino", lzh: "lzat" }[box.dataset.pdbox] || box.dataset.pdbox, tag = pdSrcTag(k === "pmin" ? "pmin" : k); if (tag) box.querySelector(".pdfl")?.insertAdjacentHTML("beforeend", tag); }
   /* o rodapé muda por dentro: trocar os botões no meio de um clique (o campo perde o foco e valida) faria o clique se perder */
-  const rows = pdRows(), on = rows.filter(r => r.on), foot = $("#pd_foot");
+  const rows = pdRows(), on = rows.filter(r => r.on), foot = $("#pd_foot"), mp = $(".pdmapa"), mh = pdMapa(rows); if (mp && mp.outerHTML !== mh) mp.outerHTML = mh;
   foot.querySelector(".pdinfo").innerHTML = pdFootInfo(C, on, on.filter(r => r.kind === "subst" || r.kind === "apagar").length);
   const go = foot.querySelector('[data-act="pdrev"],[data-act="pdsave"]'), cl = foot.querySelector('[data-act="pdclear"]');
   if (go) go.disabled = !!(C.errs.length || C.missing.length) || !on.length; if (cl && !cl.dataset.c) cl.disabled = pdEmpty();
@@ -368,15 +374,17 @@ const pdParseDeb = debounce(() => { pdParse(); pdStore(); pdPaint(); }, 250);
 
 /* ---------------------------------------------------------------- eventos */
 function pdInput(t) {
+  if (pd2Input(t)) return true;
   if (t.id === "pd_txt") { PD.text = t.value; pdParseDeb(); return true; }
   if (t.dataset.pdf) { const k = t.dataset.pdf; PD.v[k] = t.value; PD.src[k] = "mao"; PD.inf = PD.inf.filter(x => x !== k); pdStore(); pdPaint(); return true; }
   if (t.dataset.pdg) { const [i, f] = t.dataset.pdg.split("|"), g = PD.gastos[+i]; if (g) { g[f] = t.value; g.src = "mao"; } pdStore(); if (f !== "cat") pdPaint(); return true; }
   return false;
 }
 function pdChange(t) {
+  if (pd2Change(t)) return true;
   if (t.id === "pd_date") { PD.date = t.value || TODAY; PD.dateSrc = "mao"; PD.off = []; pdSyncBase(); pdStore(); render(); return true; }
   if (t.dataset.pdf && t.tagName === "SELECT") { PD.v[t.dataset.pdf] = t.value; PD.src[t.dataset.pdf] = "mao"; pdStore(); pdPaint(); return true; }
-  if (t.dataset.pdg) { if (t.tagName === "SELECT") { const [i, f] = t.dataset.pdg.split("|"), g = PD.gastos[+i]; if (g) g[f] = t.value; pdStore(); pdPaint(); } return true; }
+  if (t.dataset.pdg) { if (t.tagName === "SELECT") { const [i, f] = t.dataset.pdg.split("|"), g = PD.gastos[+i]; if (g) { g[f] = t.value; if (f === "tipo") { g.cat = ""; g.src = "mao"; } } pdStore(); f === "tipo" ? render() : pdPaint(); } return true; }
   if (t.dataset.pdf || t.id === "pd_txt") return true;
   if (t.id === "pd_diario") { PD.diario = t.checked; pdStore(); pdPaint(); return true; }
   if (t.id === "pd_lang") { S.cfg.pdLang = t.value; stopVoice(); touch("cfg", { label: "Idioma da voz", noUndo: true }); return true; }
@@ -386,6 +394,7 @@ function pdChange(t) {
 }
 function pdClick(t) {
   const ds = t.dataset, a = ds.act;
+  if (pd2Click(t)) return true;
   if (ds.pdmic) { pdMic(ds.pdmic); return true; }
   if (a === "pdstop") { stopVoice(); VOZ.st = ""; VOZ.msg = ""; pdVoicePaint(); return true; }
   if (ds.pdsc) { const [k, v] = ds.pdsc.split("|"); PD.v[k] = String(PD.v[k]) === v ? "" : v; PD.src[k] = "mao"; PD.inf = PD.inf.filter(x => x !== k); pdStore(); pdPaint(); return true; }

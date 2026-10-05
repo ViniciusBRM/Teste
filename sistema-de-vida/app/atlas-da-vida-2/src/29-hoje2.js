@@ -5,6 +5,16 @@
 const HJ = { wx: null, wxSt: "", news: null, newsSt: "", skip: new Set(), fr: 0 };
 const hctx = () => (S.hojeCtx[TODAY] ||= {});
 const periodo = () => { const h = new Date().getHours(); return h < 12 ? "manha" : h < 18 ? "tarde" : "noite"; };
+/* a página pode não ter acesso à internet: cada busca desiste em 7 s */
+async function fetchT(u, ms = 7000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { return await fetch(u, { signal: c.signal }); } finally { clearTimeout(t); } }
+/* feed do dia: notícias e clima gravados no banco do Atlas por uma rotina externa (doc compartilhado feed/hoje); vale quando a página não alcança a internet */
+let FEED = null, FEED_ST = "";
+async function hjFeed() {
+  if (FEED_ST || (!DBH && !LOADED)) return; FEED_ST = "load";
+  try { const d = DBH ? await DBH.doc("feed/hoje").get() : null, v = d?.exists ? JSON.parse(JSON.stringify(d.data())) : null; FEED = v && v.dia ? v : null; } catch { FEED = null; }
+  FEED_ST = "ok"; if (PAGE === "hoje" && FEED) render();
+}
+const feedFresco = () => FEED && diff(TODAY, FEED.dia) <= 1;
 const PER_TXT = { manha: "manhã", tarde: "tarde", noite: "noite" };
 const cidade = () => S.cfg.cidade?.lat ? S.cfg.cidade : { nome: "Turim", lat: 45.0705, lon: 7.6868 };
 const WMO = c => c === 0 ? ["Céu limpo", "sun"] : c <= 2 ? ["Poucas nuvens", "sun"] : c === 3 ? ["Nublado", "wave"] : c <= 48 ? ["Neblina", "wave"] : c <= 57 ? ["Garoa", "wave"] : c <= 67 ? ["Chuva", "wave"] : c <= 77 ? ["Neve", "star"] : c <= 82 ? ["Pancadas de chuva", "wave"] : c <= 86 ? ["Neve", "star"] : ["Temporal", "bolt"];
@@ -12,7 +22,7 @@ async function hjWeather(force) {
   if (HJ.wxSt === "load" || (!force && (HJ.wx?.dia === TODAY || HJ.wxSt === "err"))) return;
   try { const v = JSON.parse(localStorage.getItem("atlas_wx") || "null"); if (!force && v?.dia === TODAY && v.at > Date.now() - 3 * 3600e3 && v.lat === cidade().lat) { HJ.wx = v; return; } } catch {}
   HJ.wxSt = "load"; const C = cidade();
-  try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${C.lat}&longitude=${C.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=1`);
+  try { const r = await fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${C.lat}&longitude=${C.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=1`);
     if (!r.ok) throw 0; const j = await r.json(); if (!j?.current || !j?.daily) throw 0;
     HJ.wx = { dia: TODAY, at: Date.now(), lat: C.lat, t: j.current.temperature_2m, sens: j.current.apparent_temperature, code: j.current.weather_code, vento: j.current.wind_speed_10m, max: j.daily.temperature_2m_max[0], min: j.daily.temperature_2m_min[0], chuva: j.daily.precipitation_probability_max[0], codeD: j.daily.weather_code[0], uv: j.daily.uv_index_max[0] };
     HJ.wxSt = "ok"; try { localStorage.setItem("atlas_wx", JSON.stringify(HJ.wx)); } catch {}
@@ -23,18 +33,18 @@ async function hjNews() {
   if (HJ.newsSt) return; HJ.newsSt = "load";
   try { const v = JSON.parse(localStorage.getItem("atlas_news") || "null"); if (v?.dia === TODAY && v.items?.length) { HJ.news = v.items; HJ.newsSt = "ok"; return; } } catch {}
   const feeds = [["Positive News", "https://www.positive.news/feed/"], ["Good News Network", "https://www.goodnewsnetwork.org/feed/"]], out = [];
-  await Promise.all(feeds.map(async ([src, u]) => { try { const r = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u)); if (!r.ok) return; const j = await r.json(); for (const it of (j.items || []).slice(0, 4)) out.push({ src, t: String(it.title || "").replace(/&#8217;/g, "’").replace(/&#8216;/g, "‘").replace(/&amp;/g, "&").replace(/&#8211;/g, "–"), link: it.link, data: String(it.pubDate || "").slice(0, 10), d: String(it.description || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 180) }); } catch {} }));
+  await Promise.all(feeds.map(async ([src, u]) => { try { const r = await fetchT("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u)); if (!r.ok) return; const j = await r.json(); for (const it of (j.items || []).slice(0, 4)) out.push({ src, t: String(it.title || "").replace(/&#8217;/g, "’").replace(/&#8216;/g, "‘").replace(/&amp;/g, "&").replace(/&#8211;/g, "–"), link: it.link, data: String(it.pubDate || "").slice(0, 10), d: String(it.description || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 180) }); } catch {} }));
   const items = out.filter(x => x.t && /^https?:/.test(x.link || "")).sort((a, b) => b.data.localeCompare(a.data));
   /* alterna as fontes para não vir tudo de uma */
   const pick = []; for (const src of ["Positive News", "Good News Network", "Positive News"]) { const x = items.find(i => i.src === src && !pick.includes(i)); if (x) pick.push(x); }
-  HJ.news = pick.length ? pick : null; HJ.newsSt = pick.length ? "ok" : "err";
+  HJ.news = pick.length ? pick : null; HJ.newsSt = pick.length ? "ok" : "err"; HJ.newsSrc = pick.length ? "net" : "";
   if (pick.length) try { localStorage.setItem("atlas_news", JSON.stringify({ dia: TODAY, items: pick })); } catch {}
   if (PAGE === "hoje") render();
 }
 /* o tempo: da internet, ou o que a pessoa marcou */
 function hjClima() {
-  const c = hctx(), w = HJ.wx?.dia === TODAY ? HJ.wx : null;
-  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
+  const c = hctx(), w = HJ.wx?.dia === TODAY ? HJ.wx : feedFresco() && FEED.clima && (FEED.clima.lat == null || Math.abs(FEED.clima.lat - cidade().lat) < .2) ? { ...FEED.clima, feed: true } : null;
+  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: w.feed ? "feed" : "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
   if (c.clima) { const base = { sol: [22, 10, "Sol"], nublado: [17, 30, "Nublado"], chuva: [13, 80, "Chuva"], frio: [3, 20, "Frio"], calor: [32, 10, "Calor"] }[c.clima] || [18, 20, "–"], t = isNum(c.temp) && c.temp !== "" ? +c.temp : base[0];
     return { fonte: "mao", t, sens: t, max: t + 3, min: t - 4, chuva: base[1], uv: c.clima === "sol" || c.clima === "calor" ? 6 : 2, vento: 0, txt: base[2], ico: c.clima === "chuva" ? "wave" : "sun", code: c.clima === "chuva" ? 63 : 1 }; }
   return null;
@@ -146,7 +156,8 @@ function hjAsk(c) {
   </section>`;
 }
 function pHoje2(R) {
-  const c = hctx(), W = hjClima(); hjWeather(); hjNews();
+  hjFeed(); const c = hctx(); hjWeather(); hjNews(); const W = hjClima();
+  const news = HJ.news?.length ? HJ.news : feedFresco() && FEED.news?.length ? FEED.news : null, newsFeed = !HJ.news?.length && !!news;
   const s = S.saude[TODAY] || {}, F = hjFrase(c), I = hjIdeias(c, W);
   const tasks = R.tar.filter(t => t.open && t.prazo && t.prazo <= TODAY).sort((a, b) => a.prazo.localeCompare(b.prazo)), doneToday = R.tar.filter(t => t.status === "Concluída" && t.concluida === TODAY);
   const CC = typeof casaCalc === "function" ? casaCalc() : null, contas = CC ? [...CC.atrasadas, ...CC.prox14.filter(v => v.dias <= 3)] : [];
@@ -157,15 +168,15 @@ function pHoje2(R) {
   return `<p class="hjlead">${esc(resumo)}.</p>
     ${hjAsk(c)}
     <div class="g2c hj2">
-      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "net" ? "Open-Meteo, agora" : "marcado por você") : HJ.wxSt === "load" ? "buscando…" : "sem dados"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · chuva ${W.chuva}%${W.fonte === "net" ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div><div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${HJ.wxSt === "err" ? "Não consegui buscar o clima nesta visualização. Marque o tempo lá fora em “Como você está agora?”." : "Buscando a previsão…"}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
+      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "net" ? "Open-Meteo, agora" : W.fonte === "feed" ? `Open-Meteo, às ${FEED.hora || "manhã"}` : "marcado por você") : HJ.wxSt === "load" ? "buscando…" : "sem dados"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · chuva ${W.chuva}%${W.fonte === "net" ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div><div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${HJ.wxSt === "err" ? "Não consegui buscar o clima nesta visualização. Marque o tempo lá fora em “Como você está agora?”." : "Buscando a previsão…"}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
       ${panel(`${ic("spark")}Para esta ${PER_TXT[periodo()]}`, `<blockquote class="hjq1"><p>${esc(F.f[0])}</p><cite>${esc(F.f[1])}</cite></blockquote><p class="hjconc">${esc(F.concreto)}</p><button type="button" class="lnk" data-act="hjfr">outra frase</button>`)}
       ${panel(`${ic("compass")}Ideias para sair da rotina <small>${I.pick.length} de ${IDEIAS.length}, filtradas pelo seu momento</small>`, `${I.motivos.length ? `<p class="muted small">${esc(I.motivos.join("; "))}.${I.total < 3 ? " Sobraram poucas: é uma limitação real do dia, não falta de opção na cidade." : ""}</p>` : ""}<div class="hjid">${I.pick.map(x => `<article class="hjidc"><b>${esc(x.t)}</b><p>${esc(x.d)}</p><div class="hjidm">${chip(CUSTO_TXT[x.cst])}${chip(x.min >= 60 ? `${num(x.min / 60, x.min % 60 ? 1 : 0)} h` : `${x.min} min`)}${chip(x.outd === 1 ? "ao ar livre" : x.outd ? "dentro ou fora" : "dentro")}</div>${x.why.length ? `<small>Por que hoje: ${esc(x.why.join(", "))}</small>` : ""}<div class="row"><button type="button" class="btn sm" data-hjvou="${esc(x.t)}">${ic("check")}Vou fazer</button><button type="button" class="lnk" data-hjskip="${esc(x.t)}">outra</button></div></article>`).join("") || `<div class="empty">Nenhuma ideia cabe nas respostas de agora. Com mais tempo livre ou orçamento, aparecem opções.</div>`}</div>`, { cls: "span2" })}
-      ${panel(`${ic("globe")}Notícias boas <small>jornalismo de soluções, em inglês</small>`, HJ.news?.length ? `<div class="hjnews">${HJ.news.map(n => `<a class="hjn" href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.t)}</b>${n.d ? `<span>${esc(n.d)}…</span>` : ""}<small>${esc(n.src)}${n.data ? " · " + fmtDY(n.data) : ""}</small></a>`).join("")}</div>` : HJ.newsSt === "load" ? `<div class="empty">Buscando…</div>` : `<div class="empty">Não consegui buscar as notícias nesta visualização. Abra direto: <a class="lnk" href="https://www.positive.news" target="_blank" rel="noopener">Positive News</a> · <a class="lnk" href="https://www.goodnewsnetwork.org" target="_blank" rel="noopener">Good News Network</a> · <a class="lnk" href="https://www.corriere.it/buone-notizie/" target="_blank" rel="noopener">Corriere · Buone Notizie</a></div>`)}
+      ${panel(`${ic("globe")}Notícias boas <small>jornalismo de soluções, em inglês</small>`, news ? `<div class="hjnews">${news.map(n => `<a class="hjn" href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.t)}</b>${n.d ? `<span>${esc(n.d)}…</span>` : ""}<small>${esc(n.src)}${n.data ? " · " + fmtDY(n.data) : ""}</small></a>`).join("")}</div>${newsFeed ? `<p class="muted small">Do resumo de ${fmtDY(FEED.dia)} gravado no Atlas.</p>` : ""}` : HJ.newsSt === "load" ? `<div class="empty">Buscando…</div>` : `<div class="empty">Não consegui buscar as notícias nesta visualização. Abra direto: <a class="lnk" href="https://www.positive.news" target="_blank" rel="noopener">Positive News</a> · <a class="lnk" href="https://www.goodnewsnetwork.org" target="_blank" rel="noopener">Good News Network</a> · <a class="lnk" href="https://www.corriere.it/buone-notizie/" target="_blank" rel="noopener">Corriere · Buone Notizie</a></div>`)}
       ${panel(`${ic("mic")}Registro do dia`, `<div class="hjreg">${reg.length || habs ? `${reg.map(([k, l]) => chip(`${l} ${k === "sono" ? num(s[k]) + " h" : k === "treino" ? s[k] : s[k] + "/5"}`, "good")).join("")}${habs ? chip(`${habs}/${S.habitos.length} hábitos`, "good") : ""}` : `<span class="muted">Nada registrado hoje ainda.</span>`}</div><a class="btn sm primary" href="#painel">${ic("mic")}Registrar no Painel do dia</a>`)}
       ${fpend ? `<div class="pn fscta span2"><div>${ic("week")}<b>Hora de fechar a semana de ${wkLabel(fwk)}</b><small>Uns 15 minutos.</small></div><a class="btn primary" href="#semana">Fechar a semana</a></div>` : ""}
       ${panel(`${ic("checksq")}Para hoje <small>${tasks.length ? tasks.length + " pendente(s)" : "em dia"}</small>`, `${tasks.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}"><span>${esc(t.tarefa)}<small class="st-${t.st}">${t.prazo < TODAY ? `atrasada ${relDay(t.prazo)}` : "vence hoje"}</small></span></label></div>`).join("")}${doneToday.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}" checked><span class="done">${esc(t.tarefa)}</span></label></div>`).join("")}${contas.map(v => `<div class="li"><span>${ic("house")}${esc(v.c.conta)} · ${eur(+v.c.valor || 0, 2)}</span>${pill(v.dias < 0 ? "crit" : "warn", v.dias < 0 ? "atrasada" : v.dias === 0 ? "hoje" : `em ${v.dias} d`)}</div>`).join("")}${!tasks.length && !doneToday.length && !contas.length ? `<div class="empty">Nada vencendo hoje.</div>` : ""}${quickBox("hj_tar", "Nova tarefa: Ligar para o banco até sexta !alta", "qtar", "Prazo, prioridade (!alta) e #área são opcionais.")}`)}
       ${panel(`${ic("flag")}Prioridades da semana`, `<div class="prio">${[0, 1, 2].map(i => `<label><span>${i + 1}</span><input id="prio${i}" type="text" data-prio="${i}" value="${esc(S.prio[i] || "")}" placeholder="O que mais importa"></label>`).join("")}</div>`)}
-      ${panel(`${ic("cal")}Próximos 7 dias`, agenda(R, 7))}
+      ${panel(`${ic("cal")}Próximos 7 dias`, agenda(R, 7), { act: S.integ?.gcal?.on ? `<button type="button" class="lnk" data-act="gcsync">${ic("refresh")}Google</button>` : `<a class="lnk" href="#integ">conectar Google Calendar</a>` })}
       ${bmHoje()}${jHoje()}
       ${exps.length ? panel(`${ic("flask")}Experimento de hoje`, exps.map(x => `<div class="hjexp"><b>${esc(x.titulo)}</b>${expToday(x, expAnalyze(x))}</div>`).join("")) : ""}
       ${al.length ? panel(`${ic("radar")}No radar`, al.map(a => alertCard(a, true)).join(""), { act: `<a class="lnk" href="#radar">ver tudo</a>` }) : ""}

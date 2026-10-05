@@ -1,7 +1,7 @@
 """Monta o Atlas da Vida 2 num arquivo só: src/00-head.html + os módulos de src/ na ordem abaixo -> ../atlas-da-vida-2.html"""
 import pathlib, shutil, subprocess, sys, tempfile
 d = pathlib.Path(__file__).parent
-ORDEM = ["01-core.js", "02-example.js", "03-calc.js", "04-charts.js", "05-ui.js", "06-reports.js", "07-diary.js", "08-mentors.js", "09-pages.js", "10-data.js", "12-setor.js", "13-privacy.js", "14-capture.js", "15-experiments.js", "16-radar.js", "17-weekly.js", "18-chapters.js", "19-semantic.js", "20-dupla.js", "21-integ2.js", "22-bussola.js", "23-projetos.js", "24-jornada.js", "25-carreira.js", "26-lazer.js", "27-painel.js", "28-capas.js", "29-hoje2.js", "30-casa.js", "31-futuro.js", "32-idiomas.js", "33-carreira2.js", "34-exemplo.js", "11-main.js"]   # 11-main por último: liga os eventos e inicia o app
+ORDEM = ["01-core.js", "02-example.js", "03-calc.js", "04-charts.js", "05-ui.js", "06-reports.js", "07-diary.js", "08-mentors.js", "09-pages.js", "10-data.js", "12-setor.js", "13-privacy.js", "14-capture.js", "15-experiments.js", "16-radar.js", "17-weekly.js", "18-chapters.js", "19-semantic.js", "20-dupla.js", "21-integ2.js", "22-bussola.js", "23-projetos.js", "24-jornada.js", "25-carreira.js", "26-lazer.js", "27-painel.js", "28-capas.js", "29-hoje2.js", "30-casa.js", "31-futuro.js", "32-idiomas.js", "33-carreira2.js", "34-exemplo.js", "35-painel2.js", "36-gcal.js", "11-main.js"]   # 11-main por último: liga os eventos e inicia o app
 head = (d / "src" / "00-head.html").read_text()
 js = "\n".join((d / "src" / f).read_text() for f in ORDEM)
 out = head + "\n<script>\n" + js + "\n</script>\n"

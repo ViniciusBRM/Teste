@@ -180,7 +180,7 @@ const EMPTY = () => ({
   diario: [], mentores: {}, listas: DEFAULT_LISTS(), regras: [], areasCfg: {}, integ: { notion: { pai: null, hist: [], tarefas: null } },
   experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {},
 });
-let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0;
+let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0, DBH = null;
 applyLists();
 
 /* memória de cálculo: invalida a cada mudança de dados */
@@ -250,7 +250,7 @@ async function loadStore() {
   try {
     const db = await window.claude?.use?.("db"), user = db ? await window.claude.use("user") : null, id = user ? await user.id() : null;
     if (db && id) {
-      const col = db.collection("data/users/" + id); const snap = await col.limit(1000).get(); STORE = { kind: "db", col };
+      DBH = db; const col = db.collection("data/users/" + id); const snap = await col.limit(1000).get(); STORE = { kind: "db", col };
       /* o banco entrega documentos congelados: copia antes de usar, senão qualquer edição falha ("object is not extensible") */
       const docs = {}; for (const d of snap.docs) docs[d.id] = JSON.parse(JSON.stringify(d.data() ?? null));
       for (const k of KEYS) { const m = docs["s_" + k]; if (!m) continue;

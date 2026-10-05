@@ -69,7 +69,13 @@ MOCK = r"""
   };
   const mcp = {
     async listTools(s) { return { servers: [{ server: "Notion", authStatus: "connected", tools: [{ name: "notion-search", description: "" }, { name: "notion-fetch", description: "" }, { name: "notion-create-pages", description: "" }, { name: "notion-update-page", description: "" }] }] }; },
-    async callTool(server, tool, input) { window.__calls.push({ kind: "mcp", tool, input });
+    async callTool(server, tool, input) { window.__calls.push({ kind: "mcp", server, tool, input });
+      if (server === "Google Calendar") {
+        if (cfg.gcalError) throw { code: cfg.gcalError, message: "mock" };
+        const day = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+        if (tool === "list_events") return { content: [], payload: input.pageToken ? { events: [{ id: "g3", summary: "Dentista", status: "confirmed", start: { dateTime: day(3) + "T10:00:00+02:00" }, end: { dateTime: day(3) + "T11:00:00+02:00" } }] } : { events: [{ id: "g1", summary: "Reunião de projeto", location: "Torino", status: "confirmed", htmlLink: "https://calendar.google.com/x", start: { dateTime: day(1) + "T19:00:00+02:00" }, end: { dateTime: day(1) + "T20:00:00+02:00" } }, { id: "g2", summary: "Viagem", status: "confirmed", start: { date: day(5) + "T00:00:00Z" }, end: { date: day(8) + "T00:00:00Z" } }, { id: "gx", summary: "cancelado", status: "cancelled", start: { date: day(2) } }], nextPageToken: "p2" } };
+        if (tool === "create_event") return { content: [], payload: { id: "new" + Math.random().toString(36).slice(2, 6) } };
+      }
       if (cfg.mcpError) throw { code: cfg.mcpError, message: "mock" };
       if (tool === "notion-search") return { content: [], payload: { results: [{ id: "pg1", title: "Plano de estudos 2026", url: "https://app.notion.com/p/pg1?pvs=204", type: "page", highlight: "Revisar capítulo 3 de italiano", timestamp: "2026-09-20T10:00:00Z", path: "Estudos" }, { id: "pg2", title: "Ideias de viagem", url: "https://app.notion.com/p/pg2", type: "page", highlight: "Sicília", path: "" }], type: "workspace_search" } };
       if (tool === "notion-fetch") { if (window.__ntPage) return { content: [], payload: { title: "Tarefas do Atlas", url: "https://app.notion.com/p/new1abc", text: "Here is the result\n<page url=\"x\">\n<content>\n" + window.__ntPage + "\n</content>\n</page>" } };
@@ -96,7 +102,7 @@ MOCK = r"""
 
 async def open_page(p, w=1440, h=900, theme="dark", cfg=None, hash_=""):
     b = await p.chromium.launch(**({"executable_path": CHROME} if CHROME else {}))
-    ctx = await b.new_context(viewport={"width": w, "height": h}, color_scheme=theme, ignore_https_errors=True)
+    ctx = await b.new_context(viewport={"width": w, "height": h}, color_scheme=theme, ignore_https_errors=True, **({"timezone_id": cfg["tz"]} if cfg and cfg.get("tz") else {}))
     pg = await ctx.new_page()
     errs = []
     pg.on("pageerror", lambda e: errs.append("PAGEERROR " + str(e)))
