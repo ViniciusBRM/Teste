@@ -93,7 +93,7 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 
 /* ================================================================ navegação */
 const NAV = [
-  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
+  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
@@ -132,7 +132,7 @@ function route() {
   PAGE = ok ? p : "visao"; SUB = ok ? s || null : null;
   if (SUBS[PAGE] && !SUBS[PAGE].some(x => x[0] === SUB)) SUB = SUBS[PAGE][0][0];
   if (PAGE === "mentor" && !(SUB in MENTOR_DEF)) SUB = "conselho";
-  NAVOPEN = false; DRAWER = null;
+  NAVOPEN = false; DRAWER = null; if (PAGE !== "painel" && VOZ.sr) stopVoice();
   /* o registro do radar é atualizado antes de desenhar, para os alertas novos já virem com “útil / alarme falso” */
   if (LOADED && (PAGE === "radar" || PAGE === "hoje")) try { radarSync(); } catch {}
   render(); $("#main")?.focus({ preventScroll: true }); window.scrollTo({ top: 0 });
@@ -311,6 +311,7 @@ function palItems(q) {
   const out = [], R = calcAt(REF), add = (g, l, s, ico, run, kw = "") => { const sc = fuzzy(l + " " + kw, q); if (sc >= 0) out.push({ g, l, s, ico, run, sc }); };
   if (q.trim().startsWith("/")) { const r = previewCommand(q.trim()); out.push({ g: "Executar", l: r.ok ? r.txt : r.err || "Comando incompleto", s: r.ok ? "Enter registra agora" : "Ex.: /gasto 12,50 Café · /tarefa Ligar para o banco até 15/10 · /humor 4", ico: "bolt", run: r.ok ? () => runQuickCommand(q.trim()) : null, sc: 999 }); return out; }
   add("Ações", "Capturar", "Escreva ou dite: gastos, sono, treino, contatos, tarefas", "bolt", () => openCapture(), "capturar ditar voz rapido registrar");
+  add("Ações", "Painel do dia", "Humor, sono, treino, gastos e hábitos em um minuto, por texto ou voz", "mic", () => setHash("painel"), "painel dia rapido voz falar ditar registrar check-in");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");
   add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
   add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("jornada", "exame"), "bussola moral exame consciencia valores");

@@ -29,7 +29,9 @@ function capPeople(orig, F) {
   return out.sort((a, b) => a.i - b.i);
 }
 function capSplit(orig) {
-  const F = fold(orig), cuts = [0], rx = new RegExp(`[;!?\\n]+|\\.(?!\\d)|,\\s*(?=(?:e\\s+)?(?:${CAP_VERBS})\\b)|\\s+e\\s+(?=(?:${CAP_VERBS})\\b)`, "g"); let m;
+  /* também corta antes de um valor seguido de “no/na/de…”: “18 euros no almoço e 32,40 no mercado” são dois gastos */
+  const VAL = "(?:€|r\\$)?\\s*\\d+(?:[.,]\\d+)?\\s*(?:€|euros?|reais)?\\s+(?:no|na|nos|nas|de|do|da|em|com|pro|pra|para)\\b";
+  const F = fold(orig), cuts = [0], rx = new RegExp(`[;!?\\n]+|\\.(?!\\d)|,\\s*(?=(?:e\\s+)?(?:${CAP_VERBS})\\b)|\\s+e\\s+(?=(?:${CAP_VERBS})\\b)|(?<!\\d),\\s*(?=(?:e\\s+)?${VAL})|\\s+e\\s+(?=${VAL})`, "g"); let m;
   while ((m = rx.exec(F))) { cuts.push(m.index, m.index + m[0].length); }
   cuts.push(orig.length); const out = [];
   for (let i = 0; i < cuts.length; i += 2) { const a = cuts[i], b = cuts[i + 1]; const t = orig.slice(a, b); if (t.trim()) out.push({ o: t, F: F.slice(a, b) }); }
@@ -38,23 +40,26 @@ function capSplit(orig) {
 function capParse(text) {
   const lines = [], add = (line, o = {}) => { if (!lines.some(x => x.line === line)) lines.push({ line, ...o }); };
   const whole = fold(text), workout = new Set();
-  let prevO = "";
+  let prevO = "", prevMoney = null;
   for (const { o, F } of capSplit(text)) {
-    let m;
+    let m, money = null;
     /* dinheiro */
-    if ((m = F.match(new RegExp(`\\b(recebi|ganhei|entrou|entraram|caiu|cairam|faturei)\\b\\s*(?:o\\s+|a\\s+|uns?\\s+)?${AMT}\\s*(.*)$`)))) { const v = capNum(m[2]); if (v) add(`/receita ${fmtDec(v)} ${capClean(o.slice(m.index + m[0].length - m[3].length)) || capClean(o.slice(0, m.index)) || "Receita"}`); }
+    if ((m = F.match(new RegExp(`\\b(recebi|ganhei|entrou|entraram|caiu|cairam|faturei)\\b\\s*(?:o\\s+|a\\s+|uns?\\s+)?${AMT}\\s*(.*)$`)))) { const v = capNum(m[2]); if (v) { add(`/receita ${fmtDec(v)} ${capClean(o.slice(m.index + m[0].length - m[3].length)) || capClean(o.slice(0, m.index)) || "Receita"}`); money = "receita"; } }
     else if ((m = F.match(new RegExp(`\\b(guardei|investi|aportei|poupei|separei)\\b\\s*${AMT}\\s*(.*)$`)))) { const v = capNum(m[2]), rest = capClean(o.slice(m.index + m[0].length - m[3].length)), rf = fold(rest);
       const cat = /reserva|emergencia/.test(rf) ? "Reserva de emergência" : /previd/.test(rf) ? "Previdência" : /invest|acoes|fundo|tesouro|cdb|etf/.test(rf) || m[1] === "investi" ? "Investimentos" : "Objetivo específico";
-      if (v) add(`/aporte ${fmtDec(v)} ${findIn(CAT_APO, cat) || CAT_APO[0]}: ${rest || cat}`); }
-    else if ((m = F.match(/\bcomprei\s+(.+?)\s+(?:por|a)\s+(?:€|r\$)?\s*(\d+(?:[.,]\d{1,2})?)/))) { const v = capNum(m[2]); if (v) add(`/gasto ${fmtDec(v)} ${capClean(o.slice(m.index + 8, m.index + 8 + m[1].length))}`); }
+      if (v) { add(`/aporte ${fmtDec(v)} ${findIn(CAT_APO, cat) || CAT_APO[0]}: ${rest || cat}`); money = "aporte"; } }
+    else if ((m = F.match(/\bcomprei\s+(.+?)\s+(?:por|a)\s+(?:€|r\$)?\s*(\d+(?:[.,]\d{1,2})?)/))) { const v = capNum(m[2]); if (v) { add(`/gasto ${fmtDec(v)} ${capClean(o.slice(m.index + 8, m.index + 8 + m[1].length))}`); money = "gasto"; } }
     else if ((m = F.match(new RegExp(`\\b(gastei|paguei|comprei|torrei|custou|custaram|saiu|sairam|deu)\\b\\s*(?:uns?\\s+|umas?\\s+|quase\\s+|mais de\\s+|cerca de\\s+)?${AMT}\\s*(.*)$`)))) {
       const v = capNum(m[2]); let desc = capClean(o.slice(m.index + m[0].length - m[3].length)); if (!desc) desc = capClean(capNoun(o.slice(0, m.index))) || capClean(capNoun(prevO)).replace(/^(?:e|depois)\s+/i, "");
-      if (v) add(`/gasto ${fmtDec(v)} ${capNoun(desc).replace(/@/g, "")}`); }
-    else if ((m = F.match(/(?:€|r\$)\s*(\d+(?:[.,]\d{1,2})?)|(\d+(?:[.,]\d{1,2})?)\s*(?:€|euros?|reais)\b/))) { const v = capNum(m[1] || m[2]), around = capClean(capNoun((o.slice(0, m.index) + " " + o.slice(m.index + m[0].length)).replace(/\bpor\s*$/i, ""))); if (v && !/\b(meta|guardei|investi)\b/.test(F)) add(`/gasto ${fmtDec(v)} ${around || "gasto"}`); }
+      if (v) { add(`/gasto ${fmtDec(v)} ${capNoun(desc).replace(/@/g, "")}`); money = "gasto"; } }
+    else if ((m = F.match(/(?:€|r\$)\s*(\d+(?:[.,]\d{1,2})?)|(\d+(?:[.,]\d{1,2})?)\s*(?:€|euros?|reais)\b/))) { const v = capNum(m[1] || m[2]), around = capClean(capNoun((o.slice(0, m.index) + " " + o.slice(m.index + m[0].length)).replace(/\bpor\s*$/i, ""))); if (v && !/\b(meta|guardei|investi)\b/.test(F)) { add(`/gasto ${fmtDec(v)} ${around || "gasto"}`); money = "gasto"; } }
+    /* valor solto logo depois de outro: herda o tipo (“gastei 18 no almoço e 32,40 no mercado”) */
+    else if (prevMoney && (m = F.match(new RegExp(`^\\s*(?:e\\s+)?(?:mais\\s+)?${AMT}\\s*(.*)$`)))) { const v = capNum(m[1]), desc = capClean(o.slice(m.index + m[0].length - m[2].length)); if (v && desc) { add(`/${prevMoney} ${fmtDec(v)} ${prevMoney === "aporte" ? CAT_APO[0] + ": " : ""}${capNoun(desc).replace(/@/g, "")}`); money = prevMoney; } }
     /* sono, passos, peso */
     if ((m = F.match(/\bdormi\s+(?:d[ae]s?\s+)(\d{1,2})(?:[:h](\d{2}))?\s*h?\s+(?:ate|as|a)\s+(?:as\s+)?(\d{1,2})(?:[:h](\d{2}))?/))) { let h = (+m[3] + (+m[4] || 0) / 60) - (+m[1] + (+m[2] || 0) / 60); if (h <= 0) h += 24; if (h > 0 && h <= 16) add(`/sono ${fmtDec(Math.round(h * 4) / 4)}`); }
     else if ((m = F.match(/\b(?:dormi|noite de)\s+(?:umas?\s+|cerca de\s+|quase\s+|so\s+|apenas\s+|mais ou menos\s+)?(\d+(?:[.,]\d+)?)\s*(?:h|horas?)(?:\s*e\s*(meia|\d+)\s*(?:min|minutos)?|(\d{2})\b)?/))) { const h = capNum(m[1]) + (m[2] === "meia" ? .5 : m[2] ? +m[2] / 60 : m[3] ? +m[3] / 60 : 0); if (h > 0 && h <= 16) add(`/sono ${fmtDec(Math.round(h * 4) / 4)}`); }
-    if ((m = F.match(/(\d{1,3}(?:\.\d{3})+|\d+(?:[.,]\d+)?)\s*(mil)?\s*passos/))) { const v = capNum(m[1]) * (m[2] ? 1000 : 1); if (v) add(`/passos ${Math.round(v)}`); }
+    if ((m = F.match(/(\d{1,3})\s*mil\s*e\s*(\d{1,3})\s*passos/))) add(`/passos ${+m[1] * 1000 + +m[2]}`);
+    else if ((m = F.match(/(\d{1,3}(?:\.\d{3})+|\d+(?:[.,]\d+)?)\s*(mil)?\s*passos/))) { const v = capNum(m[1]) * (m[2] ? 1000 : 1); if (v) add(`/passos ${Math.round(v)}`); }
     if ((m = F.match(/\b(?:pesei|peso|balanca(?:\s+(?:marcou|deu))?)\s*(?:de\s+|:)?\s*(\d{2,3}(?:[.,]\d{1,2})?)\s*(?:kg|quilos)?/))) { const v = capNum(m[1]); if (v >= 20 && v <= 400) add(`/peso ${fmtDec(v)}`); }
     /* treino */
     for (const [rx, lab] of CAP_TREINO) if (rx.test(F)) { const tipo = findIn(TREINOS, lab) || "Outro", mn = capMinutes(F); workout.add(tipo); add(`/treino ${tipo}${mn ? " " + mn : ""}`); break; }
@@ -68,10 +73,10 @@ function capParse(text) {
     if ((m = F.match(/\bestudei\s+(?:uns?\s+|umas?\s+|por\s+)?(\d+(?:[.,]\d+)?)\s*(h|horas?|min|minutos)\b\s*(?:de|do|da)?\s*(.*)$/))) { const h = /^m/.test(m[2]) ? capNum(m[1]) / 60 : capNum(m[1]); add(`/estudo ${fmtDec(h)} ${capClean(o.slice(m.index + m[0].length - m[3].length)) || "Estudo"}`); }
     else if ((m = F.match(/\bestudei\s+(.+?)\s+(?:por\s+)?(\d+(?:[.,]\d+)?)\s*(h|horas?|min|minutos)\b/))) { const h = /^m/.test(m[3]) ? capNum(m[2]) / 60 : capNum(m[2]); add(`/estudo ${fmtDec(h)} ${capClean(o.slice(m.index + 8, m.index + 8 + m[1].length))}`); }
     if ((m = F.match(/\bli\s+(\d+)\s+paginas?(?:\s+(?:de|do|da)\s+(.+))?/))) { const book = m[2] ? S.aprend.find(a => fold(a.titulo).includes(capClean(m[2]).slice(0, 18))) : null, open = S.aprend.filter(a => a.tipo === "Livro" && a.status === "Em andamento"), it = book || (open.length === 1 ? open[0] : null); if (it) add(`/ler ${m[1]} ${it.titulo}`); }
-    if ((m = F.match(/\b(fui ao|fui a|fui num|fui numa|assisti|joguei|toquei|vi um filme|passeei|fiz (?:uma )?trilha)\b(.*)$/)) && /(\d+(?:[.,]\d+)?)\s*(?:h|horas?)\b/.test(F)) { const h = capNum(F.match(/(\d+(?:[.,]\d+)?)\s*(?:h|horas?)\b/)[1]), at = capClean(o.slice(m.index).replace(/\d+(?:[.,]\d+)?\s*(?:h|horas?)\b.*/i, "")); if (h && at) add(`/lazer ${fmtDec(h)} ${at.slice(0, 40)}`); }
+    if ((m = F.match(/\b(fui ao|fui a|fui num|fui numa|assisti|joguei|toquei|vi um filme|passeei|fiz (?:uma )?trilha)\b(.*)$/)) && /(\d+(?:[.,]\d+)?)\s*(?:h|horas?)\b/.test(F)) { const h = capNum(F.match(/(\d+(?:[.,]\d+)?)\s*(?:h|horas?)\b/)[1]), at0 = capClean(o.slice(m.index + (/^fui/.test(m[1]) ? m[1].length : 0)).replace(/\d+(?:[.,]\d+)?\s*(?:h|horas?)\b.*/i, "")), at = at0.charAt(0).toUpperCase() + at0.slice(1); if (h && at) add(`/lazer ${fmtDec(h)} ${at.slice(0, 40)}`); }
     /* tarefas */
     if ((m = F.match(/\b(preciso|tenho que|tenho de|nao (?:posso )?esquecer de|lembrar de|devo|vou ter que)\s+(.+)$/))) { const t = capClean(o.slice(m.index + m[0].length - m[2].length)); if (t.length >= 3) add(`/tarefa ${t}`); }
-    prevO = o;
+    prevO = o; prevMoney = money;
   }
   /* hábitos: verbo no texto inteiro; treino detectado também marca o hábito de treinar */
   for (const h of S.habitos) { const key = fold(h.nome).split(/\s+/)[0], pair = CAP_HAB.find(([k]) => k.test(key)), rx = pair ? pair[1] : new RegExp(`\\b${key.slice(0, Math.max(4, key.length - 2))}\\w*`);

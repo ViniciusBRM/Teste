@@ -16,7 +16,7 @@ function pHoje(R) {
   const ins = insights(R, H)[0], exps = (S.experimentos || []).filter(x => x.status === "ativo" && expSchedule(x)[TODAY] && !(x.desenho === "antes" && expSchedule(x)[TODAY] === "A")), al = radarAlerts().slice(0, 2);
   const fwk = fsTarget(), fpend = parse(TODAY).getDay() <= 1 && S.fechamentos?.[fwk]?.status !== "fechado";
   return `<div class="g2c hj">
-      ${panel(`${ic("bolt")}Capturar <small>escreva ou dite o dia; o Atlas separa os registros</small>`, captureFormHTML("h"), { cls: "span2 capcard" })}
+      ${panel(`${ic("bolt")}Capturar <small>escreva ou dite o dia; o Atlas separa os registros</small>`, captureFormHTML("h"), { cls: "span2 capcard", act: `<a class="lnk" href="#painel">${ic("mic")}Painel do dia</a>` })}
       ${fpend ? `<div class="pn fscta span2"><div>${ic("week")}<b>Hora de fechar a semana de ${wkLabel(fwk)}</b><small>Números, destaques do diário, o que você cumpriu e as prioridades da próxima. Uns 15 minutos.</small></div><a class="btn primary" href="#semana">Fechar a semana</a></div>` : ""}
       ${bmHoje()}
       ${jHoje()}

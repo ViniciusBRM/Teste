@@ -4,7 +4,7 @@ O app é um arquivo só, `../atlas-da-vida-2.html`, montado a partir dos módulo
 (`../atlas-da-vida.html`) continua separado e não é tocado por este build.
 
 - `python3 build.py` monta o HTML e, se o Node estiver instalado, confere a sintaxe do JavaScript.
-- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `26` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro; `25-carreira.js` é o hub de Carreira; `26-lazer.js` é o Lazer, com oito divisões e seus mentores).
+- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `27` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro; `25-carreira.js` é o hub de Carreira; `26-lazer.js` é o Lazer, com oito divisões e seus mentores; `27-painel.js` é o Painel do dia, a entrada rápida por texto e voz).
 
 ## Testes (Playwright + Chromium)
 
@@ -16,6 +16,7 @@ Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` 
 | `lab2.py` | radar (contra cálculo independente), fechamento semanal, capítulos e livro em PDF, busca por significado |
 | `lab3.py` | espaço a dois (duas pessoas), agenda .ics (recorrências contra a `python-dateutil`), Apple Health, Google Fit, Notion, extrato que aprende |
 | `lab4.py` | bússola moral: valores, foco, exame da noite (índice conferido à parte), decisões com revisita, caminhos, Hoje |
+| `lab10.py` | painel do dia: números falados e formatos aceitos, validação ao vivo, obrigatórios, texto que preenche os campos, voz simulada (Web Speech API) e o caminho sem ela, revisão com substituições e repetidos, gravação nas abas e desfazer |
 | `lab9.py` | aprofundamento: portfólio como evidência, CV, matriz de decisão e sensibilidade, mercado (mediana, percentil, TFR) e dossiê; programas guiados, sessões de prática como métrica nos Cruzamentos, conceitos e histórico das estações |
 | `lab8.py` | lazer: oito divisões, gostos e o que evitar no mentor, livros em Aprendizado, viagem que vira projeto, café (proporção, perda e DTR conferidos à parte), voos, estudos, nível da conversa e as ferramentas dos mentores |
 | `lab7.py` | hub de carreira: aderência às trilhas conferida à parte, avaliação, objetivos que viram metas, ações que viram tarefas e projetos em Finanças, geotecnia progressiva, biblioteca; se existir `../ft/docs2`, o perfil gravado |
