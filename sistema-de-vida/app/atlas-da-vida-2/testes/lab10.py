@@ -46,7 +46,7 @@ async def main():
             chk(await pg.evaluate("!!document.querySelector('#nav a[href=\"#painel\"]')") and await pg.evaluate("NAV[0][1].findIndex(x => x[0] === 'painel')") == 2, "o Painel do dia está no menu principal, logo depois de Hoje")
             chk(await pg.evaluate("palItems('painel').some(x => x.l === 'Painel do dia' && x.g === 'Ações')"), "a busca (Ctrl K) abre o Painel do dia")
             await pg.evaluate("location.hash='hoje'"); await pg.wait_for_timeout(250)
-            chk(await pg.evaluate("!!document.querySelector('.capcard a[href=\"#painel\"]')"), "Hoje tem atalho para o Painel do dia")
+            chk(await pg.evaluate("!!document.querySelector('a.btn[href=\"#painel\"]')"), "Hoje tem atalho para o Painel do dia")
         finally:
             for e in errs: print("  ", e)
             if errs: bad += 1
@@ -191,7 +191,7 @@ async def main():
             chk(dbs.get("sono") == 7.5 and dbs.get("humor") == 4, f"gravado no banco de dados da conta: {dbs}")
             # as abas mostram o mesmo dado
             await pg.evaluate("location.hash='hoje'"); await pg.wait_for_timeout(300)
-            chk(await pg.input_value("#hj_sono") == "7.5" and await pg.evaluate("document.querySelector('[data-sd=humor][data-v=\"4\"]').getAttribute('aria-pressed')") == "true", "o check-in de Hoje mostra o que o painel salvou")
+            reg = await pg.inner_text(".hjreg"); chk("sono 7,5 h" in reg and "humor 4/5" in reg, f"o Registro do dia em Hoje mostra o que o painel salvou: {reg}")
             await pg.evaluate("location.hash='painel'"); await pg.wait_for_timeout(250)
             # desfazer volta tudo de uma vez
             await pg.click("[data-act=undo]"); await pg.wait_for_timeout(300)

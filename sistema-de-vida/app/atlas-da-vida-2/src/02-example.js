@@ -148,6 +148,7 @@ function exampleData() {
   exampleCarreira(D);
   exampleLazer(D);
   exampleAprofunda(D);
+  exampleRedesenho(D);
   return D;
 }
 
@@ -457,4 +458,21 @@ function exampleAprofunda(D) {
   C.merc = { bench: [{ id: id(), ral: 36000, cargo: "BIM Coordinator", cidade: "Milão", tipo: "Anúncio de vaga", fonte: "anúncio com faixa salarial", data: d(-20) }, { id: id(), ral: 42000, cargo: "BIM Coordinator infraestrutura", cidade: "Milão", tipo: "Proposta real", fonte: "conversa com recrutador", data: d(-12) }, { id: id(), ral: 48000, cargo: "BIM Manager", cidade: "Milão", tipo: "Pesquisa salarial", fonte: "pesquisa do setor", data: d(-5) }],
     resp: [{ id: id(), t: "Coordeno o modelo federado das disciplinas", proj: C.port[0].id }], conq: [{ id: id(), t: "Executivo do lote 2 entregue no prazo", proj: C.port[0].id }], pedido: { livello: "", ral: 42000 } };
   C.perfil.remun = { contrato: "Tempo indeterminato", ccnl: "Exemplo", livello: "", bruto: 2600, mens: 14, buoni: 0 };
+}
+
+/* redesenho: casa, compras, contas, idiomas, futuro financeiro, Itália & Brasil, caderno e rede (tudo fictício) */
+function exampleRedesenho(D) {
+  const id = () => Math.random().toString(36).slice(2, 10), d = n => addDays(TODAY, n), m0 = TODAY.slice(0, 8);
+  D.rotinas.forEach((r, i) => { r.nivel ||= ["Leve", "Média", "Pesada", "Sazonal"][i % 4]; r.comodo ||= "Casa toda"; r.min ||= 20; });
+  D.contasCasa = [["Aluguel", "Aluguel / financiamento", 780, "Mensal", m0 + "05", "Não"], ["Condomínio", "Condomínio", 95, "Mensal", m0 + "10", "Sim"], ["Luz (Iren)", "Luz", 62, "Bimestral", d(9), "Sim"], ["Gás", "Gás", 70, "Bimestral", d(23), "Sim"], ["Internet fibra", "Internet / telefone", 27.9, "Mensal", m0 + "15", "Sim"], ["TARI", "TARI (lixo)", 210, "Semestral", d(40), "Não"], ["Seguro residencial", "Seguro da casa", 120, "Anual", d(130), "Não"]]
+    .map(([conta, cat, valor, periodo, venc, debito]) => ({ id: id(), conta, cat, valor, periodo, venc, debito, pagos: venc < TODAY ? { [venc]: venc } : {} }));
+  D.compras = [["Leite", "Laticínios", "2 l", "Sim"], ["Pão", "Padaria", "", "Sim"], ["Tomate", "Hortifrúti", "1 kg", "Não"], ["Detergente", "Limpeza", "", "Não"], ["Café em grão", "Mercearia", "500 g", "Sim"], ["Frango", "Carnes & peixes", "1 kg", "Não"]].map(([item, cat, qtd, fixo], i) => ({ id: id(), item, cat, qtd, fixo, feito: i === 1 }));
+  D.idiomas = { en: { nivel: "B1", alvo: "B2", prazo: d(300), desde: d(-40) }, it: { nivel: "B2", alvo: "C1", prazo: d(540), desde: d(-40) }, disp: [45, 30, 30, 45, 30, 20, 60], janela: { ini: "19:30", fim: "21:00" }, peso: 70, desloc: 20, marcos: { en: { B2: [d(-10)] } } };
+  for (let k = 1; k <= 30; k++) if (k % 2 || k % 5 === 0) D.estudo.push({ id: id(), data: d(-k), item: k % 5 === 0 ? "Italiano" : "Inglês", horas: k % 3 ? .5 : .75, lang: k % 5 === 0 ? "it" : "en", hab: ["Ouvir", "Falar", "Ler", "Escrever"][k % 4], rec: k % 5 === 0 ? "Il Post" : "6 Minute English", origem: "idiomas" });
+  D.fut = { reservaMeses: 6, tfrSaldo: 7400, idade: 33, anosInps: 4, anosInss: 6, fundoRend: 3, contribTrab: 1, contribEmp: 1, check: { it_perm: { venc: d(49) }, it_730: { ok: d(-20) }, br_pass: { venc: d(400) } } };
+  D.vidaItens = [["Ajuda para a família", "Brasil", "Família", 800, "Mensal"], ["Financiamento do apartamento", "Brasil", "Financiamento / dívida", 1450, "Mensal"], ["IPTU", "Brasil", "Impostos & taxas", 1200, "Anual"], ["Plano de celular no Brasil", "Brasil", "Outro", 49.9, "Mensal"], ["Abbonamento GTT", "Itália", "Outro", 38, "Mensal"], ["Commercialista (730)", "Itália", "Impostos & taxas", 60, "Anual"]].map(([t, pais, cat, valor, periodo]) => ({ id: id(), t, pais, cat, valor, periodo }));
+  D.cadTec = CAD_MODELO.slice(0, 6).map(([titulo, area, tipo, texto, ref, tags], i) => ({ id: id(), titulo, area, tipo, texto, ref, tags, revisar: i === 0 ? d(-2) : "", upd: Date.now() - i * 1e6 }));
+  const work = D.pessoas.filter(p => p.relacao === "Trabalho" || p.relacao === "Mentoria");
+  work.forEach((p, i) => { p.empresa ||= ["Studio Exemplo", "Engenharia Beta", "Consultoria Zeta"][i % 3]; p.cargo ||= ["BIM Manager", "Diretor técnico", "Recrutadora"][i % 3]; p.freq ||= 60; });
+  D.oport = [{ id: id(), titulo: "Vaga de BIM Coordinator infra", empresa: "Engenharia Beta", tipo: "Vaga", estagio: "Conversa", contato: work[0]?.nome || "", prazo: d(5), passo: "Enviar portfólio atualizado" }, { id: id(), titulo: "Palestra no encontro buildingSMART local", empresa: "Comunidade", tipo: "Evento", estagio: "Ideia", contato: "", prazo: d(30), passo: "Propor tema" }];
 }

@@ -21,7 +21,7 @@ async def main():
             chk(not await pg.evaluate("IS_EXAMPLE") and len(await pg.evaluate("S.carreira.perfil.mapa")) == len(seedv["v"]["perfil"]["mapa"]), "hub abre com o perfil gravado (mapa de carreira), fora do modo exemplo")
             nav = await pg.evaluate("[...document.querySelectorAll('#nav .nv span')].map(e => e.textContent)")
             tabs = await pg.evaluate("[...document.querySelectorAll('.subtabs a')].map(e => e.textContent)")
-            chk("Carreira" in nav and tabs == ["Panorama", "Avaliação atual", "Portfólio", "Objetivos", "Decisões", "Plano de ação", "Mercado", "Biblioteca"], f"menu com Carreira; Geotecnia escondida enquanto guardada ({tabs})")
+            chk("Carreira" in nav and tabs == ["Panorama", "Avaliação atual", "Portfólio", "Objetivos", "Decisões", "Plano de ação", "Mercado", "Caderno técnico", "Rede profissional", "Biblioteca"], f"menu com Carreira; Geotecnia escondida enquanto guardada ({tabs})")
             chk(await pg.locator(".crtri").count() == 8 and await pg.locator(".crgeoinv").count() == 1 and await pg.locator(".crana li").count() == len(seedv["v"]["analise"]), "panorama: 8 trilhas, convite da geotecnia e a leitura do percurso")
             # base no mapa conferida à parte
             tri = await pg.evaluate("CR_TRI.map(t => ({ id: t.id, req: t.req }))")

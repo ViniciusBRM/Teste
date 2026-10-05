@@ -14,7 +14,8 @@ MOCK = r"""
   const store = cfg.seedStore ? JSON.parse(cfg.seedStore) : {};
   window.__store = store;
   const listeners = new Set();
-  const snap = (id, d) => ({ id, exists: d !== undefined, data: () => d === undefined ? undefined : JSON.parse(JSON.stringify(d)), metadata: { fromCache: false, hasPendingWrites: false } });
+  const deepFreeze = o => { if (o && typeof o === "object") { Object.values(o).forEach(deepFreeze); Object.freeze(o); } return o; };
+  const snap = (id, d) => ({ id, exists: d !== undefined, data: () => d === undefined ? undefined : deepFreeze(JSON.parse(JSON.stringify(d))), metadata: { fromCache: false, hasPendingWrites: false } });
   const notify = () => { for (const l of [...listeners]) setTimeout(l, 0); };
   const parity = (p, even) => { const n = p.split("/").length; if ((n % 2 === 0) !== even) throw new TypeError("parity " + p + " " + n); };
   const query = (path, filters = [], lim = 1000) => ({ path,
@@ -105,6 +106,14 @@ async def open_page(p, w=1440, h=900, theme="dark", cfg=None, hash_=""):
     await pg.route("https://atlas.test/", lambda r: r.fulfill(body=html, content_type="text/html"))
     await pg.route("https://cdnjs.cloudflare.com/**", lambda r: r.fulfill(path=str(JSPDF), content_type="application/javascript") if JSPDF.exists() else r.continue_())
     await pg.route("https://fonts.googleapis.com/**", lambda r: r.fulfill(body="", content_type="text/css"))
+    # internet simulada: clima, câmbio, notícias e geocodificação (cfg.noNet = sem acesso)
+    NET = {"api.open-meteo.com": {"current": {"temperature_2m": 18.4, "apparent_temperature": 17.6, "precipitation": 0, "weather_code": 1, "wind_speed_10m": 8}, "daily": {"temperature_2m_max": [24.1], "temperature_2m_min": [11.2], "precipitation_probability_max": [10], "weather_code": [2], "uv_index_max": [5.2]}},
+           "api.frankfurter.dev": {"amount": 1.0, "base": "BRL", "date": "2026-10-02", "rates": {"EUR": 0.17062}},
+           "api.rss2json.com": {"status": "ok", "items": [{"title": "Teste: cidade planta mil árvores", "link": "https://example.org/a", "pubDate": "2026-10-05 07:00:00", "description": "<p>Resumo do teste.</p>"}, {"title": "Teste: rio volta a ter peixes", "link": "https://example.org/b", "pubDate": "2026-10-04 07:00:00", "description": ""}]},
+           "geocoding-api.open-meteo.com": {"results": [{"name": "Milão", "latitude": 45.46, "longitude": 9.19}]}}
+    no_net = (cfg or {}).get("noNet")
+    for host, body in NET.items():
+        await pg.route(f"https://{host}/**", (lambda b: (lambda r: r.abort() if no_net else r.fulfill(body=json.dumps(b), content_type="application/json", headers={"access-control-allow-origin": "*"})))(body))
     await pg.goto("https://atlas.test/" + (("#" + hash_) if hash_ else ""), wait_until="load")
     await pg.wait_for_timeout(900)
     return b, pg, errs
@@ -112,4 +121,4 @@ async def open_page(p, w=1440, h=900, theme="dark", cfg=None, hash_=""):
 async def overflow(pg):
     return await pg.evaluate("[document.documentElement.scrollWidth, innerWidth]")
 
-PAGES = ["painel","carreira.portfolio","carreira.decisoes","carreira.mercado","jornada.praticas","lazer.inicio","lazer.leitura","lazer.filmes","lazer.jogos","lazer.viagens","lazer.cafe","lazer.aviacao","lazer.estudos","lazer.existencial","carreira.panorama","carreira.avaliacao","carreira.objetivos","carreira.geotecnia","carreira.plano","carreira.biblioteca","jornada.inicio","jornada.espiritismo","jornada.meditacao","jornada.taoismo","jornada.budismo","jornada.confluencias","jornada.bussola","jornada.exame","jornada.decidir","jornada.caminhos","jornada.navegante","semana","radar","exp","capitulos","capitulos.livro","dupla","dupla.orcamento","dupla.metas","privacidade","diario.perguntar",'visao', 'hoje', 'diario', 'diario.cal', 'diario.analise', 'mentores', 'mentor.fin', 'mentor.conselho', 'cruz', 'fin.rel', 'fin.lanc', 'fin.orc', 'saude.rel', 'saude.checkin', 'hab.rel', 'hab.marcar', 'metas.rel', 'metas.lista', 'metas.tarefas', 'pessoas.rel', 'pessoas.lista', 'pessoas.contatos', 'cresc.rel', 'cresc.carreira', 'cresc.aprend', 'cresc.lazer', 'casa', 'roda', 'dados', 'dados.saude', 'dados.diario', 'integ', 'ajustes', 'fin.diario', 'saude.diario', 'hab.diario', 'metas.diario', 'pessoas.diario', 'cresc.diario', 'casa.diario', 'roda.diario', 'roda.roda', 'casa.painel']
+PAGES = ["mapa","idiomas","fin.futuro","fin.vida","casa.limpeza","casa.compras","casa.contas","casa.docs","carreira.caderno","carreira.rede","painel","carreira.portfolio","carreira.decisoes","carreira.mercado","jornada.praticas","lazer.inicio","lazer.leitura","lazer.filmes","lazer.jogos","lazer.viagens","lazer.cafe","lazer.aviacao","lazer.estudos","lazer.existencial","carreira.panorama","carreira.avaliacao","carreira.objetivos","carreira.geotecnia","carreira.plano","carreira.biblioteca","jornada.inicio","jornada.espiritismo","jornada.meditacao","jornada.taoismo","jornada.budismo","jornada.confluencias","jornada.bussola","jornada.exame","jornada.decidir","jornada.caminhos","jornada.navegante","semana","radar","exp","capitulos","capitulos.livro","dupla","dupla.orcamento","dupla.metas","privacidade","diario.perguntar",'visao', 'hoje', 'diario', 'diario.cal', 'diario.analise', 'mentores', 'mentor.fin', 'mentor.conselho', 'cruz', 'fin.rel', 'fin.lanc', 'fin.orc', 'saude.rel', 'saude.checkin', 'hab.rel', 'hab.marcar', 'metas.rel', 'metas.lista', 'metas.tarefas', 'pessoas.rel', 'pessoas.lista', 'pessoas.contatos', 'cresc.rel', 'cresc.aprend', 'cresc.lazer', 'casa', 'roda', 'dados', 'dados.saude', 'dados.diario', 'integ', 'ajustes', 'fin.diario', 'saude.diario', 'hab.diario', 'metas.diario', 'pessoas.diario', 'cresc.diario', 'casa.diario', 'roda.diario', 'roda.roda', 'casa.painel']

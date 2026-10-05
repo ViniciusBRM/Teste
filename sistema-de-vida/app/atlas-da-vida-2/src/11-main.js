@@ -10,23 +10,25 @@ function render() {
   const pages = {
     visao: () => [nm ? `Olá, ${nm}` : "Visão geral", `Como a vida está indo em ${mlabel(REF)}${R.corte ? ` · dados até ${fmtD(R.corte)}` : ""}`, rOverview],
     painel: () => ["Painel do dia", "Os essenciais do dia em um minuto, por texto ou voz. Você revisa antes de ir para as abas.", pPainel],
-    hoje: () => [`${greet()}${nm ? ", " + nm : ""}`, fmtDL(TODAY)[0].toUpperCase() + fmtDL(TODAY).slice(1), pHoje],
+    hoje: () => [`${greet()}${nm ? ", " + nm : ""}`, fmtDL(TODAY)[0].toUpperCase() + fmtDL(TODAY).slice(1), pHoje2],
     diario: () => ["Diário", "Escreva, marque pessoas e temas, registre dados e veja o que se repete", pDiario],
     mentores: () => ["Mentores", "Um agente para cada área, com memória do que vocês combinaram", pMentores],
     mentor: () => [esc(MENTOR_DEF[SUB].nome), esc(MENTOR_DEF[SUB].papel[0].toUpperCase() + MENTOR_DEF[SUB].papel.slice(1)), pMentor],
     cruz: () => ["Cruzamentos", "Descubra o que anda junto na sua vida: escolha duas métricas ou deixe o Atlas procurar", rCruz],
-    fin: () => ["Finanças", mlabel(REF), { rel: rFin, lanc: pLanc, orc: pOrc, projetos: pFinProjetos, diario: pSetorDiario }[SUB]],
+    fin: () => ["Finanças", SUB === "futuro" ? "Reserva, TFR e previdência" : SUB === "vida" ? "Contas dos dois países, somadas em euro" : mlabel(REF), { rel: rFin, lanc: pLanc, orc: pOrc, futuro: pFuturo, vida: pVida, projetos: pFinProjetos, diario: pSetorDiario }[SUB]],
     saude: () => ["Saúde", mlabel(REF), { rel: rSaude, checkin: pCheckin, diario: pSetorDiario }[SUB]],
     hab: () => ["Hábitos", mlabel(REF), { rel: rHab, marcar: pHabMarcar, diario: pSetorDiario }[SUB]],
     metas: () => ["Metas & tarefas", mlabel(REF), { rel: rMetas, lista: pMetasLista, tarefas: pTarefas, diario: pSetorDiario }[SUB]],
     pessoas: () => ["Relações", mlabel(REF), { rel: rRel, lista: pPessoas, contatos: pContatos, diario: pSetorDiario }[SUB]],
-    cresc: () => ["Crescimento", mlabel(REF), { rel: rCresc, carreira: pCarreira, aprend: pAprend, lazer: pLazer, diario: pSetorDiario }[SUB]],
-    casa: () => ["Casa & docs", mlabel(REF), SUB === "diario" ? pSetorDiario : pCasa], roda: () => ["Roda da Vida", SUB === "diario" ? "Um diário para cada área da vida" : "Percepção, alvos e revisão mensal", SUB === "diario" ? pSetorDiario : pRoda],
+    cresc: () => ["Crescimento", mlabel(REF), { rel: rCresc, aprend: pAprend, lazer: pLazer, diario: pSetorDiario }[SUB]],
+    casa: () => ["Casa & docs", { painel: "O que vence, o que limpar e o que comprar", limpeza: "Rotinas do leve ao pesado", compras: "A lista da semana, por seção do mercado", contas: "Calendário de vencimentos", docs: "Contratos, contas anuais e onde estão guardados", diario: "Diário da casa" }[SUB] || "", SUB === "diario" ? pSetorDiario : pCasa2],
+    idiomas: () => ["Idiomas", "Inglês primeiro, italiano em seguida, no ritmo que a sua semana permite", pIdiomas],
+    mapa: () => ["Mapa do Atlas", "Cada aba, o problema que ela resolve e para onde os dados vão", pMapa], roda: () => ["Roda da Vida", SUB === "diario" ? "Um diário para cada área da vida" : "Percepção, alvos e revisão mensal", SUB === "diario" ? pSetorDiario : pRoda],
     dados: () => ["Dados", "Edite qualquer registro como numa planilha, filtre, altere em massa, importe e exporte", pDados],
     integ: () => ["Integrações", "Notion, agenda, Apple Health, Google Fit e bancos, nos dois sentidos onde dá", pInteg],
     ajustes: () => ["Ajustes", "Metas, áreas, listas, mentores e aparência", pAjustes],
     lazer: () => ["Lazer", { inicio: "Oito temas, cada um com um mentor que conversa no seu nível", existencial: "Os quatro mentores da Jornada, dentro do Lazer" }[SUB] || (lzDiv(SUB)?.mid ? `${esc(lzDiv(SUB).nome)} com ${esc(MENTOR_DEF[lzDiv(SUB).mid].nome)}` : ""), pLazerHub],
-    carreira: () => ["Carreira", { panorama: "Onde você está, aonde quer chegar, como e com o quê", avaliacao: "O retrato de hoje: perfil, competências, pontos fortes e gaps", portfolio: "Os projetos que provam o que você sabe", decisoes: "Cenários comparados com os seus critérios e pesos", mercado: "Referências de mercado e o dossiê para negociar", objetivos: "O norte, as trilhas e os objetivos com prazo", geotecnia: "Uma frente nova, no seu ritmo", plano: "Do gap à ação, com marcos verificáveis", biblioteca: "Normas, cursos, livros e ferramentas por tópico" }[SUB] || "", pCarreiraHub],
+    carreira: () => ["Carreira", { panorama: "Onde você está, aonde quer chegar, como e com o quê", avaliacao: "O retrato de hoje: perfil, competências, pontos fortes e gaps", portfolio: "Os projetos que provam o que você sabe", decisoes: "Cenários comparados com os seus critérios e pesos", mercado: "Referências de mercado e o dossiê para negociar", objetivos: "O norte, as trilhas e os objetivos com prazo", geotecnia: "Uma frente nova, no seu ritmo", plano: "Do gap à ação, com marcos verificáveis", biblioteca: "Normas, cursos, livros e ferramentas por tópico", caderno: "Caderno técnico de engenharia", rede: "Contatos, cadência e oportunidades" }[SUB] || "", pCarreiraHub],
     jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", confluencias: "Onde os quatro caminhos se encontram", praticas: "Programas guiados, sessões de prática e o que elas mudam", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
     semana: () => ["Fechamento da semana", `Semana de ${wkLabel(fsWk())}`, pSemana],
     radar: () => ["Radar", "Alertas antes que aconteçam, com evidência do seu histórico e conferência depois", pRadar],
@@ -40,7 +42,7 @@ function render() {
   const banner = IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
   const ae = document.activeElement, focusId = ae?.id, selS = ae?.selectionStart, selE = ae?.selectionEnd, scT = ae?.scrollTop, chat = $("#mchat"), chatTop = chat ? chat.scrollTop : null, chatBottom = chat ? chat.scrollHeight - chat.scrollTop - chat.clientHeight < 40 : true;
   $("#nav").innerHTML = navHTML(R);
-  $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${subtabs()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
+  $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
   $("#drawerwrap").innerHTML = drawerHTML(R);
   document.body.classList.toggle("navopen", NAVOPEN); document.body.classList.toggle("drawer-on", !!DRAWER);
   saveStatus();
@@ -112,7 +114,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (pdClick(t) || capClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (pdClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -158,6 +160,7 @@ document.addEventListener("keydown", e => {
   if (tg.id === "dz_texto" && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); saveDraft(); return; }
   if ((tg.id === "cap_txt" || tg.id === "hj_cap") && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); capRefresh({ keepAI: CAP.src === "ia", keepDate: true }); capSave(); return; }
   if (tg.id === "pd_txt" && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); pdParse(); $('[data-act="pdrev"],[data-act="pdsave"]')?.click(); return; }
+  if (tg.id === "cp_in" && e.key === "Enter") { e.preventDefault(); cpAdd(tg.value); return; }
   if (tg.id === "sem_q" && e.key === "Enter") { e.preventDefault(); semAsk(tg.value); return; }
   if (tg.id === "cf_p" && e.key === "Enter") { e.preventDefault(); $('[data-act="cfopen"]')?.click(); return; }
   if (tg.id === "m_in" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); askMentor(tg.closest("[data-mid]")?.dataset.mid || SUB, tg.value); return; }
@@ -175,7 +178,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (pdInput(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
+  if (pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -190,7 +193,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (pdChange(t) || capChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

@@ -214,7 +214,7 @@ const crGrpCol = g => CR_GRP.find(x => x[0] === g)?.[2] || "var(--muted)";
 /* ---------------------------------------------------------------- páginas */
 function pCarreiraHub(R) {
   crExtra();
-  const f = { panorama: crPanorama, avaliacao: crAvaliacao, portfolio: crPortfolio, objetivos: crObjetivos, decisoes: crDecisoes, geotecnia: crGeotecnia, plano: crPlano, mercado: crMercado, biblioteca: crBiblioteca }[SUB] || crPanorama;
+  const f = { panorama: crPanorama, avaliacao: crAvaliacao, portfolio: crPortfolio, objetivos: crObjetivos, decisoes: crDecisoes, caderno: crCaderno, rede: crRede, geotecnia: crGeotecnia, plano: crPlano, mercado: crMercado, biblioteca: crBiblioteca }[SUB] || crPanorama;
   return f(R);
 }
 function crFlow() {

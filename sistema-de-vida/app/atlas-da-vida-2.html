@@ -1277,6 +1277,57 @@ tr.dim td{opacity:.5}
 .pddone>.ico{color:var(--good);width:20px;height:20px;margin-top:2px}.pddone>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;font-size:13px}.pddone span{color:var(--ink-2)}
 @media (max-width:760px){.pdrow3{grid-template-columns:1fr}.pdrow2{grid-template-columns:1fr}.pdg{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) 28px}.pdg select{grid-column:1/3;grid-row:2}.pdvst{margin-left:0}}
 @media (max-width:420px){.pdhabs{grid-template-columns:1fr 1fr}.pdh{padding:6px 8px;gap:7px}.pdh .hn{font-size:12.5px}.pdbig{grid-template-columns:1fr}.pdmicbig{flex-direction:row;min-height:42px}.pdfoot .row{width:100%}.pdfoot .btn.primary{flex:1}}
+
+/* ===== capa e manual de cada aba */
+.tabhead{position:relative;display:flex;align-items:stretch;min-height:108px;margin:4px 0 14px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:linear-gradient(100deg,var(--surface) 38%,color-mix(in srgb,var(--c) 14%,var(--surface)))}
+.thcov{position:absolute;inset:0 0 0 auto;width:min(62%,560px);pointer-events:none}
+.thcov svg,.mapcov svg{width:100%;height:100%;display:block}
+.tabhead .a,.mapcov .a{fill:var(--c);opacity:.22}.tabhead .b,.mapcov .b{fill:var(--c);opacity:.42}.tabhead .w,.mapcov .w{fill:var(--surface);opacity:.9}
+.tabhead .h1,.mapcov .h1{fill:var(--c);opacity:.3}.tabhead .h2,.mapcov .h2{fill:var(--c);opacity:.16}.tabhead .m,.mapcov .m{fill:var(--c);opacity:.2}
+.tabhead .rd,.mapcov .rd{fill:none;stroke:var(--ink-2);stroke-width:14;opacity:.35}.tabhead .rl,.mapcov .rl{fill:none;stroke:var(--surface);stroke-width:2;stroke-dasharray:10 9}
+.tabhead .br,.mapcov .br{fill:none;stroke:var(--c);stroke-width:4;opacity:.7}.tabhead .ln,.mapcov .ln{stroke:var(--c);stroke-width:3;opacity:.5}
+.tabhead .ic,.mapcov .ic{fill:none;stroke:var(--c);stroke-width:1.5;opacity:.75}.tabhead .tx,.mapcov .tx{fill:var(--ink);font:700 22px var(--f-ui);opacity:.8}
+.thtx{position:relative;z-index:1;flex:1;min-width:0;max-width:640px;padding:14px 18px;background:linear-gradient(90deg,var(--surface) 70%,transparent)}
+.thk{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--c);font-weight:700}
+.thtx>p{margin:4px 0 6px;font-family:var(--f-display);font-size:16.5px;line-height:1.35;color:var(--ink)}
+.thman summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--accent);display:inline-flex;align-items:center;gap:6px;list-style:none}.thman summary::-webkit-details-marker{display:none}.thman summary .ico{width:14px;height:14px}
+.thmb{font-size:13px;color:var(--ink-2)}.thmb ol{margin:6px 0;padding-left:20px}.thmb li{margin:3px 0}
+@media (max-width:640px){.tabhead{min-height:0}.thcov{width:100%;opacity:.45}.thtx{background:linear-gradient(90deg,var(--surface) 55%,color-mix(in srgb,var(--surface) 60%,transparent));padding:12px 14px}.thtx>p{font-size:15px}}
+/* mapa */
+.mapa{display:grid;gap:14px}.mapag{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:10px}
+.mapai{display:flex;flex-direction:column;gap:4px;border:1px solid var(--line);border-radius:12px;overflow:hidden;text-decoration:none;color:var(--ink);background:var(--surface-2);padding:0 0 10px;min-width:0}
+.mapai:hover{border-color:var(--c)}.mapcov{height:62px;background:color-mix(in srgb,var(--c) 10%,var(--surface))}
+.mapai b{display:flex;align-items:center;gap:6px;padding:6px 11px 0;font-size:14px}.mapai b .ico{width:15px;height:15px;color:var(--c)}.mapai span{padding:0 11px;font-size:12.5px;color:var(--ink-2)}.mapai small{padding:0 11px;font-size:11.5px}
+.mapsug{margin:8px 0 0;padding-left:22px;display:grid;gap:10px}.mapsug li{display:flex;gap:10px}.mapsug li>.ico{width:18px;height:18px;color:var(--accent);flex:none;margin-top:2px}.mapsug p{margin:2px 0 0;color:var(--ink-2);font-size:13px}
+/* hoje */
+.hjlead{font-size:14px;color:var(--ink-2);margin:0 0 10px}
+.hjask{display:grid;gap:8px;margin-bottom:14px}.hjask.pend{border-color:color-mix(in srgb,var(--warn) 55%,var(--line))}
+.hjaskh{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}.hjaskh b{display:inline-flex;gap:6px;align-items:center}.hjaskh .ico{width:16px;height:16px;color:var(--accent)}
+.hjq{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}.hjq>span{font-size:12px;color:var(--muted);min-width:130px}
+.hjch{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);border-radius:10px;padding:3px}
+.hjtemp{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.hjtemp input{width:76px}
+.hjwx{display:flex;align-items:center;gap:14px}.hjwx>b{font-family:var(--f-display);font-size:44px;font-weight:500;line-height:1}.hjwx div{display:flex;flex-direction:column}.hjwx small{color:var(--muted)}
+.hjl{margin:0;padding-left:18px;font-size:13.5px}.hjl li{margin:3px 0}
+.hjq1{margin:4px 0 8px;padding:0 0 0 14px;border-left:3px solid var(--warn)}.hjq1 p{margin:0;font-family:var(--f-display);font-size:18px;line-height:1.4}.hjq1 cite{display:block;margin-top:6px;font-size:12px;color:var(--muted);font-style:normal}
+.hjconc{font-size:14px;margin:6px 0}
+.hjid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.hjidc{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--surface-2);display:flex;flex-direction:column;gap:6px;min-width:0}.hjidc p{margin:0;font-size:13px;color:var(--ink-2)}.hjidc small{color:var(--muted);font-size:12px}
+.hjidm{display:flex;flex-wrap:wrap;gap:4px}
+.hjnews{display:grid;gap:8px}.hjn{display:flex;flex-direction:column;gap:3px;text-decoration:none;color:var(--ink);border-left:3px solid var(--good);padding:2px 0 2px 11px}.hjn span{font-size:12.5px;color:var(--ink-2)}.hjn small{font-size:11.5px;color:var(--muted)}.hjn:hover b{color:var(--accent)}
+.hjreg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+/* casa, futuro, idiomas, caderno */
+.cpchips{display:flex;flex-wrap:wrap;gap:6px}.cvl.pago{opacity:.6}
+.futbar{height:10px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:10px 0 6px}.futbar i{display:block;height:100%;background:var(--a-fin);border-radius:99px}
+.futd{margin-top:10px;font-size:13px}.futd summary{cursor:pointer;font-weight:600;color:var(--accent)}.futd ul{padding-left:18px;color:var(--ink-2)}
+.vck{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:8px 0;border-bottom:1px solid var(--line)}.vck .ckl{flex:1 1 260px;min-width:0}.vck .ckl span{display:flex;flex-direction:column}.vck small{color:var(--muted);font-size:12px}
+.vcv{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.vcv input{width:auto}
+.idpl td{vertical-align:top;font-size:13px}.idrec{margin:4px 0 0;padding-left:18px;font-size:13px}
+.cadbar{display:grid;gap:8px;margin-bottom:12px}.cadbar .row input{flex:1;min-width:0}.cadch{display:flex;flex-wrap:wrap;gap:4px}
+.cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.cadn{display:flex;flex-direction:column;gap:6px}.cadn.rev{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}.cadn header{display:flex;justify-content:space-between;gap:8px}.cadn h3{margin:0;font-size:15px}
+.cadtx{white-space:pre-wrap;font-family:var(--f-mono);font-size:12.5px;line-height:1.5;margin:0;background:var(--surface-2);border-radius:8px;padding:9px 10px;overflow-wrap:anywhere}
+.cadn footer{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+@media (max-width:420px){.hjq>span{min-width:0;flex-basis:100%}.cadgrid{grid-template-columns:1fr}}
 </style>
 
 <div class="app">
@@ -1466,13 +1517,13 @@ function applyLists() {
 const relArea = r => ({ "Família": "Família", "Parceria": "Amor & parceria", "Amizade": "Amizades & social", "Trabalho": "Carreira", "Mentoria": "Carreira", "Comunidade": "Propósito & espiritualidade" }[r] || "Amizades & social");
 
 /* ================================================================ estado */
-const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub"];
+const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx"];
 const EMPTY = () => ({
   cfg: { nome: "", moeda: "€", metaPoup: .2, metaReserva: 6, usoSobra: .7, maxParcela: .3, metaSono: 7.5, metaTreinos: 4, metaPassos: 8000, metaEstudo: 24, metaLivros: 12, metaLazer: 6, alertaDocs: 90, alertaAniv: 30, mentorNivel: "default", mentorTom: "Direto e caloroso", mentorNotion: true },
   lanc: [], orc: {}, patr: {}, saude: {}, habitos: [], marks: {}, roda: {}, alvo: {}, revisao: {}, metas: [], tarefas: [],
   pessoas: [], contatos: [], aprend: [], estudo: [], lazer: [], sonhos: [], docs: [], rotinas: [], assin: [], comp: [], cand: [], prio: ["", "", ""],
   diario: [], mentores: {}, listas: DEFAULT_LISTS(), regras: [], areasCfg: {}, integ: { notion: { pai: null, hist: [], tarefas: null } },
-  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {},
+  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {},
 });
 let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0;
 applyLists();
@@ -1545,7 +1596,8 @@ async function loadStore() {
     const db = await window.claude?.use?.("db"), user = db ? await window.claude.use("user") : null, id = user ? await user.id() : null;
     if (db && id) {
       const col = db.collection("data/users/" + id); const snap = await col.limit(1000).get(); STORE = { kind: "db", col };
-      const docs = {}; for (const d of snap.docs) docs[d.id] = d.data();
+      /* o banco entrega documentos congelados: copia antes de usar, senão qualquer edição falha ("object is not extensible") */
+      const docs = {}; for (const d of snap.docs) docs[d.id] = JSON.parse(JSON.stringify(d.data() ?? null));
       for (const k of KEYS) { const m = docs["s_" + k]; if (!m) continue;
         if (m.parts) { PARTS[k] = m.parts; const sl = []; for (let i = 0; i < m.parts; i++) sl.push(docs[`s_${k}.${i}`]?.v ?? (m.kind === "a" ? [] : {})); loaded[k] = m.kind === "a" ? sl.flat() : Object.assign({}, ...sl); }
         else loaded[k] = m.v; }
@@ -1720,6 +1772,7 @@ function exampleData() {
   exampleCarreira(D);
   exampleLazer(D);
   exampleAprofunda(D);
+  exampleRedesenho(D);
   return D;
 }
 
@@ -2029,6 +2082,23 @@ function exampleAprofunda(D) {
   C.merc = { bench: [{ id: id(), ral: 36000, cargo: "BIM Coordinator", cidade: "Milão", tipo: "Anúncio de vaga", fonte: "anúncio com faixa salarial", data: d(-20) }, { id: id(), ral: 42000, cargo: "BIM Coordinator infraestrutura", cidade: "Milão", tipo: "Proposta real", fonte: "conversa com recrutador", data: d(-12) }, { id: id(), ral: 48000, cargo: "BIM Manager", cidade: "Milão", tipo: "Pesquisa salarial", fonte: "pesquisa do setor", data: d(-5) }],
     resp: [{ id: id(), t: "Coordeno o modelo federado das disciplinas", proj: C.port[0].id }], conq: [{ id: id(), t: "Executivo do lote 2 entregue no prazo", proj: C.port[0].id }], pedido: { livello: "", ral: 42000 } };
   C.perfil.remun = { contrato: "Tempo indeterminato", ccnl: "Exemplo", livello: "", bruto: 2600, mens: 14, buoni: 0 };
+}
+
+/* redesenho: casa, compras, contas, idiomas, futuro financeiro, Itália & Brasil, caderno e rede (tudo fictício) */
+function exampleRedesenho(D) {
+  const id = () => Math.random().toString(36).slice(2, 10), d = n => addDays(TODAY, n), m0 = TODAY.slice(0, 8);
+  D.rotinas.forEach((r, i) => { r.nivel ||= ["Leve", "Média", "Pesada", "Sazonal"][i % 4]; r.comodo ||= "Casa toda"; r.min ||= 20; });
+  D.contasCasa = [["Aluguel", "Aluguel / financiamento", 780, "Mensal", m0 + "05", "Não"], ["Condomínio", "Condomínio", 95, "Mensal", m0 + "10", "Sim"], ["Luz (Iren)", "Luz", 62, "Bimestral", d(9), "Sim"], ["Gás", "Gás", 70, "Bimestral", d(23), "Sim"], ["Internet fibra", "Internet / telefone", 27.9, "Mensal", m0 + "15", "Sim"], ["TARI", "TARI (lixo)", 210, "Semestral", d(40), "Não"], ["Seguro residencial", "Seguro da casa", 120, "Anual", d(130), "Não"]]
+    .map(([conta, cat, valor, periodo, venc, debito]) => ({ id: id(), conta, cat, valor, periodo, venc, debito, pagos: venc < TODAY ? { [venc]: venc } : {} }));
+  D.compras = [["Leite", "Laticínios", "2 l", "Sim"], ["Pão", "Padaria", "", "Sim"], ["Tomate", "Hortifrúti", "1 kg", "Não"], ["Detergente", "Limpeza", "", "Não"], ["Café em grão", "Mercearia", "500 g", "Sim"], ["Frango", "Carnes & peixes", "1 kg", "Não"]].map(([item, cat, qtd, fixo], i) => ({ id: id(), item, cat, qtd, fixo, feito: i === 1 }));
+  D.idiomas = { en: { nivel: "B1", alvo: "B2", prazo: d(300), desde: d(-40) }, it: { nivel: "B2", alvo: "C1", prazo: d(540), desde: d(-40) }, disp: [45, 30, 30, 45, 30, 20, 60], janela: { ini: "19:30", fim: "21:00" }, peso: 70, desloc: 20, marcos: { en: { B2: [d(-10)] } } };
+  for (let k = 1; k <= 30; k++) if (k % 2 || k % 5 === 0) D.estudo.push({ id: id(), data: d(-k), item: k % 5 === 0 ? "Italiano" : "Inglês", horas: k % 3 ? .5 : .75, lang: k % 5 === 0 ? "it" : "en", hab: ["Ouvir", "Falar", "Ler", "Escrever"][k % 4], rec: k % 5 === 0 ? "Il Post" : "6 Minute English", origem: "idiomas" });
+  D.fut = { reservaMeses: 6, tfrSaldo: 7400, idade: 33, anosInps: 4, anosInss: 6, fundoRend: 3, contribTrab: 1, contribEmp: 1, check: { it_perm: { venc: d(49) }, it_730: { ok: d(-20) }, br_pass: { venc: d(400) } } };
+  D.vidaItens = [["Ajuda para a família", "Brasil", "Família", 800, "Mensal"], ["Financiamento do apartamento", "Brasil", "Financiamento / dívida", 1450, "Mensal"], ["IPTU", "Brasil", "Impostos & taxas", 1200, "Anual"], ["Plano de celular no Brasil", "Brasil", "Outro", 49.9, "Mensal"], ["Abbonamento GTT", "Itália", "Outro", 38, "Mensal"], ["Commercialista (730)", "Itália", "Impostos & taxas", 60, "Anual"]].map(([t, pais, cat, valor, periodo]) => ({ id: id(), t, pais, cat, valor, periodo }));
+  D.cadTec = CAD_MODELO.slice(0, 6).map(([titulo, area, tipo, texto, ref, tags], i) => ({ id: id(), titulo, area, tipo, texto, ref, tags, revisar: i === 0 ? d(-2) : "", upd: Date.now() - i * 1e6 }));
+  const work = D.pessoas.filter(p => p.relacao === "Trabalho" || p.relacao === "Mentoria");
+  work.forEach((p, i) => { p.empresa ||= ["Studio Exemplo", "Engenharia Beta", "Consultoria Zeta"][i % 3]; p.cargo ||= ["BIM Manager", "Diretor técnico", "Recrutadora"][i % 3]; p.freq ||= 60; });
+  D.oport = [{ id: id(), titulo: "Vaga de BIM Coordinator infra", empresa: "Engenharia Beta", tipo: "Vaga", estagio: "Conversa", contato: work[0]?.nome || "", prazo: d(5), passo: "Enviar portfólio atualizado" }, { id: id(), titulo: "Palestra no encontro buildingSMART local", empresa: "Comunidade", tipo: "Evento", estagio: "Ideia", contato: "", prazo: d(30), passo: "Propor tema" }];
 }
 
 
@@ -2788,23 +2858,23 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 /* ================================================================ navegação */
 const NAV = [
   [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
-  ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
+  ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["idiomas", "Idiomas", "globe"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
-  ["Sistema", [["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
+  ["Sistema", [["mapa", "Mapa do Atlas", "compass"], ["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
 ];
 const SUBS = {
-  fin: [["rel", "Relatório"], ["lanc", "Lançamentos"], ["orc", "Orçamento & patrimônio"], ["projetos", "Projetos & aquisições"], ["diario", "Diário"]],
+  fin: [["rel", "Relatório"], ["lanc", "Lançamentos"], ["orc", "Orçamento & patrimônio"], ["futuro", "Futuro financeiro"], ["vida", "Itália & Brasil"], ["projetos", "Projetos & aquisições"], ["diario", "Diário"]],
   saude: [["rel", "Relatório"], ["checkin", "Check-in"], ["diario", "Diário"]],
   hab: [["rel", "Relatório"], ["marcar", "Marcar hábitos"], ["diario", "Diário"]],
   metas: [["rel", "Relatório"], ["lista", "Metas"], ["tarefas", "Tarefas"], ["diario", "Diário"]],
   pessoas: [["rel", "Relatório"], ["lista", "Pessoas"], ["contatos", "Contatos"], ["diario", "Diário"]],
-  cresc: [["rel", "Relatório"], ["carreira", "Carreira"], ["aprend", "Aprendizado"], ["lazer", "Lazer & sonhos"], ["diario", "Diário"]],
-  casa: [["painel", "Painel"], ["diario", "Diário"]],
+  cresc: [["rel", "Relatório"], ["aprend", "Aprendizado"], ["lazer", "Lazer & sonhos"], ["diario", "Diário"]],
+  casa: [["painel", "Painel"], ["limpeza", "Limpeza"], ["compras", "Compras"], ["contas", "Contas"], ["docs", "Documentos"], ["diario", "Diário"]],
   roda: [["roda", "Roda & revisão"], ["diario", "Diário"]],
   diario: [["feed", "Entradas"], ["perguntar", "Perguntar"], ["cal", "Calendário"], ["analise", "Análise"]],
   capitulos: [["linha", "Linha do tempo"], ["livro", "Livro do ano"]],
   lazer: [["inicio", "Início"], ["leitura", "Leitura"], ["filmes", "Filmes e séries"], ["jogos", "Jogos"], ["viagens", "Viagens"], ["cafe", "Café"], ["aviacao", "Aviação"], ["estudos", "Estudos"], ["existencial", "Existencial"]],
-  carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["biblioteca", "Biblioteca"]],
+  carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["caderno", "Caderno técnico"], ["rede", "Rede profissional"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
   jornada: [["inicio", "Início"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
@@ -2818,6 +2888,7 @@ function setHash(p, s) { const h = s ? `${p}.${s}` : p; if (location.hash.slice(
 function route() {
   let [p, s] = (location.hash.slice(1) || "visao").split(".");
   /* a Bússola moral e os mentores da jornada moram na Jornada existencial; links antigos continuam valendo */
+  if (p === "cresc" && s === "carreira") { p = "carreira"; s = "panorama"; }
   if (p === "bussola") { p = "jornada"; s = !s || s === "mapa" ? "bussola" : s; }
   if (p === "mentor" && MENTOR_DEF[s]?.jor) { p = "jornada"; s = jSubOfMid(s); }
   if (p === "mentor" && MENTOR_DEF[s]?.lz) { p = "lazer"; s = MENTOR_DEF[s].lz; }
@@ -2826,7 +2897,7 @@ function route() {
   PAGE = ok ? p : "visao"; SUB = ok ? s || null : null;
   if (SUBS[PAGE] && !SUBS[PAGE].some(x => x[0] === SUB)) SUB = SUBS[PAGE][0][0];
   if (PAGE === "mentor" && !(SUB in MENTOR_DEF)) SUB = "conselho";
-  NAVOPEN = false; DRAWER = null; if (PAGE !== "painel" && VOZ.sr) stopVoice();
+  NAVOPEN = false; DRAWER = null; if (PAGE !== "painel" && VOZ.sr) stopVoice(); if (PAGE !== "hoje") HJ.skip.clear();
   /* o registro do radar é atualizado antes de desenhar, para os alertas novos já virem com “útil / alarme falso” */
   if (LOADED && (PAGE === "radar" || PAGE === "hoje")) try { radarSync(); } catch {}
   render(); $("#main")?.focus({ preventScroll: true }); window.scrollTo({ top: 0 });
@@ -2901,14 +2972,19 @@ const SCH = {
   lanc: { t: "Lançamento", f: [["data", "Data", "date"], ["tipo", "Tipo", ["Receita", "Despesa", "Aporte"]], ["cat", "Categoria", o => o.tipo === "Receita" ? CAT_REC : o.tipo === "Aporte" ? CAT_APO : Object.keys(CAT_DESP)], ["desc", "Descrição", "text"], ["valor", "Valor", "num"], ["conta", "Conta / forma", () => CONTAS]], def: () => ({ data: TODAY, tipo: "Despesa" }) },
   metas: { t: "Meta", f: [["meta", "Meta (específica e mensurável)", "text", 1], ["area", "Área da vida", () => AREAS], ["status", "Status", ["Ativa", "Pausada", "Concluída", "Abandonada"]], ["inicio", "Início", "date"], ["prazo", "Prazo", "date"], ["un", "Unidade", "text"], ["ini", "Valor inicial", "num"], ["atual", "Valor atual", "num"], ["alvo", "Valor alvo", "num"], ["manual", "Progresso manual (0–1, para marcos)", "num"], ["proximo", "Próximo passo concreto", "text", 1]], def: () => ({ status: "Ativa", inicio: TODAY }) },
   tarefas: { t: "Tarefa", f: [["tarefa", "Tarefa", "text", 1], ["projeto", "Projeto", "text"], ["area", "Área", () => AREAS], ["prio", "Prioridade", ["Alta", "Média", "Baixa"]], ["prazo", "Prazo", "date"], ["status", "Status", ["A fazer", "Em andamento", "Aguardando", "Concluída", "Cancelada"]], ["concluida", "Concluída em", "date"], ["meta", "Meta vinculada", () => ["", ...S.metas.map(m => m.meta)]], ["notas", "Notas", "text", 1]], def: () => ({ status: "A fazer", prio: "Média" }) },
-  pessoas: { t: "Pessoa", f: [["nome", "Nome", "text"], ["relacao", "Relação", () => RELACAO], ["freq", "Falar a cada (dias)", "num"], ["aniv", "Aniversário", "date"], ["notas", "Notas · interesses, presentes", "text", 1]], def: () => ({ relacao: "Amizade", freq: 30 }) },
+  pessoas: { t: "Pessoa", f: [["nome", "Nome", "text"], ["relacao", "Relação", () => RELACAO], ["empresa", "Empresa (se for do trabalho)", "text"], ["cargo", "Cargo / área", "text"], ["freq", "Falar a cada (dias)", "num"], ["aniv", "Aniversário", "date"], ["notas", "Notas · interesses, presentes", "text", 1]], def: () => ({ relacao: "Amizade", freq: 30 }) },
   contatos: { t: "Contato", f: [["data", "Data", "date"], ["pessoa", "Pessoa", () => S.pessoas.map(p => p.nome)], ["tipo", "Tipo", ["Encontro", "Ligação", "Videochamada", "Mensagem", "Evento / grupo"]], ["qual", "Qualidade (1–5)", "num"], ["min", "Duração (min)", "num"]], def: () => ({ data: TODAY, qual: 4, tipo: "Encontro" }) },
   aprend: { t: "Item de aprendizado", f: [["titulo", "Título", "text", 1], ["tipo", "Tipo", () => APR_TIPOS], ["area", "Área", () => AREAS], ["status", "Status", ["Quero fazer", "Em andamento", "Pausado", "Concluído", "Abandonado"]], ["total", "Total (pág./aulas)", "num"], ["atual", "Onde estou", "num"], ["fim", "Concluído em", "date"], ["nota", "Nota (1–5)", "num"]], def: () => ({ status: "Em andamento", tipo: "Livro", area: "Aprendizado" }) },
   estudo: { t: "Sessão de estudo", f: [["data", "Data", "date"], ["item", "Item / assunto", () => S.aprend.map(a => a.titulo)], ["horas", "Horas", "num"]], def: () => ({ data: TODAY, horas: 1 }) },
   lazer: { t: "Atividade de lazer", f: [["data", "Data", "date"], ["atividade", "Atividade", "text"], ["cat", "Categoria", () => LAZER_CAT], ["horas", "Duração (h)", "num"], ["custo", "Custo", "num"], ["sat", "Satisfação (1–5)", "num"]], def: () => ({ data: TODAY, sat: 4 }) },
   sonhos: { t: "Sonho / experiência", f: [["sonho", "Sonho", "text", 1], ["status", "Status", ["Sonho", "Planejando", "Agendado", "Realizado"]], ["custo", "Custo estimado", "num"]], def: () => ({ status: "Sonho" }) },
-  docs: { t: "Documento", f: [["doc", "Documento", "text"], ["validade", "Validade", "date"], ["acao", "Próxima ação", "text", 1]], def: () => ({}) },
-  rotinas: { t: "Rotina recorrente", f: [["rotina", "Rotina", "text"], ["freq", "A cada (dias)", "num"], ["ultima", "Última vez", "date"]], def: () => ({ ultima: TODAY, freq: 30 }) },
+  docs: { t: "Documento", f: [["doc", "Documento", "text"], ["tipo", "Tipo", ["Contrato", "Conta anual", "Imposto", "Seguro", "Identidade", "Garantia", "Outro"]], ["ano", "Ano de referência", "num"], ["validade", "Validade / renovação", "date"], ["valor", "Valor (se houver)", "num"], ["onde", "Onde está guardado", "text"], ["acao", "Próxima ação", "text", 1]], def: () => ({ tipo: "Contrato", ano: +TODAY.slice(0, 4) }) },
+  rotinas: { t: "Rotina da casa", f: [["rotina", "Rotina", "text"], ["nivel", "Nível", ["Leve", "Média", "Pesada", "Sazonal"]], ["comodo", "Cômodo", ["Casa toda", "Cozinha", "Banheiro", "Quarto", "Sala", "Área externa", "Eletrodomésticos"]], ["freq", "A cada (dias)", "num"], ["min", "Duração (min)", "num"], ["ultima", "Última vez", "date"]], def: () => ({ ultima: TODAY, freq: 7, nivel: "Média", comodo: "Casa toda", min: 20 }) },
+  contasCasa: { t: "Conta da casa", f: [["conta", "Conta", "text"], ["cat", "Categoria", ["Aluguel / financiamento", "Condomínio", "Luz", "Gás", "Água", "Internet / telefone", "TARI (lixo)", "Seguro da casa", "Manutenção", "Outra"]], ["valor", "Valor previsto", "num"], ["periodo", "Periodicidade", ["Mensal", "Bimestral", "Trimestral", "Semestral", "Anual"]], ["venc", "Próximo vencimento", "date"], ["debito", "Débito automático", ["Não", "Sim"]]], def: () => ({ periodo: "Mensal", venc: TODAY, debito: "Não", cat: "Outra" }) },
+  compras: { t: "Item de compra", f: [["item", "Item", "text"], ["cat", "Seção", ["Hortifrúti", "Mercearia", "Laticínios", "Carnes & peixes", "Padaria", "Congelados", "Limpeza", "Higiene", "Outros"]], ["qtd", "Quantidade", "text"], ["fixo", "Toda semana", ["Não", "Sim"]]], def: () => ({ cat: "Mercearia", fixo: "Não" }) },
+  cadTec: { t: "Nota técnica", f: [["titulo", "Título", "text", 1], ["area", "Área", ["Estradas & geometria", "Drenagem", "Pavimentação", "Geotecnia", "Estruturas & obras de arte", "BIM & processos", "Normas & contratos", "Software", "Obra & segurança"]], ["tipo", "Tipo", ["Conceito", "Fórmula", "Procedimento", "Checklist", "Lição aprendida", "Referência normativa"]], ["ref", "Fonte / norma", "text"], ["texto", "Conteúdo", "textarea", 1], ["tags", "Etiquetas (vírgula)", "text"], ["revisar", "Revisar em", "date"]], def: () => ({ area: "Estradas & geometria", tipo: "Conceito" }) },
+  oport: { t: "Oportunidade", f: [["titulo", "Oportunidade", "text", 1], ["empresa", "Empresa / entidade", "text"], ["tipo", "Tipo", ["Vaga", "Projeto", "Indicação", "Evento", "Parceria", "Curso / bolsa"]], ["estagio", "Estágio", ["Ideia", "Contato feito", "Conversa", "Proposta", "Ganha", "Perdida"]], ["contato", "Pessoa de contato", () => S.pessoas.map(p => p.nome)], ["prazo", "Próximo passo até", "date"], ["passo", "Próximo passo", "text", 1]], def: () => ({ tipo: "Vaga", estagio: "Ideia" }) },
+  vidaItens: { t: "Conta ou gasto (Itália / Brasil)", f: [["t", "Descrição", "text", 1], ["pais", "País", ["Brasil", "Itália"]], ["cat", "Categoria", ["Moradia", "Família", "Financiamento / dívida", "Impostos & taxas", "Conta bancária", "Seguro / saúde", "Educação", "Remessa", "Outro"]], ["valor", "Valor (moeda do país)", "num"], ["periodo", "Periodicidade", ["Mensal", "Bimestral", "Trimestral", "Anual", "Única"]], ["venc", "Próximo vencimento", "date"]], def: () => ({ pais: "Brasil", periodo: "Mensal", cat: "Família" }) },
   assin: { t: "Assinatura", f: [["servico", "Serviço", "text"], ["valor", "Valor", "num"], ["periodo", "Periodicidade", ["Mensal", "Bimestral", "Trimestral", "Semestral", "Anual"]], ["uso", "Uso real", ["Alto", "Médio", "Baixo"]]], def: () => ({ periodo: "Mensal", uso: "Médio" }) },
   comp: { t: "Competência", f: [["nome", "Competência", "text"], ["atual", "Nível atual (1–5)", "num"], ["alvo", "Nível alvo (1–5)", "num"]], def: () => ({ atual: 2, alvo: 4 }) },
   cand: { t: "Candidatura", f: [["empresa", "Empresa", "text"], ["cargo", "Cargo", "text"], ["data", "Data", "date"], ["etapa", "Etapa", ["Interesse", "Aplicado", "Entrevista", "Teste / case", "Proposta", "Aceito", "Recusado", "Desisti"]], ["acao", "Próxima ação", "text"], ["dataAcao", "Data da ação", "date"]], def: () => ({ data: TODAY, etapa: "Aplicado" }) },
@@ -2920,6 +2996,7 @@ const optsOf = (ty, o) => typeof ty === "function" ? ty(o) : Array.isArray(ty) ?
 function fieldHTML([k, lb, ty, full], o, pre = "f_") {
   const v = o[k] ?? "", opts = optsOf(ty, o);
   const inp = opts ? `<select id="${pre}${k}" name="${k}">${["", ...opts.filter(x => x !== "")].map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("")}${v && !opts.includes(v) ? `<option selected>${esc(v)}</option>` : ""}</select>`
+    : ty === "textarea" ? `<textarea id="${pre}${k}" name="${k}" rows="6">${esc(v)}</textarea>`
     : `<input id="${pre}${k}" name="${k}" type="${ty === "num" ? "number" : ty}"${ty === "num" ? ' step="any"' : ""} value="${esc(v)}">`;
   return `<label class="${full ? "full" : ""}">${esc(lb)}${inp}</label>`;
 }
@@ -4326,6 +4403,7 @@ function pOrc(R) {
   return `<div class="g2c">${panel(`Orçamento por categoria <small>uso · ritmo do mês ${pct(R.ritmo)}</small>`, `<div class="orcl">${Object.keys(CAT_DESP).map(c => { const x = R.orcCats.find(o => o.cat === c) || { real: 0, plan: 0, p: null, st: null }; return `<div class="orcr"><span>${esc(c)}<small>${esc(CAT_DESP[c])}</small></span><div class="bt"><i class="${x.st || "none"}" style="width:${clamp(x.p ?? 0) * 100}%"></i><u style="left:${R.ritmo * 100}%"></u></div><em>${eur(x.real)}</em><input id="orc_${slug(c)}" type="number" aria-label="Orçamento de ${esc(c)}" data-orc="${esc(c)}" value="${S.orc[c] ?? ""}" placeholder="plano"></div>`; }).join("")}</div><div class="orct"><span>Total planejado</span><b>${eur(R.orcTot)}</b><span>Gasto até agora</span><b>${eur(F.desp)}</b>${R.proj != null ? `<span>Projeção do mês</span><b class="${R.proj > R.orcTot ? "st-crit" : "st-good"}">${eur(R.proj)}</b>` : ""}</div>`)}
     <div class="stack">${panel(`Patrimônio · fim de ${mlabel(R.mk)} <small>preencha no fim do mês</small>`, `<div class="form f2">${[["contas", "Contas e caixa"], ["reserva", "Reserva de emergência"], ["invest", "Investimentos"], ["outros", "Outros bens"], ["dividas", "(−) Dívidas"]].map(([k, l]) => `<label>${l}<input id="patr_${k}" type="number" data-patr="${k}" value="${p[k] ?? ""}"></label>`).join("")}</div><div class="minis">${kmini("var(--accent)", "Patrimônio líquido", R.pl == null ? "–" : eur(R.pl), R.plVar == null ? "" : `${sgn(R.plVar, eur)} no mês`)}${kmini(GCOL["Poupança"], "Reserva cobre", R.reserva == null ? "–" : num(R.reserva) + " meses", `meta ${S.cfg.metaReserva}`)}</div>`)}
     ${panel("Distribuição da receita <small>referência 50/30/20</small>", hbars([...R.dist.map(d => ({ l: d.g, v: F.rec ? d.v / F.rec : 0, color: GCOL[d.g] })), { l: "Poupança", v: F.rec ? Math.max(0, F.res) / F.rec : 0, color: GCOL["Poupança"] }], { fmt: pct, max: 1 }))}
+    ${panel(`Assinaturas <small>${eur(sum(R.ass.map(a => a.mensal)), 2)} por mês</small>`, table("assin", R.ass, [["Serviço", a => `<b>${esc(a.servico)}</b>`], ["Por mês", a => eur(a.mensal, 2), "num"], ["Uso", a => a.uso === "Baixo" ? pill("crit", "cancelar?") : esc(a.uso)]]), { act: addBtn("assin", "Nova") })}
     ${panel("Regras de categorização <small>usadas no lançamento rápido e na importação</small>", table("regras", S.regras, [["Se contém", r => `<b>${esc(r.termo)}</b>`], ["Tipo", r => esc(r.tipo || "Despesa")], ["Categoria", r => esc(r.cat)]], { empty: "Sem regras. Elas também são aprendidas do seu histórico." }), { act: addBtn("regras", "Nova regra") })}${finFontes()}</div></div>`;
 }
 
@@ -4409,7 +4487,7 @@ function quickHint(id, v) {
 /* ================================================================ Dados: editor de planilha para cada conjunto */
 const DSETS = {
   lanc: "Lançamentos", tarefas: "Tarefas", metas: "Metas", habitos: "Hábitos", saude: "Check-ins", diario: "Diário", pessoas: "Pessoas", contatos: "Contatos", aprend: "Aprendizado", estudo: "Sessões de estudo",
-  lazer: "Lazer", sonhos: "Sonhos", docs: "Documentos", rotinas: "Rotinas", assin: "Assinaturas", comp: "Competências", cand: "Candidaturas", regras: "Regras de categorização", eventos: "Agenda (compromissos)",
+  lazer: "Lazer", sonhos: "Sonhos", docs: "Documentos", rotinas: "Rotinas", assin: "Assinaturas", comp: "Competências", cand: "Candidaturas", regras: "Regras de categorização", eventos: "Agenda (compromissos)", contasCasa: "Contas da casa", compras: "Lista de compras", cadTec: "Caderno técnico", oport: "Oportunidades profissionais", vidaItens: "Itália e Brasil",
 };
 const SAUDE_F = [["data", "Data", "date"], ["sono", "Sono (h)", "num"], ["humor", "Humor", "num"], ["energia", "Energia", "num"], ["estresse", "Estresse", "num"], ["qual", "Qualidade do sono", "num"], ["passos", "Passos", "num"], ["treino", "Treino", () => TREINOS], ["min", "Minutos", "num"], ["peso", "Peso", "num"], ["nota", "Nota", "text"]];
 const DIARIO_F = [["data", "Data", "date"], ["hora", "Hora", "text"], ["titulo", "Título", "text"], ["humor", "Humor", "num"], ["energia", "Energia", "num"], ["texto", "Texto", "long"]];
@@ -7842,7 +7920,7 @@ const crGrpCol = g => CR_GRP.find(x => x[0] === g)?.[2] || "var(--muted)";
 /* ---------------------------------------------------------------- páginas */
 function pCarreiraHub(R) {
   crExtra();
-  const f = { panorama: crPanorama, avaliacao: crAvaliacao, portfolio: crPortfolio, objetivos: crObjetivos, decisoes: crDecisoes, geotecnia: crGeotecnia, plano: crPlano, mercado: crMercado, biblioteca: crBiblioteca }[SUB] || crPanorama;
+  const f = { panorama: crPanorama, avaliacao: crAvaliacao, portfolio: crPortfolio, objetivos: crObjetivos, decisoes: crDecisoes, caderno: crCaderno, rede: crRede, geotecnia: crGeotecnia, plano: crPlano, mercado: crMercado, biblioteca: crBiblioteca }[SUB] || crPanorama;
   return f(R);
 }
 function crFlow() {
@@ -8953,6 +9031,635 @@ function pdClick(t) {
   return false;
 }
 
+/* ================================================================ capa, missão e manual de cada aba + Mapa do Atlas
+   A capa é uma ilustração vetorial desenhada aqui (sem fotos externas: a página pode não ter acesso à internet e fica leve).
+   Cada aba tem: cor, cena, missão (por que existe), o que resolve, de onde vêm e para onde vão os dados, e um manual curto. */
+const TAB_INFO = {
+  visao: { cor: "var(--accent)", cena: "constel", foto: "Céu ao entardecer com constelações ligadas por linhas finas", missao: "O retrato do mês em uma tela: cada área da vida com nota, tendência e o que pede atenção.", resolve: "Saber em 30 segundos se o mês vai bem, sem abrir dez abas.", entra: "Tudo o que você registra nas outras abas.", sai: "Atalhos para a área que mais precisa de você.", manual: ["Escolha o mês no topo (‹ ›) para ver meses passados.", "Clique numa área para abrir o relatório dela.", "Os números vêm dos registros; a Roda da Vida mostra a sua percepção ao lado."] },
+  hoje: { cor: "var(--warn)", cena: "sunrise", foto: "Janela com luz da manhã sobre telhados de Turim e os Alpes ao fundo", missao: "Um resumo do momento: tempo lá fora, uma frase que conversa com o seu dia real, ideias para sair da rotina e o que vence hoje.", resolve: "Começar o dia sabendo o que vestir, o que importa e uma coisa boa para fazer, sem ler dez aplicativos.", entra: "Clima da sua cidade, notícias positivas, seu humor, energia, tempo livre e orçamento.", sai: "Tarefas do dia, Painel do dia para registrar, Lazer para as ideias.", manual: ["Responda as 4 perguntas rápidas em “Como você está agora?”; tudo abaixo se ajusta.", "O clima vem da internet para a cidade escolhida; sem conexão, marque o tempo à mão.", "As ideias mudam com clima, energia, tempo e dinheiro. “Outra ideia” troca uma de cada vez.", "Para registrar sono, humor, gastos e hábitos, use o Painel do dia."] },
+  painel: { cor: "var(--accent)", cena: "waves", foto: "Microfone de mesa ao lado de um caderno aberto", missao: "Registrar o essencial do dia em um minuto, por texto ou voz, e conferir antes que vá para as abas.", resolve: "Registro diário que não acontece porque dá trabalho.", entra: "O que você fala ou escreve.", sai: "Saúde, Finanças, Hábitos, Jornada, Lazer, Diário e Tarefas.", manual: ["Fale ou escreva o dia no campo grande; os campos se preenchem sozinhos.", "Use o microfone de um campo para ditar só aquele valor.", "“Revisar e salvar” mostra o que é novo, o que substitui e o que parece repetido.", "Um único Desfazer volta tudo o que o painel salvou."] },
+  diario: { cor: "var(--a-men)", cena: "notebook", foto: "Caderno de capa de couro aberto, caneta tinteiro e xícara de café", missao: "O lugar das palavras: o que aconteceu, o que você sentiu e o que aprendeu, ligado às pessoas, temas e metas.", resolve: "Memória do que viveu e padrões que só aparecem escritos.", entra: "Seus textos, @pessoas, #temas e comandos “/”.", sai: "Cruzamentos, Capítulos, mentores (se você permitir).", manual: ["@ menciona uma pessoa, # marca um tema, [[ liga a uma meta ou tarefa.", "Linhas começando com / registram dados (ex.: /gasto 12 almoço).", "Em Perguntar, busque por significado: “quando me senti sozinho?”."] },
+  jornada: { cor: "var(--jp-med)", cena: "lotus", foto: "Flor de lótus num lago parado ao amanhecer", missao: "Cultivar a vida interior em quatro caminhos (Espiritismo, meditação, Taoísmo e Budismo) e a bússola moral que orienta as decisões.", resolve: "Prática espiritual que fica solta, sem continuidade nem reflexão.", entra: "Sessões de prática, reflexões, exame da noite, decisões.", sai: "Métricas de prática nos Cruzamentos e o Hoje.", manual: ["Comece pela aba de um pilar e registre a estação em que você está.", "Práticas guarda programas guiados e sessões (com estado antes e depois).", "A Bússola moral tem o exame da noite e as oito perguntas antes de decidir."] },
+  mentores: { cor: "var(--accent)", cena: "spark", foto: "Mesa de conversa com duas cadeiras e luz suave", missao: "Um conselheiro por área, que lê os seus dados (só os que você liberar) e lembra do que vocês combinaram.", resolve: "Conselho genérico que ignora a sua situação real.", entra: "Os dados das áreas liberadas em Privacidade.", sai: "Tarefas, metas e hábitos que você aceitar.", manual: ["Escolha o mentor da área; o Conselho vê todas.", "As propostas só viram tarefa quando você aceita.", "Privacidade controla o que cada mentor pode ler."] },
+  cruz: { cor: "var(--a-apr)", cena: "scatter", foto: "Fios coloridos se cruzando num tear", missao: "Descobrir o que anda junto na sua vida: sono e humor, gastos e estresse, prática e foco.", resolve: "Intuições sobre si que nunca são conferidas.", entra: "As séries diárias de todas as abas.", sai: "Ideias para Experimentos.", manual: ["Escolha duas métricas ou deixe o Atlas procurar as relações mais fortes.", "Correlação não é causa: teste em Experimentos antes de mudar a rotina."] },
+  fin: { cor: "var(--a-fin)", cena: "growth", foto: "Mesa com caderno de contas, calculadora e moedas de euro e real", missao: "Saber para onde vai o dinheiro, quanto sobra e se o futuro está sendo construído, em euro e em real.", resolve: "Fim de mês sem saber o que aconteceu e decisões grandes sem número.", entra: "Lançamentos, orçamento, patrimônio, salário (Carreira), contas da casa.", sai: "Futuro financeiro, Visão geral, mentor de Finanças.", manual: ["Lançamentos: registre ou importe extratos; categorias aprendem com você.", "Orçamento & patrimônio: teto por categoria, assinaturas e o patrimônio do fim do mês.", "Futuro financeiro: reserva, TFR e previdência com as contas feitas.", "Itália & Brasil: contas dos dois países e o total em euro na cotação do dia."] },
+  "fin.futuro": { missao: "Três camadas de segurança: a reserva para imprevistos, o TFR que se acumula com o seu contrato e a previdência para a aposentadoria. Cada uma com conta feita e um próximo passo." },
+  "fin.vida": { missao: "Viver na Itália com vínculos no Brasil: prazos de documentos dos dois países e o custo mensal de cada lado, somado em euro com a cotação do dia." },
+  saude: { cor: "var(--a-fis)", cena: "pulse", foto: "Tênis de corrida num banco de parque com luz da manhã", missao: "Corpo e mente em números simples: sono, treino, passos, humor, energia e estresse.", resolve: "Cansaço sem causa aparente e metas de saúde que não são acompanhadas.", entra: "Painel do dia, Apple Health, Google Fit.", sai: "Cruzamentos, Radar, Visão geral.", manual: ["Registre pelo Painel do dia; o Check-in aqui serve para corrigir dias passados.", "Metas de sono, passos e treinos ficam em Ajustes."] },
+  hab: { cor: "var(--a-men)", cena: "checks", foto: "Calendário de parede com dias marcados em sequência", missao: "Os pequenos atos repetidos que constroem quem você quer ser.", resolve: "Boas intenções que somem na terceira semana.", entra: "Marcações (aqui, no Painel ou por texto).", sai: "Sequências, Cruzamentos, Visão geral.", manual: ["Crie poucos hábitos com meta de dias por semana.", "Marque no Painel do dia; aqui você vê a semana e corrige."] },
+  metas: { cor: "var(--a-car)", cena: "target", foto: "Trilha de montanha com uma bandeira no cume", missao: "Transformar intenções em metas mensuráveis e tarefas com prazo.", resolve: "Listas enormes sem prioridade e metas sem número.", entra: "Metas, tarefas, objetivos da Carreira, propostas dos mentores.", sai: "Hoje (o que vence), Fechamento da semana.", manual: ["Uma meta precisa de número e prazo.", "Ligue tarefas a metas para ver o avanço real."] },
+  pessoas: { cor: "var(--a-ami)", cena: "people", foto: "Mesa de jantar com várias mãos passando pratos", missao: "Cuidar das relações que importam: quem você vê, quando falou pela última vez e quem está ficando distante.", resolve: "Amizades e família esquecidas sem perceber.", entra: "Pessoas, contatos, menções no diário.", sai: "Alertas de contato, Rede profissional (pessoas de trabalho).", manual: ["Defina de quanto em quanto tempo quer falar com cada pessoa.", "Pessoas de trabalho (relação Trabalho ou Mentoria) aparecem na Rede profissional da Carreira."] },
+  cresc: { cor: "var(--a-apr)", cena: "sprout", foto: "Muda de planta brotando num vaso perto de livros", missao: "Aprender e sonhar: livros, cursos, horas de estudo e as experiências que você quer viver.", resolve: "Cursos comprados e não terminados, sonhos sem plano.", entra: "Itens de aprendizado, sessões de estudo (também as de Idiomas).", sai: "Visão geral, Capítulos.", manual: ["Cadastre o que está estudando e registre as horas.", "Os idiomas têm aba própria; as sessões deles aparecem aqui também."] },
+  carreira: { cor: "var(--a-car)", cena: "road", foto: "Rodovia em curva num vale alpino, com uma ponte de concreto ao fundo", missao: "Desenvolvimento profissional com direção: onde você está, aonde quer chegar, o que sabe, quem conhece e o que fazer nesta semana.", resolve: "Carreira levada pelo acaso, conhecimento técnico que se perde e contatos que esfriam.", entra: "Seu perfil e cargo, competências, projetos, notas técnicas, contatos de trabalho.", sai: "Metas e tarefas, Finanças (salário, TFR), Idiomas (inglês técnico).", manual: ["Panorama: o resumo e o próximo passo.", "Caderno técnico: anote fórmulas, normas e lições de obra; busque quando precisar.", "Rede profissional: contatos de trabalho com cadência e oportunidades em andamento.", "Plano de ação: cada gap vira ação com prazo."] },
+  "carreira.caderno": { missao: "O seu manual de engenharia, escrito por você: fórmulas, normas, procedimentos e lições de obra que você não quer reaprender do zero." },
+  "carreira.rede": { missao: "Relações profissionais cuidadas com intenção: quem você conhece, quando falou pela última vez e que oportunidades estão em andamento." },
+  lazer: { cor: "var(--a-laz)", cena: "palette", foto: "Mesa com xícara de café, livro aberto e controle de videogame", missao: "Tempo livre com qualidade: o que você lê, assiste, joga, prepara e explora, com um mentor para cada tema.", resolve: "Fim de semana no automático e hobbies que não evoluem.", entra: "Gostos, registros de lazer, ideias do Hoje.", sai: "Sugestões no seu nível, Visão geral.", manual: ["Escolha um tema e converse com o mentor dele.", "As ideias para sair da rotina do Hoje usam os seus gostos daqui."] },
+  idiomas: { cor: "var(--a-apr)", cena: "bubbles", foto: "Duas xícaras numa mesa de café com um caderno de vocabulário em inglês e italiano", missao: "Inglês em primeiro lugar e italiano em seguida, com um percurso para o seu nível e um plano que cabe na sua semana real.", resolve: "Estudar sem saber se está avançando e planos que ignoram a agenda.", entra: "Seu nível, meta, disponibilidade por dia e a Agenda.", sai: "Sessões no Crescimento, tarefas da semana.", manual: ["Defina o nível atual e a meta de cada idioma (se não sabe, faça um teste gratuito indicado).", "Informe quantos minutos tem por dia e a janela de estudo; o plano desconta compromissos da Agenda.", "Registre cada sessão: o progresso e a previsão de chegada se atualizam."] },
+  casa: { cor: "var(--a-fam)", cena: "house", foto: "Sala clara com plantas, estante e uma lista de compras presa na geladeira", missao: "A casa como espaço físico e como conta: limpeza em dia, compras organizadas, contas pagas no prazo e documentos à mão.", resolve: "Multas por atraso, faxina que só acontece em crise e documentos que ninguém acha.", entra: "Rotinas de limpeza, lista de compras, contas e documentos.", sai: "Lançamentos em Finanças ao pagar uma conta, alertas no Hoje.", manual: ["Limpeza: rotinas do leve (diário) ao pesado (mensal/sazonal); marque ao fazer.", "Compras: itens fixos voltam toda semana; marque ao pôr no carrinho.", "Contas: calendário dos vencimentos; “Paguei” pode lançar em Finanças.", "Documentos: contratos, contas anuais e onde estão guardados."] },
+  roda: { cor: "var(--a-car)", cena: "wheel", foto: "Roda de bicicleta antiga encostada num muro colorido", missao: "Sua percepção de cada área, mês a mês, ao lado do que os dados dizem.", resolve: "Diferença entre como a vida parece e como ela está.", entra: "Notas de 0 a 10, revisão mensal.", sai: "Visão geral, Capítulos.", manual: ["No fim do mês, dê uma nota a cada área e preencha a revisão."] },
+  semana: { cor: "var(--accent)", cena: "calendar", foto: "Agenda semanal aberta com três prioridades sublinhadas", missao: "Fechar a semana em 15 minutos: números, destaques, o que foi cumprido e três prioridades.", resolve: "Semanas que passam sem aprendizado.", entra: "Tudo da semana.", sai: "Prioridades no Hoje, carta da semana.", manual: ["Na segunda (ou domingo à noite), siga os passos de cima para baixo."] },
+  radar: { cor: "var(--warn)", cena: "radar", foto: "Farol à noite com o feixe de luz varrendo o mar", missao: "Alertas antes que o problema chegue, com a evidência do seu histórico.", resolve: "Descobrir tarde que o orçamento estourou ou que o sono caiu.", entra: "Séries diárias e orçamento.", sai: "Hoje, mentores.", manual: ["Marque se o alerta foi útil ou alarme falso: o Radar aprende a taxa de acerto."] },
+  exp: { cor: "var(--a-apr)", cena: "flask", foto: "Bancada com frascos de vidro e um caderno de anotações", missao: "Testar uma mudança em você com método: antes e depois, ou dias alternados.", resolve: "Mudanças de rotina sem saber se funcionaram.", entra: "Uma hipótese e a métrica.", sai: "Efeito e incerteza.", manual: ["Escolha uma métrica dos Cruzamentos e o desenho do teste; registre normalmente."] },
+  capitulos: { cor: "var(--a-apr)", cena: "book", foto: "Estante com livros de lombadas datadas por ano", missao: "As fases da sua vida, detectadas nos dados, e o livro do ano em PDF.", resolve: "Memória de longo prazo que se apaga.", entra: "Diário e séries.", sai: "Livro em PDF.", manual: ["Revise os capítulos sugeridos e dê nomes a eles."] },
+  dupla: { cor: "var(--a-amo)", cena: "duo", foto: "Duas xícaras lado a lado numa varanda", missao: "Diário, orçamento e metas em comum com quem você escolher, cada um com seus dados privados.", resolve: "Planejar a dois sem misturar tudo.", entra: "O que cada um decide compartilhar.", sai: "Orçamento e metas comuns.", manual: ["Convide a pessoa e escolha o que compartilhar."] },
+  dados: { cor: "var(--muted)", cena: "table", foto: "Planilha impressa organizada com marcadores coloridos", missao: "Todos os registros como planilha: editar, filtrar, alterar em massa, importar e exportar.", resolve: "Corrigir dados sem procurar aba por aba.", entra: "Tudo.", sai: "Tudo.", manual: ["Escolha a tabela, filtre e clique numa linha para editar.", "Selecione várias linhas para alterar ou apagar em massa; Exportar gera CSV."] },
+  integ: { cor: "var(--muted)", cena: "plug", foto: "Cabos conectados num painel organizado", missao: "Notion, agenda, Apple Health, Google Fit e extratos bancários, nos dois sentidos onde dá.", resolve: "Digitar à mão o que já existe em outro lugar.", entra: "Arquivos e conectores.", sai: "Backup e envios.", manual: ["Importe um arquivo ou conecte o Notion; o Atlas mostra o que vai entrar antes."] },
+  privacidade: { cor: "var(--muted)", cena: "shield", foto: "Cofre antigo com a porta entreaberta", missao: "Você decide o que a IA lê: cofre com senha, setores fora da IA e o registro de cada leitura.", resolve: "Usar IA sem expor o que não quer.", entra: "Suas escolhas.", sai: "Limites para mentores e captura.", manual: ["Tire áreas da IA e tranque entradas do diário com senha."] },
+  ajustes: { cor: "var(--muted)", cena: "sliders", foto: "Mesa de som com controles deslizantes", missao: "Metas, listas, áreas, mentores e aparência do Atlas.", resolve: "Um sistema que não se adapta a você.", entra: "Suas preferências.", sai: "Todo o Atlas.", manual: ["Comece pelas metas (sono, poupança, passos) e pelas listas de categorias."] },
+  mapa: { cor: "var(--accent)", cena: "constel", foto: "Mapa antigo aberto sobre a mesa com uma bússola", missao: "A estrutura do Atlas: para que serve cada aba, de onde vem e para onde vai cada dado, e o que ainda falta.", resolve: "Não saber onde registrar algo ou onde encontrar.", entra: "", sai: "", manual: ["Use como índice: cada linha leva à aba.", "As setas mostram para onde os dados seguem."] },
+};
+/* cenas da capa: formas simples, com a cor da aba */
+function coverScene(k) {
+  const hills = `<path class="h2" d="M0 92 C90 70 170 96 260 80 S430 62 600 84 V112 H0Z"/><path class="h1" d="M0 102 C120 88 220 108 330 96 S500 86 600 100 V112 H0Z"/>`;
+  const S2 = {
+    sunrise: `<circle class="a" cx="470" cy="88" r="44"/><circle class="b" cx="470" cy="88" r="26"/><path class="m" d="M330 112 L410 50 L450 78 L500 36 L600 104 V112Z"/>${hills}`,
+    road: `<path class="m" d="M300 112 L380 44 L430 70 L500 30 L600 90 V112Z"/><path class="rd" d="M360 112 C420 90 430 70 520 58 L600 52"/><path class="rl" d="M360 112 C420 90 430 70 520 58 L600 52"/><path class="br" d="M410 112 V84 M560 112 V84 M400 84 Q485 40 570 84"/>`,
+    house: `<path class="b" d="M420 112 V62 L490 22 L560 62 V112Z"/><rect class="w" x="448" y="72" width="22" height="20" rx="2"/><rect class="w" x="508" y="72" width="22" height="20" rx="2"/><path class="a" d="M400 112 q12 -34 26 0Z M572 112 q10 -26 22 0Z"/>${hills}`,
+    growth: `${[0, 1, 2, 3, 4].map(i => `<rect class="${i % 2 ? "a" : "b"}" x="${400 + i * 36}" y="${92 - i * 16}" width="24" height="${20 + i * 16}" rx="3"/>`).join("")}<circle class="w" cx="380" cy="40" r="14"/><circle class="a" cx="352" cy="58" r="10"/>`,
+    bubbles: `<rect class="b" x="380" y="18" width="120" height="52" rx="14"/><path class="b" d="M402 68 l-6 18 l22 -18Z"/><rect class="a" x="460" y="50" width="120" height="52" rx="14"/><text class="tx" x="440" y="52" text-anchor="middle">EN</text><text class="tx" x="520" y="84" text-anchor="middle">IT</text>`,
+    lotus: `<circle class="a" cx="500" cy="34" r="16"/><path class="b" d="M480 96 C470 70 490 54 500 46 C510 54 530 70 520 96Z"/><path class="a" d="M500 96 C470 92 448 74 446 60 C470 62 490 76 500 96Z M500 96 C530 92 552 74 554 60 C530 62 510 76 500 96Z"/>${hills}`,
+    notebook: `<rect class="b" x="410" y="18" width="150" height="86" rx="6"/><path class="ln" d="M432 42 H540 M432 58 H540 M432 74 H510"/><path class="a" d="M560 10 l14 8 l-60 96 l-14 -8Z"/>`,
+    waves: `${[0, 1, 2, 3, 4, 5, 6].map(i => { const h = [20, 44, 70, 52, 84, 40, 26][i]; return `<rect class="${i % 2 ? "a" : "b"}" x="${410 + i * 22}" y="${60 - h / 2}" width="12" height="${h}" rx="6"/>`; }).join("")}`,
+  };
+  const ICONSC = { constel: "spark", pulse: "pulse", checks: "repeat", target: "target", people: "users", sprout: "sprout", palette: "palette", wheel: "wheel", calendar: "week", radar: "radar", flask: "flask", book: "chapters", duo: "duo", table: "table", plug: "plug", shield: "shield", sliders: "sliders", scatter: "scatter", spark: "spark" };
+  if (S2[k]) return S2[k];
+  return `<circle class="a" cx="500" cy="56" r="46"/>${hills}<g class="ic" transform="translate(470 26) scale(2.5)">${ICONS[ICONSC[k] || "grid"]}</g>`;
+}
+const tabKey = () => PAGE === "mentor" ? "mentores" : PAGE;
+function tabInfo() { const base = TAB_INFO[tabKey()]; if (!base) return null; const sub = TAB_INFO[`${tabKey()}.${SUB}`]; return { ...base, ...(sub || {}) }; }
+function tabHead() {
+  const T = tabInfo(); if (!T) return "";
+  let open = false; try { open = localStorage.getItem("atlas_man_" + tabKey()) === "1"; } catch {}
+  return `<section class="tabhead" style="--c:${T.cor}" aria-label="Sobre esta aba">
+    <div class="thcov" aria-hidden="true"><svg viewBox="0 0 600 112" preserveAspectRatio="xMaxYMid slice">${coverScene(T.cena)}</svg></div>
+    <div class="thtx"><span class="thk">Missão</span><p>${esc(T.missao)}</p>
+      <details class="thman"${open ? " open" : ""} data-man="${tabKey()}"><summary>${ic("book")}Como usar</summary><div class="thmb"><ol>${T.manual.map(x => `<li>${esc(x)}</li>`).join("")}</ol>${T.resolve ? `<p class="muted small"><b>Resolve:</b> ${esc(T.resolve)}${T.entra ? ` · <b>Recebe:</b> ${esc(T.entra)}` : ""}${T.sai ? ` · <b>Alimenta:</b> ${esc(T.sai)}` : ""}</p>` : ""}</div></details></div>
+  </section>`;
+}
+document.addEventListener("toggle", e => { const d = e.target; if (d.matches?.("details.thman")) try { localStorage.setItem("atlas_man_" + d.dataset.man, d.open ? "1" : "0"); } catch {} }, true);
+
+/* ---------------------------------------------------------------- Mapa do Atlas: estrutura, fluxo e lacunas */
+const MAPA_GRUPOS = [
+  ["O dia", ["hoje", "painel", "diario"], "Começar o dia, registrar o que aconteceu, escrever o que importa."],
+  ["Vida interior", ["jornada", "mentores"], "Prática, valores e conselho."],
+  ["Áreas", ["fin", "saude", "hab", "metas", "pessoas", "cresc", "carreira", "idiomas", "lazer", "casa", "roda"], "Cada área com seus registros, relatório e manual."],
+  ["Laboratório", ["cruz", "semana", "radar", "exp", "capitulos", "dupla"], "Entender padrões, fechar ciclos, testar mudanças."],
+  ["Sistema", ["dados", "integ", "privacidade", "ajustes"], "Dados, conexões e limites."],
+];
+const MAPA_FLUXO = [
+  ["painel", "saude", "sono, humor, energia, treino"], ["painel", "fin", "gastos"], ["painel", "hab", "hábitos feitos"], ["painel", "jornada", "sessões de prática"], ["painel", "diario", "o texto do dia"],
+  ["carreira", "fin", "salário → TFR e previdência"], ["carreira", "metas", "objetivos e ações"], ["carreira", "idiomas", "inglês técnico como gap"], ["pessoas", "carreira", "contatos de trabalho → Rede"],
+  ["idiomas", "cresc", "horas de estudo"], ["casa", "fin", "conta paga → lançamento"], ["fin", "hoje", "orçamento → ideias que cabem no bolso"], ["lazer", "hoje", "gostos → ideias para sair da rotina"],
+  ["saude", "cruz", "séries diárias"], ["cruz", "exp", "hipótese para testar"], ["metas", "hoje", "o que vence"], ["semana", "hoje", "prioridades"],
+];
+const MAPA_SUGESTOES = [
+  ["Saúde preventiva", "Exames, vacinas, consultas e receitas, com o medico di base e o CUP para marcar pelo SSN. Lacuna: a Saúde mede o dia a dia, mas não lembra do check-up anual nem guarda resultados.", "pulse"],
+  ["Alimentação & cardápio", "Cardápio da semana que gera a lista de compras da Casa e estima o custo. Lacuna: a lista de compras hoje é manual e não conversa com o que você vai cozinhar.", "leaf"],
+  ["Mobilidade", "Carro ou transporte: bollo, revisione, seguro, manutenção e o custo por km; ou o abbonamento GTT. Lacuna: prazos com multa que não aparecem em nenhuma aba.", "arrow"],
+  ["Família no Brasil", "Datas, ligações com fuso horário, visitas planejadas e ajuda financeira, ligada a Itália & Brasil e Relações. Lacuna: hoje está espalhado em três abas.", "family"],
+  ["Tempo & energia", "Bloco semanal de agenda com o que você quer proteger (estudo, treino, descanso), comparado com o que aconteceu. Lacuna: os planos (Idiomas, Hábitos) não disputam o mesmo relógio.", "clock"],
+];
+function pMapa() {
+  const nm = k => TAB_INFO[k] && NAV.flatMap(g => g[1]).find(x => x[0] === k);
+  return `<div class="mapa">
+    ${MAPA_GRUPOS.map(([g, ks, d]) => `<section class="pn"><h2>${esc(g)} <small>${esc(d)}</small></h2><div class="mapag">${ks.filter(nm).map(k => { const T = TAB_INFO[k], n = nm(k); return `<a class="mapai" href="#${k}" style="--c:${T.cor}"><div class="mapcov" aria-hidden="true"><svg viewBox="0 0 600 112" preserveAspectRatio="xMaxYMid slice">${coverScene(T.cena)}</svg></div><b>${ic(n[2])}${esc(n[1])}</b><span>${esc(T.missao)}</span><small><b>Resolve:</b> ${esc(T.resolve)}</small><small class="muted"><b>Capa:</b> ${esc(T.foto)}</small></a>`; }).join("")}</div></section>`).join("")}
+    <section class="pn"><h2>${ic("arrow")}Para onde os dados vão <small>cada dado é registrado uma vez e aparece onde é útil</small></h2><div class="hscroll"><table class="dt"><thead><tr><th>De</th><th></th><th>Para</th><th>O quê</th></tr></thead><tbody>${MAPA_FLUXO.map(([a, b, t]) => `<tr><td><a class="lnk" href="#${a}">${esc(pageTitle(a))}</a></td><td>→</td><td><a class="lnk" href="#${b}">${esc(pageTitle(b))}</a></td><td>${esc(t)}</td></tr>`).join("")}</tbody></table></div></section>
+    <section class="pn"><h2>${ic("plus")}Abas que ainda faltam <small>em ordem de utilidade para a sua rotina</small></h2><ol class="mapsug">${MAPA_SUGESTOES.map(([t, d, i]) => `<li>${ic(i)}<div><b>${esc(t)}</b><p>${esc(d)}</p></div></li>`).join("")}</ol></section>
+  </div>`;
+}
+
+/* ================================================================ Hoje: resumo do momento
+   Clima (Open-Meteo) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network via rss2json),
+   uma frase escolhida pelo horário e pelo que o dia está pedindo, e ideias para sair da rotina filtradas por clima, energia, tempo e dinheiro.
+   Sem internet nesta visualização, o clima vira pergunta e as notícias viram links. As respostas ficam em S.hojeCtx[dia]. */
+const HJ = { wx: null, wxSt: "", news: null, newsSt: "", skip: new Set(), fr: 0 };
+const hctx = () => (S.hojeCtx[TODAY] ||= {});
+const periodo = () => { const h = new Date().getHours(); return h < 12 ? "manha" : h < 18 ? "tarde" : "noite"; };
+const PER_TXT = { manha: "manhã", tarde: "tarde", noite: "noite" };
+const cidade = () => S.cfg.cidade?.lat ? S.cfg.cidade : { nome: "Turim", lat: 45.0705, lon: 7.6868 };
+const WMO = c => c === 0 ? ["Céu limpo", "sun"] : c <= 2 ? ["Poucas nuvens", "sun"] : c === 3 ? ["Nublado", "wave"] : c <= 48 ? ["Neblina", "wave"] : c <= 57 ? ["Garoa", "wave"] : c <= 67 ? ["Chuva", "wave"] : c <= 77 ? ["Neve", "star"] : c <= 82 ? ["Pancadas de chuva", "wave"] : c <= 86 ? ["Neve", "star"] : ["Temporal", "bolt"];
+async function hjWeather(force) {
+  if (HJ.wxSt === "load" || (!force && (HJ.wx?.dia === TODAY || HJ.wxSt === "err"))) return;
+  try { const v = JSON.parse(localStorage.getItem("atlas_wx") || "null"); if (!force && v?.dia === TODAY && v.at > Date.now() - 3 * 3600e3 && v.lat === cidade().lat) { HJ.wx = v; return; } } catch {}
+  HJ.wxSt = "load"; const C = cidade();
+  try { const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${C.lat}&longitude=${C.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=1`);
+    if (!r.ok) throw 0; const j = await r.json(); if (!j?.current || !j?.daily) throw 0;
+    HJ.wx = { dia: TODAY, at: Date.now(), lat: C.lat, t: j.current.temperature_2m, sens: j.current.apparent_temperature, code: j.current.weather_code, vento: j.current.wind_speed_10m, max: j.daily.temperature_2m_max[0], min: j.daily.temperature_2m_min[0], chuva: j.daily.precipitation_probability_max[0], codeD: j.daily.weather_code[0], uv: j.daily.uv_index_max[0] };
+    HJ.wxSt = "ok"; try { localStorage.setItem("atlas_wx", JSON.stringify(HJ.wx)); } catch {}
+  } catch { HJ.wxSt = "err"; }
+  if (PAGE === "hoje") render();
+}
+async function hjNews() {
+  if (HJ.newsSt) return; HJ.newsSt = "load";
+  try { const v = JSON.parse(localStorage.getItem("atlas_news") || "null"); if (v?.dia === TODAY && v.items?.length) { HJ.news = v.items; HJ.newsSt = "ok"; return; } } catch {}
+  const feeds = [["Positive News", "https://www.positive.news/feed/"], ["Good News Network", "https://www.goodnewsnetwork.org/feed/"]], out = [];
+  await Promise.all(feeds.map(async ([src, u]) => { try { const r = await fetch("https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(u)); if (!r.ok) return; const j = await r.json(); for (const it of (j.items || []).slice(0, 4)) out.push({ src, t: String(it.title || "").replace(/&#8217;/g, "’").replace(/&#8216;/g, "‘").replace(/&amp;/g, "&").replace(/&#8211;/g, "–"), link: it.link, data: String(it.pubDate || "").slice(0, 10), d: String(it.description || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 180) }); } catch {} }));
+  const items = out.filter(x => x.t && /^https?:/.test(x.link || "")).sort((a, b) => b.data.localeCompare(a.data));
+  /* alterna as fontes para não vir tudo de uma */
+  const pick = []; for (const src of ["Positive News", "Good News Network", "Positive News"]) { const x = items.find(i => i.src === src && !pick.includes(i)); if (x) pick.push(x); }
+  HJ.news = pick.length ? pick : null; HJ.newsSt = pick.length ? "ok" : "err";
+  if (pick.length) try { localStorage.setItem("atlas_news", JSON.stringify({ dia: TODAY, items: pick })); } catch {}
+  if (PAGE === "hoje") render();
+}
+/* o tempo: da internet, ou o que a pessoa marcou */
+function hjClima() {
+  const c = hctx(), w = HJ.wx?.dia === TODAY ? HJ.wx : null;
+  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
+  if (c.clima) { const base = { sol: [22, 10, "Sol"], nublado: [17, 30, "Nublado"], chuva: [13, 80, "Chuva"], frio: [3, 20, "Frio"], calor: [32, 10, "Calor"] }[c.clima] || [18, 20, "–"], t = isNum(c.temp) && c.temp !== "" ? +c.temp : base[0];
+    return { fonte: "mao", t, sens: t, max: t + 3, min: t - 4, chuva: base[1], uv: c.clima === "sol" || c.clima === "calor" ? 6 : 2, vento: 0, txt: base[2], ico: c.clima === "chuva" ? "wave" : "sun", code: c.clima === "chuva" ? 63 : 1 }; }
+  return null;
+}
+function hjRoupa(W) {
+  const s = W.sens ?? W.t, out = [];
+  out.push(s < 3 ? "Casaco pesado, cachecol e luvas; camada térmica por baixo." : s < 10 ? "Casaco de inverno ou jaqueta forrada com suéter." : s < 16 ? "Jaqueta leve ou suéter; sapato fechado." : s < 22 ? "Manga longa leve, ou camiseta com um casaco na mochila." : s < 28 ? "Roupa leve; um casaco fino só se for voltar tarde." : "Roupa leve e clara, água sempre à mão.");
+  if (W.max - W.min >= 10) out.push(`Diferença de ${num(W.max - W.min, 0)}° entre manhã e tarde: vá em camadas.`);
+  if (W.chuva >= 50) out.push(`Chuva provável (${W.chuva}%): guarda-chuva e sapato que aguente água.`); else if (W.chuva >= 30) out.push(`Chance de chuva de ${W.chuva}%: guarda-chuva pequeno na mochila.`);
+  if (W.uv >= 6) out.push(`UV ${num(W.uv, 0)}: protetor solar se ficar ao ar livre entre 11 h e 16 h.`);
+  if (W.vento >= 30) out.push(`Vento forte (${num(W.vento, 0)} km/h).`);
+  return out;
+}
+function hjAtiv(W) {
+  const bom = W.chuva < 30 && W.t >= 10 && W.t <= 28 && W.code < 51, quente = W.max >= 30;
+  return bom ? `Dia bom para ficar fora: caminhar, pedalar ou almoçar ao ar livre${quente ? ", evitando o sol entre 12 h e 16 h" : ""}.` : W.chuva >= 50 ? "Melhor planejar algo em lugar fechado; se for sair, aproveite as janelas sem chuva." : quente ? "Calor forte: atividades cedo de manhã ou depois das 18 h." : W.t < 5 ? "Frio: ao ar livre, só caminhadas curtas e bem agasalhado." : "Tempo instável: tenha um plano B em lugar fechado.";
+}
+/* frases: verificadas na fonte, escolhidas pelo período e pelo que o dia pede */
+const FRASES = [
+  ["Ao amanhecer, quando te custa levantar, tem presente este pensamento: levanto-me para a obra do homem.", "Marco Aurélio, Meditações V.1", ["manha"], ["cansaco", "rotina"]],
+  ["Não é que tenhamos pouco tempo, mas desperdiçamos muito.", "Sêneca, Sobre a brevidade da vida", ["manha", "tarde"], ["foco", "rotina"]],
+  ["Enquanto adiamos, a vida passa.", "Sêneca, Cartas a Lucílio, 1", ["manha", "tarde"], ["foco"]],
+  ["Não são as coisas que perturbam as pessoas, mas as opiniões que elas têm sobre as coisas.", "Epicteto, Manual, 5", ["tarde", "noite"], ["estresse"]],
+  ["Primeiro diga a si mesmo quem você quer ser; depois faça o que tem de fazer.", "Epicteto, Discursos III.23", ["manha"], ["foco", "recomeco"]],
+  ["Cercare e saper riconoscere chi e cosa, in mezzo all'inferno, non è inferno, e farlo durare, e dargli spazio.", "Italo Calvino, As cidades invisíveis", ["tarde", "noite"], ["estresse", "solidao"]],
+  ["Non si ricordano i giorni, si ricordano gli attimi.", "Cesare Pavese, Il mestiere di vivere", ["noite", "tarde"], ["rotina"]],
+  ["Para ser grande, sê inteiro: nada teu exagera ou exclui.", "Ricardo Reis (Fernando Pessoa)", ["manha", "tarde"], ["foco", "coragem"]],
+  ["O correr da vida embrulha tudo; a vida é assim: esquenta e esfria, aperta e daí afrouxa, sossega e depois desinquieta. O que ela quer da gente é coragem.", "Guimarães Rosa, Grande Sertão: Veredas", ["manha", "tarde", "noite"], ["coragem", "estresse", "recomeco"]],
+  ["How we spend our days is, of course, how we spend our lives.", "Annie Dillard, The Writing Life", ["manha", "tarde"], ["rotina", "foco"]],
+  ["Tell me, what is it you plan to do with your one wild and precious life?", "Mary Oliver, The Summer Day", ["tarde", "noite"], ["rotina", "recomeco"]],
+  ["Meu ofício e minha arte é viver.", "Montaigne, Ensaios II.6", ["noite", "manha"], ["rotina"]],
+  ["Tenha paciência com tudo o que não está resolvido no seu coração.", "Rilke, Cartas a um jovem poeta", ["noite"], ["solidao", "estresse", "coragem"]],
+  ["Não é pobre quem tem pouco, mas quem deseja mais.", "Sêneca, Cartas a Lucílio, 2", ["manha", "tarde", "noite"], ["dinheiro"]],
+  ["Logo terás esquecido tudo; logo todos te terão esquecido.", "Marco Aurélio, Meditações VII.21", ["noite"], ["estresse"]],
+];
+function hjTema(c) {
+  const s = S.saude[TODAY] || {}, sono = s.sono ?? S.saude[addDays(TODAY, -1)]?.sono, atras = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo < TODAY).length;
+  if (+c.humor && +c.humor <= 2) return ["coragem", "o humor está baixo"];
+  if (c.energia === "baixa" || (isNum(sono) && sono < 6)) return ["cansaco", isNum(sono) && sono < 6 ? `você dormiu ${num(sono)} h` : "a energia está baixa"];
+  if ((s.estresse ?? 0) >= 4) return ["estresse", "o estresse está alto"];
+  if (c.grana === "zero") return ["dinheiro", "o dinheiro está curto"];
+  if (atras >= 3) return ["foco", `há ${atras} tarefas atrasadas`];
+  return ["rotina", ""];
+}
+function hjFrase(c) {
+  const per = periodo(), [tema, porque] = hjTema(c), pool = FRASES.filter(f => f[2].includes(per) && f[3].includes(tema)), all = pool.length ? pool : FRASES.filter(f => f[2].includes(per));
+  const seed = [...TODAY].reduce((a, ch) => a + ch.charCodeAt(0), 0), f = all[(seed + HJ.fr) % all.length];
+  const tasks = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= TODAY).length;
+  const concreto = { cansaco: `Com ${porque}, o dia rende menos: escolha a uma coisa que importa${tasks ? ` entre as ${tasks} que vencem` : ""} e permita-se fazer o resto pela metade.`, estresse: "Antes de responder ao próximo pedido urgente, pergunte o que acontece se ele esperar uma hora.", coragem: "Não precisa ser um bom dia; precisa ter um momento bom. Uma ligação, uma caminhada, uma coisa feita.", dinheiro: "Dias de orçamento curto pedem lazer que não custa: o que você já tem em casa ou na cidade de graça.", foco: `${porque[0]?.toUpperCase() + porque.slice(1)}. Escolha duas, faça antes do almoço e renegocie o prazo das outras.`, rotina: per === "noite" ? "O que valeu a pena hoje? Uma linha no diário guarda isso." : per === "tarde" ? "A tarde é boa para o trabalho que exige menos decisão; deixe as escolhas para amanhã cedo." : "Comece pelo que você vai se orgulhar de ter feito às 18 h." }[tema];
+  return { f, concreto, porque };
+}
+/* ideias para sair da rotina: c custo (0 grátis, 1 até € 10, 2 até € 30), min, out 1 fora / .5 tanto faz / 0 dentro, e energia 1–3 */
+const IDEIAS = [
+  ["Caminhar no Parco del Valentino até o Borgo Medievale", "Ida e volta pelo rio, sem pressa.", 0, 60, 1, 1, 0, "natureza"],
+  ["Subir ao Monte dei Cappuccini no fim da tarde", "A cidade e os Alpes do mirante; vale levar alguém.", 0, 60, 1, 2, 0, "natureza"],
+  ["Pedalar pela margem do Pó com bicicleta compartilhada", "Murazzi até o Parco Michelotti e volta.", 1, 60, 1, 2, 0, "movimento"],
+  ["Cremalheira Sassi–Superga e a vista da Basílica", "Programa de meio dia; leve um lanche.", 1, 180, 1, 2, 0, "passeio"],
+  ["Museo Nazionale del Cinema, na Mole Antonelliana", "Bom para dia de chuva; reserve o elevador panorâmico.", 2, 150, 0, 1, 0, "cultura"],
+  ["Mercado de Porta Palazzo: ingredientes para uma receita nova", "De manhã, de segunda a sábado.", 1, 60, .5, 1, 0, "comida", d => d !== 0],
+  ["Cozinhar um prato brasileiro e chamar alguém", "Pão de queijo, moqueca ou feijoada pequena: comida que conta de onde você vem.", 1, 120, 0, 2, 1, "comida"],
+  ["Videochamada com a família no Brasil", "Brasília está 5 h atrás no horário de verão europeu e 4 h no inverno.", 0, 30, 0, 1, 1, "pessoas"],
+  ["Ler 30 minutos num café diferente do bairro", "Um café que você nunca entrou.", 1, 60, .5, 1, 0, "calma"],
+  ["Biblioteca civica: pegar um livro em italiano", "Empréstimo gratuito com o cartão da biblioteca.", 0, 60, .5, 1, 0, "calma"],
+  ["Alongamento ou yoga com vídeo, 20 minutos", "Na sala, sem equipamento.", 0, 20, 0, 1, 0, "movimento"],
+  ["Caminhada de 20 minutos sem celular depois do jantar", "Só andar e olhar.", 0, 20, 1, 1, 0, "calma"],
+  ["Voltar do trabalho por outro caminho e descer uma parada antes", "Pequena mudança, rua nova.", 0, 15, 1, 1, 0, "movimento"],
+  ["Aperitivo com um colega que você quase não vê", "Também conta para a Rede profissional.", 2, 90, .5, 2, 1, "pessoas"],
+  ["Planejar uma escapada curta: Langhe, Sacra di San Michele ou Lago Maggiore", "15 minutos de pesquisa e uma data no calendário.", 0, 15, 0, 1, 0, "passeio"],
+  ["Testar um método novo de café (V60, moka, prensa)", "Anote a receita em Lazer › Café.", 0, 20, 0, 1, 0, "calma"],
+  ["Exposição pequena: GAM ou Fondazione Sandretto Re Rebaudengo", "Uma ou duas salas, sem querer ver tudo.", 2, 120, 0, 1, 0, "cultura"],
+  ["Jogo de tabuleiro ou videogame com alguém", "Em casa, sem tela de trabalho.", 0, 60, 0, 1, 1, "pessoas"],
+  ["Trilha fácil no Val di Susa", "Dia inteiro; confira o trem e a previsão na montanha.", 2, 420, 1, 3, 0, "natureza", d => d === 0 || d === 6],
+  ["Ouvir um álbum inteiro sem fazer outra coisa", "Fones, luz baixa, 45 minutos.", 0, 45, 0, 1, 0, "calma"],
+  ["Aula experimental de algo novo: escalada indoor ou dança", "Muitas academias têm a primeira aula gratuita ou barata.", 2, 90, 0, 3, 0, "movimento"],
+  ["Três linhas no diário sobre algo que mudou neste mês", "Dez minutos.", 0, 10, 0, 1, 0, "calma"],
+];
+const CUSTO_TXT = ["grátis", "até € 10", "até € 30"];
+const TEMPO_OPT = [[15, "15 min"], [60, "1 hora"], [180, "meio dia"], [480, "dia livre"]];
+const GRANA_OPT = [["zero", "nada", 0], ["pouco", "até € 10", 1], ["ok", "até € 30", 2], ["folga", "mais", 2]];
+function hjIdeias(c, W) {
+  const per = periodo(), dow = parse(TODAY).getDay(), tempo = +c.tempo || 60, gmax = (GRANA_OPT.find(g => g[0] === c.grana) || [0, 0, 1])[2], en = { baixa: 1, media: 2, alta: 3 }[c.energia] || 2, chuva = W ? W.chuva >= 50 || W.code >= 61 : c.clima === "chuva", extremo = W ? W.sens < 3 || W.max >= 33 : c.clima === "frio" || c.clima === "calor";
+  const out = [], motivos = [];
+  if (chuva) motivos.push("com chuva, saíram as de ar livre"); if (extremo) motivos.push("com temperatura extrema, saíram as longas ao ar livre"); if (gmax === 0) motivos.push("sem dinheiro para lazer, só as gratuitas"); if (en === 1) motivos.push("com energia baixa, só as leves"); if (tempo < 60) motivos.push(`com ${tempo} min, só as curtas`);
+  for (const [t, d, cst, min, outd, e, soc, tipo, ok] of IDEIAS) {
+    if (HJ.skip.has(t) || min > tempo || cst > gmax || e > en || (ok && !ok(dow))) continue;
+    if (outd === 1 && (chuva || (extremo && min > 30))) continue;
+    if (per === "noite" && outd === 1 && min > 30) continue;
+    let sc = 1; const why = [];
+    if (W && !chuva && outd && W.t >= 12 && W.t <= 27) { sc += 2; why.push(`${num(W.t, 0)}° e sem chuva`); }
+    if (+c.humor && +c.humor <= 2 && (soc || tipo === "natureza")) { sc += 2; why.push(soc ? "estar com alguém ajuda num dia pesado" : "verde e movimento aliviam o humor"); }
+    if (en === 3 && e >= 2) { sc += 1; why.push("energia sobrando"); }
+    if (en === 1 && e === 1) { sc += 1; why.push("pede pouca energia"); }
+    if (cst === 0) { sc += .5; if (gmax <= 1) why.push("não custa nada"); }
+    if (min >= tempo * .4) sc += .5;
+    out.push({ t, d, cst, min, outd, tipo, sc: sc + ((t.length * 7 + [...TODAY].reduce((a, ch) => a + ch.charCodeAt(0), 0)) % 10) / 20, why });
+  }
+  const pick = []; for (const x of out.sort((a, b) => b.sc - a.sc)) { if (pick.length >= 4) break; if (pick.some(p => p.tipo === x.tipo)) continue; pick.push(x); }
+  for (const x of out) { if (pick.length >= 3) break; if (!pick.includes(x)) pick.push(x); }
+  return { pick, motivos, total: out.length };
+}
+function hjAsk(c) {
+  const mood = [[1, "péssimo"], [2, "mal"], [3, "ok"], [4, "bem"], [5, "ótimo"]], chips = (k, opts) => `<div class="hjch" role="group">${opts.map(([v, l]) => `<button type="button" class="seg" data-hjc="${k}|${v}" aria-pressed="${String(c[k] ?? "") === String(v)}">${l}</button>`).join("")}</div>`;
+  const falta = ["humor", "energia", "tempo", "grana"].filter(k => c[k] == null || c[k] === "");
+  return `<section class="pn hjask${falta.length ? " pend" : ""}" aria-label="Como você está agora">
+    <div class="hjaskh"><b>${ic("mood")}Como você está agora?</b><span class="muted small">${falta.length ? `${falta.length} de 4 sem resposta: o resumo fica genérico nelas` : "Resumo ajustado às suas respostas"} · ${PER_TXT[periodo()]}, ${new Date().toTimeString().slice(0, 5)}</span></div>
+    <div class="hjq"><span>Humor</span>${chips("humor", mood)}</div><div class="hjq"><span>Energia</span>${chips("energia", [["baixa", "baixa"], ["media", "média"], ["alta", "alta"]])}</div>
+    <div class="hjq"><span>Tempo livre hoje</span>${chips("tempo", TEMPO_OPT)}</div><div class="hjq"><span>Dinheiro para lazer</span>${chips("grana", GRANA_OPT.map(g => [g[0], g[1]]))}</div>
+    ${HJ.wxSt === "err" || (!HJ.wx && c.clima) ? `<div class="hjq"><span>Tempo lá fora</span>${chips("clima", [["sol", "sol"], ["nublado", "nublado"], ["chuva", "chuva"], ["frio", "frio"], ["calor", "calor"]])}<label class="hjtemp">°C<input type="number" data-hjtemp="1" value="${esc(c.temp ?? "")}" aria-label="Temperatura"></label></div>` : ""}
+  </section>`;
+}
+function pHoje2(R) {
+  const c = hctx(), W = hjClima(); hjWeather(); hjNews();
+  const s = S.saude[TODAY] || {}, F = hjFrase(c), I = hjIdeias(c, W);
+  const tasks = R.tar.filter(t => t.open && t.prazo && t.prazo <= TODAY).sort((a, b) => a.prazo.localeCompare(b.prazo)), doneToday = R.tar.filter(t => t.status === "Concluída" && t.concluida === TODAY);
+  const CC = typeof casaCalc === "function" ? casaCalc() : null, contas = CC ? [...CC.atrasadas, ...CC.prox14.filter(v => v.dias <= 3)] : [];
+  const exps = (S.experimentos || []).filter(x => x.status === "ativo" && expSchedule(x)[TODAY] && !(x.desenho === "antes" && expSchedule(x)[TODAY] === "A")), al = radarAlerts().slice(0, 2);
+  const fwk = fsTarget(), fpend = parse(TODAY).getDay() <= 1 && S.fechamentos?.[fwk]?.status !== "fechado";
+  const reg = [["humor", "humor"], ["sono", "sono"], ["treino", "treino"]].filter(([k]) => s[k] != null && s[k] !== ""), habs = S.habitos.filter(h => S.marks[`${h.id}|${TODAY}`]).length;
+  const resumo = [W ? `${num(W.t, 0)}° agora, ${num(W.min, 0)}–${num(W.max, 0)}° no dia${W.chuva >= 30 ? `, ${W.chuva}% de chuva` : ", sem chuva prevista"}` : "", tasks.length ? plural(tasks.length, "tarefa vence até hoje", "tarefas vencem até hoje") : "nenhuma tarefa vencendo", contas.length ? plural(contas.length, "conta da casa para pagar", "contas da casa para pagar") : ""].filter(Boolean).join(" · ");
+  return `<p class="hjlead">${esc(resumo)}.</p>
+    ${hjAsk(c)}
+    <div class="g2c hj2">
+      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "net" ? "Open-Meteo, agora" : "marcado por você") : HJ.wxSt === "load" ? "buscando…" : "sem dados"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · chuva ${W.chuva}%${W.fonte === "net" ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div><div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${HJ.wxSt === "err" ? "Não consegui buscar o clima nesta visualização. Marque o tempo lá fora em “Como você está agora?”." : "Buscando a previsão…"}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
+      ${panel(`${ic("spark")}Para esta ${PER_TXT[periodo()]}`, `<blockquote class="hjq1"><p>${esc(F.f[0])}</p><cite>${esc(F.f[1])}</cite></blockquote><p class="hjconc">${esc(F.concreto)}</p><button type="button" class="lnk" data-act="hjfr">outra frase</button>`)}
+      ${panel(`${ic("compass")}Ideias para sair da rotina <small>${I.pick.length} de ${IDEIAS.length}, filtradas pelo seu momento</small>`, `${I.motivos.length ? `<p class="muted small">${esc(I.motivos.join("; "))}.${I.total < 3 ? " Sobraram poucas: é uma limitação real do dia, não falta de opção na cidade." : ""}</p>` : ""}<div class="hjid">${I.pick.map(x => `<article class="hjidc"><b>${esc(x.t)}</b><p>${esc(x.d)}</p><div class="hjidm">${chip(CUSTO_TXT[x.cst])}${chip(x.min >= 60 ? `${num(x.min / 60, x.min % 60 ? 1 : 0)} h` : `${x.min} min`)}${chip(x.outd === 1 ? "ao ar livre" : x.outd ? "dentro ou fora" : "dentro")}</div>${x.why.length ? `<small>Por que hoje: ${esc(x.why.join(", "))}</small>` : ""}<div class="row"><button type="button" class="btn sm" data-hjvou="${esc(x.t)}">${ic("check")}Vou fazer</button><button type="button" class="lnk" data-hjskip="${esc(x.t)}">outra</button></div></article>`).join("") || `<div class="empty">Nenhuma ideia cabe nas respostas de agora. Com mais tempo livre ou orçamento, aparecem opções.</div>`}</div>`, { cls: "span2" })}
+      ${panel(`${ic("globe")}Notícias boas <small>jornalismo de soluções, em inglês</small>`, HJ.news?.length ? `<div class="hjnews">${HJ.news.map(n => `<a class="hjn" href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.t)}</b>${n.d ? `<span>${esc(n.d)}…</span>` : ""}<small>${esc(n.src)}${n.data ? " · " + fmtDY(n.data) : ""}</small></a>`).join("")}</div>` : HJ.newsSt === "load" ? `<div class="empty">Buscando…</div>` : `<div class="empty">Não consegui buscar as notícias nesta visualização. Abra direto: <a class="lnk" href="https://www.positive.news" target="_blank" rel="noopener">Positive News</a> · <a class="lnk" href="https://www.goodnewsnetwork.org" target="_blank" rel="noopener">Good News Network</a> · <a class="lnk" href="https://www.corriere.it/buone-notizie/" target="_blank" rel="noopener">Corriere · Buone Notizie</a></div>`)}
+      ${panel(`${ic("mic")}Registro do dia`, `<div class="hjreg">${reg.length || habs ? `${reg.map(([k, l]) => chip(`${l} ${k === "sono" ? num(s[k]) + " h" : k === "treino" ? s[k] : s[k] + "/5"}`, "good")).join("")}${habs ? chip(`${habs}/${S.habitos.length} hábitos`, "good") : ""}` : `<span class="muted">Nada registrado hoje ainda.</span>`}</div><a class="btn sm primary" href="#painel">${ic("mic")}Registrar no Painel do dia</a>`)}
+      ${fpend ? `<div class="pn fscta span2"><div>${ic("week")}<b>Hora de fechar a semana de ${wkLabel(fwk)}</b><small>Uns 15 minutos.</small></div><a class="btn primary" href="#semana">Fechar a semana</a></div>` : ""}
+      ${panel(`${ic("checksq")}Para hoje <small>${tasks.length ? tasks.length + " pendente(s)" : "em dia"}</small>`, `${tasks.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}"><span>${esc(t.tarefa)}<small class="st-${t.st}">${t.prazo < TODAY ? `atrasada ${relDay(t.prazo)}` : "vence hoje"}</small></span></label></div>`).join("")}${doneToday.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}" checked><span class="done">${esc(t.tarefa)}</span></label></div>`).join("")}${contas.map(v => `<div class="li"><span>${ic("house")}${esc(v.c.conta)} · ${eur(+v.c.valor || 0, 2)}</span>${pill(v.dias < 0 ? "crit" : "warn", v.dias < 0 ? "atrasada" : v.dias === 0 ? "hoje" : `em ${v.dias} d`)}</div>`).join("")}${!tasks.length && !doneToday.length && !contas.length ? `<div class="empty">Nada vencendo hoje.</div>` : ""}${quickBox("hj_tar", "Nova tarefa: Ligar para o banco até sexta !alta", "qtar", "Prazo, prioridade (!alta) e #área são opcionais.")}`)}
+      ${panel(`${ic("flag")}Prioridades da semana`, `<div class="prio">${[0, 1, 2].map(i => `<label><span>${i + 1}</span><input id="prio${i}" type="text" data-prio="${i}" value="${esc(S.prio[i] || "")}" placeholder="O que mais importa"></label>`).join("")}</div>`)}
+      ${panel(`${ic("cal")}Próximos 7 dias`, agenda(R, 7))}
+      ${bmHoje()}${jHoje()}
+      ${exps.length ? panel(`${ic("flask")}Experimento de hoje`, exps.map(x => `<div class="hjexp"><b>${esc(x.titulo)}</b>${expToday(x, expAnalyze(x))}</div>`).join("")) : ""}
+      ${al.length ? panel(`${ic("radar")}No radar`, al.map(a => alertCard(a, true)).join(""), { act: `<a class="lnk" href="#radar">ver tudo</a>` }) : ""}
+    </div>`;
+}
+function hjClick(t) {
+  const ds = t.dataset;
+  if (ds.hjc) { const [k, v] = ds.hjc.split("|"), c = hctx(); c[k] = String(c[k]) === v ? "" : (k === "humor" || k === "tempo" ? +v : v); HJ.skip.clear(); touch("hojeCtx", { label: "Como você está", noUndo: true }); return true; }
+  if (ds.act === "hjfr") { HJ.fr++; render(); return true; }
+  if (ds.hjskip) { HJ.skip.add(ds.hjskip); render(); return true; }
+  if (ds.hjvou) { const r = CMD.tarefa.p(`${ds.hjvou} até hoje`, { date: TODAY, area: "Lazer & criatividade" }); if (r.ok) { r.apply(); touch("tarefas", { label: "Ideia do dia" }); undoToast("Virou tarefa de hoje"); } return true; }
+  if (ds.act === "hjcid") { hjCidade(); return true; }
+  return false;
+}
+function hjCidade() {
+  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" value="${esc(cidade().nome)}"></label></div><p class="muted small" id="hjcm"></p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Buscar</button></div></div></form>`;
+  d.showModal(); $("#hjcx").onclick = () => d.close();
+  $("#hjcf").onsubmit = async e => { e.preventDefault(); const q = $("#hjci").value.trim(); if (!q) return; $("#hjcm").textContent = "Buscando…";
+    try { const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=pt`), j = await r.json(), x = j?.results?.[0]; if (!x) { $("#hjcm").textContent = "Cidade não encontrada."; return; }
+      S.cfg.cidade = { nome: x.name, lat: x.latitude, lon: x.longitude }; d.close(); HJ.wx = null; HJ.wxSt = ""; try { localStorage.removeItem("atlas_wx"); } catch {} touch("cfg", { label: "Cidade do clima" }); }
+    catch { $("#hjcm").textContent = "Sem acesso à internet nesta visualização."; } };
+}
+function hjChange(t) { if (t.dataset.hjtemp) { hctx().temp = t.value === "" ? "" : +t.value; touch("hojeCtx", { noUndo: true }); return true; } return false; }
+
+/* ================================================================ Casa & docs: a casa como espaço físico e como conta
+   Limpeza (rotinas do leve ao pesado), compras da semana, calendário de contas e documentos anuais.
+   Assinaturas foram para Finanças › Orçamento: são consumo, não a casa. */
+const NIVEIS = ["Leve", "Média", "Pesada", "Sazonal"];
+const NIV_TXT = { Leve: "diária ou a cada 2–3 dias", "Média": "semanal", Pesada: "mensal", Sazonal: "2 a 4 vezes por ano" };
+const PER_M = { Mensal: 1, Bimestral: 2, Trimestral: 3, Semestral: 6, Anual: 12, "Única": 0 };
+const addMonths = (d, n) => { const x = parse(d), day = x.getDate(); x.setDate(1); x.setMonth(x.getMonth() + n); const last = new Date(x.getFullYear(), x.getMonth() + 1, 0).getDate(); x.setDate(Math.min(day, last)); return iso(x); };
+/* vencimentos de uma conta entre duas datas, a partir do próximo vencimento cadastrado (para trás e para frente) */
+function contaOcorr(c, de, ate) {
+  const p = PER_M[c.periodo] ?? 1, out = []; if (!c.venc) return out;
+  if (!p) return c.venc >= de && c.venc <= ate ? [c.venc] : [];
+  /* cada vencimento sai do cadastrado (k × período), para o dia 31 não virar 30 para sempre */
+  let k = 0; while (addMonths(c.venc, k * p) > de && k > -240) k--;
+  for (let i = 0; i < 480; i++, k++) { const d = addMonths(c.venc, k * p); if (d > ate) break; if (d >= de) out.push(d); }
+  return out;
+}
+const contaPaga = (c, d) => !!(c.pagos || {})[d];
+function casaCalc() {
+  const de = addDays(TODAY, -45), ate = addDays(TODAY, 60), venc = [];
+  for (const c of S.contasCasa) for (const d of contaOcorr(c, de, ate)) venc.push({ c, d, pago: contaPaga(c, d), dias: diff(d, TODAY) });
+  venc.sort((a, b) => a.d.localeCompare(b.d));
+  const rot = S.rotinas.map(r => { const prox = r.ultima && +r.freq ? addDays(r.ultima, +r.freq) : TODAY, dias = diff(prox, TODAY); return { ...r, nivel: r.nivel || "Média", prox, dias, st: dias < 0 ? "crit" : dias === 0 ? "warn" : "good" }; });
+  const docs = S.docs.map(d => { const dias = d.validade ? diff(d.validade, TODAY) : null; return { ...d, dias, st: dias == null ? "none" : dias < 0 ? "crit" : dias <= S.cfg.alertaDocs ? "warn" : "good" }; });
+  const mensal = sum(S.contasCasa.map(c => PER_M[c.periodo] ? (+c.valor || 0) / PER_M[c.periodo] : 0));
+  return { venc, rot, docs, mensal, atrasadas: venc.filter(v => !v.pago && v.dias < 0), prox14: venc.filter(v => !v.pago && v.dias >= 0 && v.dias <= 14), hojeRot: rot.filter(r => r.dias <= 0) };
+}
+function pCasa2(R) {
+  const f = { painel: casaPainel, limpeza: casaLimpeza, compras: casaCompras, contas: casaContas, docs: casaDocs }[SUB] || casaPainel;
+  return f(R);
+}
+function casaPainel() {
+  const C = casaCalc(), falta = S.compras.filter(x => !x.feito).length;
+  return `${kpiRow([kmini("var(--crit)", "Contas atrasadas", C.atrasadas.length, C.atrasadas.length ? eur(sum(C.atrasadas.map(v => +v.c.valor || 0)), 2) : "nenhuma", C.atrasadas.length ? "crit" : "good"), kmini("var(--warn)", "Vencem em 14 dias", C.prox14.length, eur(sum(C.prox14.map(v => +v.c.valor || 0)), 2)), kmini("var(--a-fam)", "Limpeza para hoje", C.hojeRot.length, `${sum(C.hojeRot.map(r => +r.min || 0))} min no total`), kmini("var(--a-fin)", "Custo fixo da casa", eur(C.mensal), "por mês, média das contas")])}
+    <div class="g2c">
+      ${panel(`${ic("cal")}Próximos vencimentos`, casaVencList([...C.atrasadas, ...C.prox14]), { act: `<a class="lnk" href="#casa.contas">calendário</a>` })}
+      ${panel(`${ic("house")}Limpeza de hoje`, C.hojeRot.length ? `<div class="list">${C.hojeRot.sort((a, b) => a.dias - b.dias).map(casaRotLi).join("")}</div>` : `<div class="empty">Nada vencido. A próxima: ${(() => { const r = [...C.rot].sort((a, b) => a.dias - b.dias)[0]; return r ? `${esc(r.rotina)} em ${fmtD(r.prox)}` : "cadastre rotinas em Limpeza"; })()}.</div>`, { act: `<a class="lnk" href="#casa.limpeza">todas</a>` })}
+      ${panel(`${ic("checksq")}Lista de compras <small>${falta} a comprar</small>`, S.compras.length ? `<div class="cpchips">${S.compras.filter(x => !x.feito).slice(0, 18).map(x => `<span class="chip">${esc(x.item)}${x.qtd ? ` · ${esc(x.qtd)}` : ""}</span>`).join("")}</div>` : `<div class="empty">Lista vazia.</div>`, { act: `<a class="lnk" href="#casa.compras">abrir</a>` })}
+      ${panel(`${ic("file")}Documentos que pedem ação`, (() => { const ds = C.docs.filter(d => d.st === "crit" || d.st === "warn").sort((a, b) => a.dias - b.dias); return ds.length ? `<div class="list">${ds.map(d => `<div class="li"><button type="button" class="t lnkb" data-edit="docs" data-id="${d.id}">${esc(d.doc)}<div class="m">${esc(d.tipo || "")}${d.onde ? ` · guardado em ${esc(d.onde)}` : ""}</div></button>${pill(d.st, d.dias < 0 ? `venceu há ${-d.dias} d` : `em ${d.dias} d`)}</div>`).join("")}</div>` : `<div class="empty">Nenhum documento vencendo nos próximos ${S.cfg.alertaDocs} dias.</div>`; })(), { act: `<a class="lnk" href="#casa.docs">todos</a>` })}
+    </div>`;
+}
+const casaVencList = vs => vs.length ? `<div class="list">${vs.map(v => `<div class="li cvl${v.pago ? " pago" : ""}"><div class="t"><b>${esc(v.c.conta)}</b><div class="m">${fmtD(v.d)} · ${esc(v.c.cat || "")}${v.c.debito === "Sim" ? " · débito automático" : ""}</div></div><div class="row"><span class="num">${eur(+v.c.valor || 0, 2)}</span>${v.pago ? pill("good", "paga") : `${pill(v.dias < 0 ? "crit" : v.dias <= 3 ? "warn" : "none", v.dias < 0 ? `atrasada ${-v.dias} d` : v.dias === 0 ? "hoje" : `em ${v.dias} d`)}<button type="button" class="btn sm" data-act="cpagar" data-id="${v.c.id}" data-d="${v.d}">${ic("check")}Paguei</button>`}</div></div>`).join("")}</div>` : `<div class="empty">Nada vencendo.</div>`;
+const casaRotLi = r => `<div class="li"><div class="t"><b>${esc(r.rotina)}</b><div class="m">${esc(r.nivel)} · ${esc(r.comodo || "Casa toda")} · ${r.min ? r.min + " min · " : ""}a cada ${r.freq} d</div></div><div class="row">${pill(r.st, r.dias < 0 ? `atrasada ${-r.dias} d` : r.dias === 0 ? "hoje" : fmtD(r.prox))}<button type="button" class="btn sm" data-done="${r.id}">${ic("check")}Feito</button><button type="button" class="vb" data-edit="rotinas" data-id="${r.id}" aria-label="Editar">${ic("edit")}</button></div></div>`;
+const LIMPEZA_MODELO = [["Lavar a louça e limpar a pia", "Leve", "Cozinha", 1, 15], ["Arrumar a cama e arejar o quarto", "Leve", "Quarto", 1, 5], ["Tirar o lixo e separar a reciclagem", "Leve", "Casa toda", 2, 5], ["Aspirar o chão", "Média", "Casa toda", 7, 30], ["Limpar o banheiro (vaso, box, pia)", "Média", "Banheiro", 7, 30], ["Trocar roupa de cama e toalhas", "Média", "Quarto", 7, 15], ["Limpar a geladeira e jogar fora o vencido", "Pesada", "Cozinha", 30, 30], ["Limpar o forno e o micro-ondas", "Pesada", "Cozinha", 30, 30], ["Tirar o calcário (chuveiro, torneiras, chaleira)", "Pesada", "Banheiro", 30, 25], ["Limpar o filtro da máquina de lavar", "Pesada", "Eletrodomésticos", 30, 15], ["Lavar janelas e persianas", "Sazonal", "Casa toda", 90, 90], ["Trocar roupas de estação e arejar armários", "Sazonal", "Quarto", 180, 120], ["Descongelar o freezer", "Sazonal", "Cozinha", 180, 60]];
+function casaLimpeza() {
+  const C = casaCalc();
+  return `<div class="g2c">${NIVEIS.map(n => { const rs = C.rot.filter(r => r.nivel === n).sort((a, b) => a.dias - b.dias); return panel(`${n} <small>${NIV_TXT[n]} · ${sum(rs.map(r => +r.min || 0))} min no ciclo</small>`, rs.length ? `<div class="list">${rs.map(casaRotLi).join("")}</div>` : `<div class="empty">Nenhuma rotina ${n.toLowerCase()}.</div>`); }).join("")}</div>
+    <div class="row wrap" style="margin-top:12px">${addBtn("rotinas", "Nova rotina")}${S.rotinas.length < 4 ? `<button type="button" class="btn sm" data-act="climpmod">${ic("list")}Usar um modelo de 13 rotinas</button>` : ""}</div>
+    <p class="note">${ic("info")}<span>“Feito” marca hoje e calcula a próxima data. Rotinas leves somam pouco por dia; as pesadas, reserve meia hora num sábado por mês.</span></p>`;
+}
+function casaCompras() {
+  const secs = [...new Set(S.compras.map(x => x.cat || "Outros"))], falta = S.compras.filter(x => !x.feito);
+  return `<div class="g2c"><div class="stack">${panel(`${ic("plus")}Adicionar`, `<div class="row"><input type="text" id="cp_in" placeholder="Ex.: 2 kg de batata, leite, detergente" aria-label="Novo item"><button type="button" class="btn sm primary" data-act="cpadd">Adicionar</button></div><p class="muted small">Separe vários itens por vírgula. A seção (hortifrúti, limpeza…) é sugerida pelo nome; dá para mudar clicando no item.</p>`)}
+    ${panel(`${ic("repeat")}Semana`, `<p>${falta.length} a comprar · ${S.compras.length - falta.length} no carrinho · ${S.compras.filter(x => x.fixo === "Sim").length} fixos.</p><div class="row wrap"><button type="button" class="btn sm" data-act="cpnova">${ic("refresh")}Nova semana</button><button type="button" class="btn sm ghost" data-act="cpcopy">${ic("copy")}Copiar lista</button></div><p class="muted small">“Nova semana” tira os itens comprados e devolve os fixos à lista.</p>`)}</div>
+    ${panel(`${ic("checksq")}Lista <small>por seção do mercado</small>`, S.compras.length ? secs.map(s => `<div class="flbl">${esc(s)}</div>${S.compras.filter(x => (x.cat || "Outros") === s).map(x => `<div class="li"><label class="ckl"><input type="checkbox" data-cpck="${x.id}"${x.feito ? " checked" : ""}><span class="${x.feito ? "done" : ""}">${esc(x.item)}${x.qtd ? ` <small class="muted">${esc(x.qtd)}</small>` : ""}${x.fixo === "Sim" ? ` <small class="muted">· fixo</small>` : ""}</span></label><button type="button" class="vb" data-edit="compras" data-id="${x.id}" aria-label="Editar">${ic("edit")}</button></div>`).join("")}`).join("") : `<div class="empty">Lista vazia. Adicione acima.</div>`)}</div>`;
+}
+const CP_SEC = [[/batata|cebola|tomate|alface|fruta|banana|maç|laranja|limão|cenoura|abobrinha|verdura|legume|alho|pimentão|salada/i, "Hortifrúti"], [/leite|queijo|iogurte|manteiga|mozzarella|parmig|ricotta|panna/i, "Laticínios"], [/carne|frango|peixe|salmão|atum|porco|presunto|prosciutto|salame|ovo/i, "Carnes & peixes"], [/pão|pane|grissini|focaccia|biscoito/i, "Padaria"], [/congelad|sorvete|gelato/i, "Congelados"], [/detergente|sabão|desinfet|amaciante|esponja|saco de lixo|água sanitária|candeggina/i, "Limpeza"], [/sabonete|shampoo|pasta de dente|papel higiênico|desodorante|escova/i, "Higiene"]];
+function cpAdd(v) {
+  const its = String(v || "").split(/[,;\n]/).map(s => s.trim()).filter(Boolean); if (!its.length) return;
+  for (const raw of its) { const m = raw.match(/^(\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml|un|pct|x)?)\s+(?:de\s+)?(.+)$/i), item = m ? m[2] : raw, qtd = m ? m[1] : "";
+    S.compras.push({ id: uid(), item: item.charAt(0).toUpperCase() + item.slice(1), qtd, cat: (CP_SEC.find(([rx]) => rx.test(item)) || [0, "Mercearia"])[1], fixo: "Não", feito: false }); }
+  touch("compras", { label: "Lista de compras" });
+}
+function casaContas() {
+  const C = casaCalc(), mes0 = TODAY.slice(0, 7), meses = [0, 1, 2].map(i => addMonths(mes0 + "-01", i).slice(0, 7));
+  return `${kpiRow([kmini("var(--a-fin)", "Custo fixo mensal", eur(C.mensal), "média de todas as contas"), kmini("var(--crit)", "Atrasadas", C.atrasadas.length, eur(sum(C.atrasadas.map(v => +v.c.valor || 0)), 2), C.atrasadas.length ? "crit" : "good"), kmini("var(--warn)", "Próximos 14 dias", C.prox14.length, eur(sum(C.prox14.map(v => +v.c.valor || 0)), 2))])}
+    <div class="g2c">${meses.map(mk => { const vs = C.venc.filter(v => v.d.startsWith(mk)); return panel(`${ic("cal")}${mlabel(mk)} <small>${eur(sum(vs.map(v => +v.c.valor || 0)), 2)}</small>`, casaVencList(vs)); }).join("")}
+    ${panel(`${ic("list")}Contas cadastradas`, table("contasCasa", S.contasCasa, [["Conta", c => `<b>${esc(c.conta)}</b><div class="muted small">${esc(c.cat || "")}</div>`], ["Período", c => esc(c.periodo)], ["Valor", c => eur(+c.valor || 0, 2), "num"], ["Próximo", c => fmtD(contaOcorr(c, TODAY, addDays(TODAY, 400)).find(d => !contaPaga(c, d)) || c.venc), "num"]]), { act: addBtn("contasCasa", "Nova conta") })}</div>
+    <p class="note">${ic("info")}<span>“Paguei” marca a conta e lança a despesa em Finanças na categoria Contas da casa (ou Moradia para aluguel e condomínio). Desfazer volta as duas coisas.</span></p>`;
+}
+function casaDocs() {
+  const C = casaCalc(), tipos = [...new Set(C.docs.map(d => d.tipo || "Outro"))];
+  return `<div class="g2c">${tipos.map(t => panel(`${ic("file")}${esc(t)}`, `<div class="list">${C.docs.filter(d => (d.tipo || "Outro") === t).sort((a, b) => (a.dias ?? 1e9) - (b.dias ?? 1e9)).map(d => `<div class="li"><button type="button" class="t lnkb" data-edit="docs" data-id="${d.id}">${esc(d.doc)}${d.ano ? ` <small class="muted">${d.ano}</small>` : ""}<div class="m">${d.onde ? `guardado em ${esc(d.onde)}` : "onde está guardado?"}${d.acao ? ` · ${esc(d.acao)}` : ""}${isNum(d.valor) && d.valor !== "" ? ` · ${eur(+d.valor, 2)}` : ""}</div></button>${d.validade ? pill(d.st, d.dias < 0 ? `venceu ${fmtDY(d.validade)}` : fmtDY(d.validade)) : ""}</div>`).join("")}</div>`)).join("") || `<div class="empty">Nenhum documento.</div>`}</div>
+    <div class="row wrap" style="margin-top:12px">${addBtn("docs", "Novo documento")}</div>
+    <p class="note">${ic("info")}<span>Guarde aqui o que você precisa achar uma vez por ano: contrato de aluguel e registro, recibos da TARI, contas anuais de condomínio, apólice do seguro, garantias. “Onde está guardado” evita a caça ao papel.</span></p>`;
+}
+function casaClick(t) {
+  const a = t.dataset.act;
+  if (a === "cpagar") { const c = S.contasCasa.find(x => x.id === t.dataset.id), d = t.dataset.d; if (!c) return true; c.pagos = { ...(c.pagos || {}), [d]: TODAY };
+    const cat = /aluguel|condom/i.test(c.cat || "") ? "Moradia" : "Contas da casa", keys = ["contasCasa"];
+    if (+c.valor > 0 && cat in CAT_DESP) { S.lanc.push({ id: uid(), data: TODAY, tipo: "Despesa", cat, desc: c.conta, valor: +c.valor, conta: c.debito === "Sim" ? "Conta corrente" : "PIX / transferência", origem: "casa" }); keys.push("lanc"); }
+    touch(...keys, { label: "Conta paga" }); undoToast(`${c.conta} paga${keys.includes("lanc") ? " e lançada em Finanças" : ""}`); return true; }
+  if (a === "climpmod") { for (const [rotina, nivel, comodo, freq, min] of LIMPEZA_MODELO) S.rotinas.push({ id: uid(), rotina, nivel, comodo, freq, min, ultima: addDays(TODAY, -Math.floor(freq / 2)) }); touch("rotinas", { label: "Modelo de limpeza" }); undoToast("13 rotinas criadas"); return true; }
+  if (a === "cpadd") { const i = $("#cp_in"); cpAdd(i?.value); return true; }
+  if (t.dataset.cpck) { const x = S.compras.find(z => z.id === t.dataset.cpck); if (x) { x.feito = t.checked; touch("compras", { label: "Compra", noUndo: true }); } return true; }
+  if (a === "cpnova") { const n = S.compras.filter(x => x.feito && x.fixo !== "Sim").length; S.compras = S.compras.filter(x => !x.feito || x.fixo === "Sim").map(x => ({ ...x, feito: false })); touch("compras", { label: "Nova semana de compras" }); undoToast(`Nova semana: ${n} comprados saíram, fixos voltaram`); return true; }
+  if (a === "cpcopy") { const txt = S.compras.filter(x => !x.feito).map(x => `- ${x.item}${x.qtd ? " (" + x.qtd + ")" : ""}`).join("\n"); try { navigator.clipboard.writeText(txt).then(() => toast("Lista copiada"), () => toast("Não consegui copiar nesta visualização")); } catch { toast("Não consegui copiar nesta visualização"); } return true; }
+  return false;
+}
+
+/* ================================================================ Finanças › Futuro financeiro e Itália & Brasil
+   Regras usadas (Itália, conferir a cada ano):
+   - TFR: quota anual = retribuição anual ÷ 13,5, menos 0,5% de contribuição adicional INPS; revalorizado em 31/12 a 1,5% + 75% da inflação (FOI),
+     com imposto substitutivo de 17% sobre a revalorização. Empresas com 50+ empregados repassam o TFR não destinado a fundo ao Tesouro do INPS.
+   - Fundo de pensão: contribuições dedutíveis até € 5.164,57/ano; rendimentos tributados no fundo (20% em geral);
+     na saída, 15% menos 0,3 ponto por ano de adesão além do 15º, até o mínimo de 9%.
+   - IRPEF: 23% até € 28 mil, 35% até € 50 mil, 43% acima. Contribuição INPS do empregado ≈ 9,19%. */
+const fut = () => { const f = (S.fut ||= {}); f.check ||= {}; return f; };
+const IRPEF = [[28000, .23], [50000, .35], [Infinity, .43]];
+const irpefMarg = imp => IRPEF.find(([lim]) => imp <= lim)[1];
+function finMeses(n = 6) {
+  const fim = TODAY.slice(0, 7), ms = Array.from({ length: n }, (_, i) => addMonths(fim + "-01", -(i + 1)).slice(0, 7));
+  const tot = mk => sum(S.lanc.filter(l => l.tipo === "Despesa" && l.data.startsWith(mk)).map(l => +l.valor || 0)), ess = mk => sum(S.lanc.filter(l => l.tipo === "Despesa" && l.data.startsWith(mk) && CAT_DESP[l.cat] === "Essencial").map(l => +l.valor || 0));
+  const comDados = ms.filter(mk => tot(mk) > 0);
+  return { meses: comDados.length, total: comDados.length ? avg(comDados.map(tot)) : null, essencial: comDados.length ? avg(comDados.map(ess)) : null, aporteRes: avg(ms.slice(0, 3).map(mk => sum(S.lanc.filter(l => l.tipo === "Aporte" && l.cat === "Reserva de emergência" && l.data.startsWith(mk)).map(l => +l.valor || 0)))) };
+}
+function futCalc() {
+  const F = fut(), M = finMeses(), pk = Object.keys(S.patr).sort().at(-1), saldoPatr = pk ? +S.patr[pk].reserva || null : null;
+  const reserva = isNum(F.reservaSaldo) && F.reservaSaldo !== "" ? +F.reservaSaldo : saldoPatr, metaM = +F.reservaMeses || S.cfg.metaReserva || 6, base = F.reservaBase === "total" ? M.total : M.essencial;
+  const alvo = base ? base * metaM : null, falta = alvo != null && reserva != null ? Math.max(0, alvo - reserva) : null, cobre = base && reserva != null ? reserva / base : null;
+  const prazo = F.reservaPrazo || addMonths(TODAY, 12), mesesAte = Math.max(1, Math.round(diff(prazo, TODAY) / 30.44)), porMes = falta != null ? falta / mesesAte : null;
+  const ritmo = M.aporteRes, eta = falta && ritmo > 0 ? addMonths(TODAY, Math.ceil(falta / ritmo)) : null;
+  /* TFR */
+  const rem = typeof crRemun === "function" ? crRemun() : {}, ral = +F.ral || rem.ral || null, infl = isNum(F.infl) && F.infl !== "" ? +F.infl / 100 : .02, cresc = isNum(F.cresc) && F.cresc !== "" ? +F.cresc / 100 : .02, anos = +F.anosProj || 10;
+  let tfr = null;
+  if (ral) {
+    const quota = r => r / 13.5 - .005 * r, reval = 0.015 + 0.75 * infl;
+    let saldoA = +F.tfrSaldo || 0, saldoF = +F.fundoSaldo || 0, r = ral; const serie = [], ctT = (+F.contribTrab || 0) / 100, ctE = (+F.contribEmp || 0) / 100, rf = isNum(F.fundoRend) && F.fundoRend !== "" ? +F.fundoRend / 100 : .03;
+    for (let y = 1; y <= anos; y++) { const q = quota(r); saldoA = saldoA + saldoA * reval * (1 - .17) + q; saldoF = saldoF * (1 + rf * (1 - .2)) + q + r * (ctT + ctE); serie.push({ y, a: saldoA, f: saldoF }); r *= 1 + cresc; }
+    const imp = ral * (1 - .0919), marg = irpefMarg(imp), dedMax = 5164.57, contribAno = ral * (ctT + ctE) + quota(ral) * 0; /* o TFR não é dedutível: só as contribuições */
+    tfr = { ral, quotaBruta: ral / 13.5, quotaLiq: quota(ral), reval, serie, marg, imp, economiaPor1000: 1000 * marg, contribAno, deducao: Math.min(contribAno, dedMax), economia: Math.min(contribAno, dedMax) * marg, aliqSaida: Math.max(.09, .15 - .003 * Math.max(0, anos - 15)) };
+  }
+  return { F, M, reserva, saldoPatr, metaM, base, alvo, falta, cobre, prazo, porMes, ritmo, eta, tfr };
+}
+const fIn = (k, l, ph = "", t = "number", extra = "") => `<label>${l}<input type="${t}" data-fut="${k}" value="${esc(fut()[k] ?? "")}" placeholder="${esc(ph)}"${t === "number" ? ' step="any"' : ""}${extra}></label>`;
+function pFuturo() {
+  const X = futCalc(), F = X.F, T = X.tfr;
+  const resSt = X.cobre == null ? "none" : X.cobre >= X.metaM ? "good" : X.cobre >= 3 ? "warn" : "crit";
+  return `${kpiRow([kmini("var(--a-fin)", "Reserva cobre", X.cobre == null ? "–" : `${num(X.cobre, 1)} meses`, `meta ${X.metaM} meses`, resSt), kmini("var(--warn)", "Falta para a meta", X.falta == null ? "–" : eur(X.falta), X.porMes ? `${eur(X.porMes)}/mês até ${fmtDY(X.prazo)}` : ""), kmini("var(--a-car)", "TFR por ano", T ? eur(T.quotaLiq) : "–", T ? `RAL ${eur(T.ral)} ÷ 13,5 − 0,5%` : "informe o salário na Carreira"), kmini("var(--a-apr)", "IRPEF marginal", T ? pct(T.marg) : "–", T ? "cada € 1.000 no fundo de pensão economiza " + eur(T.economiaPor1000) : "")])}
+  <div class="g2c">
+    ${panel(`${ic("shield")}1 · Reserva de emergência <small>o colchão para perder o emprego, uma doença ou uma viagem urgente ao Brasil</small>`, `
+      <div class="form f3">${fIn("reservaSaldo", "Saldo hoje (€)", X.saldoPatr != null ? `do patrimônio: ${X.saldoPatr}` : "")}${fIn("reservaMeses", "Meta em meses", String(S.cfg.metaReserva || 6))}${fIn("reservaPrazo", "Chegar até", "", "date")}<label>Base de cálculo<select data-fut="reservaBase"><option value="ess"${F.reservaBase !== "total" ? " selected" : ""}>Só despesas essenciais</option><option value="total"${F.reservaBase === "total" ? " selected" : ""}>Todas as despesas</option></select></label></div>
+      ${X.base ? `<div class="futbar"><i style="width:${clamp((X.reserva || 0) / X.alvo) * 100}%"></i></div><p><b>${eur(X.reserva || 0)}</b> de <b>${eur(X.alvo)}</b> (${X.metaM} × ${eur(X.base)} de despesa ${F.reservaBase === "total" ? "total" : "essencial"} por mês, média de ${X.M.meses} meses).</p>
+        <p>${X.falta ? `Para chegar até ${fmtDY(X.prazo)}: <b>${eur(X.porMes)} por mês</b>. ${X.ritmo > 0 ? `No ritmo dos últimos 3 meses (${eur(X.ritmo)}/mês em aportes na reserva), você chega em <b>${mlabel(X.eta.slice(0, 7))}</b>.` : "Nos últimos 3 meses não houve aporte com a categoria Reserva de emergência."}` : "Meta atingida. O que passar disso pode ir para investimentos de longo prazo."}</p>` : `<div class="empty">Faltam lançamentos de despesa dos últimos meses para calcular a meta.</div>`}
+      <details class="futd"><summary>Onde guardar a reserva</summary><ul><li>Conta separada da conta do dia a dia, com liquidez imediata ou em poucos dias (conto deposito svincolabile ou conta remunerada).</li><li>Na Itália os juros pagam 26% de imposto retido, e há imposto de selo: 0,20% ao ano em conto deposito; na conta corrente, € 34,20 se o saldo médio passar de € 5.000.</li><li>Uma parte em reais no Brasil só se houver gastos previstos lá; senão você assume o risco do câmbio.</li></ul></details>`, { cls: "span2" })}
+    ${panel(`${ic("brief")}2 · TFR <small>Trattamento di Fine Rapporto</small>`, T ? `
+      <div class="form f3">${fIn("tfrSaldo", "Saldo TFR hoje (€)", "veja na busta paga")}${fIn("infl", "Inflação ao ano (%)", "2")}${fIn("cresc", "Aumento de salário ao ano (%)", "2")}${fIn("anosProj", "Projetar por (anos)", "10")}<label>Destino do TFR<select data-fut="tfrDestino"><option value="azienda"${F.tfrDestino !== "fondo" ? " selected" : ""}>Fica na empresa (ou INPS)</option><option value="fondo"${F.tfrDestino === "fondo" ? " selected" : ""}>Fundo de pensão</option></select></label></div>
+      <p class="muted small">Parte do salário que o empregador guarda e paga quando o contrato termina.</p><p>Por ano entram <b>${eur(T.quotaBruta)}</b> brutos (RAL ÷ 13,5), menos ${eur(.005 * T.ral)} de contribuição adicional = <b>${eur(T.quotaLiq)}</b>. Na empresa, o saldo rende <b>${pct(T.reval)}</b> ao ano (1,5% + 75% da inflação), com 17% de imposto sobre esse rendimento.</p>
+      ${vis("tfrproj", `Saldo projetado em ${T.serie.length} anos`, lineChart(T.serie.map(s => "ano " + s.y), [{ name: "Na empresa", color: "var(--a-car)", data: T.serie.map(s => Math.round(s.a)) }, { name: "Em fundo de pensão", color: "var(--a-fin)", data: T.serie.map(s => Math.round(s.f)) }], { h: 200, fmt: v => eurK(v) }), { sub: `fundo com ${isNum(F.fundoRend) && F.fundoRend !== "" ? F.fundoRend : 3}% ao ano antes de 20% de imposto e com as contribuições abaixo; antes do imposto de saída`, nofocus: true })}
+      <p class="muted small">Pode pedir adiantamento de até 70% depois de 8 anos na mesma empresa, para compra da primeira casa ou despesas médicas importantes. Confira o saldo na busta paga de dezembro.</p>` : `<div class="empty">Informe o bruto mensal e as mensalidades em <a class="lnk" href="#carreira.avaliacao">Carreira › Avaliação</a> ou a RAL aqui.</div><div class="form f2">${fIn("ral", "RAL (€)")}</div>`)}
+    ${panel(`${ic("sprout")}3 · Previdência <small>INPS, fundo complementar e os anos no Brasil</small>`, `
+      <div class="form f3">${fIn("idade", "Sua idade")}${fIn("anosInps", "Anos de contribuição INPS")}${fIn("anosInss", "Anos de contribuição INSS (Brasil)")}${fIn("fundoNome", "Fundo de pensão", "ex.: Fondoprofessioni", "text")}${fIn("fundoSaldo", "Saldo no fundo (€)")}${fIn("fundoRend", "Rendimento esperado (%)", "3")}${fIn("contribTrab", "Sua contribuição (% da RAL)", "0")}${fIn("contribEmp", "Contribuição do empregador (% da RAL)", "0")}</div>
+      ${(() => { const id = +F.idade, ai = +F.anosInps || 0, ab = +F.anosInss || 0; return id ? `<p>Pensão de velhice na Itália hoje: <b>67 anos</b> com ao menos <b>20 anos</b> de contribuição. Faltam <b>${Math.max(0, 67 - id)} anos</b> de idade${ai + ab ? `; você soma ${ai} anos de INPS${ab ? ` e ${ab} de INSS` : ""}` : ""}. O acordo de previdência Brasil–Itália permite somar os períodos dos dois países para atingir o mínimo; cada país paga a parte proporcional ao que foi contribuído nele.</p>` : `<p class="muted">Informe sua idade e os anos de contribuição.</p>`; })()}
+      ${T ? `<p>Se você contribuir para o fundo, a dedução vale até <b>€ 5.164,57</b> por ano. Com a sua faixa de IRPEF (${pct(T.marg)}), as contribuições informadas (${eur(T.contribAno)}/ano) devolvem cerca de <b>${eur(T.economia)}</b> de imposto por ano. Na saída, o imposto é de 15%, caindo 0,3 ponto por ano depois do 15º, até 9%.</p>` : ""}
+      <details class="futd"><summary>Próximos passos práticos</summary><ul><li>Baixe o estratto conto contributivo no portal MyINPS e confira se todos os meses aparecem.</li><li>Pergunte ao RH qual fundo o seu CCNL prevê e se há contribuição do empregador só para quem adere.</li><li>No Brasil, guarde o CNIS (extrato do INSS) atualizado: é ele que entra na soma do acordo.</li></ul></details>`)}
+  </div>
+  <p class="note">${ic("info")}<span>Simulações simples, com as regras escritas acima. Antes de mudar o destino do TFR ou aderir a um fundo, confirme os números com o RH, um CAF ou um consultor: a escolha de mandar o TFR para o fundo não pode ser desfeita.</span></p>`;
+}
+
+/* ---------------------------------------------------------------- Itália & Brasil */
+const VIDA_CHECK = [
+  ["it_perm", "Itália", "Permesso / carta di soggiorno", "Pedir a renovação 60 dias antes do vencimento; guarde o recibo do correio (ricevuta)."],
+  ["it_cid", "Itália", "Carta d'identità", "Renovar no comune; agende com antecedência."],
+  ["it_ts", "Itália", "Tessera sanitaria e médico de base", "Validade ligada ao permesso; atualizar no ASL ao renovar."],
+  ["it_730", "Itália", "Declaração de renda (730)", "Prazo do 730 pré-preenchido: 30 de setembro. Inclua as despesas dedutíveis (médicas, fundo de pensão)."],
+  ["it_rw", "Itália", "Quadro RW / IVAFE da conta no Brasil", "Residente fiscal na Itália declara contas e investimentos no exterior; conta corrente paga € 34,20 se o saldo médio passar de € 5.000. Confirme com um CAF."],
+  ["br_cpf", "Brasil", "CPF regular", "Consultar a situação no site da Receita Federal uma vez por ano."],
+  ["br_saida", "Brasil", "Saída definitiva do país (Receita Federal)", "Se você não é mais residente fiscal no Brasil, a comunicação e a declaração de saída evitam dupla tributação. Confirme com um contador."],
+  ["br_tit", "Brasil", "Título de eleitor no exterior", "Transferir para o consulado ou justificar a ausência após cada eleição."],
+  ["br_pass", "Brasil", "Passaporte", "Renovar no consulado; validade mínima de 6 meses para várias viagens."],
+  ["br_banco", "Brasil", "Conta e cartões no Brasil", "Atualizar o endereço no exterior e o tipo de conta com o banco; conferir tarifas."],
+];
+async function vidaCot(force) {
+  const F = fut(); if (!force && F.cot && F.cot.dia === TODAY) return;
+  try { const r = await fetch("https://api.frankfurter.dev/v1/latest?from=BRL&to=EUR"); if (!r.ok) throw 0; const j = await r.json(); const rate = +j?.rates?.EUR; if (!(rate > 0)) throw 0;
+    F.cot = { rate, data: j.date, dia: TODAY, src: "BCE (frankfurter.dev)" }; touch("fut", { noUndo: true, label: "Cotação" }); }
+  catch { F.cotErr = TODAY; if (PAGE === "fin" && SUB === "vida") render(); }
+}
+const brl = v => "R$ " + (+v || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function pVida() {
+  const F = fut(), rate = +F.cotManual || F.cot?.rate || null; if ((!F.cot || F.cot.dia !== TODAY) && F.cotErr !== TODAY && !vidaCot.on) { vidaCot.on = 1; setTimeout(() => vidaCot().finally(() => { vidaCot.on = 0; }), 0); }
+  const mensal = x => PER_M[x.periodo] ? (+x.valor || 0) / PER_M[x.periodo] : 0, br = S.vidaItens.filter(x => x.pais === "Brasil"), it = S.vidaItens.filter(x => x.pais !== "Brasil");
+  const tBR = sum(br.map(mensal)), tIT = sum(it.map(mensal)), tBRe = rate ? tBR * rate : null, casa = typeof casaCalc === "function" ? casaCalc().mensal : 0;
+  const lista = (xs, cur) => xs.length ? table("vidaItens", xs, [["Conta / gasto", x => `<b>${esc(x.t)}</b><div class="muted small">${esc(x.cat || "")}${x.venc ? " · vence " + fmtD(x.venc) : ""}</div>`], ["Período", x => esc(x.periodo)], ["Valor", x => cur(+x.valor || 0), "num"], ["Por mês", x => cur(mensal(x)), "num"], ...(cur === brl ? [["Em €", x => rate ? eur(mensal(x) * rate, 2) : "–", "num"]] : [])]) : `<div class="empty">Nada cadastrado.</div>`;
+  const ck = F.check;
+  return `${kpiRow([kmini("var(--a-fin)", "Brasil por mês", brl(tBR), tBRe != null ? `= ${eur(tBRe, 2)}` : "sem cotação"), kmini("var(--a-car)", "Itália por mês (fora a casa)", eur(tIT, 2), casa ? `+ ${eur(casa)} das contas da casa` : ""), kmini("var(--accent)", "Total do mês em euro", tBRe != null ? eur(tBRe + tIT + casa, 2) : "–", tBRe != null && tBRe + tIT + casa ? `Brasil = ${pct(tBRe / (tBRe + tIT + casa))} do total` : ""), kmini("var(--warn)", "Cotação BRL → EUR", rate ? `€ ${rate.toLocaleString("pt-BR", { maximumFractionDigits: 5 })}` : "–", F.cotManual ? "informada à mão" : F.cot ? `${F.cot.src}, ${fmtDY(F.cot.data)}` : F.cotErr ? "sem acesso à internet aqui" : "buscando…")])}
+  <div class="g2c">
+    ${panel(`🇧🇷 Brasil <small>em reais</small>`, lista(br, brl), { act: addBtn("vidaItens", "Novo") })}
+    ${panel(`🇮🇹 Itália <small>em euro; as contas da casa ficam em Casa & docs</small>`, lista(it, v => eur(v, 2)), { act: addBtn("vidaItens", "Novo") })}
+    ${panel(`${ic("refresh")}Conversão do mês`, `<table class="dt"><tbody><tr><td>Brasil</td><td class="num">${brl(tBR)}</td><td class="num">${tBRe != null ? eur(tBRe, 2) : "–"}</td></tr><tr><td>Itália</td><td class="num"></td><td class="num">${eur(tIT, 2)}</td></tr>${casa ? `<tr><td>Casa (Turim)</td><td class="num"></td><td class="num">${eur(casa, 2)}</td></tr>` : ""}<tr><td><b>Total</b></td><td></td><td class="num"><b>${tBRe != null ? eur(tBRe + tIT + casa, 2) : "–"}</b></td></tr></tbody></table>
+      <div class="form f2">${fIn("cotManual", "Cotação à mão (€ por R$ 1)", rate ? String(rate) : "0,17")}<label>&nbsp;<button type="button" class="btn sm" data-act="vidacot">${ic("refresh")}Buscar cotação de hoje</button></label></div><p class="muted small">Cotação de referência do Banco Central Europeu. Na remessa real o banco ou a fintech cobra spread e tarifa: compare o valor que chega, não só a taxa.</p>`)}
+    ${panel(`${ic("checksq")}Documentos e prazos dos dois países`, VIDA_CHECK.map(([id, p, t, d]) => { const x = ck[id] || {}; const dias = x.venc ? diff(x.venc, TODAY) : null; return `<div class="vck"><label class="ckl"><input type="checkbox" data-vck="${id}"${x.ok ? " checked" : ""}><span><b>${p === "Brasil" ? "🇧🇷" : "🇮🇹"} ${esc(t)}</b><small>${esc(d)}</small></span></label><label class="vcv">Vence<input type="date" data-vckd="${id}" value="${x.venc || ""}" aria-label="Vencimento de ${esc(t)}"></label>${dias != null ? pill(dias < 0 ? "crit" : dias <= 60 ? "warn" : "good", dias < 0 ? "vencido" : `${dias} d`) : ""}</div>`; }).join(""))}
+  </div>
+  <p class="note">${ic("info")}<span>As regras fiscais e consulares mudam: os textos acima são lembretes para conferir, não orientação profissional.</span></p>`;
+}
+function futChange(t) {
+  if (t.dataset.fut) { const F = fut(), k = t.dataset.fut, v = t.value; F[k] = t.type === "number" ? (v === "" ? "" : +v) : v; touch("fut", { label: "Futuro financeiro" }); return true; }
+  if (t.dataset.vckd) { const F = fut(); F.check[t.dataset.vckd] = { ...(F.check[t.dataset.vckd] || {}), venc: t.value }; touch("fut", { label: "Prazo" }); return true; }
+  return false;
+}
+function futClick(t) {
+  if (t.dataset.vck) { const F = fut(); F.check[t.dataset.vck] = { ...(F.check[t.dataset.vck] || {}), ok: t.checked ? TODAY : "" }; touch("fut", { label: "Checklist" }); return true; }
+  if (t.dataset.act === "vidacot") { const F = fut(); F.cotManual = ""; vidaCot(true); toast("Buscando a cotação…"); return true; }
+  return false;
+}
+
+/* ================================================================ Idiomas: inglês como prioridade, italiano como segundo foco
+   Horas guiadas acumuladas por nível do Quadro Europeu (QECR), pontos médios das faixas que a Cambridge publica:
+   A1 ≈ 90–100, A2 ≈ 180–200, B1 ≈ 350–400, B2 ≈ 500–600, C1 ≈ 700–800, C2 ≈ 1000–1200. São médias de sala de aula: servem para ordem de grandeza.
+   O plano usa a disponibilidade por dia, a janela de estudo e desconta os compromissos da Agenda que caem nela. As sessões vão para Crescimento (S.estudo). */
+const NIV = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const NIV_H = { A1: 95, A2: 190, B1: 375, B2: 550, C1: 750, C2: 1100 };
+const LANG = { en: { nome: "Inglês", flag: "🇬🇧", cor: "var(--a-car)", item: "Inglês" }, it: { nome: "Italiano", flag: "🇮🇹", cor: "var(--a-fin)", item: "Italiano" } };
+const HABS = ["Ouvir", "Falar", "Ler", "Escrever", "Vocabulário", "Gramática"];
+const idi = () => { const d = (S.idiomas ||= {}); d.en ||= { nivel: "B1", alvo: "C1", prazo: addMonths(TODAY, 18), desde: TODAY }; d.it ||= { nivel: "B2", alvo: "C1", prazo: addMonths(TODAY, 24), desde: TODAY }; d.disp ||= [30, 45, 30, 45, 30, 20, 60]; d.janela ||= { ini: "19:30", fim: "21:00" }; d.peso ??= 70; d.desloc ??= 20; d.marcos ||= {}; return d; };
+const CAN_DO = {
+  A1: "Frases simples sobre você e o dia a dia, se a outra pessoa falar devagar.",
+  A2: "Situações de rotina: compras, trabalho simples, descrever o passado em poucas frases.",
+  B1: "Viajar e trabalhar com apoio: entender o essencial de reuniões claras, escrever e-mails simples, contar experiências.",
+  B2: "Reuniões técnicas e conversas espontâneas com nativos sem muito esforço; textos detalhados e defender um ponto de vista.",
+  C1: "Usar a língua com flexibilidade no trabalho: apresentações, negociação, relatórios técnicos bem estruturados, sem procurar palavras.",
+  C2: "Entender praticamente tudo e se expressar com precisão e nuance, como no seu idioma principal.",
+};
+/* percurso: foco, marcos verificáveis e recursos por nível; o inglês tem uma trilha técnica para BIM e infraestrutura */
+const PERC = {
+  en: {
+    A2: { foco: { Ouvir: 3, Falar: 2, Ler: 2, Escrever: 1, "Vocabulário": 3, "Gramática": 2 }, marcos: ["Apresentar-se e falar do trabalho por 2 minutos sem ler", "Entender um episódio de 6 Minute English com a transcrição", "Escrever um e-mail curto de agendamento sem tradutor", "Conhecer as 1.000 palavras mais frequentes (teste de vocabulário)"], rec: [["BBC Learning English · 6 Minute English", "https://www.bbc.co.uk/learningenglish"], ["British Council · LearnEnglish", "https://learnenglish.britishcouncil.org"]] },
+    B1: { foco: { Ouvir: 3, Falar: 3, Ler: 2, Escrever: 2, "Vocabulário": 2, "Gramática": 1 }, marcos: ["Entender um episódio de 6 Minute English sem transcrição", "Conversa de 15 minutos com um parceiro (Tandem ou colega) sobre um projeto", "Escrever um e-mail técnico pedindo informações (RFI) e receber correção", "Ler a introdução da ISO 19650-1 em inglês com dicionário"], rec: [["BBC · The English We Speak", "https://www.bbc.co.uk/learningenglish"], ["Cambridge · Write & Improve (correção de textos)", "https://writeandimprove.com"], ["UK BIM Framework · guias em inglês", "https://www.ukbimframework.org"]] },
+    B2: { foco: { Ouvir: 3, Falar: 3, Ler: 2, Escrever: 2, "Vocabulário": 2, "Gramática": 1 }, marcos: ["Acompanhar uma reunião técnica em inglês e escrever a ata", "Apresentar um projeto do portfólio em 5 minutos (gravado)", "Ler um documento da buildingSMART sobre IFC 4.3 sem dicionário", "Fazer o EF SET e tirar B2 ou mais"], rec: [["buildingSMART International", "https://www.buildingsmart.org"], ["EF SET · teste gratuito", "https://www.efset.org"], ["All Ears English (podcast)", "https://www.allearsenglish.com"]] },
+    C1: { foco: { Ouvir: 2, Falar: 3, Ler: 2, Escrever: 3, "Vocabulário": 2, "Gramática": 1 }, marcos: ["Conduzir uma reunião de coordenação BIM em inglês", "Escrever um BEP (BIM Execution Plan) curto em inglês e pedir revisão", "Entender um episódio de In Our Time (BBC Radio 4)", "Certificado C1 (Cambridge C1 Advanced ou IELTS 7)"], rec: [["BBC Radio 4 · In Our Time", "https://www.bbc.co.uk/programmes/b006qykl"], ["The Economist", "https://www.economist.com"]] },
+    C2: { foco: { Ouvir: 2, Falar: 3, Ler: 2, Escrever: 3, "Vocabulário": 2, "Gramática": 0 }, marcos: ["Negociar escopo e prazos de um contrato em inglês", "Publicar um artigo técnico em inglês"], rec: [["The Economist", "https://www.economist.com"]] },
+    A1: { foco: { Ouvir: 3, Falar: 2, Ler: 2, Escrever: 1, "Vocabulário": 3, "Gramática": 2 }, marcos: ["Cumprimentar e se apresentar", "Números, datas e horários"], rec: [["British Council · LearnEnglish", "https://learnenglish.britishcouncil.org"]] },
+  },
+  it: {
+    B1: { foco: { Ouvir: 3, Falar: 3, Ler: 2, Escrever: 1, "Vocabulário": 2, "Gramática": 2 }, marcos: ["Entender um telejornal da RAI", "Telefonar para marcar uma consulta sem trocar de idioma"], rec: [["RaiPlay", "https://www.raiplay.it"], ["Treccani · gramática e dicionário", "https://www.treccani.it"]] },
+    B2: { foco: { Ouvir: 2, Falar: 2, Ler: 2, Escrever: 3, "Vocabulário": 2, "Gramática": 2 }, marcos: ["Escrever uma relazione tecnica curta com a revisão de um colega", "Ouvir um episódio de Morning (Il Post) e resumir em 5 frases", "Usar o congiuntivo sem pensar nas frases do dia a dia", "Ler um artigo do D.Lgs. 36/2023 e explicar a um colega"], rec: [["Il Post · podcasts", "https://www.ilpost.it/podcasts"], ["Accademia della Crusca · dúvidas de língua", "https://accademiadellacrusca.it"]] },
+    C1: { foco: { Ouvir: 2, Falar: 3, Ler: 2, Escrever: 3, "Vocabulário": 2, "Gramática": 1 }, marcos: ["Apresentar em italiano numa reunião com cliente público", "Escrever um capitolato ou relatório sem correções de registro", "Certificado CILS ou CELI C1"], rec: [["CILS · Università per Stranieri di Siena", "https://cils.unistrasi.it"], ["Treccani", "https://www.treccani.it"]] },
+    C2: { foco: { Ouvir: 2, Falar: 3, Ler: 2, Escrever: 3, "Vocabulário": 2, "Gramática": 0 }, marcos: ["Escrever textos formais longos com estilo próprio"], rec: [["Treccani", "https://www.treccani.it"]] },
+    A2: { foco: { Ouvir: 3, Falar: 2, Ler: 2, Escrever: 1, "Vocabulário": 3, "Gramática": 2 }, marcos: ["Resolver burocracia simples no comune"], rec: [["RaiPlay", "https://www.raiplay.it"]] },
+    A1: { foco: { Ouvir: 3, Falar: 2, Ler: 2, Escrever: 1, "Vocabulário": 3, "Gramática": 2 }, marcos: ["Apresentar-se"], rec: [["RaiPlay", "https://www.raiplay.it"]] },
+  },
+};
+const ATIV = { Ouvir: "ouvir um episódio e repetir em voz alta trechos curtos (shadowing)", Falar: "falar sozinho ou com um parceiro sobre o dia ou um projeto, gravando 3 minutos", Ler: "ler um texto do seu nível e marcar 10 palavras novas", Escrever: "escrever um e-mail ou parágrafo e corrigir com a ferramenta de correção", "Vocabulário": "revisar cartões (flashcards) de palavras novas", "Gramática": "um tópico de gramática com 10 frases suas" };
+const hm2m = s => { const m = String(s || "").match(/^(\d{1,2}):(\d{2})/); return m ? +m[1] * 60 + +m[2] : null; };
+function idiSess(lang, de) { return S.estudo.filter(x => (x.lang === lang || (!x.lang && norm(x.item || "") === norm(LANG[lang].item))) && (!de || x.data >= de)); }
+/* plano dos próximos 7 dias: disponibilidade do dia, janela de estudo menos a Agenda, deslocamento só para ouvir */
+function idiPlano() {
+  const I = idi(), ini = hm2m(I.janela.ini) ?? 1170, fim = hm2m(I.janela.fim) ?? 1260, jan = Math.max(0, fim - ini), dias = [];
+  for (let k = 0; k < 7; k++) {
+    const d = addDays(TODAY, k), dow = parse(d).getDay(), disp = +I.disp[dow] || 0;
+    const ev = (S.eventos || []).filter(e => e.data === d), busy = sum(ev.map(e => { const a = hm2m(e.hora), b = hm2m(e.fim) ?? (a != null ? a + 60 : null); return a == null ? 0 : Math.max(0, Math.min(b, fim) - Math.max(a, ini)); }));
+    const livre = Math.max(0, Math.min(disp, jan - busy)), en = Math.round(livre * I.peso / 100 / 5) * 5, it = Math.max(0, livre - en), desl = dow >= 1 && dow <= 5 ? +I.desloc || 0 : 0;
+    dias.push({ d, dow, disp, busy, ev, livre, en, it, desl });
+  }
+  return dias;
+}
+function idiProj(lang) {
+  const I = idi(), L = I[lang], h0 = NIV_H[L.nivel] || 0, h1 = NIV_H[L.alvo] || 0, feitas = sum(idiSess(lang, L.desde).map(x => +x.horas || 0)), falta = Math.max(0, h1 - h0 - feitas);
+  const P = idiPlano(), semMin = sum(P.map(p => lang === "en" ? p.en + p.desl : p.it)), semH = semMin / 60, sem = semH ? falta / semH : null, eta = sem != null ? addDays(TODAY, Math.ceil(sem * 7)) : null;
+  const semanas = Math.max(1, diff(L.prazo || addMonths(TODAY, 12), TODAY) / 7), precisaMin = falta / semanas * 60;
+  return { h0, h1, feitas, falta, semMin, eta, ok: eta && L.prazo ? eta <= L.prazo : null, precisaMin, total: h1 - h0 };
+}
+function pIdiomas() {
+  const I = idi(), P = idiPlano(), pe = idiProj("en"), pi = idiProj("it");
+  const w0 = weekStart(TODAY), wks = Array.from({ length: 8 }, (_, i) => addDays(w0, -7 * (7 - i)));
+  const serie = l => wks.map(w => Math.round(sum(idiSess(l).filter(x => x.data >= w && x.data <= addDays(w, 6)).map(x => (+x.horas || 0) * 60))));
+  const card = (l, X) => { const L = I[l], C = LANG[l], prog = X.total ? clamp(1 - X.falta / X.total) : 0;
+    return panel(`${C.flag} ${C.nome} <small>${l === "en" ? "prioridade" : "segundo foco"}</small>`, `<div class="form f3"><label>Nível hoje<select data-idi="${l}.nivel">${NIV.map(n => `<option${L.nivel === n ? " selected" : ""}>${n}</option>`).join("")}</select></label><label>Meta<select data-idi="${l}.alvo">${NIV.map(n => `<option${L.alvo === n ? " selected" : ""}>${n}</option>`).join("")}</select></label><label>Até<input type="date" data-idi="${l}.prazo" value="${L.prazo || ""}"></label></div>
+      <p class="muted small">${esc(CAN_DO[L.alvo])}</p>
+      <div class="futbar"><i style="width:${prog * 100}%;background:${C.cor}"></i></div>
+      <p>${num(X.feitas, 1)} h feitas desde ${fmtD(L.desde)} · faltam cerca de <b>${num(X.falta, 0)} h</b> (${L.nivel} → ${L.alvo}). No plano desta semana (${X.semMin} min) você chega por volta de <b>${X.eta ? mlabel(X.eta.slice(0, 7)) : "–"}</b>${X.ok === false ? `, depois da meta. Para chegar até ${fmtDY(L.prazo)}, precisaria de <b>${num(X.precisaMin, 0)} min por semana</b>.` : X.ok ? ", dentro do prazo." : "."}</p>`, { style: `--c:${C.cor}` }); };
+  const perc = l => { const L = I[l], sel = I.view?.[l] || NIV[Math.min(5, NIV.indexOf(L.nivel) + 1)], Pc = PERC[l][sel] || PERC[l].B2, mk = (I.marcos[l] ||= {})[sel] ||= [];
+    return panel(`${ic("flag")}Percurso ${LANG[l].nome}`, `<div class="seg-g" role="group" aria-label="Nível do percurso">${NIV.map(n => `<button type="button" class="seg" data-idiv="${l}|${n}" aria-pressed="${sel === n}">${n}</button>`).join("")}</div>
+      <p class="muted small">${esc(CAN_DO[sel])}</p><div class="flbl">Marcos para fechar o ${sel}</div>${Pc.marcos.map((m, i) => `<label class="ckl"><input type="checkbox" data-idim="${l}|${sel}|${i}"${mk[i] ? " checked" : ""}><span>${esc(m)}</span></label>`).join("")}
+      <div class="flbl">Peso das habilidades neste nível</div>${hbars(HABS.map(h => ({ l: h, v: Pc.foco[h] || 0, color: LANG[l].cor })), { fmt: v => "●".repeat(v), max: 3 })}
+      <div class="flbl">Recursos</div><ul class="idrec">${Pc.rec.map(([t, u]) => `<li><a class="lnk" href="${u}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>`); };
+  const focoHoje = (l, k) => { const L = I[l], Pc = PERC[l][L.nivel] || PERC[l].B2, hs = HABS.filter(h => Pc.foco[h]).sort((a, b) => Pc.foco[b] - Pc.foco[a]); return hs[k % hs.length]; };
+  return `${kpiRow([kmini(LANG.en.cor, "Inglês · esta semana", `${P.reduce((s, p) => s + p.en + p.desl, 0)} min`, `${pe.ok === false ? "abaixo do necessário" : "no plano"}`, pe.ok === false ? "warn" : "good"), kmini(LANG.it.cor, "Italiano · esta semana", `${P.reduce((s, p) => s + p.it, 0)} min`, ""), kmini("var(--accent)", "Feito nas últimas 4 semanas", `${num(sum(idiSess("en", addDays(TODAY, -28)).concat(idiSess("it", addDays(TODAY, -28))).map(x => +x.horas || 0)), 1)} h`, "inglês + italiano"), kmini("var(--warn)", "Compromissos na janela", P.filter(p => p.busy).length, `dias com agenda entre ${I.janela.ini} e ${I.janela.fim}`)])}
+  <div class="g2c">${card("en", pe)}${card("it", pi)}
+    ${panel(`${ic("cal")}Plano dos próximos 7 dias <small>calculado com a sua disponibilidade e a Agenda</small>`, `<div class="hscroll"><table class="dt idpl"><thead><tr><th>Dia</th><th class="num">Livre</th><th>Inglês</th><th>Italiano</th></tr></thead><tbody>${P.map((p, k) => `<tr><td><b>${DOWL[p.dow].slice(0, 3)}</b> ${fmtD(p.d)}${p.busy ? `<div class="muted small">${p.ev.length} compromisso(s) na janela: −${p.busy} min</div>` : ""}</td><td class="num">${p.livre} min</td><td>${p.en ? `<b>${p.en} min</b> · ${esc(focoHoje("en", k))}: ${esc(ATIV[focoHoje("en", k)])}` : "–"}${p.desl ? `<div class="muted small">+ ${p.desl} min no deslocamento: ouvir podcast</div>` : ""}</td><td>${p.it ? `<b>${p.it} min</b> · ${esc(focoHoje("it", k + 2))}` : "–"}</td></tr>`).join("")}</tbody></table></div>
+      <details class="futd"><summary>Disponibilidade e janela</summary><div class="form f4">${[1, 2, 3, 4, 5, 6, 0].map(d => `<label>${DOWL[d].slice(0, 3)} (min)<input type="number" min="0" step="5" data-idid="${d}" value="${I.disp[d]}"></label>`).join("")}<label>Janela: início<input type="time" data-idi="janela.ini" value="${I.janela.ini}"></label><label>fim<input type="time" data-idi="janela.fim" value="${I.janela.fim}"></label><label>% para o inglês<input type="number" min="0" max="100" data-idi="peso" value="${I.peso}"></label><label>Deslocamento (min/dia útil)<input type="number" min="0" data-idi="desloc" value="${I.desloc}"></label></div></details>`, { cls: "span2" })}
+    ${panel(`${ic("plus")}Registrar sessão`, `<div class="form f4"><label>Idioma<select id="idl"><option value="en">Inglês</option><option value="it">Italiano</option></select></label><label>Minutos<input type="number" id="idm" min="5" step="5" value="30"></label><label>Habilidade<select id="idh">${HABS.map(h => `<option>${h}</option>`).join("")}</select></label><label>Recurso<input type="text" id="idr" placeholder="6 Minute English, Il Post…"></label></div><div class="row"><button type="button" class="btn sm primary" data-act="idsess">${ic("check")}Registrar</button></div><p class="muted small">Vai para Crescimento como sessão de estudo, junto com o resto do que você estuda.</p>`)}
+    ${vis("idsem", "Minutos por semana", colChart(wks.map(w => fmtD(w)), [{ name: "Inglês", color: LANG.en.cor, data: serie("en") }, { name: "Italiano", color: LANG.it.cor, data: serie("it") }], { h: 200, w: 520, stacked: true, fmt: v => num(v, 0) }), { sub: "últimas 8 semanas", nofocus: true })}
+    ${perc("en")}${perc("it")}
+  </div>
+  <p class="note">${ic("info")}<span>Não sabe o nível? Faça o EF SET (inglês, gratuito, 50 min) e use o resultado. As horas por nível são médias: a previsão melhora conforme você registra as sessões.</span></p>`;
+}
+function idiChange(t) {
+  if (t.dataset.idi) { const I = idi(), [a, b] = t.dataset.idi.split("."), v = t.type === "number" ? +t.value || 0 : t.value; if (b) { I[a] = { ...I[a], [b]: v }; if (b === "nivel") I[a].desde = TODAY; } else I[a] = v; touch("idiomas", { label: "Idiomas" }); return true; }
+  if (t.dataset.idid != null) { const I = idi(); I.disp = [...I.disp]; I.disp[+t.dataset.idid] = +t.value || 0; touch("idiomas", { label: "Disponibilidade" }); return true; }
+  return false;
+}
+function idiClick(t) {
+  if (t.dataset.idiv) { const [l, n] = t.dataset.idiv.split("|"), I = idi(); I.view = { ...(I.view || {}), [l]: n }; render(); return true; }
+  if (t.dataset.idim) { const [l, n, i] = t.dataset.idim.split("|"), I = idi(); const arr = [...((I.marcos[l] ||= {})[n] || [])]; arr[+i] = t.checked ? TODAY : 0; I.marcos[l][n] = arr; touch("idiomas", { label: "Marco de idioma" }); return true; }
+  if (t.dataset.act === "idsess") { const l = $("#idl").value, m = +$("#idm").value; if (!(m > 0 && m <= 600)) { toast("Minutos entre 1 e 600."); return true; }
+    S.estudo.push({ id: uid(), data: TODAY, item: LANG[l].item, horas: Math.round(m / 60 * 100) / 100, lang: l, hab: $("#idh").value, rec: $("#idr").value.trim(), origem: "idiomas" }); touch("estudo", { label: "Sessão de idioma" }); undoToast(`${m} min de ${LANG[l].nome.toLowerCase()} registrados`); return true; }
+  return false;
+}
+
+/* ================================================================ Carreira › Caderno técnico de engenharia e Rede profissional
+   Caderno: notas suas (S.cadTec), buscáveis por texto, área e tipo, com data para revisar.
+   Rede: as pessoas de trabalho moram em Relações (S.pessoas, relação Trabalho/Mentoria ou com empresa); aqui ganham cadência, último contato e oportunidades (S.oport). */
+const CAD = { q: "", area: "", tipo: "" };
+const CAD_MODELO = [
+  ["Raio mínimo de curva horizontal", "Estradas & geometria", "Fórmula", "R_min = V² / (127 · (e_max + f_t))\nV em km/h; e_max superelevação máxima (decimal); f_t coeficiente de atrito transversal para a velocidade de projeto.\nNa Itália, os valores de e e f por tipo de estrada estão no DM 05/11/2001.", "DM 05/11/2001 (norme funzionali e geometriche)", "curva, superelevação, projeto geométrico"],
+  ["Método racional (vazão de pico)", "Drenagem", "Fórmula", "Q = C · i · A / 3,6\nQ em m³/s; C coeficiente de escoamento; i intensidade da chuva em mm/h para a duração igual ao tempo de concentração; A em km².\nUsar em bacias pequenas; para maiores, modelos hidrológicos.", "", "vazão, chuva, bacia"],
+  ["Fórmula de Manning", "Drenagem", "Fórmula", "v = (1/n) · R^(2/3) · S^(1/2)  (SI)\nQ = v · A. R raio hidráulico = A/P; S declividade; n rugosidade (concreto liso ≈ 0,013).", "", "canal, tubo, escoamento"],
+  ["Empuxo ativo de Rankine", "Geotecnia", "Fórmula", "Ka = tan²(45° − φ'/2)\nσ'h = Ka · σ'v − 2 c' √Ka\nHipóteses: parede lisa, terreno horizontal. Para atrito na parede e terreno inclinado, Coulomb.", "", "muro, contenção, empuxo"],
+  ["NTC 2018 e Circolare 2019", "Normas & contratos", "Referência normativa", "Normas técnicas para as construções: DM 17/01/2018, com a Circolare n. 7 de 21/01/2019 (instruções de aplicação). Cap. 6: projeto geotécnico; Cap. 7: sismo; Cap. 5: pontes.", "DM 17/01/2018", "ntc, estruturas, geotecnia"],
+  ["BIM obrigatório no Código dos contratos", "BIM & processos", "Referência normativa", "D.Lgs. 36/2023, art. 43 e Anexo I.9: métodos e ferramentas de gestão informativa digital obrigatórios a partir de 1/1/2025 para projeto e execução de obras novas acima de € 2 milhões. Exige capitolato informativo do contratante e piano di gestione informativa do contratado.", "D.Lgs. 36/2023", "bim, contratos públicos"],
+  ["ISO 19650: partes e siglas", "BIM & processos", "Conceito", "Parte 1 conceitos · 2 fase de entrega · 3 fase operacional · 4 troca de informações · 5 segurança.\nOIR/AIR/PIR/EIR: requisitos de informação (organização, ativo, projeto, troca). BEP: plano de execução BIM. TIDP/MIDP: planos de entrega por equipe e geral. CDE: ambiente comum de dados com estados WIP, compartilhado, publicado, arquivado.", "ISO 19650-1:2018 a -5:2020; UNI EN ISO 19650", "iso19650, bep, cde"],
+  ["IFC 4.3 para infraestrutura", "BIM & processos", "Conceito", "IFC 4.3 (ISO 16739-1:2024) acrescenta entidades de infraestrutura: IfcAlignment (eixo com planta, perfil e superelevação), IfcRoad, IfcRailway, IfcBridge, IfcMarineFacility. Verificar o suporte do software na exportação antes de prometer no BEP.", "ISO 16739-1:2024 · buildingSMART", "ifc, alinhamento, openbim"],
+  ["Matriz de clash antes de rodar", "BIM & processos", "Lição aprendida", "Sem regras por par de disciplinas e tolerâncias, o primeiro relatório traz milhares de interferências irrelevantes e a equipe desiste de ler. Antes: definir pares (drenagem × pavimento, redes × fundações), tolerância por par, e agrupar por elemento/zona.", "", "clash, coordenação, navisworks"],
+];
+function crCaderno() {
+  const q = norm(CAD.q), xs = S.cadTec.filter(x => (!CAD.area || x.area === CAD.area) && (!CAD.tipo || x.tipo === CAD.tipo) && (!q || norm(`${x.titulo} ${x.texto} ${x.ref} ${x.tags}`).includes(q))).sort((a, b) => (a.revisar && a.revisar <= TODAY ? 0 : 1) - (b.revisar && b.revisar <= TODAY ? 0 : 1) || String(b.upd || 0).localeCompare(String(a.upd || 0)));
+  const areas = SCH.cadTec.f.find(f => f[0] === "area")[2], tipos = SCH.cadTec.f.find(f => f[0] === "tipo")[2], rev = S.cadTec.filter(x => x.revisar && x.revisar <= TODAY).length;
+  const chipsF = (k, list) => `<div class="cadch">${["", ...list].map(v => `<button type="button" class="seg" data-cadf="${k}|${esc(v)}" aria-pressed="${CAD[k] === v}">${v ? esc(v) : "Todas"}${v ? ` <small>${S.cadTec.filter(x => x[k] === v).length}</small>` : ""}</button>`).join("")}</div>`;
+  return `${kpiRow([kmini("var(--a-car)", "Notas", S.cadTec.length, `${new Set(S.cadTec.map(x => x.area)).size} áreas`), kmini("var(--warn)", "Para revisar", rev, "data de revisão chegou", rev ? "warn" : ""), kmini("var(--a-apr)", "Normas registradas", S.cadTec.filter(x => x.tipo === "Referência normativa").length, ""), kmini("var(--a-fin)", "Lições de obra", S.cadTec.filter(x => x.tipo === "Lição aprendida").length, "o que não repetir")])}
+    <div class="pn cadbar"><div class="row"><input type="search" id="cad_q" value="${esc(CAD.q)}" placeholder="Buscar: manning, ISO 19650, empuxo, clash…" aria-label="Buscar no caderno">${addBtn("cadTec", "Nova nota")}</div>${chipsF("area", areas)}${chipsF("tipo", tipos)}</div>
+    ${xs.length ? `<div class="cadgrid">${xs.map(x => `<article class="pn cadn${x.revisar && x.revisar <= TODAY ? " rev" : ""}"><header><div><span class="jtag sm">${esc(x.area || "")}</span> <span class="chip">${esc(x.tipo || "")}</span></div><button type="button" class="vb" data-edit="cadTec" data-id="${x.id}" aria-label="Editar">${ic("edit")}</button></header><h3>${esc(x.titulo)}</h3><pre class="cadtx">${esc(x.texto || "")}</pre>${x.ref ? `<p class="muted small">${ic("book")}${esc(x.ref)}</p>` : ""}<footer>${String(x.tags || "").split(",").map(s => s.trim()).filter(Boolean).map(s => `<button type="button" class="tg" data-cadtag="${esc(s)}">#${esc(s)}</button>`).join("")}${x.revisar ? `<span class="muted small">${x.revisar <= TODAY ? "revisar agora" : "revisar em " + fmtD(x.revisar)}</span>${x.revisar <= TODAY ? `<button type="button" class="lnk" data-act="cadrev" data-id="${x.id}">revisei (+30 dias)</button>` : ""}` : ""}</footer></article>`).join("")}</div>` : `<div class="emptyb">${ic("book")}<b>${S.cadTec.length ? "Nada encontrado com esse filtro." : "O caderno está vazio."}</b><span>Anote fórmulas, normas, procedimentos e lições de obra. Quando precisar, busque aqui antes de procurar no Google.</span>${S.cadTec.length ? "" : `<button type="button" class="btn sm" data-act="cadmod">${ic("list")}Começar com ${CAD_MODELO.length} notas de referência</button>`}</div>`}`;
+}
+const REDE_REL = ["Trabalho", "Mentoria"];
+const isPro = p => REDE_REL.includes(p.relacao) || !!p.empresa;
+function redeRows() {
+  return S.pessoas.filter(isPro).map(p => { const cs = S.contatos.filter(c => c.pessoa === p.nome).sort((a, b) => b.data.localeCompare(a.data)), ult = cs[0]?.data || null, freq = +p.freq || 90, dias = ult ? diff(TODAY, ult) : null, st = dias == null ? "warn" : dias > freq ? "crit" : dias > freq * .8 ? "warn" : "good";
+    return { p, ult, dias, freq, st, n90: cs.filter(c => c.data >= addDays(TODAY, -90)).length, op: S.oport.filter(o => o.contato === p.nome && !["Ganha", "Perdida"].includes(o.estagio)) }; }).sort((a, b) => ({ crit: 0, warn: 1, good: 2 }[a.st] - { crit: 0, warn: 1, good: 2 }[b.st]) || (b.dias ?? 1e9) - (a.dias ?? 1e9));
+}
+const EST = ["Ideia", "Contato feito", "Conversa", "Proposta", "Ganha", "Perdida"];
+function crRede() {
+  const R = redeRows(), atr = R.filter(r => r.st === "crit"), ativas = S.oport.filter(o => !["Ganha", "Perdida"].includes(o.estagio)), venc = ativas.filter(o => o.prazo && o.prazo <= addDays(TODAY, 7));
+  return `${kpiRow([kmini("var(--a-car)", "Contatos profissionais", R.length, `${sum(R.map(r => r.n90))} conversas em 90 dias`), kmini("var(--crit)", "Esfriando", atr.length, "passaram da cadência", atr.length ? "crit" : "good"), kmini("var(--a-fin)", "Oportunidades ativas", ativas.length, `${S.oport.filter(o => o.estagio === "Ganha").length} ganhas`), kmini("var(--warn)", "Próximos passos (7 dias)", venc.length, "", venc.length ? "warn" : "")])}
+    <div class="g2c">
+      ${panel(`${ic("users")}Pessoas <small>de Relações: relação Trabalho ou Mentoria, ou com empresa preenchida</small>`, R.length ? `<div class="list">${R.map(r => `<div class="li"><button type="button" class="t lnkb" data-edit="pessoas" data-id="${r.p.id}"><b>${esc(r.p.nome)}</b><div class="m">${esc([r.p.cargo, r.p.empresa].filter(Boolean).join(" · ") || r.p.relacao)}${r.op.length ? ` · ${plural(r.op.length, "oportunidade", "oportunidades")}` : ""}</div></button><div class="row">${pill(r.st, r.ult ? `há ${r.dias} d · a cada ${r.freq}` : "nunca registrado")}<button type="button" class="btn sm" data-rcont="${esc(r.p.nome)}">${ic("plus")}Contato</button></div></div>`).join("")}</div>` : `<div class="empty">Nenhuma pessoa de trabalho. Cadastre em Relações com a relação “Trabalho” ou preencha a empresa.</div>`, { act: addBtn("pessoas", "Nova pessoa") })}
+      ${panel(`${ic("flag")}Oportunidades`, EST.map(e => { const os = S.oport.filter(o => o.estagio === e); return os.length ? `<div class="flbl">${e} <small>${os.length}</small></div>${os.map(o => `<div class="li"><button type="button" class="t lnkb" data-edit="oport" data-id="${o.id}"><b>${esc(o.titulo)}</b><div class="m">${esc([o.tipo, o.empresa, o.contato].filter(Boolean).join(" · "))}${o.passo ? ` · próximo: ${esc(o.passo)}` : ""}</div></button>${o.prazo && !["Ganha", "Perdida"].includes(e) ? pill(o.prazo < TODAY ? "crit" : o.prazo <= addDays(TODAY, 7) ? "warn" : "none", fmtD(o.prazo)) : ""}</div>`).join("")}` : ""; }).join("") || `<div class="empty">Nenhuma oportunidade. Vagas, projetos, indicações e eventos entram aqui.</div>`, { act: addBtn("oport", "Nova") })}
+    </div>
+    <p class="note">${ic("info")}<span>Cadência: “Falar a cada (dias)” na ficha da pessoa. Para quem te indica trabalho, 60–90 dias; para mentores, 30–45. Um contato curto (parabéns por um projeto, um artigo útil) conta.</span></p>`;
+}
+function cr2Click(t) {
+  const ds = t.dataset;
+  if (ds.cadf) { const [k, v] = ds.cadf.split("|"); CAD[k] = CAD[k] === v ? "" : v; render(); return true; }
+  if (ds.cadtag) { CAD.q = ds.cadtag; render(); return true; }
+  if (ds.act === "cadmod") { for (const [titulo, area, tipo, texto, ref, tags] of CAD_MODELO) S.cadTec.push({ id: uid(), titulo, area, tipo, texto, ref, tags, revisar: "", upd: Date.now() }); touch("cadTec", { label: "Notas de referência" }); undoToast(`${CAD_MODELO.length} notas criadas`); return true; }
+  if (ds.act === "cadrev") { const x = S.cadTec.find(z => z.id === ds.id); if (x) { x.revisar = addDays(TODAY, 30); touch("cadTec", { label: "Nota revisada" }); } return true; }
+  if (ds.rcont) { openForm("contatos", null, { pessoa: ds.rcont, data: TODAY }); return true; }
+  return false;
+}
+const cadDeb = debounce(() => render(), 220);
+function cr2Input(t) { if (t.id === "cad_q") { CAD.q = t.value; cadDeb(); return true; } return false; }
+
 
 /* ================================================================ render */
 let RELAYOUT = false;
@@ -8965,23 +9672,25 @@ function render() {
   const pages = {
     visao: () => [nm ? `Olá, ${nm}` : "Visão geral", `Como a vida está indo em ${mlabel(REF)}${R.corte ? ` · dados até ${fmtD(R.corte)}` : ""}`, rOverview],
     painel: () => ["Painel do dia", "Os essenciais do dia em um minuto, por texto ou voz. Você revisa antes de ir para as abas.", pPainel],
-    hoje: () => [`${greet()}${nm ? ", " + nm : ""}`, fmtDL(TODAY)[0].toUpperCase() + fmtDL(TODAY).slice(1), pHoje],
+    hoje: () => [`${greet()}${nm ? ", " + nm : ""}`, fmtDL(TODAY)[0].toUpperCase() + fmtDL(TODAY).slice(1), pHoje2],
     diario: () => ["Diário", "Escreva, marque pessoas e temas, registre dados e veja o que se repete", pDiario],
     mentores: () => ["Mentores", "Um agente para cada área, com memória do que vocês combinaram", pMentores],
     mentor: () => [esc(MENTOR_DEF[SUB].nome), esc(MENTOR_DEF[SUB].papel[0].toUpperCase() + MENTOR_DEF[SUB].papel.slice(1)), pMentor],
     cruz: () => ["Cruzamentos", "Descubra o que anda junto na sua vida: escolha duas métricas ou deixe o Atlas procurar", rCruz],
-    fin: () => ["Finanças", mlabel(REF), { rel: rFin, lanc: pLanc, orc: pOrc, projetos: pFinProjetos, diario: pSetorDiario }[SUB]],
+    fin: () => ["Finanças", SUB === "futuro" ? "Reserva, TFR e previdência" : SUB === "vida" ? "Contas dos dois países, somadas em euro" : mlabel(REF), { rel: rFin, lanc: pLanc, orc: pOrc, futuro: pFuturo, vida: pVida, projetos: pFinProjetos, diario: pSetorDiario }[SUB]],
     saude: () => ["Saúde", mlabel(REF), { rel: rSaude, checkin: pCheckin, diario: pSetorDiario }[SUB]],
     hab: () => ["Hábitos", mlabel(REF), { rel: rHab, marcar: pHabMarcar, diario: pSetorDiario }[SUB]],
     metas: () => ["Metas & tarefas", mlabel(REF), { rel: rMetas, lista: pMetasLista, tarefas: pTarefas, diario: pSetorDiario }[SUB]],
     pessoas: () => ["Relações", mlabel(REF), { rel: rRel, lista: pPessoas, contatos: pContatos, diario: pSetorDiario }[SUB]],
-    cresc: () => ["Crescimento", mlabel(REF), { rel: rCresc, carreira: pCarreira, aprend: pAprend, lazer: pLazer, diario: pSetorDiario }[SUB]],
-    casa: () => ["Casa & docs", mlabel(REF), SUB === "diario" ? pSetorDiario : pCasa], roda: () => ["Roda da Vida", SUB === "diario" ? "Um diário para cada área da vida" : "Percepção, alvos e revisão mensal", SUB === "diario" ? pSetorDiario : pRoda],
+    cresc: () => ["Crescimento", mlabel(REF), { rel: rCresc, aprend: pAprend, lazer: pLazer, diario: pSetorDiario }[SUB]],
+    casa: () => ["Casa & docs", { painel: "O que vence, o que limpar e o que comprar", limpeza: "Rotinas do leve ao pesado", compras: "A lista da semana, por seção do mercado", contas: "Calendário de vencimentos", docs: "Contratos, contas anuais e onde estão guardados", diario: "Diário da casa" }[SUB] || "", SUB === "diario" ? pSetorDiario : pCasa2],
+    idiomas: () => ["Idiomas", "Inglês primeiro, italiano em seguida, no ritmo que a sua semana permite", pIdiomas],
+    mapa: () => ["Mapa do Atlas", "Cada aba, o problema que ela resolve e para onde os dados vão", pMapa], roda: () => ["Roda da Vida", SUB === "diario" ? "Um diário para cada área da vida" : "Percepção, alvos e revisão mensal", SUB === "diario" ? pSetorDiario : pRoda],
     dados: () => ["Dados", "Edite qualquer registro como numa planilha, filtre, altere em massa, importe e exporte", pDados],
     integ: () => ["Integrações", "Notion, agenda, Apple Health, Google Fit e bancos, nos dois sentidos onde dá", pInteg],
     ajustes: () => ["Ajustes", "Metas, áreas, listas, mentores e aparência", pAjustes],
     lazer: () => ["Lazer", { inicio: "Oito temas, cada um com um mentor que conversa no seu nível", existencial: "Os quatro mentores da Jornada, dentro do Lazer" }[SUB] || (lzDiv(SUB)?.mid ? `${esc(lzDiv(SUB).nome)} com ${esc(MENTOR_DEF[lzDiv(SUB).mid].nome)}` : ""), pLazerHub],
-    carreira: () => ["Carreira", { panorama: "Onde você está, aonde quer chegar, como e com o quê", avaliacao: "O retrato de hoje: perfil, competências, pontos fortes e gaps", portfolio: "Os projetos que provam o que você sabe", decisoes: "Cenários comparados com os seus critérios e pesos", mercado: "Referências de mercado e o dossiê para negociar", objetivos: "O norte, as trilhas e os objetivos com prazo", geotecnia: "Uma frente nova, no seu ritmo", plano: "Do gap à ação, com marcos verificáveis", biblioteca: "Normas, cursos, livros e ferramentas por tópico" }[SUB] || "", pCarreiraHub],
+    carreira: () => ["Carreira", { panorama: "Onde você está, aonde quer chegar, como e com o quê", avaliacao: "O retrato de hoje: perfil, competências, pontos fortes e gaps", portfolio: "Os projetos que provam o que você sabe", decisoes: "Cenários comparados com os seus critérios e pesos", mercado: "Referências de mercado e o dossiê para negociar", objetivos: "O norte, as trilhas e os objetivos com prazo", geotecnia: "Uma frente nova, no seu ritmo", plano: "Do gap à ação, com marcos verificáveis", biblioteca: "Normas, cursos, livros e ferramentas por tópico", caderno: "Caderno técnico de engenharia", rede: "Contatos, cadência e oportunidades" }[SUB] || "", pCarreiraHub],
     jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", confluencias: "Onde os quatro caminhos se encontram", praticas: "Programas guiados, sessões de prática e o que elas mudam", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
     semana: () => ["Fechamento da semana", `Semana de ${wkLabel(fsWk())}`, pSemana],
     radar: () => ["Radar", "Alertas antes que aconteçam, com evidência do seu histórico e conferência depois", pRadar],
@@ -8995,7 +9704,7 @@ function render() {
   const banner = IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
   const ae = document.activeElement, focusId = ae?.id, selS = ae?.selectionStart, selE = ae?.selectionEnd, scT = ae?.scrollTop, chat = $("#mchat"), chatTop = chat ? chat.scrollTop : null, chatBottom = chat ? chat.scrollHeight - chat.scrollTop - chat.clientHeight < 40 : true;
   $("#nav").innerHTML = navHTML(R);
-  $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${subtabs()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
+  $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
   $("#drawerwrap").innerHTML = drawerHTML(R);
   document.body.classList.toggle("navopen", NAVOPEN); document.body.classList.toggle("drawer-on", !!DRAWER);
   saveStatus();
@@ -9067,7 +9776,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (pdClick(t) || capClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (pdClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -9113,6 +9822,7 @@ document.addEventListener("keydown", e => {
   if (tg.id === "dz_texto" && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); saveDraft(); return; }
   if ((tg.id === "cap_txt" || tg.id === "hj_cap") && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); capRefresh({ keepAI: CAP.src === "ia", keepDate: true }); capSave(); return; }
   if (tg.id === "pd_txt" && (e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); pdParse(); $('[data-act="pdrev"],[data-act="pdsave"]')?.click(); return; }
+  if (tg.id === "cp_in" && e.key === "Enter") { e.preventDefault(); cpAdd(tg.value); return; }
   if (tg.id === "sem_q" && e.key === "Enter") { e.preventDefault(); semAsk(tg.value); return; }
   if (tg.id === "cf_p" && e.key === "Enter") { e.preventDefault(); $('[data-act="cfopen"]')?.click(); return; }
   if (tg.id === "m_in" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); askMentor(tg.closest("[data-mid]")?.dataset.mid || SUB, tg.value); return; }
@@ -9130,7 +9840,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (pdInput(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
+  if (pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -9145,7 +9855,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (pdChange(t) || capChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

@@ -94,23 +94,23 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 /* ================================================================ navegação */
 const NAV = [
   [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["cruz", "Cruzamentos", "scatter"]]],
-  ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
+  ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["idiomas", "Idiomas", "globe"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
-  ["Sistema", [["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
+  ["Sistema", [["mapa", "Mapa do Atlas", "compass"], ["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
 ];
 const SUBS = {
-  fin: [["rel", "Relatório"], ["lanc", "Lançamentos"], ["orc", "Orçamento & patrimônio"], ["projetos", "Projetos & aquisições"], ["diario", "Diário"]],
+  fin: [["rel", "Relatório"], ["lanc", "Lançamentos"], ["orc", "Orçamento & patrimônio"], ["futuro", "Futuro financeiro"], ["vida", "Itália & Brasil"], ["projetos", "Projetos & aquisições"], ["diario", "Diário"]],
   saude: [["rel", "Relatório"], ["checkin", "Check-in"], ["diario", "Diário"]],
   hab: [["rel", "Relatório"], ["marcar", "Marcar hábitos"], ["diario", "Diário"]],
   metas: [["rel", "Relatório"], ["lista", "Metas"], ["tarefas", "Tarefas"], ["diario", "Diário"]],
   pessoas: [["rel", "Relatório"], ["lista", "Pessoas"], ["contatos", "Contatos"], ["diario", "Diário"]],
-  cresc: [["rel", "Relatório"], ["carreira", "Carreira"], ["aprend", "Aprendizado"], ["lazer", "Lazer & sonhos"], ["diario", "Diário"]],
-  casa: [["painel", "Painel"], ["diario", "Diário"]],
+  cresc: [["rel", "Relatório"], ["aprend", "Aprendizado"], ["lazer", "Lazer & sonhos"], ["diario", "Diário"]],
+  casa: [["painel", "Painel"], ["limpeza", "Limpeza"], ["compras", "Compras"], ["contas", "Contas"], ["docs", "Documentos"], ["diario", "Diário"]],
   roda: [["roda", "Roda & revisão"], ["diario", "Diário"]],
   diario: [["feed", "Entradas"], ["perguntar", "Perguntar"], ["cal", "Calendário"], ["analise", "Análise"]],
   capitulos: [["linha", "Linha do tempo"], ["livro", "Livro do ano"]],
   lazer: [["inicio", "Início"], ["leitura", "Leitura"], ["filmes", "Filmes e séries"], ["jogos", "Jogos"], ["viagens", "Viagens"], ["cafe", "Café"], ["aviacao", "Aviação"], ["estudos", "Estudos"], ["existencial", "Existencial"]],
-  carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["biblioteca", "Biblioteca"]],
+  carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["caderno", "Caderno técnico"], ["rede", "Rede profissional"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
   jornada: [["inicio", "Início"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
@@ -124,6 +124,7 @@ function setHash(p, s) { const h = s ? `${p}.${s}` : p; if (location.hash.slice(
 function route() {
   let [p, s] = (location.hash.slice(1) || "visao").split(".");
   /* a Bússola moral e os mentores da jornada moram na Jornada existencial; links antigos continuam valendo */
+  if (p === "cresc" && s === "carreira") { p = "carreira"; s = "panorama"; }
   if (p === "bussola") { p = "jornada"; s = !s || s === "mapa" ? "bussola" : s; }
   if (p === "mentor" && MENTOR_DEF[s]?.jor) { p = "jornada"; s = jSubOfMid(s); }
   if (p === "mentor" && MENTOR_DEF[s]?.lz) { p = "lazer"; s = MENTOR_DEF[s].lz; }
@@ -132,7 +133,7 @@ function route() {
   PAGE = ok ? p : "visao"; SUB = ok ? s || null : null;
   if (SUBS[PAGE] && !SUBS[PAGE].some(x => x[0] === SUB)) SUB = SUBS[PAGE][0][0];
   if (PAGE === "mentor" && !(SUB in MENTOR_DEF)) SUB = "conselho";
-  NAVOPEN = false; DRAWER = null; if (PAGE !== "painel" && VOZ.sr) stopVoice();
+  NAVOPEN = false; DRAWER = null; if (PAGE !== "painel" && VOZ.sr) stopVoice(); if (PAGE !== "hoje") HJ.skip.clear();
   /* o registro do radar é atualizado antes de desenhar, para os alertas novos já virem com “útil / alarme falso” */
   if (LOADED && (PAGE === "radar" || PAGE === "hoje")) try { radarSync(); } catch {}
   render(); $("#main")?.focus({ preventScroll: true }); window.scrollTo({ top: 0 });
@@ -207,14 +208,19 @@ const SCH = {
   lanc: { t: "Lançamento", f: [["data", "Data", "date"], ["tipo", "Tipo", ["Receita", "Despesa", "Aporte"]], ["cat", "Categoria", o => o.tipo === "Receita" ? CAT_REC : o.tipo === "Aporte" ? CAT_APO : Object.keys(CAT_DESP)], ["desc", "Descrição", "text"], ["valor", "Valor", "num"], ["conta", "Conta / forma", () => CONTAS]], def: () => ({ data: TODAY, tipo: "Despesa" }) },
   metas: { t: "Meta", f: [["meta", "Meta (específica e mensurável)", "text", 1], ["area", "Área da vida", () => AREAS], ["status", "Status", ["Ativa", "Pausada", "Concluída", "Abandonada"]], ["inicio", "Início", "date"], ["prazo", "Prazo", "date"], ["un", "Unidade", "text"], ["ini", "Valor inicial", "num"], ["atual", "Valor atual", "num"], ["alvo", "Valor alvo", "num"], ["manual", "Progresso manual (0–1, para marcos)", "num"], ["proximo", "Próximo passo concreto", "text", 1]], def: () => ({ status: "Ativa", inicio: TODAY }) },
   tarefas: { t: "Tarefa", f: [["tarefa", "Tarefa", "text", 1], ["projeto", "Projeto", "text"], ["area", "Área", () => AREAS], ["prio", "Prioridade", ["Alta", "Média", "Baixa"]], ["prazo", "Prazo", "date"], ["status", "Status", ["A fazer", "Em andamento", "Aguardando", "Concluída", "Cancelada"]], ["concluida", "Concluída em", "date"], ["meta", "Meta vinculada", () => ["", ...S.metas.map(m => m.meta)]], ["notas", "Notas", "text", 1]], def: () => ({ status: "A fazer", prio: "Média" }) },
-  pessoas: { t: "Pessoa", f: [["nome", "Nome", "text"], ["relacao", "Relação", () => RELACAO], ["freq", "Falar a cada (dias)", "num"], ["aniv", "Aniversário", "date"], ["notas", "Notas · interesses, presentes", "text", 1]], def: () => ({ relacao: "Amizade", freq: 30 }) },
+  pessoas: { t: "Pessoa", f: [["nome", "Nome", "text"], ["relacao", "Relação", () => RELACAO], ["empresa", "Empresa (se for do trabalho)", "text"], ["cargo", "Cargo / área", "text"], ["freq", "Falar a cada (dias)", "num"], ["aniv", "Aniversário", "date"], ["notas", "Notas · interesses, presentes", "text", 1]], def: () => ({ relacao: "Amizade", freq: 30 }) },
   contatos: { t: "Contato", f: [["data", "Data", "date"], ["pessoa", "Pessoa", () => S.pessoas.map(p => p.nome)], ["tipo", "Tipo", ["Encontro", "Ligação", "Videochamada", "Mensagem", "Evento / grupo"]], ["qual", "Qualidade (1–5)", "num"], ["min", "Duração (min)", "num"]], def: () => ({ data: TODAY, qual: 4, tipo: "Encontro" }) },
   aprend: { t: "Item de aprendizado", f: [["titulo", "Título", "text", 1], ["tipo", "Tipo", () => APR_TIPOS], ["area", "Área", () => AREAS], ["status", "Status", ["Quero fazer", "Em andamento", "Pausado", "Concluído", "Abandonado"]], ["total", "Total (pág./aulas)", "num"], ["atual", "Onde estou", "num"], ["fim", "Concluído em", "date"], ["nota", "Nota (1–5)", "num"]], def: () => ({ status: "Em andamento", tipo: "Livro", area: "Aprendizado" }) },
   estudo: { t: "Sessão de estudo", f: [["data", "Data", "date"], ["item", "Item / assunto", () => S.aprend.map(a => a.titulo)], ["horas", "Horas", "num"]], def: () => ({ data: TODAY, horas: 1 }) },
   lazer: { t: "Atividade de lazer", f: [["data", "Data", "date"], ["atividade", "Atividade", "text"], ["cat", "Categoria", () => LAZER_CAT], ["horas", "Duração (h)", "num"], ["custo", "Custo", "num"], ["sat", "Satisfação (1–5)", "num"]], def: () => ({ data: TODAY, sat: 4 }) },
   sonhos: { t: "Sonho / experiência", f: [["sonho", "Sonho", "text", 1], ["status", "Status", ["Sonho", "Planejando", "Agendado", "Realizado"]], ["custo", "Custo estimado", "num"]], def: () => ({ status: "Sonho" }) },
-  docs: { t: "Documento", f: [["doc", "Documento", "text"], ["validade", "Validade", "date"], ["acao", "Próxima ação", "text", 1]], def: () => ({}) },
-  rotinas: { t: "Rotina recorrente", f: [["rotina", "Rotina", "text"], ["freq", "A cada (dias)", "num"], ["ultima", "Última vez", "date"]], def: () => ({ ultima: TODAY, freq: 30 }) },
+  docs: { t: "Documento", f: [["doc", "Documento", "text"], ["tipo", "Tipo", ["Contrato", "Conta anual", "Imposto", "Seguro", "Identidade", "Garantia", "Outro"]], ["ano", "Ano de referência", "num"], ["validade", "Validade / renovação", "date"], ["valor", "Valor (se houver)", "num"], ["onde", "Onde está guardado", "text"], ["acao", "Próxima ação", "text", 1]], def: () => ({ tipo: "Contrato", ano: +TODAY.slice(0, 4) }) },
+  rotinas: { t: "Rotina da casa", f: [["rotina", "Rotina", "text"], ["nivel", "Nível", ["Leve", "Média", "Pesada", "Sazonal"]], ["comodo", "Cômodo", ["Casa toda", "Cozinha", "Banheiro", "Quarto", "Sala", "Área externa", "Eletrodomésticos"]], ["freq", "A cada (dias)", "num"], ["min", "Duração (min)", "num"], ["ultima", "Última vez", "date"]], def: () => ({ ultima: TODAY, freq: 7, nivel: "Média", comodo: "Casa toda", min: 20 }) },
+  contasCasa: { t: "Conta da casa", f: [["conta", "Conta", "text"], ["cat", "Categoria", ["Aluguel / financiamento", "Condomínio", "Luz", "Gás", "Água", "Internet / telefone", "TARI (lixo)", "Seguro da casa", "Manutenção", "Outra"]], ["valor", "Valor previsto", "num"], ["periodo", "Periodicidade", ["Mensal", "Bimestral", "Trimestral", "Semestral", "Anual"]], ["venc", "Próximo vencimento", "date"], ["debito", "Débito automático", ["Não", "Sim"]]], def: () => ({ periodo: "Mensal", venc: TODAY, debito: "Não", cat: "Outra" }) },
+  compras: { t: "Item de compra", f: [["item", "Item", "text"], ["cat", "Seção", ["Hortifrúti", "Mercearia", "Laticínios", "Carnes & peixes", "Padaria", "Congelados", "Limpeza", "Higiene", "Outros"]], ["qtd", "Quantidade", "text"], ["fixo", "Toda semana", ["Não", "Sim"]]], def: () => ({ cat: "Mercearia", fixo: "Não" }) },
+  cadTec: { t: "Nota técnica", f: [["titulo", "Título", "text", 1], ["area", "Área", ["Estradas & geometria", "Drenagem", "Pavimentação", "Geotecnia", "Estruturas & obras de arte", "BIM & processos", "Normas & contratos", "Software", "Obra & segurança"]], ["tipo", "Tipo", ["Conceito", "Fórmula", "Procedimento", "Checklist", "Lição aprendida", "Referência normativa"]], ["ref", "Fonte / norma", "text"], ["texto", "Conteúdo", "textarea", 1], ["tags", "Etiquetas (vírgula)", "text"], ["revisar", "Revisar em", "date"]], def: () => ({ area: "Estradas & geometria", tipo: "Conceito" }) },
+  oport: { t: "Oportunidade", f: [["titulo", "Oportunidade", "text", 1], ["empresa", "Empresa / entidade", "text"], ["tipo", "Tipo", ["Vaga", "Projeto", "Indicação", "Evento", "Parceria", "Curso / bolsa"]], ["estagio", "Estágio", ["Ideia", "Contato feito", "Conversa", "Proposta", "Ganha", "Perdida"]], ["contato", "Pessoa de contato", () => S.pessoas.map(p => p.nome)], ["prazo", "Próximo passo até", "date"], ["passo", "Próximo passo", "text", 1]], def: () => ({ tipo: "Vaga", estagio: "Ideia" }) },
+  vidaItens: { t: "Conta ou gasto (Itália / Brasil)", f: [["t", "Descrição", "text", 1], ["pais", "País", ["Brasil", "Itália"]], ["cat", "Categoria", ["Moradia", "Família", "Financiamento / dívida", "Impostos & taxas", "Conta bancária", "Seguro / saúde", "Educação", "Remessa", "Outro"]], ["valor", "Valor (moeda do país)", "num"], ["periodo", "Periodicidade", ["Mensal", "Bimestral", "Trimestral", "Anual", "Única"]], ["venc", "Próximo vencimento", "date"]], def: () => ({ pais: "Brasil", periodo: "Mensal", cat: "Família" }) },
   assin: { t: "Assinatura", f: [["servico", "Serviço", "text"], ["valor", "Valor", "num"], ["periodo", "Periodicidade", ["Mensal", "Bimestral", "Trimestral", "Semestral", "Anual"]], ["uso", "Uso real", ["Alto", "Médio", "Baixo"]]], def: () => ({ periodo: "Mensal", uso: "Médio" }) },
   comp: { t: "Competência", f: [["nome", "Competência", "text"], ["atual", "Nível atual (1–5)", "num"], ["alvo", "Nível alvo (1–5)", "num"]], def: () => ({ atual: 2, alvo: 4 }) },
   cand: { t: "Candidatura", f: [["empresa", "Empresa", "text"], ["cargo", "Cargo", "text"], ["data", "Data", "date"], ["etapa", "Etapa", ["Interesse", "Aplicado", "Entrevista", "Teste / case", "Proposta", "Aceito", "Recusado", "Desisti"]], ["acao", "Próxima ação", "text"], ["dataAcao", "Data da ação", "date"]], def: () => ({ data: TODAY, etapa: "Aplicado" }) },
@@ -226,6 +232,7 @@ const optsOf = (ty, o) => typeof ty === "function" ? ty(o) : Array.isArray(ty) ?
 function fieldHTML([k, lb, ty, full], o, pre = "f_") {
   const v = o[k] ?? "", opts = optsOf(ty, o);
   const inp = opts ? `<select id="${pre}${k}" name="${k}">${["", ...opts.filter(x => x !== "")].map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("")}${v && !opts.includes(v) ? `<option selected>${esc(v)}</option>` : ""}</select>`
+    : ty === "textarea" ? `<textarea id="${pre}${k}" name="${k}" rows="6">${esc(v)}</textarea>`
     : `<input id="${pre}${k}" name="${k}" type="${ty === "num" ? "number" : ty}"${ty === "num" ? ' step="any"' : ""} value="${esc(v)}">`;
   return `<label class="${full ? "full" : ""}">${esc(lb)}${inp}</label>`;
 }

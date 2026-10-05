@@ -85,7 +85,7 @@ async def main():
         # ---------------- captura
         await pg.evaluate("location.hash='hoje'"); await pg.wait_for_timeout(300)
         txt = "Dormi 7h e meia, corri 30 min com o Lucas. Almocei com o Marco, gastei 18 euros. Preciso ligar para o banco até sexta. Meditei e li 20 páginas."
-        await pg.fill("#hj_cap", txt); await pg.wait_for_timeout(600)
+        await pg.click("[data-act=cap]"); await pg.wait_for_timeout(200); await pg.fill("#cap_txt", txt); await pg.wait_for_timeout(600)
         lines = await pg.evaluate("CAP.items.map(x => [x.line, x.on, x.ok])")
         L = [l[0] for l in lines]
         for want in ["/sono 7,5", "/treino Corrida 30", "/contato @Lucas Encontro 30", "/contato @Marco Encontro", "/habito Meditar 10 min", "/habito Ler 20 páginas"]:
@@ -94,7 +94,7 @@ async def main():
         chk(any(l.startswith("/tarefa ligar para o banco") for l in L), "captura reconhece a tarefa")
         chk(all(l[2] for l in lines), "todos os registros reconhecidos passam na validação")
         nl0 = await pg.evaluate("S.lanc.length")
-        await pg.click(".capcard [data-act=capsave]"); await pg.wait_for_timeout(500)
+        await pg.click("#capf [data-act=capsave]"); await pg.wait_for_timeout(500)
         chk(await pg.evaluate("S.saude[TODAY].sono") == 7.5 and await pg.evaluate("S.saude[TODAY].treino") == "Corrida", "sono e treino gravados no dia")
         g = await pg.evaluate("S.lanc.at(-1)")
         chk(await pg.evaluate("S.lanc.length") == nl0 + 1 and g["valor"] == 18 and g["cat"] == "Restaurantes & cafés", "gasto gravado e categorizado")
