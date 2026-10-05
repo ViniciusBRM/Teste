@@ -15,7 +15,7 @@ async def main():
             nav = await pg.evaluate("[...document.querySelectorAll('#nav .nv span')].map(e => e.textContent)")
             chk("Jornada existencial" in nav and "Bússola moral" not in nav, "menu: Jornada existencial entra, Bússola moral sai do Laboratório (mora dentro da jornada)")
             tabs = await pg.evaluate("[...document.querySelectorAll('.subtabs a')].map(e => e.textContent)")
-            chk(tabs == ["Início", "Espiritismo", "Meditação", "Taoísmo", "Budismo", "Confluências", "Bússola moral"], f"abas da jornada: {tabs}")
+            chk(tabs == ["Início", "Espiritismo", "Meditação", "Taoísmo", "Budismo", "Confluências", "Práticas", "Bússola moral"], f"abas da jornada: {tabs}")
             chk(await pg.locator(".jmandala .jm-p").count() == 20 and await pg.locator(".jmc").count() == 5, "início: mandala com 20 pétalas (5 estações × 4 pilares) e os 5 mentores")
             # mandala reflete a autoavaliação
             await pg.evaluate("S.jornada.p.tao.est.raiz = { v: 3, at: Date.now() }; render()")

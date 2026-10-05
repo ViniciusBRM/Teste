@@ -199,6 +199,7 @@ function buildDaily() {
   zero("tarefas", fT); for (const t of S.tarefas) { const i = idx[t.concluida]; if (i != null && t.status === "Concluída") C.tarefas[i]++; }
   const fV = minOf((S.eventos || []).map(e => e.data).filter(Boolean)); if (fV) { zero("eventos", fV); for (const e of S.eventos) { const i = idx[e.data]; if (i != null) C.eventos[i]++; } }
   C.bem = C.humor.map((v, i) => v ?? C.dhumor[i]);   // humor do dia: check-in ou, na falta, o humor do diário
+  if (typeof jDaily === "function") jDaily(C, idx, zero);   /* métricas da Jornada existencial (24-jornada.js) */
   return { dates, idx, C, N };
 }
 /* catálogo de métricas diárias para o explorador e para os mentores */
@@ -225,6 +226,9 @@ function metricList() {
     add("estudo", "Horas de estudo", "Crescimento", "sum", f1);
     add("lazer", "Horas de lazer", "Crescimento", "sum", f1);
     add("lazsat", "Satisfação no lazer", "Crescimento", "avg", f1, { lo: 1, hi: 5 });
+    add("jmin", "Minutos de prática (jornada)", "Jornada", "sum", f0);
+    add("jdia", "Dia com a jornada", "Jornada", "avg", fp, { bin: true });
+    add("bmidx", "Prática dos valores (exame da noite)", "Jornada", "avg", fp, { lo: 0, hi: 1 });
     add("contatos", "Contatos com pessoas", "Relações", "sum", f0);
     add("contq", "Qualidade dos contatos", "Relações", "avg", f1, { lo: 1, hi: 5 });
     Object.keys(D.C).filter(k => k.startsWith("p:")).map(k => [k, sum(D.C[k])]).filter(x => x[1] >= 3).sort((a, b) => b[1] - a[1]).slice(0, 12).forEach(([k]) => add(k, "Com " + k.slice(2), "Relações", "avg", fp, { bin: true }));

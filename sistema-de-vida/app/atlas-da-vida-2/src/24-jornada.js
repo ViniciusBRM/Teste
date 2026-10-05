@@ -154,8 +154,8 @@ const J_INTEG = [
 ];
 
 /* ---------------------------------------------------------------- dados */
-const jData = () => { const d = (S.jornada ||= {}); d.p ||= {}; d.conf ||= {}; d.conf.vivos ||= []; d.conf.notas ||= {}; d.conf.circulos ||= []; return d; };
-function jP(pid) { const p = (jData().p[pid] ||= {}); p.est ||= {}; p.prat ||= []; p.refl ||= []; p.cot ||= []; return p; }
+const jData = () => { const d = (S.jornada ||= {}); d.p ||= {}; d.conf ||= {}; d.conf.vivos ||= []; d.conf.notas ||= {}; d.conf.circulos ||= []; d.sess ||= []; d.prog ||= {}; return d; };
+function jP(pid) { const p = (jData().p[pid] ||= {}); p.est ||= {}; p.prat ||= []; p.refl ||= []; p.cot ||= []; p.estHist ||= []; p.conc ||= {}; return p; }
 const jMidP = mid => J_ORDER.find(p => J_PIL[p].mid === mid);
 const jDayN = () => Math.floor(parse(TODAY).getTime() / 864e5);
 const jPick = (a, k) => a[((k % a.length) + a.length) % a.length];
@@ -166,6 +166,8 @@ function jActDays(pid, from = addDays(TODAY, -27), to = TODAY) {
   const P = jP(pid), s = new Set(), add = d => { if (d && d >= from && d <= to) s.add(d); };
   P.refl.forEach(r => add(r.data)); P.cot.forEach(c => add(c.data)); P.prat.forEach(p => (p.marcas || []).forEach(add));
   (mget(J_PIL[pid].mid).conversa || []).forEach(x => x.role === "user" && add(iso(new Date(x.at))));
+  jData().sess.forEach(x => x.pid === pid && add(x.data));
+  for (const pr of J_PROG.filter(z => z.pid === pid)) Object.values(jData().prog[pr.id]?.feitos || {}).forEach(add);
   return s;
 }
 /* ritmo como lua: 16 dias com o pilar em 4 semanas (quatro por semana) já é lua cheia */
@@ -228,6 +230,10 @@ function jPilarFacts(pid, full) {
   const at = P.prat.filter(x => x.status === "ativa"), from = addDays(TODAY, -27);
   if (at.length) L.push("Práticas adotadas:\n" + at.map(x => { const m = (x.marcas || []).filter(d => d >= from); return `- ${x.titulo} (${x.tipo}${x.fonte === "mentor" ? `, sugerida por ${MENTOR_DEF[D.mid].nome}` : ""}): ${m.length}× em 4 semanas${x.marcas?.length ? `, última em ${fmtD(x.marcas.slice().sort().at(-1))}` : ""}`; }).join("\n"));
   else L.push("Ainda não adotou práticas neste pilar.");
+  const pr = J_PROG.find(z => z.pid === pid), pi = pr && jProgInfo(pr), ss = jSessStats(28, pid);
+  if (pi) L.push(`Programa guiado "${pr.t}": ${pi.feitos} de ${pi.n} ${pr.un === "dia" ? "dias" : "semanas"} feitos${pi.prox ? `, próximo: ${pr.itens[pi.prox - 1][0]}` : ", concluído"}${pi.atraso ? `, ${pi.atraso} para pôr em dia` : ""}.`);
+  if (ss.n) L.push(`Sessões de prática nas últimas 4 semanas: ${ss.n}, ${num(ss.min, 0)} minutos${ss.qual != null ? `, qualidade média ${num(ss.qual, 1)}/5` : ""}${ss.delta != null ? `, estado antes → depois ${ss.delta >= 0 ? "+" : ""}${num(ss.delta, 2)} em média (escala 1 a 5)` : ""}.`);
+  const cc = J_CONC[pid].filter(([n]) => P.conc[n]); if (cc.length) L.push("Conceitos (autoavaliação): " + cc.map(([n]) => `${n}: ${J_CST[P.conc[n]]}`).join("; ") + ".");
   if (!full) { const r = P.refl.filter(x => !x.priv).sort((a, b) => b.at - a.at)[0]; if (r) L.push(`Reflexão mais recente (${fmtD(r.data)}): ${trunc(r.texto, 200)}`); return L; }
   const sug = P.prat.filter(x => x.status === "sugerida"); if (sug.length) L.push("Sugestões suas ainda não adotadas (não repita): " + sug.map(x => x.titulo).join("; "));
   const rs = P.refl.filter(x => !x.priv).sort((a, b) => b.at - a.at), np = P.refl.length - rs.length;
@@ -348,6 +354,7 @@ function pJornada(R) {
   if (SUB === "inicio") return jInicio();
   if (J_SUB2P[SUB]) return jPilar(J_SUB2P[SUB]);
   if (SUB === "confluencias") return jConf();
+  if (SUB === "praticas") return jPraticas();
   if (SUB === "navegante") return jBmNav() + jNavegante();
   return jBmNav() + pBussola(R);
 }
@@ -373,6 +380,7 @@ function jInicio() {
           return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : last ? `conversaram ${last}` : "ainda não conversaram"}</em></span></a>`; }).join("")}</div>`, { cls: "span2" })}
       ${rev ? panel(`${ic("clock")}Para revisitar`, `<p class="muted">${esc(rev.quando)} você escreveu, em ${esc(J_PIL[rev.pid].nome)}:</p><blockquote class="jquote sm" style="--c:${J_PIL[rev.pid].cor}">${esc(trunc(rev.r.texto, 420))}<cite>${fmtDY(rev.r.data)} · ${esc(rev.r.tipo)}</cite></blockquote>
         <label class="flbl" for="jrev">O que mudou desde então?</label><textarea id="jrev" class="jta" rows="2" data-jrev="1" placeholder="Releia com calma. O que você vê agora?">${esc(J.rev)}</textarea><div class="row"><button type="button" class="btn sm" data-act="jrevsave" data-p="${rev.pid}" data-id="${rev.r.id}">${ic("check")}Guardar como reflexão</button></div>`) : ""}
+      ${(() => { const at = J_PROG.filter(p => jProgInfo(p) && !jProgInfo(p).fim); return at.length ? panel(`${ic("flag")}Programas em andamento`, `<div class="jprogs">${at.map(p => jProgCard(p)).join("")}</div>`, { act: `<a class="lnk" href="#jornada.praticas">práticas</a>` }) : panel(`${ic("flag")}Programas guiados`, `<p class="muted">Quatro caminhos com começo, meio e fim: 8 semanas de atenção plena, o Tao Te Ching em 81 dias, o Dhammapada em 26 capítulos e O Evangelho segundo o Espiritismo em 28 semanas.</p><a class="btn sm" href="#jornada.praticas">${ic("arrow")}Escolher um</a>`); })()}
       ${panel(`${ic("week")}Ritmo das últimas 12 semanas`, J_ORDER.map(p => `<div class="jrr"><a href="#jornada.${J_PIL[p].sub}" style="--c:${J_PIL[p].cor}">${jMoon(jMoonInfo(p).f, 8, J_PIL[p].cor)}${esc(J_PIL[p].nome)}</a>${jStrip(p)}</div>`).join("") + `<p class="muted small">Cada quadradinho é uma semana; mais forte, mais dias com o pilar (reflexões, práticas, notas do cotidiano e conversas).</p>`)}
       ${panel(`${ic("list")}Recentes`, feed.length ? `<div class="jfeed">${feed.map(x => `<a class="jfi" href="#jornada.${J_PIL[x.pid].sub}" style="--c:${J_PIL[x.pid].cor}"><span class="jtag sm">${esc(J_PIL[x.pid].nome)} · ${esc(x.tipo)}</span><span>${x.priv ? `${ic("lock")}<i class="muted">reflexão só sua</i>` : esc(trunc(x.texto, 150))}</span><small class="muted">${relDay(x.data)}</small></a>`).join("")}</div>` : `<div class="empty">As reflexões e notas dos quatro pilares aparecem aqui.</div>`)}
     </div>`;
@@ -409,7 +417,9 @@ function jPilar(pid) {
         <p class="bmq">${ic("info")}<span>Para contemplar hoje: ${esc(jQuestion(pid))}</span><button type="button" class="lnk" data-act="jqask" data-p="${pid}">responder</button></p>
         <details class="jsobre"><summary>Sobre o pilar</summary><p>${esc(D.intro)}</p></details>
         <button type="button" class="btn sm jgochat" data-act="jtochat">${ic("spark")}Conversar com ${esc(MENTOR_DEF[mid].nome)}</button></section>
-      ${panel(`${ic("sprout")}Estações do caminho`, `<p class="muted">Não é uma escada nem uma nota: é como você sente cada dimensão hoje. Ajuste quando perceber mudança; a data fica guardada.</p><div class="jest">${est}</div>`)}
+      ${panel(`${ic("sprout")}Estações do caminho`, `<p class="muted">Não é uma escada nem uma nota: é como você sente cada dimensão hoje. Ajuste quando perceber mudança; a data fica guardada.</p><div class="jest">${est}</div>${P.estHist.length ? `<details class="jhist"><summary>Como as estações mudaram <small>${P.estHist.length}</small></summary><ol>${P.estHist.slice().reverse().slice(0, 12).map(h => `<li><span class="muted small">${fmtDY(h.data)}</span> ${esc(D.est.find(e => e.id === h.sid)?.nome || h.sid)}: ${J_EST[h.de][1]} → <b>${J_EST[h.para][1]}</b></li>`).join("")}</ol></details>` : ""}`)}
+      ${(() => { const pr = J_PROG.find(z => z.pid === pid), s = jSessStats(28, pid); return panel(`${ic("flag")}Prática guiada`, `${pr ? jProgCard(pr) : ""}<div class="flbl">Registrar uma sessão</div>${jSessForm(pid)}<p class="muted small">${s.n ? `Nas últimas 4 semanas: ${plural(s.n, "sessão", "sessões")}, ${num(s.min, 0)} minutos${s.delta != null ? `, antes → depois ${s.delta >= 0 ? "+" : ""}${num(s.delta, 2)} em média` : ""}.` : "Nenhuma sessão nas últimas 4 semanas."} <a class="lnk" href="#jornada.praticas">ver todas as práticas</a></p>`, { style: `--c:${D.cor}` }); })()}
+      ${jConcPanel(pid)}
       ${panel(`${ic("pen")}Reflexões, insights e aprendizados <small>${P.refl.length}</small>`, `<textarea class="jta" rows="4" data-jr="${pid}" placeholder="O que você percebeu, aprendeu ou está perguntando?">${esc(dr.txt)}</textarea>
         <div class="row wrap jqrow"><div class="segs">${J_TIPOS.map(t => `<button type="button" class="seg" data-act="jrtipo" data-p="${pid}" data-v="${t}" aria-pressed="${dr.tipo === t}">${t}</button>`).join("")}</div></div>
         <div class="row wrap jqrow"><span class="flbl">Também toca</span>${J_ORDER.filter(o => o !== pid).map(o => jChip(o, dr.tambem.includes(o), `data-act="jrtam" data-p="${pid}" data-o="${o}"`)).join("")}</div>
@@ -515,11 +525,23 @@ function jSaveRefl(pid, txt, tipo, tambem = [], priv = false, extra = {}) {
 }
 function jClick(t) {
   const ds = t.dataset, a = ds.act, pid = ds.p;
+  if (a === "jpgo") { jData().prog[ds.id] = { inicio: TODAY, feitos: {} }; touch("jornada", { label: "Programa começado" }); return true; }
+  if (a === "jpreset") { delete jData().prog[ds.id]; touch("jornada", { label: "Programa recomeçado" }); undoToast("Programa zerado"); return true; }
+  if (a === "jpdone") { const st = jData().prog[ds.id]; if (!st) return true; st.feitos ||= {}; st.feitos[ds.n] ? delete st.feitos[ds.n] : st.feitos[ds.n] = TODAY; touch("jornada", { label: "Passo do programa" }); return true; }
+  if (a === "jpask") { const pr = J_PROG.find(z => z.id === ds.id), it = pr.itens[+ds.n - 1], mid = J_PIL[pr.pid].mid; MST.input[mid] = `Estou no programa "${pr.t}", ${pr.un === "dia" ? "dia" : "semana"} ${ds.n}: ${it[0]}. ${it[1]} Me ajude a aprofundar esta etapa.`; if (SUB !== J_PIL[pr.pid].sub) setHash("jornada", J_PIL[pr.pid].sub); else render(); setTimeout(() => { const el = $("#m_in"); el?.scrollIntoView({ block: "center" }); el?.focus({ preventScroll: true }); }, 60); return true; }
+  if (a === "jconc") { jP(pid).conc[ds.n] = +ds.v; touch("jornada", { label: "Conceito" }); return true; }
+  if (a === "jconcq") { const mid = J_PIL[pid].mid; MST.input[mid] = `Me teste sobre o conceito "${ds.n}": faça uma pergunta por vez, avalie a minha resposta com franqueza e diga se já posso marcá-lo como "consigo explicar".`; render(); const el = $("#m_in"); if (el) { el.scrollIntoView({ block: "center" }); el.focus({ preventScroll: true }); } return true; }
+  if (a === "jsess") { const F = J.sf || {}, p = pid || F.pid || "med", m = +F.min; if (!(m > 0)) { toast("Informe os minutos."); return true; }
+    const n15 = v => { const x = Math.round(+v); return x >= 1 && x <= 5 ? x : ""; };
+    jData().sess.push({ id: uid(), at: Date.now(), data: TODAY, pid: p, tec: [...J_TEC[p], "Outra"].includes(F.tec) ? F.tec : J_TEC[p][0], min: m, qual: n15(F.qual), antes: n15(F.antes), depois: n15(F.depois), notas: String(F.notas || "").trim() });
+    J.sf = { pid: F.pid, tec: F.tec }; touch("jornada", { label: "Sessão de prática" }); toast(`${m} min registrados`); return true; }
+  if (a === "jsessdel") { jData().sess = jData().sess.filter(x => x.id !== ds.id); touch("jornada", { label: "Sessão apagada" }); undoToast("Sessão apagada"); return true; }
+  if (a === "jcruz") { CZ.x = "jmin"; CZ.y = metric("bem") ? "bem" : metric("estresse") ? "estresse" : (metricList().find(m => m.k !== "jmin")?.k || "bem"); setHash("cruz"); return true; }
   if (a === "jtochat") { const el = $("#m_in"); $("#jment")?.scrollIntoView({ block: "start", behavior: "smooth" }); el?.focus({ preventScroll: true }); return true; }
   if (a === "jgo") { const [p, s] = ds.go.split("."); setHash(p, s); return true; }
   if (a === "jopen") { setTimeout(() => { J.open[ds.k] = t.open; }, 0); return false; }
   if (a === "jtoggle") { J.open[ds.k] = !J.open[ds.k]; render(); return true; }
-  if (a === "jest") { const P = jP(pid), v = +ds.v, cur = P.est[ds.s]?.v || 0; if (cur === v) return true; P.est[ds.s] = { v, at: Date.now() }; touch("jornada", { label: "Estação do caminho" }); return true; }
+  if (a === "jest") { const P = jP(pid), v = +ds.v, cur = P.est[ds.s]?.v || 0; if (cur === v) return true; P.est[ds.s] = { v, at: Date.now() }; P.estHist.push({ data: TODAY, sid: ds.s, de: cur, para: v }); touch("jornada", { label: "Estação do caminho" }); return true; }
   if (a === "jrtipo") { (J.dr[pid] ||= { txt: "", tipo: "reflexão", tambem: [], priv: false }).tipo = ds.v; render(); return true; }
   if (a === "jrtam") { const d = J.dr[pid] ||= { txt: "", tipo: "reflexão", tambem: [], priv: false }, i = d.tambem.indexOf(ds.o); i >= 0 ? d.tambem.splice(i, 1) : d.tambem.push(ds.o); render(); return true; }
   if (a === "jrpriv") { const d = J.dr[pid] ||= { txt: "", tipo: "reflexão", tambem: [], priv: false }; d.priv = t.checked; return true; }
@@ -556,6 +578,7 @@ function jClick(t) {
 }
 function jInput(t) {
   const ds = t.dataset;
+  if (ds.jsf) { (J.sf ||= {})[ds.jsf] = t.value; return true; }
   if (ds.jr) { (J.dr[ds.jr] ||= { txt: "", tipo: "reflexão", tambem: [], priv: false }).txt = t.value; return true; }
   if (ds.jc) { (J.cot[ds.jc] ||= { txt: "", area: "" }).txt = t.value; return true; }
   if (ds.jq) { J.q.txt = t.value; return true; }
@@ -565,7 +588,84 @@ function jInput(t) {
 }
 function jChange(t) {
   const ds = t.dataset;
+  if (ds.jsf) { (J.sf ||= {})[ds.jsf] = t.value; if (ds.jsf === "pid") { J.sf.tec = ""; render(); } return true; }
   if (ds.jca) { (J.cot[ds.jca] ||= { txt: "", area: "" }).area = t.value; return true; }
   if (ds.jtn) { jData().conf.notas[ds.jtn] = t.value.trim(); touch("jornada", { label: "Nota do tema", noRender: true }); return true; }
   return false;
+}
+
+/* ---------------------------------------------------------------- programas guiados, sessões de prática e conceitos
+   Programas: jornada.prog[id] = { inicio, feitos: { passo: data } }. Sessões: jornada.sess (pilar, técnica, minutos, qualidade,
+   estado antes e depois, de 1 a 5). Conceitos: p.conc[nome] = 0 a 3. As sessões e os dias com a jornada viram métricas
+   diárias (jmin, jdia, bmidx) que entram nos Cruzamentos. */
+const J_PROG = [
+  { id: "mbct", pid: "med", t: "Atenção plena em 8 semanas", un: "semana", fonte: "Segue a estrutura das oito sessões do programa MBCT (Segal, Williams e Teasdale). Não substitui um curso com instrutor.",
+    itens: [["Piloto automático", "Escaneamento do corpo e o exercício da uva-passa: comer uma uva-passa com atenção total."], ["Viver na cabeça", "Escaneamento do corpo e, a cada dia, o registro de um evento agradável: o que o corpo sentiu e que pensamentos vieram."], ["Reunir a mente dispersa", "Respiração e movimento conscientes, a pausa de três minutos e o registro de um evento desagradável por dia."], ["Reconhecer a aversão", "Meditação sentada (respiração, corpo, sons e pensamentos) e caminhada consciente; notar o impulso de afastar o que incomoda."], ["Permitir, deixar ser", "Sentar com uma dificuldade e trazê-la ao corpo, sem tentar resolvê-la."], ["Pensamentos não são fatos", "Observar os pensamentos como eventos da mente; anotar os que mais voltam."], ["Como posso cuidar melhor de mim?", "Listar as atividades que nutrem e as que esgotam; planejar uma ação para os dias difíceis."], ["Manter e ampliar o aprendizado", "Escolher a prática que vai continuar, e por quê; escrever o próprio plano."]] },
+  { id: "ttc", pid: "tao", t: "Tao Te Ching em 81 dias", un: "dia", fonte: "Um capítulo por dia; vale comparar duas traduções.",
+    itens: Array.from({ length: 81 }, (_, i) => [`Capítulo ${i + 1}`, ({ 1: "O Tao que pode ser dito não é o Tao eterno.", 8: "A bondade suprema é como a água.", 11: "O vazio que torna as coisas úteis.", 16: "Retornar à raiz chama-se quietude.", 33: "Conhecer a si mesmo é iluminação.", 40: "O retorno é o movimento do Tao.", 64: "A viagem de mil léguas começa com um passo.", 67: "Os três tesouros.", 76: "O rígido se quebra; o flexível permanece.", 78: "Nada é mais macio que a água." })[i + 1] || "Leia devagar e escolha uma frase para levar ao dia."]) },
+  { id: "dhp", pid: "bud", t: "Dhammapada em 26 capítulos", un: "dia", fonte: "Um capítulo (vagga) por dia: são 423 versos em 26 capítulos.",
+    itens: ["Yamaka · Os pares", "Appamāda · A vigilância", "Citta · A mente", "Puppha · As flores", "Bāla · O tolo", "Paṇḍita · O sábio", "Arahanta · O arahant", "Sahassa · Os milhares", "Pāpa · O mal", "Daṇḍa · A violência", "Jarā · A velhice", "Atta · O eu", "Loka · O mundo", "Buddha · O Buda", "Sukha · A felicidade", "Piya · O afeto", "Kodha · A raiva", "Mala · As impurezas", "Dhammaṭṭha · O justo", "Magga · O caminho", "Pakiṇṇaka · Diversos", "Niraya · O estado infeliz", "Nāga · O elefante", "Taṇhā · A sede", "Bhikkhu · O monge", "Brāhmaṇa · O verdadeiro nobre"].map(t => [t, "Leia o capítulo e escolha um verso para praticar hoje."]) },
+  { id: "ese", pid: "esp", t: "O Evangelho segundo o Espiritismo em 28 semanas", un: "semana", fonte: "Um capítulo por semana, de preferência no Culto do Evangelho no lar.",
+    itens: ["Não vim destruir a lei", "Meu reino não é deste mundo", "Há muitas moradas na casa de meu Pai", "Ninguém poderá ver o reino de Deus se não nascer de novo", "Bem-aventurados os aflitos", "O Cristo consolador", "Bem-aventurados os pobres de espírito", "Bem-aventurados os que têm puro o coração", "Bem-aventurados os que são brandos e pacíficos", "Bem-aventurados os que são misericordiosos", "Amar o próximo como a si mesmo", "Amai os vossos inimigos", "Não saiba a vossa mão esquerda o que dá a vossa mão direita", "Honrai a vosso pai e a vossa mãe", "Fora da caridade não há salvação", "Não se pode servir a Deus e a Mamon", "Sede perfeitos", "Muitos os chamados, poucos os escolhidos", "A fé transporta montanhas", "Os trabalhadores da última hora", "Haverá falsos cristos e falsos profetas", "Não separeis o que Deus juntou", "Estranha moral", "Não ponhais a candeia debaixo do alqueire", "Buscai e achareis", "Dai gratuitamente o que gratuitamente recebestes", "Pedi e obtereis", "Coletânea de preces espíritas"].map((t, i) => [`Cap. ${["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI", "XXVII", "XXVIII"][i]} · ${t}`, "Leia, comente em família e escolha uma atitude para a semana."]) },
+];
+const J_TEC = { esp: ["Prece", "Leitura e estudo", "Culto do Evangelho", "Exame de consciência", "Passe"], med: ["Respiração (ānāpānasati)", "Escaneamento do corpo", "Caminhada", "Mettā", "Sentado em silêncio", "Pausa de três minutos"], tao: ["Zuowang", "Qigong ou tai chi", "Caminhada na natureza", "Leitura do Tao Te Ching"], bud: ["Mettā", "Vipassana", "Contemplação da impermanência", "Recitação", "Leitura"] };
+const J_CST = ["não conheço", "conheço", "consigo explicar", "vivo na prática"];
+const J_CONC = {
+  esp: [["Deus", "Para O Livro dos Espíritos, a inteligência suprema, causa primária de todas as coisas (q. 1)."], ["Espírito", "O ser inteligente da criação, que sobrevive ao corpo e progride."], ["Perispírito", "O envoltório semimaterial que liga o Espírito ao corpo."], ["Reencarnação", "O retorno do Espírito a um novo corpo para continuar aprendendo."], ["Erraticidade", "O estado do Espírito entre duas encarnações."], ["Lei de causa e efeito", "Cada ação traz consequências que educam o Espírito, sem castigo eterno."], ["Lei de progresso", "Tudo avança: nenhum Espírito fica para sempre no mesmo ponto."], ["Livre-arbítrio", "A liberdade de escolher, e a responsabilidade que vem com ela."], ["Mediunidade", "A faculdade de perceber a influência dos Espíritos ou de servir de intermediário a eles."], ["Caridade", "Benevolência para com todos, indulgência para as imperfeições dos outros, perdão das ofensas (q. 886)."]],
+  med: [["Atenção plena (sati)", "Lembrar-se de estar presente: perceber o que acontece, enquanto acontece."], ["Samatha", "A prática que acalma e estabiliza a mente num objeto, como a respiração."], ["Vipassana", "A prática de ver com clareza a natureza das experiências: elas surgem e passam."], ["Ānāpānasati", "A atenção à respiração, base de muitas tradições de meditação."], ["Mettā", "A bondade amorosa, cultivada desejando bem a si e aos outros."], ["Escaneamento do corpo", "Percorrer o corpo com atenção, notando as sensações sem mudá-las."], ["Equanimidade", "Estar com o agradável e o desagradável sem ser arrastado por eles."], ["Mente de principiante", "Olhar cada momento como se fosse a primeira vez (Shunryu Suzuki)."], ["Piloto automático", "Agir sem perceber; o ponto de partida do MBCT."]],
+  tao: [["Tao", "O caminho e a fonte de todas as coisas, que não se deixa dizer."], ["De", "A virtude, ou o poder, de quem vive em harmonia com o Tao."], ["Wu wei", "Agir sem forçar: o necessário, no tempo certo."], ["Ziran", "O que é assim por si: a espontaneidade natural."], ["Pu", "O bloco não talhado: a simplicidade original."], ["Yin e yang", "As forças complementares que se geram e se transformam uma na outra."], ["Os três tesouros", "Compaixão, frugalidade e não querer estar à frente (Tao Te Ching, 67)."], ["Retorno", "“O retorno é o movimento do Tao” (cap. 40): tudo volta à raiz."], ["Zuowang", "Sentar e esquecer: a quietude descrita no Zhuangzi."]],
+  bud: [["Quatro Nobres Verdades", "O sofrimento, a sua origem, a sua cessação e o caminho que leva à cessação."], ["Nobre Caminho Óctuplo", "Visão, intenção, fala, ação, modo de vida, esforço, atenção e concentração corretos."], ["Anicca", "A impermanência de tudo o que é condicionado."], ["Dukkha", "A insatisfatoriedade: o que muda não pode satisfazer por completo."], ["Anattā", "O não-eu: não há um eu permanente por trás das experiências."], ["Taṇhā", "A sede, o desejo que agarra; a origem do sofrimento."], ["Kamma", "A ação intencional e as suas consequências."], ["Originação interdependente", "Tudo surge na dependência de causas e condições."], ["Cinco preceitos", "Não matar, não roubar, não ter conduta sexual nociva, não mentir, não se intoxicar."], ["Três joias", "O Buda, o Dhamma (o ensinamento) e a Sangha (a comunidade)."]],
+};
+function jProgInfo(pr) {
+  const st = jData().prog[pr.id]; if (!st?.inicio) return null;
+  const n = pr.itens.length, d = Math.max(0, diff(TODAY, st.inicio)), esp = Math.min(n, pr.un === "dia" ? d + 1 : Math.floor(d / 7) + 1), feitos = Object.keys(st.feitos || {}).length;
+  const prox = pr.itens.findIndex((_, i) => !st.feitos?.[i + 1]) + 1;
+  return { n, esp, feitos, prox: prox || null, atraso: Math.max(0, esp - feitos), fim: feitos >= n, pct: feitos / n };
+}
+function jSessStats(days = 28, pid = null) {
+  const from = addDays(TODAY, -days + 1), ss = jData().sess.filter(x => x.data >= from && (!pid || x.pid === pid)), dd = ss.filter(x => isNum(+x.antes) && +x.antes && isNum(+x.depois) && +x.depois);
+  return { n: ss.length, min: sum(ss.map(x => +x.min || 0)), qual: ss.some(x => +x.qual) ? avg(ss.filter(x => +x.qual).map(x => +x.qual)) : null, delta: dd.length ? avg(dd.map(x => x.depois - x.antes)) : null, nd: dd.length };
+}
+const jConcPct = pid => { const cs = J_CONC[pid], P = jP(pid); return sum(cs.map(([n]) => P.conc[n] || 0)) / (3 * cs.length); };
+/* métricas diárias para os Cruzamentos */
+function jDaily(C, idx, zero) {
+  const ss = jData().sess, f = ss.map(x => x.data).sort()[0];
+  if (f) { zero("jmin", f); for (const x of ss) { const i = idx[x.data]; if (i != null) C.jmin[i] += +x.min || 0; } }
+  const all = new Set(); J_ORDER.forEach(p => jActDays(p, "0000-01-01", TODAY).forEach(d => all.add(d))); Object.keys(bmEx()).forEach(d => all.add(d));
+  const f2 = [...all].sort()[0]; if (f2) { zero("jdia", f2); for (const d of all) { const i = idx[d]; if (i != null) C.jdia[i] = 1; } }
+  zero("bmidx"); for (const [d, e] of Object.entries(bmEx())) { const i = idx[d], ns = Object.values(e.n || {}).filter(isNum); if (i != null && ns.length) C.bmidx[i] = avg(ns) / 2; }
+}
+function jProgCard(pr, full = false) {
+  const info = jProgInfo(pr), P = J_PIL[pr.pid], st = jData().prog[pr.id] || {};
+  if (!info) return `<div class="jprog" style="--c:${P.cor}"><header><b>${esc(pr.t)}</b><span class="jtag sm">${esc(P.nome)}</span></header><p class="muted small">${esc(pr.fonte)} ${pr.itens.length} ${pr.un === "dia" ? "dias" : "semanas"}.</p><div class="row"><button type="button" class="btn sm" data-act="jpgo" data-id="${pr.id}">${ic("flag")}Começar hoje</button></div></div>`;
+  const cur = info.prox ? pr.itens[info.prox - 1] : null, steps = pr.itens.map(([t], i) => `<button type="button" class="jps${st.feitos?.[i + 1] ? " on" : ""}${i + 1 === info.prox ? " cur" : ""}${i + 1 <= info.esp && !st.feitos?.[i + 1] ? " late" : ""}" data-act="jpdone" data-id="${pr.id}" data-n="${i + 1}" title="${esc(t)}" aria-label="${esc(t)}${st.feitos?.[i + 1] ? ", feito" : ""}"></button>`).join("");
+  return `<div class="jprog on" style="--c:${P.cor}"><header><b>${esc(pr.t)}</b><span class="jtag sm">${esc(P.nome)}</span><small class="muted">${info.feitos} de ${info.n} · ${info.fim ? "concluído" : info.atraso ? `${info.atraso} ${pr.un === "dia" ? (info.atraso > 1 ? "dias" : "dia") : (info.atraso > 1 ? "semanas" : "semana")} para pôr em dia` : "em dia"}</small></header>
+    <div class="crbar fit" style="--a-car:${P.cor}"><i style="width:${(info.pct * 100).toFixed(0)}%"></i></div>
+    ${cur ? `<div class="jpcur"><span class="flbl">${pr.un === "dia" ? "Dia" : "Semana"} ${info.prox}</span><b>${esc(cur[0])}</b><p>${esc(cur[1])}</p><div class="row wrap"><button type="button" class="btn sm primary" data-act="jpdone" data-id="${pr.id}" data-n="${info.prox}">${ic("check")}Feito</button><button type="button" class="lnk" data-act="jpask" data-id="${pr.id}" data-n="${info.prox}">conversar com ${esc(MENTOR_DEF[P.mid].nome)}</button></div></div>` : `<p class="st-good">Programa concluído. Que tal começar de novo, com outra tradução ou outro olhar?</p>`}
+    ${full ? `<div class="jpsteps">${steps}</div>` : ""}<div class="row"><button type="button" class="lnk" data-act="jpreset" data-id="${pr.id}">recomeçar</button></div></div>`;
+}
+function jConcPanel(pid) {
+  const P = jP(pid), D = J_PIL[pid], cs = J_CONC[pid], pctv = jConcPct(pid);
+  return panel(`${ic("book")}Conceitos <small>${pct(pctv)} de domínio</small>`, `<p class="muted small">Do “conheço” ao “vivo na prática”: um segundo jeito de ver o progresso, pelo entendimento. Teste-se com ${esc(MENTOR_DEF[D.mid].nome)} antes de marcar “consigo explicar”.</p>
+    <div class="crbar fit" style="--a-car:${D.cor}"><i style="width:${(pctv * 100).toFixed(0)}%"></i></div>
+    <div class="jconcs">${cs.map(([n, d]) => { const v = P.conc[n] || 0; return `<div class="jconc v${v}"><div><b>${esc(n)}</b><p>${esc(d)}</p></div><div class="row wrap"><div class="segs">${J_CST.map((l, i) => `<button type="button" class="seg" data-act="jconc" data-p="${pid}" data-n="${esc(n)}" data-v="${i}" aria-pressed="${v === i}">${l}</button>`).join("")}</div><button type="button" class="lnk" data-act="jconcq" data-p="${pid}" data-n="${esc(n)}">testar com o mentor</button></div></div>`; }).join("")}</div>`, { style: `--c:${D.cor}` });
+}
+function jSessForm(pid0) {
+  const F = (J.sf ||= { pid: pid0 || "med" }), pid = pid0 || F.pid;
+  return `<div class="form f2"><label>Pilar<select data-jsf="pid"${pid0 ? " disabled" : ""}>${J_ORDER.map(p => `<option value="${p}"${pid === p ? " selected" : ""}>${esc(J_PIL[p].nome)}</option>`).join("")}</select></label><label>Técnica<select data-jsf="tec">${[...J_TEC[pid], "Outra"].map(t => `<option${F.tec === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select></label>
+    <label>Minutos<input type="number" min="1" data-jsf="min" value="${esc(F.min || "")}"></label><label>Qualidade da atenção (1 a 5)<input type="number" min="1" max="5" data-jsf="qual" value="${esc(F.qual || "")}"></label>
+    <label>Como estava antes (1 agitado · 5 sereno)<input type="number" min="1" max="5" data-jsf="antes" value="${esc(F.antes || "")}"></label><label>Como ficou depois (1 a 5)<input type="number" min="1" max="5" data-jsf="depois" value="${esc(F.depois || "")}"></label></div>
+    <div class="form f1"><label>Notas<input type="text" data-jsf="notas" value="${esc(F.notas || "")}" placeholder="o que apareceu, o que ajudou"></label></div><div class="row"><button type="button" class="btn sm primary" data-act="jsess" data-p="${pid}">${ic("check")}Registrar sessão</button></div>`;
+}
+function jPraticas() {
+  const s28 = jSessStats(28), ss = jData().sess.slice().sort((a, b) => b.data.localeCompare(a.data) || b.at - a.at), w0 = weekStart(TODAY), wks = Array.from({ length: 12 }, (_, i) => addDays(w0, -7 * (11 - i)));
+  const byPil = J_ORDER.map(p => ({ p, d: wks.map(w => sum(jData().sess.filter(x => x.pid === p && x.data >= w && x.data <= addDays(w, 6)).map(x => +x.min || 0))) }));
+  return `<p class="lead">A prática de todo dia: programas guiados, o registro das sessões e o que elas mudam em você. As sessões também viram métricas nos Cruzamentos, para comparar com o humor, o sono e o estresse.</p>
+    ${kpiRow([kmini("var(--jp-med)", "Minutos · 4 semanas", num(s28.min, 0), plural(s28.n, "sessão", "sessões")), kmini("var(--jp-tao)", "Qualidade média", s28.qual == null ? "–" : num(s28.qual, 1) + "/5", "atenção nas sessões"), kmini("var(--jp-esp)", "Antes → depois", s28.delta == null ? "–" : (s28.delta >= 0 ? "+" : "") + num(s28.delta, 2), s28.nd ? `média de ${plural(s28.nd, "sessão", "sessões")} (depois − antes)` : "registre antes e depois"), kmini("var(--jp-bud)", "Programas", J_PROG.filter(p => jProgInfo(p) && !jProgInfo(p).fim).length, "em andamento")])}
+    <div class="g2c">
+      ${panel(`${ic("flag")}Programas guiados`, `<div class="jprogs">${J_PROG.map(p => jProgCard(p, true)).join("")}</div>`, { cls: "span2" })}
+      ${panel(`${ic("pulse")}Registrar sessão`, jSessForm(null))}
+      ${vis("jsessw", "Minutos por semana", ss.length ? colChart(wks.map(w => fmtD(w)), byPil.map(({ p, d }) => ({ name: J_PIL[p].nome, color: J_PIL[p].cor, data: d })), { h: 230, w: 560, stacked: true, fmt: v => num(v, 0) }) : emptyChart("As sessões registradas aparecem aqui, semana a semana."), { sub: "últimas 12 semanas, por pilar", nofocus: true, act: `<button type="button" class="lnk" data-act="jcruz">cruzar com o humor</button>` })}
+      ${panel(`${ic("table")}Sessões <small>${ss.length}</small>`, ss.length ? `<div class="hscroll"><table class="dt"><thead><tr><th>Dia</th><th>Pilar</th><th>Técnica</th><th class="num">Min</th><th class="num">Qualidade</th><th class="num">Antes → depois</th><th></th></tr></thead><tbody>${ss.slice(0, 20).map(x => `<tr><td>${fmtD(x.data)}</td><td><span class="jtag sm" style="--c:${J_PIL[x.pid].cor}">${esc(J_PIL[x.pid].nome)}</span></td><td>${esc(x.tec)}<div class="muted small">${esc(x.notas || "")}</div></td><td class="num">${x.min || ""}</td><td class="num">${x.qual || ""}</td><td class="num">${x.antes && x.depois ? `${x.antes} → ${x.depois}` : ""}</td><td><button type="button" class="vb" data-act="jsessdel" data-id="${x.id}" aria-label="Apagar">${ic("trash")}</button></td></tr>`).join("")}</tbody></table></div>` : `<div class="empty">Nenhuma sessão ainda.</div>`, { cls: "span2" })}
+    </div>`;
 }

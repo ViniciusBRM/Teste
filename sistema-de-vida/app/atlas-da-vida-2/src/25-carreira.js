@@ -156,9 +156,9 @@ function crFind(name) {
 const crLv = name => { const x = crFind(name); return isNum(+x?.atual) && +x?.atual > 0 ? +x.atual : 0; };
 const crAlvo = name => { const x = crFind(name); return isNum(+x?.alvo) && +x?.alvo > 0 ? +x.alvo : 0; };
 /* o que conta como coberto antes da avaliação: o que está no mapa e o que o cargo atual evidencia */
-const crSrc = name => { const P = crData().perfil; return P.mapa.some(m => norm(m) === norm(name)) ? "mapa" : P.cargoComp.some(m => norm(m) === norm(name)) ? "cargo" : ""; };
+const crSrc = name => { const P = crData().perfil; return P.mapa.some(m => norm(m) === norm(name)) ? "mapa" : P.cargoComp.some(m => norm(m) === norm(name)) ? "cargo" : crEvid(name).length ? "projeto" : ""; };
 const crInMap = name => !!crSrc(name);
-const crSrcPill = name => { const s = crSrc(name); return s === "mapa" ? crPill("no seu mapa", "var(--a-car)") : s === "cargo" ? crPill("pelo cargo atual", "var(--a-pro)") : ""; };
+const crSrcPill = name => { const s = crSrc(name), e = crEvid(name).length; return (s === "mapa" ? crPill("no seu mapa", "var(--a-car)") : s === "cargo" ? crPill("pelo cargo atual", "var(--a-pro)") : "") + (e ? " " + crPill(`em ${plural(e, "projeto", "projetos")}`, "var(--good)") : ""); };
 function crSet(name, field, v) {
   let x = S.comp.find(c => norm(c.nome) === norm(name));
   if (!x) { x = { id: uid(), nome: name, atual: "", alvo: "", grupo: CR_COMP.find(c => c.n === name)?.g || "" }; S.comp.push(x); }
@@ -213,7 +213,8 @@ const crGrpCol = g => CR_GRP.find(x => x[0] === g)?.[2] || "var(--muted)";
 
 /* ---------------------------------------------------------------- páginas */
 function pCarreiraHub(R) {
-  const f = { panorama: crPanorama, avaliacao: crAvaliacao, objetivos: crObjetivos, geotecnia: crGeotecnia, plano: crPlano, biblioteca: crBiblioteca }[SUB] || crPanorama;
+  crExtra();
+  const f = { panorama: crPanorama, avaliacao: crAvaliacao, portfolio: crPortfolio, objetivos: crObjetivos, decisoes: crDecisoes, geotecnia: crGeotecnia, plano: crPlano, mercado: crMercado, biblioteca: crBiblioteca }[SUB] || crPanorama;
   return f(R);
 }
 function crFlow() {
@@ -373,6 +374,11 @@ function crFacts() {
   if (C.gaps.length) L.push("Gaps que a pessoa escreveu: " + C.gaps.map(x => x.t).join("; "));
   if (C.obj.length) L.push("Objetivos: " + C.obj.map(o => `${o.t} (${o.tipo}, ${o.st || "ativo"}${o.prazo ? `, até ${o.prazo}` : ""}${crObjProg(o) != null ? `, ${pct(crObjProg(o))} das ações` : ""})`).join("; "));
   const ab = C.acoes.filter(a => a.st !== "feito"); if (ab.length) L.push("Ações abertas: " + ab.slice(0, 12).map(a => `${a.t}${a.prazo ? ` (${a.prazo})` : ""}${a.marco ? " [marco]" : ""}`).join("; "));
+  const X = crExtra();
+  if (X.port.length) L.push("Portfólio de projetos:\n" + X.port.slice(0, 10).map(p => `- ${p.t}${p.cliente ? ` (${p.cliente})` : ""}, ${p.tipo}, ${p.fase}${p.papel ? `, papel: ${p.papel}` : ""}${p.numeros ? `; números: ${p.numeros}` : ""}${(p.comps || []).length ? `; competências: ${p.comps.join(", ")}` : ""}${p.r ? `; resultado: ${trunc(p.r, 200)}` : ""}`).join("\n"));
+  const DR = crDecCalc(); if (DR.rows.some(r => r.score != null)) L.push("Matriz de decisão (média ponderada, 1 a 5): " + DR.rows.map(r => `${r.x.t} ${r.score == null ? "–" : num(r.score, 2)}`).join("; ") + `; critérios e pesos: ${X.dec.crit.map(c => `${c.n} ${c.w}`).join(", ")}.`);
+  const MK = crMerc(); if (MK.n) L.push(`Referências de mercado registradas pela pessoa: ${MK.n}, mediana ${eur(MK.med)} (de ${eur(MK.min)} a ${eur(MK.max)})${MK.pctl != null ? `; ${pct(MK.pctl)} delas em ou abaixo da RAL dela` : ""}.`);
+  if (X.merc.pedido.ral || X.merc.pedido.livello) L.push(`Pedido de negociação: ${X.merc.pedido.livello ? `livello ${X.merc.pedido.livello}` : ""} ${MK.pedido ? `RAL ${eur(MK.pedido)}${MK.aum != null ? ` (${pct(MK.aum, 1)})` : ""}` : ""}.`);
   L.push(`Geotecnia: ${C.geo.modo}${C.geo.interesse ? `; interesse: ${trunc(C.geo.interesse, 200)}` : ""}${C.geo.objetivos.length ? `; objetivos: ${C.geo.objetivos.map(o => o.t).join("; ")}` : ""}.`);
   return L;
 }
@@ -443,5 +449,142 @@ function crChange(t) {
   if (ds.crev) { const n = ds.crev; let x = S.comp.find(c => norm(c.nome) === norm(n)); if (!x) { if (!t.value.trim()) return true; crSet(n, "atual", 0); x = S.comp.find(c => norm(c.nome) === norm(n)); } x.evid = t.value.trim(); touch("comp", { label: "Evidência", noRender: true }); return true; }
   if (ds.crgeo) { C.geo[ds.crgeo] = t.value.trim(); touch("carreira", { label: "Geotecnia", noRender: true }); return true; }
   if (ds.crobjst) { const o = C.obj.find(z => z.id === ds.crobjst); if (o) { o.st = t.value; touch("carreira", { label: "Status do objetivo" }); } return true; }
+  return false;
+}
+
+/* ---------------------------------------------------------------- portfólio, decisões e mercado
+   portfólio: carreira.port (projetos com competências usadas, números e STAR) — cada projeto é evidência das competências;
+   decisões: carreira.dec { crit: [[nome, peso]], cen: [{ id, t, notas, s: { crit: 1..5 } }] } — média ponderada aberta;
+   mercado: carreira.merc { bench: [{ fonte, cargo, cidade, ral, data, tipo }], resp, conq, pedido } — mediana e percentil. */
+const CR_PTIPO = ["Rodovia", "Ferrovia", "Infraestrutura urbana", "Edificação", "Outro"];
+const CR_PFASE = ["PFTE (viabilidade técnico-econômica)", "Projeto executivo", "Obra", "Operação e manutenção", "Outro"];
+const CR_CRIT0 = [["Remuneração", 4], ["Aprendizado e crescimento", 4], ["Alinhamento com o meu norte", 5], ["Estabilidade", 3], ["Qualidade de vida e tempo", 4], ["Risco baixo", 2]];
+const CR_CEN0 = ["Ficar e negociar o livello", "BIM Manager em outra empresa", "Especializar em 4D/5D", "Consultoria em paralelo (Partita IVA)", "Cursos e treinamentos em paralelo"];
+const CR_BTIPO = ["Proposta real", "Anúncio de vaga", "Pesquisa salarial", "Colega da área", "Outro"];
+function crExtra() { const c = crData(); c.port ||= []; c.dec ||= {}; c.dec.crit ||= CR_CRIT0.map(([n, w]) => ({ id: uid(), n, w })); c.dec.cen ||= []; c.merc ||= {}; c.merc.bench ||= []; c.merc.resp ||= []; c.merc.conq ||= []; c.merc.pedido ||= {}; return c; }
+const crEvid = name => (crData().port || []).filter(p => (p.comps || []).includes(name));
+function crDecCalc() {
+  const D = crExtra().dec, cs = D.crit.filter(c => +c.w > 0), W = sum(cs.map(c => +c.w));
+  const rows = D.cen.map(x => { const rated = cs.filter(c => +x.s?.[c.id] > 0), Wr = sum(rated.map(c => +c.w)); return { x, score: Wr ? sum(rated.map(c => c.w * x.s[c.id])) / Wr : null, comp: W ? Wr / W : 0 }; }).sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+  let sens = [];
+  if (rows.length >= 2 && rows[0].score != null && rows[1].score != null) { const gap = rows[0].score - rows[1].score, b = rows[1].x;
+    sens = cs.map(c => { const cur = +b.s?.[c.id] || 0, need = gap * W / c.w; return { c, cur, need, ok: cur > 0 && cur + need <= 5 + 1e-9 }; }).sort((p, q) => p.need - q.need); }
+  return { rows, sens, W, cs };
+}
+function crMerc() {
+  const M = crExtra().merc, v = M.bench.map(b => +b.ral).filter(x => x > 0).sort((a, b) => a - b), ral = crRemun().ral;
+  const med = v.length ? (v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2) : null;
+  return { n: v.length, med, min: v[0] ?? null, max: v.at(-1) ?? null, ral, pctl: ral && v.length ? v.filter(x => x <= ral).length / v.length : null, gap: ral && med ? med - ral : null, tfr: ral ? ral / 13.5 : null, pedido: +M.pedido.ral || null, aum: ral && +M.pedido.ral ? (+M.pedido.ral - ral) / ral : null };
+}
+function crPortfolio() {
+  const C = crExtra(), F = CR.f, P = C.port.slice().sort((a, b) => (b.inicio || "").localeCompare(a.inicio || "")), sel = F["pt.comps"] || [];
+  const ev = crCat().map(c => [c.n, crEvid(c.n).length]).filter(([, n]) => n).sort((a, b) => b[1] - a[1]);
+  const card = p => `<article class="crport"><header><b>${esc(p.t)}</b><span class="crtag" style="--c:var(--a-car)">${esc(p.tipo || "")}</span>${p.fase ? `<span class="crtag" style="--c:var(--a-pro)">${esc(p.fase.split(" (")[0])}</span>` : ""}<small class="muted">${esc([p.cliente, [p.inicio, p.fim || "atual"].filter(Boolean).join(" a ")].filter(Boolean).join(" · "))}</small></header>
+      ${p.papel ? `<p><b>Papel:</b> ${esc(p.papel)}</p>` : ""}${p.numeros ? `<p class="crnum">${ic("table")}${esc(p.numeros)}</p>` : ""}
+      <div class="row wrap">${(p.comps || []).map(c => `<span class="crgap">${esc(c)}</span>`).join("")}</div>
+      ${p.s || p.ta || p.a || p.r ? `<details class="crdet"><summary>STAR</summary><dl class="crstar">${[["Situação", p.s], ["Tarefa", p.ta], ["Ação", p.a], ["Resultado", p.r]].filter(([, v]) => v).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></details>` : `<p class="muted small">Sem STAR ainda: ele vira resposta pronta de entrevista e item de CV.</p>`}
+      <div class="row wrap"><button type="button" class="lnk" data-act="crptedit" data-id="${p.id}">editar</button><button type="button" class="lnk" data-act="crptdel" data-id="${p.id}">apagar</button></div></article>`;
+  const fld = (k, l, ph = "", tp = "text") => `<label>${l}<input type="${tp}" data-crf="pt.${k}" value="${esc(F["pt." + k] || "")}" placeholder="${esc(ph)}"></label>`, ta = (k, l, ph) => `<label>${l}<textarea rows="2" data-crf="pt.${k}" placeholder="${esc(ph)}">${esc(F["pt." + k] || "")}</textarea></label>`;
+  return `<p class="lead">Os projetos que você fez são a prova do que sabe: cada um liga competências, números e uma história no formato STAR (situação, tarefa, ação, resultado). Eles contam como evidência na avaliação, viram respostas de entrevista e saem prontos num CV.</p>
+    ${kpiRow([kmini("var(--a-car)", "Projetos", C.port.length, `${C.port.filter(p => p.s && p.a && p.r).length} com STAR completo`), kmini("var(--a-pro)", "Competências com evidência", `${ev.length} de ${crCat().length}`, "usadas em pelo menos um projeto"), kmini("var(--good)", "Com números", C.port.filter(p => p.numeros).length, "resultados quantificados")])}
+    <div class="g2c">
+      ${panel(`${ic(F["pt.id"] ? "edit" : "plus")}${F["pt.id"] ? "Editar projeto" : "Novo projeto"}`, `<div class="form f2">${fld("t", "Projeto", "ex.: variante SS20, lotto 2")}${fld("cliente", "Cliente ou contratante")}<label>Tipo<select data-crf="pt.tipo">${CR_PTIPO.map(o => `<option${F["pt.tipo"] === o ? " selected" : ""}>${o}</option>`).join("")}</select></label><label>Fase<select data-crf="pt.fase">${CR_PFASE.map(o => `<option${F["pt.fase"] === o ? " selected" : ""}>${o}</option>`).join("")}</select></label>${fld("papel", "O seu papel", "ex.: coordenador BIM de infraestrutura")}${fld("inicio", "Início", "", "month")}${fld("fim", "Fim (vazio = em curso)", "", "month")}${fld("numeros", "Números", "km, valor da obra, disciplinas, interferências resolvidas")}</div>
+        <div class="flbl">Competências usadas</div><div class="row wrap crptc">${crCat().map(c => `<button type="button" class="jchip${sel.includes(c.n) ? " on" : ""}" style="--c:${crGrpCol(c.g)}" data-act="crptc" data-n="${esc(c.n)}">${esc(c.n)}</button>`).join("")}</div>
+        <div class="form f1">${ta("s", "Situação", "o contexto e o desafio")}${ta("ta", "Tarefa", "o que cabia a você")}${ta("a", "Ação", "o que você fez, com quais ferramentas e decisões")}${ta("r", "Resultado", "o que mudou, de preferência em números")}</div>
+        <div class="row wrap"><button type="button" class="btn primary" data-act="crptsave">${ic("check")}${F["pt.id"] ? "Salvar" : "Guardar projeto"}</button>${F["pt.id"] ? `<button type="button" class="btn" data-act="crptcancel">Cancelar</button>` : ""}</div>`, { cls: "span2" })}
+      ${panel(`${ic("brief")}Projetos <small>${C.port.length}</small>`, P.length ? `<div class="crports">${P.map(card).join("")}</div>` : `<div class="empty">Comece pelo projeto mais recente da Nemesis ou pelo que mais orgulha você.</div>`, { cls: "span2" })}
+      ${panel(`${ic("target")}Evidência por competência`, ev.length ? hbars(ev.slice(0, 14).map(([n, k]) => ({ l: n, v: k, color: crGrpCol(CR_COMP.find(c => c.n === n)?.g), txt: plural(k, "projeto", "projetos") })), {}) : `<div class="empty">Marque as competências usadas em cada projeto.</div>`)}
+      ${panel(`${ic("download")}CV e entrevistas`, `<p class="muted">O CV sai do perfil, das competências avaliadas e dos projetos. A versão local é um texto pronto para editar; o Mentor da Carreira escreve versões em italiano ou inglês e treina as respostas STAR com você.</p>
+        <div class="row wrap"><button type="button" class="btn sm" data-act="crcv">${ic("download")}Baixar CV e portfólio (.md)</button><button type="button" class="btn sm" data-act="crcvai" data-l="italiano">${ic("spark")}CV em italiano com o mentor</button><button type="button" class="btn sm" data-act="crcvai" data-l="inglês">${ic("spark")}CV em inglês com o mentor</button></div>
+        <div class="flbl">Treinar entrevista</div><div class="row wrap"><select id="crent" aria-label="Cargo da entrevista">${CR_TRI.map(t => `<option value="${t.id}">${esc(t.t)}</option>`).join("")}</select><button type="button" class="btn sm primary" data-act="crentrev">${ic("spark")}Começar</button></div>`)}
+    </div>`;
+}
+function crDecisoes() {
+  const C = crExtra(), D = C.dec, R = crDecCalc(), F = CR.f;
+  const grid = D.cen.length ? `<div class="hscroll"><table class="dt crdec"><thead><tr><th>Critério</th><th class="num">Peso</th>${D.cen.map(x => `<th>${esc(trunc(x.t, 28))}<button type="button" class="vb" data-act="crcendel" data-id="${x.id}" aria-label="Apagar cenário">${ic("trash")}</button></th>`).join("")}</tr></thead>
+      <tbody>${D.crit.map(c => `<tr><th>${esc(c.n)}<button type="button" class="vb" data-act="crcritdel" data-id="${c.id}" aria-label="Apagar critério">${ic("x")}</button></th><td class="num"><input type="number" min="0" max="5" step="1" class="crw" data-crdw="${c.id}" value="${c.w}" aria-label="Peso de ${esc(c.n)}"></td>${D.cen.map(x => `<td><select class="crs" data-crds="${x.id}|${c.id}" aria-label="${esc(x.t)} em ${esc(c.n)}"><option value="">–</option>${[1, 2, 3, 4, 5].map(n => `<option${+x.s?.[c.id] === n ? " selected" : ""}>${n}</option>`).join("")}</select></td>`).join("")}</tr>`).join("")}
+      <tr class="crdtot"><th>Nota ponderada</th><td></td>${D.cen.map(x => { const r = R.rows.find(z => z.x === x); return `<td><b>${r.score == null ? "–" : num(r.score, 2)}</b>${r.comp < 1 ? `<small class="muted"> · ${pct(r.comp)} avaliado</small>` : ""}</td>`; }).join("")}</tr></tbody></table></div>` : `<div class="empty">Acrescente pelo menos dois cenários para comparar.</div>`;
+  const top = R.rows[0], sec = R.rows[1];
+  return `<p class="lead">Para as decisões grandes: compare cenários com os critérios que importam para você, cada um com o seu peso. A conta é aberta (Σ peso × nota ÷ Σ peso) e, abaixo, o que teria que mudar para o segundo lugar passar o primeiro.</p>
+    <div class="g2c">
+      ${panel(`${ic("plus")}Cenários`, `<div class="row wrap cradd"><input type="text" data-crf="dc.t" value="${esc(F["dc.t"] || "")}" placeholder="Um caminho possível"><button type="button" class="btn sm" data-act="crcenadd">${ic("plus")}Acrescentar</button></div>
+        <div class="flbl">Modelos</div><div class="row wrap">${CR_CEN0.filter(t => !D.cen.some(x => x.t === t)).map(t => `<button type="button" class="jchip" style="--c:var(--a-car)" data-act="crcen0" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+        <div class="row wrap cradd"><input type="text" data-crf="dc.c" value="${esc(F["dc.c"] || "")}" placeholder="Outro critério (ex.: perto da família)"><button type="button" class="btn sm" data-act="crcritadd">${ic("plus")}Critério</button></div>`)}
+      ${panel(`${ic("sprout")}Resultado`, R.rows.length ? `${hbars(R.rows.filter(r => r.score != null).map((r, i) => ({ l: r.x.t, v: r.score, color: i === 0 ? "var(--a-car)" : "var(--muted)", txt: num(r.score, 2) })), { max: 5 })}
+        ${top?.score != null && sec?.score != null ? `<div class="flbl">O que teria que ser verdade para “${esc(trunc(sec.x.t, 40))}” passar “${esc(trunc(top.x.t, 40))}”</div><p class="muted small">Diferença: ${num(top.score - sec.score, 2)} ponto. Subir a nota do segundo em um critério de peso w muda a média em Δ × w ÷ ${R.W}.</p><ul class="crsens">${R.sens.slice(0, 5).map(s => `<li>${s.ok ? "" : `<span class="muted">`}<b>${esc(s.c.n)}</b> (peso ${s.c.w}): de ${s.cur || "–"} para ${num(Math.min(99, s.cur + s.need), 1)}${s.ok ? "" : " — não basta, passa de 5</span>"}</li>`).join("")}</ul>` : ""}` : `<div class="empty">O ranking aparece quando houver notas.</div>`)}
+      ${panel(`${ic("table")}Matriz`, grid + `<p class="muted small">Notas de 1 (péssimo) a 5 (ótimo); peso 0 tira o critério da conta. “Risco baixo”: 5 é o mais seguro.</p><div class="row"><button type="button" class="btn sm" data-act="crdecai">${ic("spark")}Discutir a decisão com o Mentor da Carreira</button></div>`, { cls: "span2" })}
+    </div>`;
+}
+function crMercado() {
+  const C = crExtra(), M = C.merc, x = crMerc(), F = CR.f, P = C.perfil;
+  const bs = M.bench.slice().sort((a, b) => (+b.ral || 0) - (+a.ral || 0));
+  const dots = x.n ? (() => { const all = [...M.bench.map(b => +b.ral).filter(v => v > 0), x.ral || 0, x.pedido || 0].filter(Boolean), lo = Math.min(...all) * .95, hi = Math.max(...all) * 1.05, W = 1000, X = v => 20 + (W - 40) * (v - lo) / (hi - lo || 1);
+      let g = `<line x1="20" y1="40" x2="${W - 20}" y2="40" class="crtl-ax"/>`; M.bench.filter(b => +b.ral > 0).forEach(b => { g += `<circle cx="${X(+b.ral).toFixed(1)}" cy="40" r="6" class="crbd"><title>${esc(b.cargo || "")} · ${esc(b.fonte || "")} · ${eur(+b.ral)}</title></circle>`; });
+      if (x.med) g += `<line x1="${X(x.med).toFixed(1)}" y1="22" x2="${X(x.med).toFixed(1)}" y2="58" class="crtl-hoje"/><text x="${X(x.med).toFixed(1)}" y="16" text-anchor="middle" class="ax">mediana ${eur(x.med)}</text>`;
+      if (x.ral) g += `<rect x="${(X(x.ral) - 6).toFixed(1)}" y="34" width="12" height="12" transform="rotate(45 ${X(x.ral).toFixed(1)} 40)" class="crbme"/><text x="${X(x.ral).toFixed(1)}" y="74" text-anchor="middle" class="crtl-l">você ${eur(x.ral)}</text>`;
+      if (x.pedido) g += `<rect x="${(X(x.pedido) - 5).toFixed(1)}" y="35" width="10" height="10" class="crbped"/><text x="${X(x.pedido).toFixed(1)}" y="92" text-anchor="middle" class="ax">pedido ${eur(x.pedido)}</text>`;
+      return `<div class="hscroll">${svgWrap(W, 100, g, "Referências de mercado, a sua RAL e o pedido")}</div>`; })() : emptyChart("Acrescente referências reais: propostas, anúncios com faixa salarial, pesquisas, colegas.");
+  const list = (k, ph) => `<div class="crlist">${M[k].map(i => `<div class="cri"><div>${esc(i.t)}${i.proj ? ` <span class="muted small">· ${esc(C.port.find(p => p.id === i.proj)?.t || "")}</span>` : ""}</div><button type="button" class="vb" data-act="crmdel" data-k="${k}" data-id="${i.id}" aria-label="Apagar">${ic("trash")}</button></div>`).join("") || `<div class="empty">${ph}</div>`}</div>
+    <div class="row wrap cradd"><input type="text" data-crf="m.${k}" value="${esc(F["m." + k] || "")}" placeholder="${ph}">${C.port.length ? `<select data-crf="m.${k}p" aria-label="Projeto"><option value="">projeto (opcional)</option>${C.port.map(p => `<option value="${p.id}"${F["m." + k + "p"] === p.id ? " selected" : ""}>${esc(trunc(p.t, 40))}</option>`).join("")}</select>` : ""}<button type="button" class="btn sm" data-act="crmadd" data-k="${k}">${ic("plus")}Acrescentar</button></div>`;
+  return `<p class="lead">Onde a sua remuneração está em relação ao mercado, com referências que você mesmo registra (nada inventado), e um dossiê para negociar: o que você faz, o que conquistou e o que vai pedir.</p>
+    ${kpiRow([kmini("var(--a-fin)", "Sua RAL", x.ral ? eur(x.ral) : "–", x.ral ? `${eur(crRemun().b)} × ${crRemun().m}` : "preencha em Avaliação atual"), kmini("var(--a-car)", "Mediana das referências", x.med ? eur(x.med) : "–", `${plural(x.n, "referência", "referências")}`), kmini(x.pctl != null && x.pctl < .5 ? "var(--warn)" : "var(--good)", "Sua posição", x.pctl == null ? "–" : `${pct(x.pctl)}`, x.pctl == null ? "precisa da RAL e de referências" : "das referências ficam em ou abaixo da sua RAL"), kmini("var(--a-pro)", "TFR por ano", x.tfr ? `≈ ${eur(x.tfr)}` : "–", "RAL ÷ 13,5 (art. 2120 do Código Civil)")])}
+    <div class="g2c">
+      ${vis("crbench", "Referências de mercado", dots, { cls: "span2", sub: "cada ponto é uma referência; o losango é a sua RAL; a linha tracejada é a mediana", nofocus: true })}
+      ${panel(`${ic("plus")}Nova referência`, `<div class="form f2"><label>RAL (€)<input type="number" min="0" step="500" data-crf="bm.ral" value="${esc(F["bm.ral"] || "")}"></label><label>Cargo<input type="text" data-crf="bm.cargo" value="${esc(F["bm.cargo"] || "")}" placeholder="ex.: BIM Manager infraestrutura"></label><label>Cidade<input type="text" data-crf="bm.cidade" value="${esc(F["bm.cidade"] || P.cidade || "")}"></label><label>Tipo<select data-crf="bm.tipo">${CR_BTIPO.map(o => `<option${F["bm.tipo"] === o ? " selected" : ""}>${o}</option>`).join("")}</select></label></div><div class="form f1"><label>Fonte<input type="text" data-crf="bm.fonte" value="${esc(F["bm.fonte"] || "")}" placeholder="onde viu: anúncio, empresa, pesquisa, pessoa"></label></div><div class="row"><button type="button" class="btn sm primary" data-act="crbadd">${ic("check")}Guardar referência</button></div>`)}
+      ${panel(`${ic("table")}Referências <small>${x.n}</small>`, bs.length ? `<div class="crlist">${bs.map(b => `<div class="cri"><div><b>${eur(+b.ral)}</b> ${esc(b.cargo || "")} <span class="muted small">${esc([b.cidade, b.tipo, b.fonte, b.data && fmtDY(b.data)].filter(Boolean).join(" · "))}</span></div><button type="button" class="vb" data-act="crbdel" data-id="${b.id}" aria-label="Apagar">${ic("trash")}</button></div>`).join("")}</div>` : `<div class="empty">Nenhuma referência ainda.</div>`)}
+      ${panel(`${ic("brief")}Dossiê de negociação`, `<div class="flbl">Responsabilidades que exerço</div>${list("resp", "ex.: coordeno a equipe de modelagem do setor Stradale")}
+        <div class="flbl">Conquistas do último ano</div>${list("conq", "ex.: entreguei o executivo do lote 2 sem retrabalho")}
+        <div class="flbl">O pedido</div><div class="form f2"><label>Livello pedido<input type="text" data-crmp="livello" value="${esc(M.pedido.livello || "")}" placeholder="ex.: 2"></label><label>RAL pedida (€)<input type="number" min="0" step="500" data-crmp="ral" value="${esc(M.pedido.ral || "")}"></label></div>
+        <p class="muted small">${x.aum != null ? `Pedido = ${x.aum >= 0 ? "+" : ""}${pct(x.aum, 1)} sobre a RAL atual${x.med ? `; ${x.pedido > x.med ? "acima" : x.pedido < x.med ? "abaixo" : "igual à"} da mediana das suas referências` : ""}.` : "Informe a RAL pedida para ver o aumento."}</p>
+        <div class="row wrap"><button type="button" class="btn sm" data-act="crdoss">${ic("download")}Baixar o dossiê (.md)</button><button type="button" class="btn sm primary" data-act="crnegai">${ic("spark")}Ensaiar a conversa com o mentor</button></div>`, { cls: "span2" })}
+    </div>`;
+}
+/* textos exportados */
+function crCVmd() {
+  const C = crExtra(), P = C.perfil, av = crCat().filter(c => crLv(c.n)).sort((a, b) => crLv(b.n) - crLv(a.n));
+  return [`# ${S.cfg.nome || "Currículo"}`, [P.cargo, P.empresa, P.cidade].filter(Boolean).join(" · "), "", "## Formação", ...P.formacao.map(f => `- ${[f.curso, f.tipo, f.inst, f.fim].filter(Boolean).join(", ")}`), "", "## Experiência", ...P.exp.map(x => `- **${x.cargo}**${x.org ? `, ${x.org}` : ""}${x.inicio ? ` (${x.inicio} a ${x.fim || "atual"})` : ""}${x.desc ? `: ${x.desc}` : ""}`),
+    "", "## Projetos", ...C.port.flatMap(p => [`### ${p.t}${p.cliente ? ` · ${p.cliente}` : ""}`, [p.tipo, p.fase, p.papel, [p.inicio, p.fim || (p.inicio ? "atual" : "")].filter(Boolean).join(" a ")].filter(Boolean).join(" · "), p.numeros ? `- Números: ${p.numeros}` : "", p.a ? `- ${p.a}` : "", p.r ? `- Resultado: ${p.r}` : "", (p.comps || []).length ? `- Competências: ${p.comps.join(", ")}` : "", ""]).filter((l, i, a) => l !== "" || a[i - 1] !== ""),
+    "## Competências", ...av.map(c => `- ${c.n}: ${CR_LV[crLv(c.n)]}`), "", "## Certificações", ...P.cert.map(x => `- ${x.nome}${x.emissor ? `, ${x.emissor}` : ""}${x.data ? ` (${x.data})` : ""}`), "", "## Idiomas", ...P.idiomas.map(x => `- ${x.nome}${x.nivel ? ` ${x.nivel}` : ""}`)].join("\n");
+}
+function crDossMd() {
+  const C = crExtra(), M = C.merc, x = crMerc(), P = C.perfil, r = P.remun;
+  return [`# Dossiê de negociação · ${fmtDY(TODAY)}`, "", `**Hoje:** ${[P.cargo, P.empresa].filter(Boolean).join(", ")}; ${r.contrato || ""}${r.ccnl ? `, CCNL ${r.ccnl}` : ""}${r.livello ? `, livello ${r.livello}` : ""}; RAL ${x.ral ? eur(x.ral) : "–"}.`, `**Pedido:** ${M.pedido.livello ? `livello ${M.pedido.livello}` : ""}${M.pedido.livello && x.pedido ? "; " : ""}${x.pedido ? `RAL ${eur(x.pedido)} (${x.aum >= 0 ? "+" : ""}${pct(x.aum, 1)})` : ""}`, "",
+    "## Responsabilidades que exerço", ...M.resp.map(i => `- ${i.t}${i.proj ? ` (${C.port.find(p => p.id === i.proj)?.t || ""})` : ""}`), "", "## Conquistas do último ano", ...M.conq.map(i => `- ${i.t}${i.proj ? ` (${C.port.find(p => p.id === i.proj)?.t || ""})` : ""}`), "",
+    "## Projetos que sustentam o pedido", ...C.port.filter(p => p.r || p.numeros).map(p => `- **${p.t}**: ${[p.numeros, p.r].filter(Boolean).join("; ")}`), "",
+    "## Referências de mercado", x.n ? `Mediana ${eur(x.med)} em ${plural(x.n, "referência", "referências")} (de ${eur(x.min)} a ${eur(x.max)}); ${pct(x.pctl)} delas ficam em ou abaixo da RAL atual.` : "Nenhuma registrada.", ...M.bench.map(b => `- ${eur(+b.ral)} · ${[b.cargo, b.cidade, b.tipo, b.fonte].filter(Boolean).join(" · ")}`)].join("\n");
+}
+function crAskCar(text) { MST.input.car = ""; setHash("mentor", "car"); setTimeout(() => askMentor("car", text), 80); }
+function crClick2(t) {
+  const ds = t.dataset, a = ds.act; if (!a || !a.startsWith("cr")) return false;
+  const C = crExtra(), F = CR.f;
+  if (a === "crptc") { const s = (F["pt.comps"] ||= []), i = s.indexOf(ds.n); i >= 0 ? s.splice(i, 1) : s.push(ds.n); render(); return true; }
+  if (a === "crptsave") { const g = k => String(F["pt." + k] ?? "").trim(); if (!g("t")) { toast("Dê um nome ao projeto."); return true; }
+    const rec = { id: F["pt.id"] || uid(), t: g("t"), cliente: g("cliente"), tipo: F["pt.tipo"] || CR_PTIPO[0], fase: F["pt.fase"] || CR_PFASE[0], papel: g("papel"), inicio: g("inicio"), fim: g("fim"), numeros: g("numeros"), comps: [...(F["pt.comps"] || [])], s: g("s"), ta: g("ta"), a: g("a"), r: g("r") };
+    const i = C.port.findIndex(p => p.id === rec.id); i >= 0 ? C.port[i] = rec : C.port.push(rec);
+    Object.keys(F).filter(k => k.startsWith("pt.")).forEach(k => delete F[k]); touch("carreira", { label: i >= 0 ? "Projeto editado" : "Projeto no portfólio" }); return true; }
+  if (a === "crptedit") { const p = C.port.find(z => z.id === ds.id); if (!p) return true; Object.keys(F).filter(k => k.startsWith("pt.")).forEach(k => delete F[k]); for (const k of ["t", "cliente", "tipo", "fase", "papel", "inicio", "fim", "numeros", "s", "ta", "a", "r"]) F["pt." + k] = p[k] || ""; F["pt.comps"] = [...(p.comps || [])]; F["pt.id"] = p.id; render(); window.scrollTo({ top: 0 }); return true; }
+  if (a === "crptcancel") { Object.keys(F).filter(k => k.startsWith("pt.")).forEach(k => delete F[k]); render(); return true; }
+  if (a === "crptdel") { C.port = C.port.filter(p => p.id !== ds.id); touch("carreira", { label: "Projeto apagado" }); undoToast("Projeto apagado"); return true; }
+  if (a === "crcv") { saveFile(`cv-portfolio-${TODAY}.md`, crCVmd()); return true; }
+  if (a === "crcvai") { crAskCar(`Escreva o meu CV em ${ds.l}, no formato europeu, a partir do meu perfil, das competências avaliadas e dos projetos do portfólio (use os números e os resultados STAR). Uma página, verbos de ação, sem inventar nada que não esteja nos dados; marque com [?] o que faltar.`); return true; }
+  if (a === "crentrev") { const tr = CR_TRI.find(z => z.id === ($("#crent")?.value || "manager")); crAskCar(`Vamos treinar uma entrevista para ${tr.t} (${tr.papel}). Faça uma pergunta por vez, como o recrutador faria, e espere a minha resposta. Depois de cada resposta, avalie de 1 a 5 em: estrutura STAR, números, relevância para o cargo; diga o que melhorar e faça a próxima pergunta. Use os meus projetos do portfólio para escolher as perguntas.`); return true; }
+  if (a === "crcenadd" || a === "crcen0") { const tt = a === "crcen0" ? ds.t : String(F["dc.t"] || "").trim(); if (!tt) return true; C.dec.cen.push({ id: uid(), t: tt, s: {} }); delete F["dc.t"]; touch("carreira", { label: "Cenário" }); return true; }
+  if (a === "crcendel") { C.dec.cen = C.dec.cen.filter(x => x.id !== ds.id); touch("carreira", { label: "Cenário apagado" }); undoToast("Cenário apagado"); return true; }
+  if (a === "crcritadd") { const n = String(F["dc.c"] || "").trim(); if (!n) return true; C.dec.crit.push({ id: uid(), n, w: 3 }); delete F["dc.c"]; touch("carreira", { label: "Critério" }); return true; }
+  if (a === "crcritdel") { C.dec.crit = C.dec.crit.filter(c => c.id !== ds.id); touch("carreira", { label: "Critério apagado" }); undoToast("Critério apagado"); return true; }
+  if (a === "crdecai") { const R = crDecCalc(); crAskCar(`Estou decidindo entre caminhos de carreira. Matriz (critério, peso; notas de 1 a 5 por cenário): ${C.dec.crit.map(c => `${c.n} (peso ${c.w}): ${C.dec.cen.map(x => `${x.t} ${x.s?.[c.id] || "–"}`).join(", ")}`).join(" | ")}. Ranking: ${R.rows.map(r => `${r.x.t} ${r.score == null ? "–" : num(r.score, 2)}`).join("; ")}. Questione as minhas notas e os pesos, aponte o que estou subestimando, e diga o que teria que ser verdade para a primeira opção dar errado.`); return true; }
+  if (a === "crbadd") { const ral = +F["bm.ral"]; if (!(ral > 0)) { toast("Informe a RAL da referência."); return true; } C.merc.bench.push({ id: uid(), ral, cargo: String(F["bm.cargo"] || "").trim(), cidade: String(F["bm.cidade"] || "").trim(), tipo: F["bm.tipo"] || CR_BTIPO[0], fonte: String(F["bm.fonte"] || "").trim(), data: TODAY }); ["ral", "cargo", "fonte"].forEach(k => delete F["bm." + k]); touch("carreira", { label: "Referência de mercado" }); return true; }
+  if (a === "crbdel") { C.merc.bench = C.merc.bench.filter(b => b.id !== ds.id); touch("carreira", { label: "Referência apagada" }); undoToast("Referência apagada"); return true; }
+  if (a === "crmadd") { const k = ds.k, v = String(F["m." + k] || "").trim(); if (!v) return true; C.merc[k].push({ id: uid(), t: v, proj: F["m." + k + "p"] || "" }); delete F["m." + k]; delete F["m." + k + "p"]; touch("carreira", { label: "Dossiê" }); return true; }
+  if (a === "crmdel") { C.merc[ds.k] = C.merc[ds.k].filter(i => i.id !== ds.id); touch("carreira", { label: "Apagado" }); return true; }
+  if (a === "crdoss") { saveFile(`dossie-negociacao-${TODAY}.md`, crDossMd()); return true; }
+  if (a === "crnegai") { crAskCar(`Vamos ensaiar a conversa de negociação com a minha empresa. Faça o papel do diretor ou do RH, com objeções realistas (orçamento, momento, enquadramento no CCNL), uma por vez, e espere a minha resposta. Depois de cada resposta, diga o que funcionou e o que eu poderia dizer melhor. Use o meu dossiê: ${crDossMd().slice(0, 3500)}`); return true; }
+  return false;
+}
+function crChange2(t) {
+  const ds = t.dataset, C = crExtra();
+  if (ds.crdw) { const c = C.dec.crit.find(z => z.id === ds.crdw); if (c) { c.w = clamp(Math.round(+t.value || 0), 0, 5); touch("carreira", { label: "Peso" }); } return true; }
+  if (ds.crds) { const [xid, cid] = ds.crds.split("|"), x = C.dec.cen.find(z => z.id === xid); if (x) { x.s ||= {}; if (t.value) x.s[cid] = +t.value; else delete x.s[cid]; touch("carreira", { label: "Nota do cenário" }); } return true; }
+  if (ds.crmp) { C.merc.pedido[ds.crmp] = ds.crmp === "ral" ? (+t.value || "") : t.value.trim(); touch("carreira", { label: "Pedido" }); return true; }
   return false;
 }

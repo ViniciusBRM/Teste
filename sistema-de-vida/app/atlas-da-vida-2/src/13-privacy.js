@@ -59,6 +59,7 @@ function metricArea(k) {
   if (k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:")) return "Finanças";
   if (k === "estudo") return "Aprendizado";
   if (k === "lazer" || k === "lazsat") return "Lazer & criatividade";
+  if (k === "jmin" || k === "jdia" || k === "bmidx") return "Propósito & espiritualidade";
   if (k.startsWith("h:")) return S.habitos.find(h => "h:" + h.id === k)?.area || null;
   if (k.startsWith("p:")) { const p = S.pessoas.find(x => "p:" + x.nome === k); return p ? relArea(p.relacao) : null; }
   if (k.startsWith("t:")) return tagArea(k.slice(2));

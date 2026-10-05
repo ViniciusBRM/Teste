@@ -147,6 +147,7 @@ function exampleData() {
   exampleJornada(D);
   exampleCarreira(D);
   exampleLazer(D);
+  exampleAprofunda(D);
   return D;
 }
 
@@ -433,4 +434,27 @@ function exampleLazer(D) {
     cafe: { equip: [{ id: id(), t: "Máquina de espresso", notas: "" }, { id: id(), t: "Moedor", notas: "" }, { id: id(), t: "V60", notas: "Hario 02" }],
       log: [{ id: id(), at: Date.now(), data: d(-3), tipo: "extracao", cafe: "Etiópia natural", metodo: "V60", dose: 15, agua: 250, tempo: "2:50", moagem: "média-fina", temp: 94, nota: 4, notas: "mirtilo, doce" },
         { id: id(), at: Date.now(), data: d(-1), tipo: "extracao", cafe: "Brasil, Cerrado", metodo: "Espresso", dose: 18, agua: 38, tempo: "29", moagem: "", temp: 93, nota: 3, notas: "um pouco amargo" }], provar: [] } };
+}
+
+/* exemplos das seções de aprofundamento: sessões, programas, conceitos, portfólio, decisão e mercado (fictícios) */
+function exampleAprofunda(D) {
+  const r = mulberry32(53), id = () => uid(), d = n => addDays(TODAY, n);
+  const sess = [];
+  for (let k = 55; k >= 1; k--) { if (r() < .45) continue; const pid = r() < .65 ? "med" : r() < .5 ? "bud" : "esp", antes = 2 + Math.floor(r() * 3);
+    sess.push({ id: id(), at: parse(d(-k)).getTime(), data: d(-k), pid, tec: { med: ["Respiração (ānāpānasati)", "Escaneamento do corpo", "Caminhada"], bud: ["Mettā", "Vipassana"], esp: ["Prece", "Leitura e estudo"] }[pid][Math.floor(r() * 2)], min: [10, 10, 15, 20, 25][Math.floor(r() * 5)], qual: 2 + Math.floor(r() * 4), antes, depois: Math.min(5, antes + (r() < .8 ? 1 : 0) + (r() < .3 ? 1 : 0)), notas: "" }); }
+  D.jornada.sess = sess;
+  D.jornada.prog = { mbct: { inicio: d(-19), feitos: { 1: d(-18), 2: d(-10) } }, ttc: { inicio: d(-12), feitos: Object.fromEntries(Array.from({ length: 9 }, (_, i) => [i + 1, d(-12 + i)])) } };
+  Object.assign(D.jornada.p.med, { conc: { "Atenção plena (sati)": 2, "Samatha": 1, "Escaneamento do corpo": 3, "Mettā": 1, "Piloto automático": 2 }, estHist: [{ data: d(-70), sid: "chegar", de: 1, para: 2 }, { data: d(-40), sid: "estabilizar", de: 0, para: 1 }, { data: d(-18), sid: "observar", de: 0, para: 1 }] });
+  Object.assign(D.jornada.p.esp, { conc: { "Deus": 2, "Espírito": 2, "Perispírito": 1, "Reencarnação": 2, "Lei de causa e efeito": 2, "Caridade": 3 } });
+  Object.assign(D.jornada.p.tao, { conc: { "Tao": 1, "Wu wei": 2, "Pu": 1 } });
+  Object.assign(D.jornada.p.bud, { conc: { "Quatro Nobres Verdades": 2, "Anicca": 2, "Mettā": 0, "Cinco preceitos": 2 } });
+  const C = D.carreira;
+  C.port = [{ id: id(), t: "Variante rodoviária, lote 2", cliente: "Concessionária fictícia", tipo: "Rodovia", fase: "Projeto executivo", papel: "BIM Specialist de infraestrutura", inicio: "2023-03", fim: "2024-02", numeros: "4,2 km; 3 viadutos; 412 interferências resolvidas", comps: ["AutoCAD Civil 3D", "Terraplenagem", "Drenagem", "Navisworks", "Coordenação e clash detection"], s: "Prazo apertado e projeto de drenagem em revisão.", ta: "Modelar o corredor e coordenar as disciplinas no modelo federado.", a: "Montei o corredor no Civil 3D, federei no Navisworks e conduzi reuniões semanais de interferência.", r: "Executivo entregue no prazo, sem retrabalho na obra por interferência." },
+    { id: id(), t: "Estação ferroviária, PFTE", cliente: "Cliente público fictício", tipo: "Ferrovia", fase: "PFTE (viabilidade técnico-econômica)", papel: "Modelagem e quantitativos", inicio: "2024-04", fim: "", numeros: "2 plataformas; quantitativos para o orçamento", comps: ["Revit", "Orçamento 5D", "IFC e openBIM"], s: "", ta: "", a: "", r: "" }];
+  C.dec = { crit: CR_CRIT0.map(([n, w]) => ({ id: id(), n, w })), cen: [] };
+  const cs = C.dec.crit.map(c => c.id), mk = (t, notas) => ({ id: id(), t, s: Object.fromEntries(cs.map((c, i) => [c, notas[i]])) });
+  C.dec.cen = [mk("Ficar e negociar o livello", [3, 3, 4, 5, 4, 5]), mk("BIM Manager em outra empresa", [4, 4, 5, 3, 3, 2]), mk("Especializar em 4D/5D", [3, 5, 4, 4, 4, 4])];
+  C.merc = { bench: [{ id: id(), ral: 36000, cargo: "BIM Coordinator", cidade: "Milão", tipo: "Anúncio de vaga", fonte: "anúncio com faixa salarial", data: d(-20) }, { id: id(), ral: 42000, cargo: "BIM Coordinator infraestrutura", cidade: "Milão", tipo: "Proposta real", fonte: "conversa com recrutador", data: d(-12) }, { id: id(), ral: 48000, cargo: "BIM Manager", cidade: "Milão", tipo: "Pesquisa salarial", fonte: "pesquisa do setor", data: d(-5) }],
+    resp: [{ id: id(), t: "Coordeno o modelo federado das disciplinas", proj: C.port[0].id }], conq: [{ id: id(), t: "Executivo do lote 2 entregue no prazo", proj: C.port[0].id }], pedido: { livello: "", ral: 42000 } };
+  C.perfil.remun = { contrato: "Tempo indeterminato", ccnl: "Exemplo", livello: "", bruto: 2600, mens: 14, buoni: 0 };
 }

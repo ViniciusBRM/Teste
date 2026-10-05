@@ -1191,6 +1191,29 @@ tr.dim td{opacity:.5}
 .lzh2>div{min-width:0}
 @media (max-width:900px){.lzexc{grid-template-columns:1fr 1fr}.lzh2{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:560px){.lzits{grid-template-columns:1fr}.lzsug{flex-direction:column}}
+
+/* ---------------------------------------------------------------- jornada: programas, sessões e conceitos */
+.jprogs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.jprog{border:1px solid var(--line);border-top:3px solid var(--c);border-radius:12px;padding:11px 13px;background:var(--surface-2);display:flex;flex-direction:column;gap:7px;min-width:0}
+.jprog header{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.jprog header b{font-size:14.5px}.jprog header small{margin-left:auto;font-size:11.5px}.jprog p{margin:0;font-size:13px}
+.jpcur{padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--c) 9%,var(--surface))}.jpcur .flbl{margin:0 0 2px}.jpcur b{font-family:var(--f-display);font-size:16px;font-weight:500}.jpcur p{color:var(--ink-2);margin:3px 0 6px}
+.jpsteps{display:flex;flex-wrap:wrap;gap:3px}.jps{width:13px;height:13px;border-radius:3px;border:1px solid var(--line-2);background:var(--surface);padding:0;cursor:pointer}
+.jps.on{background:var(--c);border-color:var(--c)}.jps.late{border-color:var(--warn)}.jps.cur{outline:2px solid var(--c);outline-offset:1px}
+.jconcs{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-top:10px}.jconc .row{min-width:0}.jconc{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;padding:9px 11px;border-radius:10px;background:var(--surface-2);border-left:3px solid var(--line-2)}
+.jconc b{font-size:14px}.jconc p{margin:2px 0 0;font-size:13px;color:var(--ink-2);line-height:1.45}.jconc .segs .seg{padding:4px 8px;font-size:12px}.jconc .segs .seg[aria-pressed=true]{background:color-mix(in srgb,var(--c) 22%,var(--surface));color:var(--ink)}
+.jconc.v1{border-left-color:color-mix(in srgb,var(--c) 40%,var(--line-2))}.jconc.v2{border-left-color:var(--c)}.jconc.v3{border-left-color:var(--good)}
+.jhist{margin-top:10px}.jhist summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-2)}.jhist ol{margin:6px 0 0;padding-left:20px;font-size:13px;display:grid;gap:3px}
+/* ---------------------------------------------------------------- carreira: portfólio, decisões e mercado */
+.crptc{gap:5px}.crptc .jchip{font-size:12px;padding:3px 9px}
+.crports{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.crport{border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--surface-2);display:flex;flex-direction:column;gap:6px;min-width:0}
+.crport header{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.crport header b{font-size:15px}.crport header small{width:100%;font-size:12px}.crport p{margin:0;font-size:13px}
+.crnum{display:flex;gap:6px;align-items:flex-start;color:var(--ink)}.crnum .ico{width:14px;height:14px;color:var(--a-car);flex:none;margin-top:2px}
+.crstar{display:grid;grid-template-columns:90px minmax(0,1fr);gap:4px 10px;margin:6px 0 0;font-size:13px}.crstar dt{font-weight:700;color:var(--muted)}.crstar dd{margin:0}
+.crdec th,.crdec td{vertical-align:middle}.crdec thead th{white-space:nowrap}.crdec .vb{margin-left:4px}.crw{width:60px}.crs{width:auto;min-width:56px}
+.crdtot th,.crdtot td{border-top:2px solid var(--line-2)}.crdtot b{font-size:15px}
+.crsens{margin:6px 0 0;padding-left:20px;font-size:13px;display:grid;gap:3px}
+.crbd{fill:color-mix(in srgb,var(--a-car) 55%,transparent);stroke:var(--a-car)}.crbme{fill:var(--a-pro);stroke:var(--ink)}.crbped{fill:none;stroke:var(--good);stroke-width:2}
 </style>
 
 <div class="app">
@@ -1633,6 +1656,7 @@ function exampleData() {
   exampleJornada(D);
   exampleCarreira(D);
   exampleLazer(D);
+  exampleAprofunda(D);
   return D;
 }
 
@@ -1921,6 +1945,29 @@ function exampleLazer(D) {
         { id: id(), at: Date.now(), data: d(-1), tipo: "extracao", cafe: "Brasil, Cerrado", metodo: "Espresso", dose: 18, agua: 38, tempo: "29", moagem: "", temp: 93, nota: 3, notas: "um pouco amargo" }], provar: [] } };
 }
 
+/* exemplos das seções de aprofundamento: sessões, programas, conceitos, portfólio, decisão e mercado (fictícios) */
+function exampleAprofunda(D) {
+  const r = mulberry32(53), id = () => uid(), d = n => addDays(TODAY, n);
+  const sess = [];
+  for (let k = 55; k >= 1; k--) { if (r() < .45) continue; const pid = r() < .65 ? "med" : r() < .5 ? "bud" : "esp", antes = 2 + Math.floor(r() * 3);
+    sess.push({ id: id(), at: parse(d(-k)).getTime(), data: d(-k), pid, tec: { med: ["Respiração (ānāpānasati)", "Escaneamento do corpo", "Caminhada"], bud: ["Mettā", "Vipassana"], esp: ["Prece", "Leitura e estudo"] }[pid][Math.floor(r() * 2)], min: [10, 10, 15, 20, 25][Math.floor(r() * 5)], qual: 2 + Math.floor(r() * 4), antes, depois: Math.min(5, antes + (r() < .8 ? 1 : 0) + (r() < .3 ? 1 : 0)), notas: "" }); }
+  D.jornada.sess = sess;
+  D.jornada.prog = { mbct: { inicio: d(-19), feitos: { 1: d(-18), 2: d(-10) } }, ttc: { inicio: d(-12), feitos: Object.fromEntries(Array.from({ length: 9 }, (_, i) => [i + 1, d(-12 + i)])) } };
+  Object.assign(D.jornada.p.med, { conc: { "Atenção plena (sati)": 2, "Samatha": 1, "Escaneamento do corpo": 3, "Mettā": 1, "Piloto automático": 2 }, estHist: [{ data: d(-70), sid: "chegar", de: 1, para: 2 }, { data: d(-40), sid: "estabilizar", de: 0, para: 1 }, { data: d(-18), sid: "observar", de: 0, para: 1 }] });
+  Object.assign(D.jornada.p.esp, { conc: { "Deus": 2, "Espírito": 2, "Perispírito": 1, "Reencarnação": 2, "Lei de causa e efeito": 2, "Caridade": 3 } });
+  Object.assign(D.jornada.p.tao, { conc: { "Tao": 1, "Wu wei": 2, "Pu": 1 } });
+  Object.assign(D.jornada.p.bud, { conc: { "Quatro Nobres Verdades": 2, "Anicca": 2, "Mettā": 0, "Cinco preceitos": 2 } });
+  const C = D.carreira;
+  C.port = [{ id: id(), t: "Variante rodoviária, lote 2", cliente: "Concessionária fictícia", tipo: "Rodovia", fase: "Projeto executivo", papel: "BIM Specialist de infraestrutura", inicio: "2023-03", fim: "2024-02", numeros: "4,2 km; 3 viadutos; 412 interferências resolvidas", comps: ["AutoCAD Civil 3D", "Terraplenagem", "Drenagem", "Navisworks", "Coordenação e clash detection"], s: "Prazo apertado e projeto de drenagem em revisão.", ta: "Modelar o corredor e coordenar as disciplinas no modelo federado.", a: "Montei o corredor no Civil 3D, federei no Navisworks e conduzi reuniões semanais de interferência.", r: "Executivo entregue no prazo, sem retrabalho na obra por interferência." },
+    { id: id(), t: "Estação ferroviária, PFTE", cliente: "Cliente público fictício", tipo: "Ferrovia", fase: "PFTE (viabilidade técnico-econômica)", papel: "Modelagem e quantitativos", inicio: "2024-04", fim: "", numeros: "2 plataformas; quantitativos para o orçamento", comps: ["Revit", "Orçamento 5D", "IFC e openBIM"], s: "", ta: "", a: "", r: "" }];
+  C.dec = { crit: CR_CRIT0.map(([n, w]) => ({ id: id(), n, w })), cen: [] };
+  const cs = C.dec.crit.map(c => c.id), mk = (t, notas) => ({ id: id(), t, s: Object.fromEntries(cs.map((c, i) => [c, notas[i]])) });
+  C.dec.cen = [mk("Ficar e negociar o livello", [3, 3, 4, 5, 4, 5]), mk("BIM Manager em outra empresa", [4, 4, 5, 3, 3, 2]), mk("Especializar em 4D/5D", [3, 5, 4, 4, 4, 4])];
+  C.merc = { bench: [{ id: id(), ral: 36000, cargo: "BIM Coordinator", cidade: "Milão", tipo: "Anúncio de vaga", fonte: "anúncio com faixa salarial", data: d(-20) }, { id: id(), ral: 42000, cargo: "BIM Coordinator infraestrutura", cidade: "Milão", tipo: "Proposta real", fonte: "conversa com recrutador", data: d(-12) }, { id: id(), ral: 48000, cargo: "BIM Manager", cidade: "Milão", tipo: "Pesquisa salarial", fonte: "pesquisa do setor", data: d(-5) }],
+    resp: [{ id: id(), t: "Coordeno o modelo federado das disciplinas", proj: C.port[0].id }], conq: [{ id: id(), t: "Executivo do lote 2 entregue no prazo", proj: C.port[0].id }], pedido: { livello: "", ral: 42000 } };
+  C.perfil.remun = { contrato: "Tempo indeterminato", ccnl: "Exemplo", livello: "", bruto: 2600, mens: 14, buoni: 0 };
+}
+
 
 /* ================================================================ motor de cálculo (regras da planilha, agora com pesos por área) */
 let PER = 6, CMP = "ant";              // janela dos relatórios (meses) e base de comparação dos KPIs
@@ -2122,6 +2169,7 @@ function buildDaily() {
   zero("tarefas", fT); for (const t of S.tarefas) { const i = idx[t.concluida]; if (i != null && t.status === "Concluída") C.tarefas[i]++; }
   const fV = minOf((S.eventos || []).map(e => e.data).filter(Boolean)); if (fV) { zero("eventos", fV); for (const e of S.eventos) { const i = idx[e.data]; if (i != null) C.eventos[i]++; } }
   C.bem = C.humor.map((v, i) => v ?? C.dhumor[i]);   // humor do dia: check-in ou, na falta, o humor do diário
+  if (typeof jDaily === "function") jDaily(C, idx, zero);   /* métricas da Jornada existencial (24-jornada.js) */
   return { dates, idx, C, N };
 }
 /* catálogo de métricas diárias para o explorador e para os mentores */
@@ -2148,6 +2196,9 @@ function metricList() {
     add("estudo", "Horas de estudo", "Crescimento", "sum", f1);
     add("lazer", "Horas de lazer", "Crescimento", "sum", f1);
     add("lazsat", "Satisfação no lazer", "Crescimento", "avg", f1, { lo: 1, hi: 5 });
+    add("jmin", "Minutos de prática (jornada)", "Jornada", "sum", f0);
+    add("jdia", "Dia com a jornada", "Jornada", "avg", fp, { bin: true });
+    add("bmidx", "Prática dos valores (exame da noite)", "Jornada", "avg", fp, { lo: 0, hi: 1 });
     add("contatos", "Contatos com pessoas", "Relações", "sum", f0);
     add("contq", "Qualidade dos contatos", "Relações", "avg", f1, { lo: 1, hi: 5 });
     Object.keys(D.C).filter(k => k.startsWith("p:")).map(k => [k, sum(D.C[k])]).filter(x => x[1] >= 3).sort((a, b) => b[1] - a[1]).slice(0, 12).forEach(([k]) => add(k, "Com " + k.slice(2), "Relações", "avg", fp, { bin: true }));
@@ -2690,9 +2741,9 @@ const SUBS = {
   diario: [["feed", "Entradas"], ["perguntar", "Perguntar"], ["cal", "Calendário"], ["analise", "Análise"]],
   capitulos: [["linha", "Linha do tempo"], ["livro", "Livro do ano"]],
   lazer: [["inicio", "Início"], ["leitura", "Leitura"], ["filmes", "Filmes e séries"], ["jogos", "Jogos"], ["viagens", "Viagens"], ["cafe", "Café"], ["aviacao", "Aviação"], ["estudos", "Estudos"], ["existencial", "Existencial"]],
-  carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["objetivos", "Objetivos"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["biblioteca", "Biblioteca"]],
+  carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
-  jornada: [["inicio", "Início"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
+  jornada: [["inicio", "Início"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
 };
 const REPORT_TABS = [["visao", "Visão geral"], ["fin.rel", "Finanças"], ["saude.rel", "Saúde"], ["hab.rel", "Hábitos"], ["pessoas.rel", "Relações"], ["cresc.rel", "Crescimento"], ["metas.rel", "Metas"], ["cruz", "Cruzamentos"]];
@@ -4788,6 +4839,7 @@ function metricArea(k) {
   if (k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:")) return "Finanças";
   if (k === "estudo") return "Aprendizado";
   if (k === "lazer" || k === "lazsat") return "Lazer & criatividade";
+  if (k === "jmin" || k === "jdia" || k === "bmidx") return "Propósito & espiritualidade";
   if (k.startsWith("h:")) return S.habitos.find(h => "h:" + h.id === k)?.area || null;
   if (k.startsWith("p:")) { const p = S.pessoas.find(x => "p:" + x.nome === k); return p ? relArea(p.relacao) : null; }
   if (k.startsWith("t:")) return tagArea(k.slice(2));
@@ -6989,8 +7041,8 @@ const J_INTEG = [
 ];
 
 /* ---------------------------------------------------------------- dados */
-const jData = () => { const d = (S.jornada ||= {}); d.p ||= {}; d.conf ||= {}; d.conf.vivos ||= []; d.conf.notas ||= {}; d.conf.circulos ||= []; return d; };
-function jP(pid) { const p = (jData().p[pid] ||= {}); p.est ||= {}; p.prat ||= []; p.refl ||= []; p.cot ||= []; return p; }
+const jData = () => { const d = (S.jornada ||= {}); d.p ||= {}; d.conf ||= {}; d.conf.vivos ||= []; d.conf.notas ||= {}; d.conf.circulos ||= []; d.sess ||= []; d.prog ||= {}; return d; };
+function jP(pid) { const p = (jData().p[pid] ||= {}); p.est ||= {}; p.prat ||= []; p.refl ||= []; p.cot ||= []; p.estHist ||= []; p.conc ||= {}; return p; }
 const jMidP = mid => J_ORDER.find(p => J_PIL[p].mid === mid);
 const jDayN = () => Math.floor(parse(TODAY).getTime() / 864e5);
 const jPick = (a, k) => a[((k % a.length) + a.length) % a.length];
@@ -7001,6 +7053,8 @@ function jActDays(pid, from = addDays(TODAY, -27), to = TODAY) {
   const P = jP(pid), s = new Set(), add = d => { if (d && d >= from && d <= to) s.add(d); };
   P.refl.forEach(r => add(r.data)); P.cot.forEach(c => add(c.data)); P.prat.forEach(p => (p.marcas || []).forEach(add));
   (mget(J_PIL[pid].mid).conversa || []).forEach(x => x.role === "user" && add(iso(new Date(x.at))));
+  jData().sess.forEach(x => x.pid === pid && add(x.data));
+  for (const pr of J_PROG.filter(z => z.pid === pid)) Object.values(jData().prog[pr.id]?.feitos || {}).forEach(add);
   return s;
 }
 /* ritmo como lua: 16 dias com o pilar em 4 semanas (quatro por semana) já é lua cheia */
@@ -7063,6 +7117,10 @@ function jPilarFacts(pid, full) {
   const at = P.prat.filter(x => x.status === "ativa"), from = addDays(TODAY, -27);
   if (at.length) L.push("Práticas adotadas:\n" + at.map(x => { const m = (x.marcas || []).filter(d => d >= from); return `- ${x.titulo} (${x.tipo}${x.fonte === "mentor" ? `, sugerida por ${MENTOR_DEF[D.mid].nome}` : ""}): ${m.length}× em 4 semanas${x.marcas?.length ? `, última em ${fmtD(x.marcas.slice().sort().at(-1))}` : ""}`; }).join("\n"));
   else L.push("Ainda não adotou práticas neste pilar.");
+  const pr = J_PROG.find(z => z.pid === pid), pi = pr && jProgInfo(pr), ss = jSessStats(28, pid);
+  if (pi) L.push(`Programa guiado "${pr.t}": ${pi.feitos} de ${pi.n} ${pr.un === "dia" ? "dias" : "semanas"} feitos${pi.prox ? `, próximo: ${pr.itens[pi.prox - 1][0]}` : ", concluído"}${pi.atraso ? `, ${pi.atraso} para pôr em dia` : ""}.`);
+  if (ss.n) L.push(`Sessões de prática nas últimas 4 semanas: ${ss.n}, ${num(ss.min, 0)} minutos${ss.qual != null ? `, qualidade média ${num(ss.qual, 1)}/5` : ""}${ss.delta != null ? `, estado antes → depois ${ss.delta >= 0 ? "+" : ""}${num(ss.delta, 2)} em média (escala 1 a 5)` : ""}.`);
+  const cc = J_CONC[pid].filter(([n]) => P.conc[n]); if (cc.length) L.push("Conceitos (autoavaliação): " + cc.map(([n]) => `${n}: ${J_CST[P.conc[n]]}`).join("; ") + ".");
   if (!full) { const r = P.refl.filter(x => !x.priv).sort((a, b) => b.at - a.at)[0]; if (r) L.push(`Reflexão mais recente (${fmtD(r.data)}): ${trunc(r.texto, 200)}`); return L; }
   const sug = P.prat.filter(x => x.status === "sugerida"); if (sug.length) L.push("Sugestões suas ainda não adotadas (não repita): " + sug.map(x => x.titulo).join("; "));
   const rs = P.refl.filter(x => !x.priv).sort((a, b) => b.at - a.at), np = P.refl.length - rs.length;
@@ -7183,6 +7241,7 @@ function pJornada(R) {
   if (SUB === "inicio") return jInicio();
   if (J_SUB2P[SUB]) return jPilar(J_SUB2P[SUB]);
   if (SUB === "confluencias") return jConf();
+  if (SUB === "praticas") return jPraticas();
   if (SUB === "navegante") return jBmNav() + jNavegante();
   return jBmNav() + pBussola(R);
 }
@@ -7208,6 +7267,7 @@ function jInicio() {
           return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : last ? `conversaram ${last}` : "ainda não conversaram"}</em></span></a>`; }).join("")}</div>`, { cls: "span2" })}
       ${rev ? panel(`${ic("clock")}Para revisitar`, `<p class="muted">${esc(rev.quando)} você escreveu, em ${esc(J_PIL[rev.pid].nome)}:</p><blockquote class="jquote sm" style="--c:${J_PIL[rev.pid].cor}">${esc(trunc(rev.r.texto, 420))}<cite>${fmtDY(rev.r.data)} · ${esc(rev.r.tipo)}</cite></blockquote>
         <label class="flbl" for="jrev">O que mudou desde então?</label><textarea id="jrev" class="jta" rows="2" data-jrev="1" placeholder="Releia com calma. O que você vê agora?">${esc(J.rev)}</textarea><div class="row"><button type="button" class="btn sm" data-act="jrevsave" data-p="${rev.pid}" data-id="${rev.r.id}">${ic("check")}Guardar como reflexão</button></div>`) : ""}
+      ${(() => { const at = J_PROG.filter(p => jProgInfo(p) && !jProgInfo(p).fim); return at.length ? panel(`${ic("flag")}Programas em andamento`, `<div class="jprogs">${at.map(p => jProgCard(p)).join("")}</div>`, { act: `<a class="lnk" href="#jornada.praticas">práticas</a>` }) : panel(`${ic("flag")}Programas guiados`, `<p class="muted">Quatro caminhos com começo, meio e fim: 8 semanas de atenção plena, o Tao Te Ching em 81 dias, o Dhammapada em 26 capítulos e O Evangelho segundo o Espiritismo em 28 semanas.</p><a class="btn sm" href="#jornada.praticas">${ic("arrow")}Escolher um</a>`); })()}
       ${panel(`${ic("week")}Ritmo das últimas 12 semanas`, J_ORDER.map(p => `<div class="jrr"><a href="#jornada.${J_PIL[p].sub}" style="--c:${J_PIL[p].cor}">${jMoon(jMoonInfo(p).f, 8, J_PIL[p].cor)}${esc(J_PIL[p].nome)}</a>${jStrip(p)}</div>`).join("") + `<p class="muted small">Cada quadradinho é uma semana; mais forte, mais dias com o pilar (reflexões, práticas, notas do cotidiano e conversas).</p>`)}
       ${panel(`${ic("list")}Recentes`, feed.length ? `<div class="jfeed">${feed.map(x => `<a class="jfi" href="#jornada.${J_PIL[x.pid].sub}" style="--c:${J_PIL[x.pid].cor}"><span class="jtag sm">${esc(J_PIL[x.pid].nome)} · ${esc(x.tipo)}</span><span>${x.priv ? `${ic("lock")}<i class="muted">reflexão só sua</i>` : esc(trunc(x.texto, 150))}</span><small class="muted">${relDay(x.data)}</small></a>`).join("")}</div>` : `<div class="empty">As reflexões e notas dos quatro pilares aparecem aqui.</div>`)}
     </div>`;
@@ -7244,7 +7304,9 @@ function jPilar(pid) {
         <p class="bmq">${ic("info")}<span>Para contemplar hoje: ${esc(jQuestion(pid))}</span><button type="button" class="lnk" data-act="jqask" data-p="${pid}">responder</button></p>
         <details class="jsobre"><summary>Sobre o pilar</summary><p>${esc(D.intro)}</p></details>
         <button type="button" class="btn sm jgochat" data-act="jtochat">${ic("spark")}Conversar com ${esc(MENTOR_DEF[mid].nome)}</button></section>
-      ${panel(`${ic("sprout")}Estações do caminho`, `<p class="muted">Não é uma escada nem uma nota: é como você sente cada dimensão hoje. Ajuste quando perceber mudança; a data fica guardada.</p><div class="jest">${est}</div>`)}
+      ${panel(`${ic("sprout")}Estações do caminho`, `<p class="muted">Não é uma escada nem uma nota: é como você sente cada dimensão hoje. Ajuste quando perceber mudança; a data fica guardada.</p><div class="jest">${est}</div>${P.estHist.length ? `<details class="jhist"><summary>Como as estações mudaram <small>${P.estHist.length}</small></summary><ol>${P.estHist.slice().reverse().slice(0, 12).map(h => `<li><span class="muted small">${fmtDY(h.data)}</span> ${esc(D.est.find(e => e.id === h.sid)?.nome || h.sid)}: ${J_EST[h.de][1]} → <b>${J_EST[h.para][1]}</b></li>`).join("")}</ol></details>` : ""}`)}
+      ${(() => { const pr = J_PROG.find(z => z.pid === pid), s = jSessStats(28, pid); return panel(`${ic("flag")}Prática guiada`, `${pr ? jProgCard(pr) : ""}<div class="flbl">Registrar uma sessão</div>${jSessForm(pid)}<p class="muted small">${s.n ? `Nas últimas 4 semanas: ${plural(s.n, "sessão", "sessões")}, ${num(s.min, 0)} minutos${s.delta != null ? `, antes → depois ${s.delta >= 0 ? "+" : ""}${num(s.delta, 2)} em média` : ""}.` : "Nenhuma sessão nas últimas 4 semanas."} <a class="lnk" href="#jornada.praticas">ver todas as práticas</a></p>`, { style: `--c:${D.cor}` }); })()}
+      ${jConcPanel(pid)}
       ${panel(`${ic("pen")}Reflexões, insights e aprendizados <small>${P.refl.length}</small>`, `<textarea class="jta" rows="4" data-jr="${pid}" placeholder="O que você percebeu, aprendeu ou está perguntando?">${esc(dr.txt)}</textarea>
         <div class="row wrap jqrow"><div class="segs">${J_TIPOS.map(t => `<button type="button" class="seg" data-act="jrtipo" data-p="${pid}" data-v="${t}" aria-pressed="${dr.tipo === t}">${t}</button>`).join("")}</div></div>
         <div class="row wrap jqrow"><span class="flbl">Também toca</span>${J_ORDER.filter(o => o !== pid).map(o => jChip(o, dr.tambem.includes(o), `data-act="jrtam" data-p="${pid}" data-o="${o}"`)).join("")}</div>
@@ -7350,11 +7412,23 @@ function jSaveRefl(pid, txt, tipo, tambem = [], priv = false, extra = {}) {
 }
 function jClick(t) {
   const ds = t.dataset, a = ds.act, pid = ds.p;
+  if (a === "jpgo") { jData().prog[ds.id] = { inicio: TODAY, feitos: {} }; touch("jornada", { label: "Programa começado" }); return true; }
+  if (a === "jpreset") { delete jData().prog[ds.id]; touch("jornada", { label: "Programa recomeçado" }); undoToast("Programa zerado"); return true; }
+  if (a === "jpdone") { const st = jData().prog[ds.id]; if (!st) return true; st.feitos ||= {}; st.feitos[ds.n] ? delete st.feitos[ds.n] : st.feitos[ds.n] = TODAY; touch("jornada", { label: "Passo do programa" }); return true; }
+  if (a === "jpask") { const pr = J_PROG.find(z => z.id === ds.id), it = pr.itens[+ds.n - 1], mid = J_PIL[pr.pid].mid; MST.input[mid] = `Estou no programa "${pr.t}", ${pr.un === "dia" ? "dia" : "semana"} ${ds.n}: ${it[0]}. ${it[1]} Me ajude a aprofundar esta etapa.`; if (SUB !== J_PIL[pr.pid].sub) setHash("jornada", J_PIL[pr.pid].sub); else render(); setTimeout(() => { const el = $("#m_in"); el?.scrollIntoView({ block: "center" }); el?.focus({ preventScroll: true }); }, 60); return true; }
+  if (a === "jconc") { jP(pid).conc[ds.n] = +ds.v; touch("jornada", { label: "Conceito" }); return true; }
+  if (a === "jconcq") { const mid = J_PIL[pid].mid; MST.input[mid] = `Me teste sobre o conceito "${ds.n}": faça uma pergunta por vez, avalie a minha resposta com franqueza e diga se já posso marcá-lo como "consigo explicar".`; render(); const el = $("#m_in"); if (el) { el.scrollIntoView({ block: "center" }); el.focus({ preventScroll: true }); } return true; }
+  if (a === "jsess") { const F = J.sf || {}, p = pid || F.pid || "med", m = +F.min; if (!(m > 0)) { toast("Informe os minutos."); return true; }
+    const n15 = v => { const x = Math.round(+v); return x >= 1 && x <= 5 ? x : ""; };
+    jData().sess.push({ id: uid(), at: Date.now(), data: TODAY, pid: p, tec: [...J_TEC[p], "Outra"].includes(F.tec) ? F.tec : J_TEC[p][0], min: m, qual: n15(F.qual), antes: n15(F.antes), depois: n15(F.depois), notas: String(F.notas || "").trim() });
+    J.sf = { pid: F.pid, tec: F.tec }; touch("jornada", { label: "Sessão de prática" }); toast(`${m} min registrados`); return true; }
+  if (a === "jsessdel") { jData().sess = jData().sess.filter(x => x.id !== ds.id); touch("jornada", { label: "Sessão apagada" }); undoToast("Sessão apagada"); return true; }
+  if (a === "jcruz") { CZ.x = "jmin"; CZ.y = metric("bem") ? "bem" : metric("estresse") ? "estresse" : (metricList().find(m => m.k !== "jmin")?.k || "bem"); setHash("cruz"); return true; }
   if (a === "jtochat") { const el = $("#m_in"); $("#jment")?.scrollIntoView({ block: "start", behavior: "smooth" }); el?.focus({ preventScroll: true }); return true; }
   if (a === "jgo") { const [p, s] = ds.go.split("."); setHash(p, s); return true; }
   if (a === "jopen") { setTimeout(() => { J.open[ds.k] = t.open; }, 0); return false; }
   if (a === "jtoggle") { J.open[ds.k] = !J.open[ds.k]; render(); return true; }
-  if (a === "jest") { const P = jP(pid), v = +ds.v, cur = P.est[ds.s]?.v || 0; if (cur === v) return true; P.est[ds.s] = { v, at: Date.now() }; touch("jornada", { label: "Estação do caminho" }); return true; }
+  if (a === "jest") { const P = jP(pid), v = +ds.v, cur = P.est[ds.s]?.v || 0; if (cur === v) return true; P.est[ds.s] = { v, at: Date.now() }; P.estHist.push({ data: TODAY, sid: ds.s, de: cur, para: v }); touch("jornada", { label: "Estação do caminho" }); return true; }
   if (a === "jrtipo") { (J.dr[pid] ||= { txt: "", tipo: "reflexão", tambem: [], priv: false }).tipo = ds.v; render(); return true; }
   if (a === "jrtam") { const d = J.dr[pid] ||= { txt: "", tipo: "reflexão", tambem: [], priv: false }, i = d.tambem.indexOf(ds.o); i >= 0 ? d.tambem.splice(i, 1) : d.tambem.push(ds.o); render(); return true; }
   if (a === "jrpriv") { const d = J.dr[pid] ||= { txt: "", tipo: "reflexão", tambem: [], priv: false }; d.priv = t.checked; return true; }
@@ -7391,6 +7465,7 @@ function jClick(t) {
 }
 function jInput(t) {
   const ds = t.dataset;
+  if (ds.jsf) { (J.sf ||= {})[ds.jsf] = t.value; return true; }
   if (ds.jr) { (J.dr[ds.jr] ||= { txt: "", tipo: "reflexão", tambem: [], priv: false }).txt = t.value; return true; }
   if (ds.jc) { (J.cot[ds.jc] ||= { txt: "", area: "" }).txt = t.value; return true; }
   if (ds.jq) { J.q.txt = t.value; return true; }
@@ -7400,9 +7475,86 @@ function jInput(t) {
 }
 function jChange(t) {
   const ds = t.dataset;
+  if (ds.jsf) { (J.sf ||= {})[ds.jsf] = t.value; if (ds.jsf === "pid") { J.sf.tec = ""; render(); } return true; }
   if (ds.jca) { (J.cot[ds.jca] ||= { txt: "", area: "" }).area = t.value; return true; }
   if (ds.jtn) { jData().conf.notas[ds.jtn] = t.value.trim(); touch("jornada", { label: "Nota do tema", noRender: true }); return true; }
   return false;
+}
+
+/* ---------------------------------------------------------------- programas guiados, sessões de prática e conceitos
+   Programas: jornada.prog[id] = { inicio, feitos: { passo: data } }. Sessões: jornada.sess (pilar, técnica, minutos, qualidade,
+   estado antes e depois, de 1 a 5). Conceitos: p.conc[nome] = 0 a 3. As sessões e os dias com a jornada viram métricas
+   diárias (jmin, jdia, bmidx) que entram nos Cruzamentos. */
+const J_PROG = [
+  { id: "mbct", pid: "med", t: "Atenção plena em 8 semanas", un: "semana", fonte: "Segue a estrutura das oito sessões do programa MBCT (Segal, Williams e Teasdale). Não substitui um curso com instrutor.",
+    itens: [["Piloto automático", "Escaneamento do corpo e o exercício da uva-passa: comer uma uva-passa com atenção total."], ["Viver na cabeça", "Escaneamento do corpo e, a cada dia, o registro de um evento agradável: o que o corpo sentiu e que pensamentos vieram."], ["Reunir a mente dispersa", "Respiração e movimento conscientes, a pausa de três minutos e o registro de um evento desagradável por dia."], ["Reconhecer a aversão", "Meditação sentada (respiração, corpo, sons e pensamentos) e caminhada consciente; notar o impulso de afastar o que incomoda."], ["Permitir, deixar ser", "Sentar com uma dificuldade e trazê-la ao corpo, sem tentar resolvê-la."], ["Pensamentos não são fatos", "Observar os pensamentos como eventos da mente; anotar os que mais voltam."], ["Como posso cuidar melhor de mim?", "Listar as atividades que nutrem e as que esgotam; planejar uma ação para os dias difíceis."], ["Manter e ampliar o aprendizado", "Escolher a prática que vai continuar, e por quê; escrever o próprio plano."]] },
+  { id: "ttc", pid: "tao", t: "Tao Te Ching em 81 dias", un: "dia", fonte: "Um capítulo por dia; vale comparar duas traduções.",
+    itens: Array.from({ length: 81 }, (_, i) => [`Capítulo ${i + 1}`, ({ 1: "O Tao que pode ser dito não é o Tao eterno.", 8: "A bondade suprema é como a água.", 11: "O vazio que torna as coisas úteis.", 16: "Retornar à raiz chama-se quietude.", 33: "Conhecer a si mesmo é iluminação.", 40: "O retorno é o movimento do Tao.", 64: "A viagem de mil léguas começa com um passo.", 67: "Os três tesouros.", 76: "O rígido se quebra; o flexível permanece.", 78: "Nada é mais macio que a água." })[i + 1] || "Leia devagar e escolha uma frase para levar ao dia."]) },
+  { id: "dhp", pid: "bud", t: "Dhammapada em 26 capítulos", un: "dia", fonte: "Um capítulo (vagga) por dia: são 423 versos em 26 capítulos.",
+    itens: ["Yamaka · Os pares", "Appamāda · A vigilância", "Citta · A mente", "Puppha · As flores", "Bāla · O tolo", "Paṇḍita · O sábio", "Arahanta · O arahant", "Sahassa · Os milhares", "Pāpa · O mal", "Daṇḍa · A violência", "Jarā · A velhice", "Atta · O eu", "Loka · O mundo", "Buddha · O Buda", "Sukha · A felicidade", "Piya · O afeto", "Kodha · A raiva", "Mala · As impurezas", "Dhammaṭṭha · O justo", "Magga · O caminho", "Pakiṇṇaka · Diversos", "Niraya · O estado infeliz", "Nāga · O elefante", "Taṇhā · A sede", "Bhikkhu · O monge", "Brāhmaṇa · O verdadeiro nobre"].map(t => [t, "Leia o capítulo e escolha um verso para praticar hoje."]) },
+  { id: "ese", pid: "esp", t: "O Evangelho segundo o Espiritismo em 28 semanas", un: "semana", fonte: "Um capítulo por semana, de preferência no Culto do Evangelho no lar.",
+    itens: ["Não vim destruir a lei", "Meu reino não é deste mundo", "Há muitas moradas na casa de meu Pai", "Ninguém poderá ver o reino de Deus se não nascer de novo", "Bem-aventurados os aflitos", "O Cristo consolador", "Bem-aventurados os pobres de espírito", "Bem-aventurados os que têm puro o coração", "Bem-aventurados os que são brandos e pacíficos", "Bem-aventurados os que são misericordiosos", "Amar o próximo como a si mesmo", "Amai os vossos inimigos", "Não saiba a vossa mão esquerda o que dá a vossa mão direita", "Honrai a vosso pai e a vossa mãe", "Fora da caridade não há salvação", "Não se pode servir a Deus e a Mamon", "Sede perfeitos", "Muitos os chamados, poucos os escolhidos", "A fé transporta montanhas", "Os trabalhadores da última hora", "Haverá falsos cristos e falsos profetas", "Não separeis o que Deus juntou", "Estranha moral", "Não ponhais a candeia debaixo do alqueire", "Buscai e achareis", "Dai gratuitamente o que gratuitamente recebestes", "Pedi e obtereis", "Coletânea de preces espíritas"].map((t, i) => [`Cap. ${["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI", "XXVII", "XXVIII"][i]} · ${t}`, "Leia, comente em família e escolha uma atitude para a semana."]) },
+];
+const J_TEC = { esp: ["Prece", "Leitura e estudo", "Culto do Evangelho", "Exame de consciência", "Passe"], med: ["Respiração (ānāpānasati)", "Escaneamento do corpo", "Caminhada", "Mettā", "Sentado em silêncio", "Pausa de três minutos"], tao: ["Zuowang", "Qigong ou tai chi", "Caminhada na natureza", "Leitura do Tao Te Ching"], bud: ["Mettā", "Vipassana", "Contemplação da impermanência", "Recitação", "Leitura"] };
+const J_CST = ["não conheço", "conheço", "consigo explicar", "vivo na prática"];
+const J_CONC = {
+  esp: [["Deus", "Para O Livro dos Espíritos, a inteligência suprema, causa primária de todas as coisas (q. 1)."], ["Espírito", "O ser inteligente da criação, que sobrevive ao corpo e progride."], ["Perispírito", "O envoltório semimaterial que liga o Espírito ao corpo."], ["Reencarnação", "O retorno do Espírito a um novo corpo para continuar aprendendo."], ["Erraticidade", "O estado do Espírito entre duas encarnações."], ["Lei de causa e efeito", "Cada ação traz consequências que educam o Espírito, sem castigo eterno."], ["Lei de progresso", "Tudo avança: nenhum Espírito fica para sempre no mesmo ponto."], ["Livre-arbítrio", "A liberdade de escolher, e a responsabilidade que vem com ela."], ["Mediunidade", "A faculdade de perceber a influência dos Espíritos ou de servir de intermediário a eles."], ["Caridade", "Benevolência para com todos, indulgência para as imperfeições dos outros, perdão das ofensas (q. 886)."]],
+  med: [["Atenção plena (sati)", "Lembrar-se de estar presente: perceber o que acontece, enquanto acontece."], ["Samatha", "A prática que acalma e estabiliza a mente num objeto, como a respiração."], ["Vipassana", "A prática de ver com clareza a natureza das experiências: elas surgem e passam."], ["Ānāpānasati", "A atenção à respiração, base de muitas tradições de meditação."], ["Mettā", "A bondade amorosa, cultivada desejando bem a si e aos outros."], ["Escaneamento do corpo", "Percorrer o corpo com atenção, notando as sensações sem mudá-las."], ["Equanimidade", "Estar com o agradável e o desagradável sem ser arrastado por eles."], ["Mente de principiante", "Olhar cada momento como se fosse a primeira vez (Shunryu Suzuki)."], ["Piloto automático", "Agir sem perceber; o ponto de partida do MBCT."]],
+  tao: [["Tao", "O caminho e a fonte de todas as coisas, que não se deixa dizer."], ["De", "A virtude, ou o poder, de quem vive em harmonia com o Tao."], ["Wu wei", "Agir sem forçar: o necessário, no tempo certo."], ["Ziran", "O que é assim por si: a espontaneidade natural."], ["Pu", "O bloco não talhado: a simplicidade original."], ["Yin e yang", "As forças complementares que se geram e se transformam uma na outra."], ["Os três tesouros", "Compaixão, frugalidade e não querer estar à frente (Tao Te Ching, 67)."], ["Retorno", "“O retorno é o movimento do Tao” (cap. 40): tudo volta à raiz."], ["Zuowang", "Sentar e esquecer: a quietude descrita no Zhuangzi."]],
+  bud: [["Quatro Nobres Verdades", "O sofrimento, a sua origem, a sua cessação e o caminho que leva à cessação."], ["Nobre Caminho Óctuplo", "Visão, intenção, fala, ação, modo de vida, esforço, atenção e concentração corretos."], ["Anicca", "A impermanência de tudo o que é condicionado."], ["Dukkha", "A insatisfatoriedade: o que muda não pode satisfazer por completo."], ["Anattā", "O não-eu: não há um eu permanente por trás das experiências."], ["Taṇhā", "A sede, o desejo que agarra; a origem do sofrimento."], ["Kamma", "A ação intencional e as suas consequências."], ["Originação interdependente", "Tudo surge na dependência de causas e condições."], ["Cinco preceitos", "Não matar, não roubar, não ter conduta sexual nociva, não mentir, não se intoxicar."], ["Três joias", "O Buda, o Dhamma (o ensinamento) e a Sangha (a comunidade)."]],
+};
+function jProgInfo(pr) {
+  const st = jData().prog[pr.id]; if (!st?.inicio) return null;
+  const n = pr.itens.length, d = Math.max(0, diff(TODAY, st.inicio)), esp = Math.min(n, pr.un === "dia" ? d + 1 : Math.floor(d / 7) + 1), feitos = Object.keys(st.feitos || {}).length;
+  const prox = pr.itens.findIndex((_, i) => !st.feitos?.[i + 1]) + 1;
+  return { n, esp, feitos, prox: prox || null, atraso: Math.max(0, esp - feitos), fim: feitos >= n, pct: feitos / n };
+}
+function jSessStats(days = 28, pid = null) {
+  const from = addDays(TODAY, -days + 1), ss = jData().sess.filter(x => x.data >= from && (!pid || x.pid === pid)), dd = ss.filter(x => isNum(+x.antes) && +x.antes && isNum(+x.depois) && +x.depois);
+  return { n: ss.length, min: sum(ss.map(x => +x.min || 0)), qual: ss.some(x => +x.qual) ? avg(ss.filter(x => +x.qual).map(x => +x.qual)) : null, delta: dd.length ? avg(dd.map(x => x.depois - x.antes)) : null, nd: dd.length };
+}
+const jConcPct = pid => { const cs = J_CONC[pid], P = jP(pid); return sum(cs.map(([n]) => P.conc[n] || 0)) / (3 * cs.length); };
+/* métricas diárias para os Cruzamentos */
+function jDaily(C, idx, zero) {
+  const ss = jData().sess, f = ss.map(x => x.data).sort()[0];
+  if (f) { zero("jmin", f); for (const x of ss) { const i = idx[x.data]; if (i != null) C.jmin[i] += +x.min || 0; } }
+  const all = new Set(); J_ORDER.forEach(p => jActDays(p, "0000-01-01", TODAY).forEach(d => all.add(d))); Object.keys(bmEx()).forEach(d => all.add(d));
+  const f2 = [...all].sort()[0]; if (f2) { zero("jdia", f2); for (const d of all) { const i = idx[d]; if (i != null) C.jdia[i] = 1; } }
+  zero("bmidx"); for (const [d, e] of Object.entries(bmEx())) { const i = idx[d], ns = Object.values(e.n || {}).filter(isNum); if (i != null && ns.length) C.bmidx[i] = avg(ns) / 2; }
+}
+function jProgCard(pr, full = false) {
+  const info = jProgInfo(pr), P = J_PIL[pr.pid], st = jData().prog[pr.id] || {};
+  if (!info) return `<div class="jprog" style="--c:${P.cor}"><header><b>${esc(pr.t)}</b><span class="jtag sm">${esc(P.nome)}</span></header><p class="muted small">${esc(pr.fonte)} ${pr.itens.length} ${pr.un === "dia" ? "dias" : "semanas"}.</p><div class="row"><button type="button" class="btn sm" data-act="jpgo" data-id="${pr.id}">${ic("flag")}Começar hoje</button></div></div>`;
+  const cur = info.prox ? pr.itens[info.prox - 1] : null, steps = pr.itens.map(([t], i) => `<button type="button" class="jps${st.feitos?.[i + 1] ? " on" : ""}${i + 1 === info.prox ? " cur" : ""}${i + 1 <= info.esp && !st.feitos?.[i + 1] ? " late" : ""}" data-act="jpdone" data-id="${pr.id}" data-n="${i + 1}" title="${esc(t)}" aria-label="${esc(t)}${st.feitos?.[i + 1] ? ", feito" : ""}"></button>`).join("");
+  return `<div class="jprog on" style="--c:${P.cor}"><header><b>${esc(pr.t)}</b><span class="jtag sm">${esc(P.nome)}</span><small class="muted">${info.feitos} de ${info.n} · ${info.fim ? "concluído" : info.atraso ? `${info.atraso} ${pr.un === "dia" ? (info.atraso > 1 ? "dias" : "dia") : (info.atraso > 1 ? "semanas" : "semana")} para pôr em dia` : "em dia"}</small></header>
+    <div class="crbar fit" style="--a-car:${P.cor}"><i style="width:${(info.pct * 100).toFixed(0)}%"></i></div>
+    ${cur ? `<div class="jpcur"><span class="flbl">${pr.un === "dia" ? "Dia" : "Semana"} ${info.prox}</span><b>${esc(cur[0])}</b><p>${esc(cur[1])}</p><div class="row wrap"><button type="button" class="btn sm primary" data-act="jpdone" data-id="${pr.id}" data-n="${info.prox}">${ic("check")}Feito</button><button type="button" class="lnk" data-act="jpask" data-id="${pr.id}" data-n="${info.prox}">conversar com ${esc(MENTOR_DEF[P.mid].nome)}</button></div></div>` : `<p class="st-good">Programa concluído. Que tal começar de novo, com outra tradução ou outro olhar?</p>`}
+    ${full ? `<div class="jpsteps">${steps}</div>` : ""}<div class="row"><button type="button" class="lnk" data-act="jpreset" data-id="${pr.id}">recomeçar</button></div></div>`;
+}
+function jConcPanel(pid) {
+  const P = jP(pid), D = J_PIL[pid], cs = J_CONC[pid], pctv = jConcPct(pid);
+  return panel(`${ic("book")}Conceitos <small>${pct(pctv)} de domínio</small>`, `<p class="muted small">Do “conheço” ao “vivo na prática”: um segundo jeito de ver o progresso, pelo entendimento. Teste-se com ${esc(MENTOR_DEF[D.mid].nome)} antes de marcar “consigo explicar”.</p>
+    <div class="crbar fit" style="--a-car:${D.cor}"><i style="width:${(pctv * 100).toFixed(0)}%"></i></div>
+    <div class="jconcs">${cs.map(([n, d]) => { const v = P.conc[n] || 0; return `<div class="jconc v${v}"><div><b>${esc(n)}</b><p>${esc(d)}</p></div><div class="row wrap"><div class="segs">${J_CST.map((l, i) => `<button type="button" class="seg" data-act="jconc" data-p="${pid}" data-n="${esc(n)}" data-v="${i}" aria-pressed="${v === i}">${l}</button>`).join("")}</div><button type="button" class="lnk" data-act="jconcq" data-p="${pid}" data-n="${esc(n)}">testar com o mentor</button></div></div>`; }).join("")}</div>`, { style: `--c:${D.cor}` });
+}
+function jSessForm(pid0) {
+  const F = (J.sf ||= { pid: pid0 || "med" }), pid = pid0 || F.pid;
+  return `<div class="form f2"><label>Pilar<select data-jsf="pid"${pid0 ? " disabled" : ""}>${J_ORDER.map(p => `<option value="${p}"${pid === p ? " selected" : ""}>${esc(J_PIL[p].nome)}</option>`).join("")}</select></label><label>Técnica<select data-jsf="tec">${[...J_TEC[pid], "Outra"].map(t => `<option${F.tec === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select></label>
+    <label>Minutos<input type="number" min="1" data-jsf="min" value="${esc(F.min || "")}"></label><label>Qualidade da atenção (1 a 5)<input type="number" min="1" max="5" data-jsf="qual" value="${esc(F.qual || "")}"></label>
+    <label>Como estava antes (1 agitado · 5 sereno)<input type="number" min="1" max="5" data-jsf="antes" value="${esc(F.antes || "")}"></label><label>Como ficou depois (1 a 5)<input type="number" min="1" max="5" data-jsf="depois" value="${esc(F.depois || "")}"></label></div>
+    <div class="form f1"><label>Notas<input type="text" data-jsf="notas" value="${esc(F.notas || "")}" placeholder="o que apareceu, o que ajudou"></label></div><div class="row"><button type="button" class="btn sm primary" data-act="jsess" data-p="${pid}">${ic("check")}Registrar sessão</button></div>`;
+}
+function jPraticas() {
+  const s28 = jSessStats(28), ss = jData().sess.slice().sort((a, b) => b.data.localeCompare(a.data) || b.at - a.at), w0 = weekStart(TODAY), wks = Array.from({ length: 12 }, (_, i) => addDays(w0, -7 * (11 - i)));
+  const byPil = J_ORDER.map(p => ({ p, d: wks.map(w => sum(jData().sess.filter(x => x.pid === p && x.data >= w && x.data <= addDays(w, 6)).map(x => +x.min || 0))) }));
+  return `<p class="lead">A prática de todo dia: programas guiados, o registro das sessões e o que elas mudam em você. As sessões também viram métricas nos Cruzamentos, para comparar com o humor, o sono e o estresse.</p>
+    ${kpiRow([kmini("var(--jp-med)", "Minutos · 4 semanas", num(s28.min, 0), plural(s28.n, "sessão", "sessões")), kmini("var(--jp-tao)", "Qualidade média", s28.qual == null ? "–" : num(s28.qual, 1) + "/5", "atenção nas sessões"), kmini("var(--jp-esp)", "Antes → depois", s28.delta == null ? "–" : (s28.delta >= 0 ? "+" : "") + num(s28.delta, 2), s28.nd ? `média de ${plural(s28.nd, "sessão", "sessões")} (depois − antes)` : "registre antes e depois"), kmini("var(--jp-bud)", "Programas", J_PROG.filter(p => jProgInfo(p) && !jProgInfo(p).fim).length, "em andamento")])}
+    <div class="g2c">
+      ${panel(`${ic("flag")}Programas guiados`, `<div class="jprogs">${J_PROG.map(p => jProgCard(p, true)).join("")}</div>`, { cls: "span2" })}
+      ${panel(`${ic("pulse")}Registrar sessão`, jSessForm(null))}
+      ${vis("jsessw", "Minutos por semana", ss.length ? colChart(wks.map(w => fmtD(w)), byPil.map(({ p, d }) => ({ name: J_PIL[p].nome, color: J_PIL[p].cor, data: d })), { h: 230, w: 560, stacked: true, fmt: v => num(v, 0) }) : emptyChart("As sessões registradas aparecem aqui, semana a semana."), { sub: "últimas 12 semanas, por pilar", nofocus: true, act: `<button type="button" class="lnk" data-act="jcruz">cruzar com o humor</button>` })}
+      ${panel(`${ic("table")}Sessões <small>${ss.length}</small>`, ss.length ? `<div class="hscroll"><table class="dt"><thead><tr><th>Dia</th><th>Pilar</th><th>Técnica</th><th class="num">Min</th><th class="num">Qualidade</th><th class="num">Antes → depois</th><th></th></tr></thead><tbody>${ss.slice(0, 20).map(x => `<tr><td>${fmtD(x.data)}</td><td><span class="jtag sm" style="--c:${J_PIL[x.pid].cor}">${esc(J_PIL[x.pid].nome)}</span></td><td>${esc(x.tec)}<div class="muted small">${esc(x.notas || "")}</div></td><td class="num">${x.min || ""}</td><td class="num">${x.qual || ""}</td><td class="num">${x.antes && x.depois ? `${x.antes} → ${x.depois}` : ""}</td><td><button type="button" class="vb" data-act="jsessdel" data-id="${x.id}" aria-label="Apagar">${ic("trash")}</button></td></tr>`).join("")}</tbody></table></div>` : `<div class="empty">Nenhuma sessão ainda.</div>`, { cls: "span2" })}
+    </div>`;
 }
 
 /* ================================================================ carreira: hub de BIM, infraestrutura e geotecnia
@@ -7563,9 +7715,9 @@ function crFind(name) {
 const crLv = name => { const x = crFind(name); return isNum(+x?.atual) && +x?.atual > 0 ? +x.atual : 0; };
 const crAlvo = name => { const x = crFind(name); return isNum(+x?.alvo) && +x?.alvo > 0 ? +x.alvo : 0; };
 /* o que conta como coberto antes da avaliação: o que está no mapa e o que o cargo atual evidencia */
-const crSrc = name => { const P = crData().perfil; return P.mapa.some(m => norm(m) === norm(name)) ? "mapa" : P.cargoComp.some(m => norm(m) === norm(name)) ? "cargo" : ""; };
+const crSrc = name => { const P = crData().perfil; return P.mapa.some(m => norm(m) === norm(name)) ? "mapa" : P.cargoComp.some(m => norm(m) === norm(name)) ? "cargo" : crEvid(name).length ? "projeto" : ""; };
 const crInMap = name => !!crSrc(name);
-const crSrcPill = name => { const s = crSrc(name); return s === "mapa" ? crPill("no seu mapa", "var(--a-car)") : s === "cargo" ? crPill("pelo cargo atual", "var(--a-pro)") : ""; };
+const crSrcPill = name => { const s = crSrc(name), e = crEvid(name).length; return (s === "mapa" ? crPill("no seu mapa", "var(--a-car)") : s === "cargo" ? crPill("pelo cargo atual", "var(--a-pro)") : "") + (e ? " " + crPill(`em ${plural(e, "projeto", "projetos")}`, "var(--good)") : ""); };
 function crSet(name, field, v) {
   let x = S.comp.find(c => norm(c.nome) === norm(name));
   if (!x) { x = { id: uid(), nome: name, atual: "", alvo: "", grupo: CR_COMP.find(c => c.n === name)?.g || "" }; S.comp.push(x); }
@@ -7620,7 +7772,8 @@ const crGrpCol = g => CR_GRP.find(x => x[0] === g)?.[2] || "var(--muted)";
 
 /* ---------------------------------------------------------------- páginas */
 function pCarreiraHub(R) {
-  const f = { panorama: crPanorama, avaliacao: crAvaliacao, objetivos: crObjetivos, geotecnia: crGeotecnia, plano: crPlano, biblioteca: crBiblioteca }[SUB] || crPanorama;
+  crExtra();
+  const f = { panorama: crPanorama, avaliacao: crAvaliacao, portfolio: crPortfolio, objetivos: crObjetivos, decisoes: crDecisoes, geotecnia: crGeotecnia, plano: crPlano, mercado: crMercado, biblioteca: crBiblioteca }[SUB] || crPanorama;
   return f(R);
 }
 function crFlow() {
@@ -7780,6 +7933,11 @@ function crFacts() {
   if (C.gaps.length) L.push("Gaps que a pessoa escreveu: " + C.gaps.map(x => x.t).join("; "));
   if (C.obj.length) L.push("Objetivos: " + C.obj.map(o => `${o.t} (${o.tipo}, ${o.st || "ativo"}${o.prazo ? `, até ${o.prazo}` : ""}${crObjProg(o) != null ? `, ${pct(crObjProg(o))} das ações` : ""})`).join("; "));
   const ab = C.acoes.filter(a => a.st !== "feito"); if (ab.length) L.push("Ações abertas: " + ab.slice(0, 12).map(a => `${a.t}${a.prazo ? ` (${a.prazo})` : ""}${a.marco ? " [marco]" : ""}`).join("; "));
+  const X = crExtra();
+  if (X.port.length) L.push("Portfólio de projetos:\n" + X.port.slice(0, 10).map(p => `- ${p.t}${p.cliente ? ` (${p.cliente})` : ""}, ${p.tipo}, ${p.fase}${p.papel ? `, papel: ${p.papel}` : ""}${p.numeros ? `; números: ${p.numeros}` : ""}${(p.comps || []).length ? `; competências: ${p.comps.join(", ")}` : ""}${p.r ? `; resultado: ${trunc(p.r, 200)}` : ""}`).join("\n"));
+  const DR = crDecCalc(); if (DR.rows.some(r => r.score != null)) L.push("Matriz de decisão (média ponderada, 1 a 5): " + DR.rows.map(r => `${r.x.t} ${r.score == null ? "–" : num(r.score, 2)}`).join("; ") + `; critérios e pesos: ${X.dec.crit.map(c => `${c.n} ${c.w}`).join(", ")}.`);
+  const MK = crMerc(); if (MK.n) L.push(`Referências de mercado registradas pela pessoa: ${MK.n}, mediana ${eur(MK.med)} (de ${eur(MK.min)} a ${eur(MK.max)})${MK.pctl != null ? `; ${pct(MK.pctl)} delas em ou abaixo da RAL dela` : ""}.`);
+  if (X.merc.pedido.ral || X.merc.pedido.livello) L.push(`Pedido de negociação: ${X.merc.pedido.livello ? `livello ${X.merc.pedido.livello}` : ""} ${MK.pedido ? `RAL ${eur(MK.pedido)}${MK.aum != null ? ` (${pct(MK.aum, 1)})` : ""}` : ""}.`);
   L.push(`Geotecnia: ${C.geo.modo}${C.geo.interesse ? `; interesse: ${trunc(C.geo.interesse, 200)}` : ""}${C.geo.objetivos.length ? `; objetivos: ${C.geo.objetivos.map(o => o.t).join("; ")}` : ""}.`);
   return L;
 }
@@ -7850,6 +8008,143 @@ function crChange(t) {
   if (ds.crev) { const n = ds.crev; let x = S.comp.find(c => norm(c.nome) === norm(n)); if (!x) { if (!t.value.trim()) return true; crSet(n, "atual", 0); x = S.comp.find(c => norm(c.nome) === norm(n)); } x.evid = t.value.trim(); touch("comp", { label: "Evidência", noRender: true }); return true; }
   if (ds.crgeo) { C.geo[ds.crgeo] = t.value.trim(); touch("carreira", { label: "Geotecnia", noRender: true }); return true; }
   if (ds.crobjst) { const o = C.obj.find(z => z.id === ds.crobjst); if (o) { o.st = t.value; touch("carreira", { label: "Status do objetivo" }); } return true; }
+  return false;
+}
+
+/* ---------------------------------------------------------------- portfólio, decisões e mercado
+   portfólio: carreira.port (projetos com competências usadas, números e STAR) — cada projeto é evidência das competências;
+   decisões: carreira.dec { crit: [[nome, peso]], cen: [{ id, t, notas, s: { crit: 1..5 } }] } — média ponderada aberta;
+   mercado: carreira.merc { bench: [{ fonte, cargo, cidade, ral, data, tipo }], resp, conq, pedido } — mediana e percentil. */
+const CR_PTIPO = ["Rodovia", "Ferrovia", "Infraestrutura urbana", "Edificação", "Outro"];
+const CR_PFASE = ["PFTE (viabilidade técnico-econômica)", "Projeto executivo", "Obra", "Operação e manutenção", "Outro"];
+const CR_CRIT0 = [["Remuneração", 4], ["Aprendizado e crescimento", 4], ["Alinhamento com o meu norte", 5], ["Estabilidade", 3], ["Qualidade de vida e tempo", 4], ["Risco baixo", 2]];
+const CR_CEN0 = ["Ficar e negociar o livello", "BIM Manager em outra empresa", "Especializar em 4D/5D", "Consultoria em paralelo (Partita IVA)", "Cursos e treinamentos em paralelo"];
+const CR_BTIPO = ["Proposta real", "Anúncio de vaga", "Pesquisa salarial", "Colega da área", "Outro"];
+function crExtra() { const c = crData(); c.port ||= []; c.dec ||= {}; c.dec.crit ||= CR_CRIT0.map(([n, w]) => ({ id: uid(), n, w })); c.dec.cen ||= []; c.merc ||= {}; c.merc.bench ||= []; c.merc.resp ||= []; c.merc.conq ||= []; c.merc.pedido ||= {}; return c; }
+const crEvid = name => (crData().port || []).filter(p => (p.comps || []).includes(name));
+function crDecCalc() {
+  const D = crExtra().dec, cs = D.crit.filter(c => +c.w > 0), W = sum(cs.map(c => +c.w));
+  const rows = D.cen.map(x => { const rated = cs.filter(c => +x.s?.[c.id] > 0), Wr = sum(rated.map(c => +c.w)); return { x, score: Wr ? sum(rated.map(c => c.w * x.s[c.id])) / Wr : null, comp: W ? Wr / W : 0 }; }).sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+  let sens = [];
+  if (rows.length >= 2 && rows[0].score != null && rows[1].score != null) { const gap = rows[0].score - rows[1].score, b = rows[1].x;
+    sens = cs.map(c => { const cur = +b.s?.[c.id] || 0, need = gap * W / c.w; return { c, cur, need, ok: cur > 0 && cur + need <= 5 + 1e-9 }; }).sort((p, q) => p.need - q.need); }
+  return { rows, sens, W, cs };
+}
+function crMerc() {
+  const M = crExtra().merc, v = M.bench.map(b => +b.ral).filter(x => x > 0).sort((a, b) => a - b), ral = crRemun().ral;
+  const med = v.length ? (v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2) : null;
+  return { n: v.length, med, min: v[0] ?? null, max: v.at(-1) ?? null, ral, pctl: ral && v.length ? v.filter(x => x <= ral).length / v.length : null, gap: ral && med ? med - ral : null, tfr: ral ? ral / 13.5 : null, pedido: +M.pedido.ral || null, aum: ral && +M.pedido.ral ? (+M.pedido.ral - ral) / ral : null };
+}
+function crPortfolio() {
+  const C = crExtra(), F = CR.f, P = C.port.slice().sort((a, b) => (b.inicio || "").localeCompare(a.inicio || "")), sel = F["pt.comps"] || [];
+  const ev = crCat().map(c => [c.n, crEvid(c.n).length]).filter(([, n]) => n).sort((a, b) => b[1] - a[1]);
+  const card = p => `<article class="crport"><header><b>${esc(p.t)}</b><span class="crtag" style="--c:var(--a-car)">${esc(p.tipo || "")}</span>${p.fase ? `<span class="crtag" style="--c:var(--a-pro)">${esc(p.fase.split(" (")[0])}</span>` : ""}<small class="muted">${esc([p.cliente, [p.inicio, p.fim || "atual"].filter(Boolean).join(" a ")].filter(Boolean).join(" · "))}</small></header>
+      ${p.papel ? `<p><b>Papel:</b> ${esc(p.papel)}</p>` : ""}${p.numeros ? `<p class="crnum">${ic("table")}${esc(p.numeros)}</p>` : ""}
+      <div class="row wrap">${(p.comps || []).map(c => `<span class="crgap">${esc(c)}</span>`).join("")}</div>
+      ${p.s || p.ta || p.a || p.r ? `<details class="crdet"><summary>STAR</summary><dl class="crstar">${[["Situação", p.s], ["Tarefa", p.ta], ["Ação", p.a], ["Resultado", p.r]].filter(([, v]) => v).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl></details>` : `<p class="muted small">Sem STAR ainda: ele vira resposta pronta de entrevista e item de CV.</p>`}
+      <div class="row wrap"><button type="button" class="lnk" data-act="crptedit" data-id="${p.id}">editar</button><button type="button" class="lnk" data-act="crptdel" data-id="${p.id}">apagar</button></div></article>`;
+  const fld = (k, l, ph = "", tp = "text") => `<label>${l}<input type="${tp}" data-crf="pt.${k}" value="${esc(F["pt." + k] || "")}" placeholder="${esc(ph)}"></label>`, ta = (k, l, ph) => `<label>${l}<textarea rows="2" data-crf="pt.${k}" placeholder="${esc(ph)}">${esc(F["pt." + k] || "")}</textarea></label>`;
+  return `<p class="lead">Os projetos que você fez são a prova do que sabe: cada um liga competências, números e uma história no formato STAR (situação, tarefa, ação, resultado). Eles contam como evidência na avaliação, viram respostas de entrevista e saem prontos num CV.</p>
+    ${kpiRow([kmini("var(--a-car)", "Projetos", C.port.length, `${C.port.filter(p => p.s && p.a && p.r).length} com STAR completo`), kmini("var(--a-pro)", "Competências com evidência", `${ev.length} de ${crCat().length}`, "usadas em pelo menos um projeto"), kmini("var(--good)", "Com números", C.port.filter(p => p.numeros).length, "resultados quantificados")])}
+    <div class="g2c">
+      ${panel(`${ic(F["pt.id"] ? "edit" : "plus")}${F["pt.id"] ? "Editar projeto" : "Novo projeto"}`, `<div class="form f2">${fld("t", "Projeto", "ex.: variante SS20, lotto 2")}${fld("cliente", "Cliente ou contratante")}<label>Tipo<select data-crf="pt.tipo">${CR_PTIPO.map(o => `<option${F["pt.tipo"] === o ? " selected" : ""}>${o}</option>`).join("")}</select></label><label>Fase<select data-crf="pt.fase">${CR_PFASE.map(o => `<option${F["pt.fase"] === o ? " selected" : ""}>${o}</option>`).join("")}</select></label>${fld("papel", "O seu papel", "ex.: coordenador BIM de infraestrutura")}${fld("inicio", "Início", "", "month")}${fld("fim", "Fim (vazio = em curso)", "", "month")}${fld("numeros", "Números", "km, valor da obra, disciplinas, interferências resolvidas")}</div>
+        <div class="flbl">Competências usadas</div><div class="row wrap crptc">${crCat().map(c => `<button type="button" class="jchip${sel.includes(c.n) ? " on" : ""}" style="--c:${crGrpCol(c.g)}" data-act="crptc" data-n="${esc(c.n)}">${esc(c.n)}</button>`).join("")}</div>
+        <div class="form f1">${ta("s", "Situação", "o contexto e o desafio")}${ta("ta", "Tarefa", "o que cabia a você")}${ta("a", "Ação", "o que você fez, com quais ferramentas e decisões")}${ta("r", "Resultado", "o que mudou, de preferência em números")}</div>
+        <div class="row wrap"><button type="button" class="btn primary" data-act="crptsave">${ic("check")}${F["pt.id"] ? "Salvar" : "Guardar projeto"}</button>${F["pt.id"] ? `<button type="button" class="btn" data-act="crptcancel">Cancelar</button>` : ""}</div>`, { cls: "span2" })}
+      ${panel(`${ic("brief")}Projetos <small>${C.port.length}</small>`, P.length ? `<div class="crports">${P.map(card).join("")}</div>` : `<div class="empty">Comece pelo projeto mais recente da Nemesis ou pelo que mais orgulha você.</div>`, { cls: "span2" })}
+      ${panel(`${ic("target")}Evidência por competência`, ev.length ? hbars(ev.slice(0, 14).map(([n, k]) => ({ l: n, v: k, color: crGrpCol(CR_COMP.find(c => c.n === n)?.g), txt: plural(k, "projeto", "projetos") })), {}) : `<div class="empty">Marque as competências usadas em cada projeto.</div>`)}
+      ${panel(`${ic("download")}CV e entrevistas`, `<p class="muted">O CV sai do perfil, das competências avaliadas e dos projetos. A versão local é um texto pronto para editar; o Mentor da Carreira escreve versões em italiano ou inglês e treina as respostas STAR com você.</p>
+        <div class="row wrap"><button type="button" class="btn sm" data-act="crcv">${ic("download")}Baixar CV e portfólio (.md)</button><button type="button" class="btn sm" data-act="crcvai" data-l="italiano">${ic("spark")}CV em italiano com o mentor</button><button type="button" class="btn sm" data-act="crcvai" data-l="inglês">${ic("spark")}CV em inglês com o mentor</button></div>
+        <div class="flbl">Treinar entrevista</div><div class="row wrap"><select id="crent" aria-label="Cargo da entrevista">${CR_TRI.map(t => `<option value="${t.id}">${esc(t.t)}</option>`).join("")}</select><button type="button" class="btn sm primary" data-act="crentrev">${ic("spark")}Começar</button></div>`)}
+    </div>`;
+}
+function crDecisoes() {
+  const C = crExtra(), D = C.dec, R = crDecCalc(), F = CR.f;
+  const grid = D.cen.length ? `<div class="hscroll"><table class="dt crdec"><thead><tr><th>Critério</th><th class="num">Peso</th>${D.cen.map(x => `<th>${esc(trunc(x.t, 28))}<button type="button" class="vb" data-act="crcendel" data-id="${x.id}" aria-label="Apagar cenário">${ic("trash")}</button></th>`).join("")}</tr></thead>
+      <tbody>${D.crit.map(c => `<tr><th>${esc(c.n)}<button type="button" class="vb" data-act="crcritdel" data-id="${c.id}" aria-label="Apagar critério">${ic("x")}</button></th><td class="num"><input type="number" min="0" max="5" step="1" class="crw" data-crdw="${c.id}" value="${c.w}" aria-label="Peso de ${esc(c.n)}"></td>${D.cen.map(x => `<td><select class="crs" data-crds="${x.id}|${c.id}" aria-label="${esc(x.t)} em ${esc(c.n)}"><option value="">–</option>${[1, 2, 3, 4, 5].map(n => `<option${+x.s?.[c.id] === n ? " selected" : ""}>${n}</option>`).join("")}</select></td>`).join("")}</tr>`).join("")}
+      <tr class="crdtot"><th>Nota ponderada</th><td></td>${D.cen.map(x => { const r = R.rows.find(z => z.x === x); return `<td><b>${r.score == null ? "–" : num(r.score, 2)}</b>${r.comp < 1 ? `<small class="muted"> · ${pct(r.comp)} avaliado</small>` : ""}</td>`; }).join("")}</tr></tbody></table></div>` : `<div class="empty">Acrescente pelo menos dois cenários para comparar.</div>`;
+  const top = R.rows[0], sec = R.rows[1];
+  return `<p class="lead">Para as decisões grandes: compare cenários com os critérios que importam para você, cada um com o seu peso. A conta é aberta (Σ peso × nota ÷ Σ peso) e, abaixo, o que teria que mudar para o segundo lugar passar o primeiro.</p>
+    <div class="g2c">
+      ${panel(`${ic("plus")}Cenários`, `<div class="row wrap cradd"><input type="text" data-crf="dc.t" value="${esc(F["dc.t"] || "")}" placeholder="Um caminho possível"><button type="button" class="btn sm" data-act="crcenadd">${ic("plus")}Acrescentar</button></div>
+        <div class="flbl">Modelos</div><div class="row wrap">${CR_CEN0.filter(t => !D.cen.some(x => x.t === t)).map(t => `<button type="button" class="jchip" style="--c:var(--a-car)" data-act="crcen0" data-t="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+        <div class="row wrap cradd"><input type="text" data-crf="dc.c" value="${esc(F["dc.c"] || "")}" placeholder="Outro critério (ex.: perto da família)"><button type="button" class="btn sm" data-act="crcritadd">${ic("plus")}Critério</button></div>`)}
+      ${panel(`${ic("sprout")}Resultado`, R.rows.length ? `${hbars(R.rows.filter(r => r.score != null).map((r, i) => ({ l: r.x.t, v: r.score, color: i === 0 ? "var(--a-car)" : "var(--muted)", txt: num(r.score, 2) })), { max: 5 })}
+        ${top?.score != null && sec?.score != null ? `<div class="flbl">O que teria que ser verdade para “${esc(trunc(sec.x.t, 40))}” passar “${esc(trunc(top.x.t, 40))}”</div><p class="muted small">Diferença: ${num(top.score - sec.score, 2)} ponto. Subir a nota do segundo em um critério de peso w muda a média em Δ × w ÷ ${R.W}.</p><ul class="crsens">${R.sens.slice(0, 5).map(s => `<li>${s.ok ? "" : `<span class="muted">`}<b>${esc(s.c.n)}</b> (peso ${s.c.w}): de ${s.cur || "–"} para ${num(Math.min(99, s.cur + s.need), 1)}${s.ok ? "" : " — não basta, passa de 5</span>"}</li>`).join("")}</ul>` : ""}` : `<div class="empty">O ranking aparece quando houver notas.</div>`)}
+      ${panel(`${ic("table")}Matriz`, grid + `<p class="muted small">Notas de 1 (péssimo) a 5 (ótimo); peso 0 tira o critério da conta. “Risco baixo”: 5 é o mais seguro.</p><div class="row"><button type="button" class="btn sm" data-act="crdecai">${ic("spark")}Discutir a decisão com o Mentor da Carreira</button></div>`, { cls: "span2" })}
+    </div>`;
+}
+function crMercado() {
+  const C = crExtra(), M = C.merc, x = crMerc(), F = CR.f, P = C.perfil;
+  const bs = M.bench.slice().sort((a, b) => (+b.ral || 0) - (+a.ral || 0));
+  const dots = x.n ? (() => { const all = [...M.bench.map(b => +b.ral).filter(v => v > 0), x.ral || 0, x.pedido || 0].filter(Boolean), lo = Math.min(...all) * .95, hi = Math.max(...all) * 1.05, W = 1000, X = v => 20 + (W - 40) * (v - lo) / (hi - lo || 1);
+      let g = `<line x1="20" y1="40" x2="${W - 20}" y2="40" class="crtl-ax"/>`; M.bench.filter(b => +b.ral > 0).forEach(b => { g += `<circle cx="${X(+b.ral).toFixed(1)}" cy="40" r="6" class="crbd"><title>${esc(b.cargo || "")} · ${esc(b.fonte || "")} · ${eur(+b.ral)}</title></circle>`; });
+      if (x.med) g += `<line x1="${X(x.med).toFixed(1)}" y1="22" x2="${X(x.med).toFixed(1)}" y2="58" class="crtl-hoje"/><text x="${X(x.med).toFixed(1)}" y="16" text-anchor="middle" class="ax">mediana ${eur(x.med)}</text>`;
+      if (x.ral) g += `<rect x="${(X(x.ral) - 6).toFixed(1)}" y="34" width="12" height="12" transform="rotate(45 ${X(x.ral).toFixed(1)} 40)" class="crbme"/><text x="${X(x.ral).toFixed(1)}" y="74" text-anchor="middle" class="crtl-l">você ${eur(x.ral)}</text>`;
+      if (x.pedido) g += `<rect x="${(X(x.pedido) - 5).toFixed(1)}" y="35" width="10" height="10" class="crbped"/><text x="${X(x.pedido).toFixed(1)}" y="92" text-anchor="middle" class="ax">pedido ${eur(x.pedido)}</text>`;
+      return `<div class="hscroll">${svgWrap(W, 100, g, "Referências de mercado, a sua RAL e o pedido")}</div>`; })() : emptyChart("Acrescente referências reais: propostas, anúncios com faixa salarial, pesquisas, colegas.");
+  const list = (k, ph) => `<div class="crlist">${M[k].map(i => `<div class="cri"><div>${esc(i.t)}${i.proj ? ` <span class="muted small">· ${esc(C.port.find(p => p.id === i.proj)?.t || "")}</span>` : ""}</div><button type="button" class="vb" data-act="crmdel" data-k="${k}" data-id="${i.id}" aria-label="Apagar">${ic("trash")}</button></div>`).join("") || `<div class="empty">${ph}</div>`}</div>
+    <div class="row wrap cradd"><input type="text" data-crf="m.${k}" value="${esc(F["m." + k] || "")}" placeholder="${ph}">${C.port.length ? `<select data-crf="m.${k}p" aria-label="Projeto"><option value="">projeto (opcional)</option>${C.port.map(p => `<option value="${p.id}"${F["m." + k + "p"] === p.id ? " selected" : ""}>${esc(trunc(p.t, 40))}</option>`).join("")}</select>` : ""}<button type="button" class="btn sm" data-act="crmadd" data-k="${k}">${ic("plus")}Acrescentar</button></div>`;
+  return `<p class="lead">Onde a sua remuneração está em relação ao mercado, com referências que você mesmo registra (nada inventado), e um dossiê para negociar: o que você faz, o que conquistou e o que vai pedir.</p>
+    ${kpiRow([kmini("var(--a-fin)", "Sua RAL", x.ral ? eur(x.ral) : "–", x.ral ? `${eur(crRemun().b)} × ${crRemun().m}` : "preencha em Avaliação atual"), kmini("var(--a-car)", "Mediana das referências", x.med ? eur(x.med) : "–", `${plural(x.n, "referência", "referências")}`), kmini(x.pctl != null && x.pctl < .5 ? "var(--warn)" : "var(--good)", "Sua posição", x.pctl == null ? "–" : `${pct(x.pctl)}`, x.pctl == null ? "precisa da RAL e de referências" : "das referências ficam em ou abaixo da sua RAL"), kmini("var(--a-pro)", "TFR por ano", x.tfr ? `≈ ${eur(x.tfr)}` : "–", "RAL ÷ 13,5 (art. 2120 do Código Civil)")])}
+    <div class="g2c">
+      ${vis("crbench", "Referências de mercado", dots, { cls: "span2", sub: "cada ponto é uma referência; o losango é a sua RAL; a linha tracejada é a mediana", nofocus: true })}
+      ${panel(`${ic("plus")}Nova referência`, `<div class="form f2"><label>RAL (€)<input type="number" min="0" step="500" data-crf="bm.ral" value="${esc(F["bm.ral"] || "")}"></label><label>Cargo<input type="text" data-crf="bm.cargo" value="${esc(F["bm.cargo"] || "")}" placeholder="ex.: BIM Manager infraestrutura"></label><label>Cidade<input type="text" data-crf="bm.cidade" value="${esc(F["bm.cidade"] || P.cidade || "")}"></label><label>Tipo<select data-crf="bm.tipo">${CR_BTIPO.map(o => `<option${F["bm.tipo"] === o ? " selected" : ""}>${o}</option>`).join("")}</select></label></div><div class="form f1"><label>Fonte<input type="text" data-crf="bm.fonte" value="${esc(F["bm.fonte"] || "")}" placeholder="onde viu: anúncio, empresa, pesquisa, pessoa"></label></div><div class="row"><button type="button" class="btn sm primary" data-act="crbadd">${ic("check")}Guardar referência</button></div>`)}
+      ${panel(`${ic("table")}Referências <small>${x.n}</small>`, bs.length ? `<div class="crlist">${bs.map(b => `<div class="cri"><div><b>${eur(+b.ral)}</b> ${esc(b.cargo || "")} <span class="muted small">${esc([b.cidade, b.tipo, b.fonte, b.data && fmtDY(b.data)].filter(Boolean).join(" · "))}</span></div><button type="button" class="vb" data-act="crbdel" data-id="${b.id}" aria-label="Apagar">${ic("trash")}</button></div>`).join("")}</div>` : `<div class="empty">Nenhuma referência ainda.</div>`)}
+      ${panel(`${ic("brief")}Dossiê de negociação`, `<div class="flbl">Responsabilidades que exerço</div>${list("resp", "ex.: coordeno a equipe de modelagem do setor Stradale")}
+        <div class="flbl">Conquistas do último ano</div>${list("conq", "ex.: entreguei o executivo do lote 2 sem retrabalho")}
+        <div class="flbl">O pedido</div><div class="form f2"><label>Livello pedido<input type="text" data-crmp="livello" value="${esc(M.pedido.livello || "")}" placeholder="ex.: 2"></label><label>RAL pedida (€)<input type="number" min="0" step="500" data-crmp="ral" value="${esc(M.pedido.ral || "")}"></label></div>
+        <p class="muted small">${x.aum != null ? `Pedido = ${x.aum >= 0 ? "+" : ""}${pct(x.aum, 1)} sobre a RAL atual${x.med ? `; ${x.pedido > x.med ? "acima" : x.pedido < x.med ? "abaixo" : "igual à"} da mediana das suas referências` : ""}.` : "Informe a RAL pedida para ver o aumento."}</p>
+        <div class="row wrap"><button type="button" class="btn sm" data-act="crdoss">${ic("download")}Baixar o dossiê (.md)</button><button type="button" class="btn sm primary" data-act="crnegai">${ic("spark")}Ensaiar a conversa com o mentor</button></div>`, { cls: "span2" })}
+    </div>`;
+}
+/* textos exportados */
+function crCVmd() {
+  const C = crExtra(), P = C.perfil, av = crCat().filter(c => crLv(c.n)).sort((a, b) => crLv(b.n) - crLv(a.n));
+  return [`# ${S.cfg.nome || "Currículo"}`, [P.cargo, P.empresa, P.cidade].filter(Boolean).join(" · "), "", "## Formação", ...P.formacao.map(f => `- ${[f.curso, f.tipo, f.inst, f.fim].filter(Boolean).join(", ")}`), "", "## Experiência", ...P.exp.map(x => `- **${x.cargo}**${x.org ? `, ${x.org}` : ""}${x.inicio ? ` (${x.inicio} a ${x.fim || "atual"})` : ""}${x.desc ? `: ${x.desc}` : ""}`),
+    "", "## Projetos", ...C.port.flatMap(p => [`### ${p.t}${p.cliente ? ` · ${p.cliente}` : ""}`, [p.tipo, p.fase, p.papel, [p.inicio, p.fim || (p.inicio ? "atual" : "")].filter(Boolean).join(" a ")].filter(Boolean).join(" · "), p.numeros ? `- Números: ${p.numeros}` : "", p.a ? `- ${p.a}` : "", p.r ? `- Resultado: ${p.r}` : "", (p.comps || []).length ? `- Competências: ${p.comps.join(", ")}` : "", ""]).filter((l, i, a) => l !== "" || a[i - 1] !== ""),
+    "## Competências", ...av.map(c => `- ${c.n}: ${CR_LV[crLv(c.n)]}`), "", "## Certificações", ...P.cert.map(x => `- ${x.nome}${x.emissor ? `, ${x.emissor}` : ""}${x.data ? ` (${x.data})` : ""}`), "", "## Idiomas", ...P.idiomas.map(x => `- ${x.nome}${x.nivel ? ` ${x.nivel}` : ""}`)].join("\n");
+}
+function crDossMd() {
+  const C = crExtra(), M = C.merc, x = crMerc(), P = C.perfil, r = P.remun;
+  return [`# Dossiê de negociação · ${fmtDY(TODAY)}`, "", `**Hoje:** ${[P.cargo, P.empresa].filter(Boolean).join(", ")}; ${r.contrato || ""}${r.ccnl ? `, CCNL ${r.ccnl}` : ""}${r.livello ? `, livello ${r.livello}` : ""}; RAL ${x.ral ? eur(x.ral) : "–"}.`, `**Pedido:** ${M.pedido.livello ? `livello ${M.pedido.livello}` : ""}${M.pedido.livello && x.pedido ? "; " : ""}${x.pedido ? `RAL ${eur(x.pedido)} (${x.aum >= 0 ? "+" : ""}${pct(x.aum, 1)})` : ""}`, "",
+    "## Responsabilidades que exerço", ...M.resp.map(i => `- ${i.t}${i.proj ? ` (${C.port.find(p => p.id === i.proj)?.t || ""})` : ""}`), "", "## Conquistas do último ano", ...M.conq.map(i => `- ${i.t}${i.proj ? ` (${C.port.find(p => p.id === i.proj)?.t || ""})` : ""}`), "",
+    "## Projetos que sustentam o pedido", ...C.port.filter(p => p.r || p.numeros).map(p => `- **${p.t}**: ${[p.numeros, p.r].filter(Boolean).join("; ")}`), "",
+    "## Referências de mercado", x.n ? `Mediana ${eur(x.med)} em ${plural(x.n, "referência", "referências")} (de ${eur(x.min)} a ${eur(x.max)}); ${pct(x.pctl)} delas ficam em ou abaixo da RAL atual.` : "Nenhuma registrada.", ...M.bench.map(b => `- ${eur(+b.ral)} · ${[b.cargo, b.cidade, b.tipo, b.fonte].filter(Boolean).join(" · ")}`)].join("\n");
+}
+function crAskCar(text) { MST.input.car = ""; setHash("mentor", "car"); setTimeout(() => askMentor("car", text), 80); }
+function crClick2(t) {
+  const ds = t.dataset, a = ds.act; if (!a || !a.startsWith("cr")) return false;
+  const C = crExtra(), F = CR.f;
+  if (a === "crptc") { const s = (F["pt.comps"] ||= []), i = s.indexOf(ds.n); i >= 0 ? s.splice(i, 1) : s.push(ds.n); render(); return true; }
+  if (a === "crptsave") { const g = k => String(F["pt." + k] ?? "").trim(); if (!g("t")) { toast("Dê um nome ao projeto."); return true; }
+    const rec = { id: F["pt.id"] || uid(), t: g("t"), cliente: g("cliente"), tipo: F["pt.tipo"] || CR_PTIPO[0], fase: F["pt.fase"] || CR_PFASE[0], papel: g("papel"), inicio: g("inicio"), fim: g("fim"), numeros: g("numeros"), comps: [...(F["pt.comps"] || [])], s: g("s"), ta: g("ta"), a: g("a"), r: g("r") };
+    const i = C.port.findIndex(p => p.id === rec.id); i >= 0 ? C.port[i] = rec : C.port.push(rec);
+    Object.keys(F).filter(k => k.startsWith("pt.")).forEach(k => delete F[k]); touch("carreira", { label: i >= 0 ? "Projeto editado" : "Projeto no portfólio" }); return true; }
+  if (a === "crptedit") { const p = C.port.find(z => z.id === ds.id); if (!p) return true; Object.keys(F).filter(k => k.startsWith("pt.")).forEach(k => delete F[k]); for (const k of ["t", "cliente", "tipo", "fase", "papel", "inicio", "fim", "numeros", "s", "ta", "a", "r"]) F["pt." + k] = p[k] || ""; F["pt.comps"] = [...(p.comps || [])]; F["pt.id"] = p.id; render(); window.scrollTo({ top: 0 }); return true; }
+  if (a === "crptcancel") { Object.keys(F).filter(k => k.startsWith("pt.")).forEach(k => delete F[k]); render(); return true; }
+  if (a === "crptdel") { C.port = C.port.filter(p => p.id !== ds.id); touch("carreira", { label: "Projeto apagado" }); undoToast("Projeto apagado"); return true; }
+  if (a === "crcv") { saveFile(`cv-portfolio-${TODAY}.md`, crCVmd()); return true; }
+  if (a === "crcvai") { crAskCar(`Escreva o meu CV em ${ds.l}, no formato europeu, a partir do meu perfil, das competências avaliadas e dos projetos do portfólio (use os números e os resultados STAR). Uma página, verbos de ação, sem inventar nada que não esteja nos dados; marque com [?] o que faltar.`); return true; }
+  if (a === "crentrev") { const tr = CR_TRI.find(z => z.id === ($("#crent")?.value || "manager")); crAskCar(`Vamos treinar uma entrevista para ${tr.t} (${tr.papel}). Faça uma pergunta por vez, como o recrutador faria, e espere a minha resposta. Depois de cada resposta, avalie de 1 a 5 em: estrutura STAR, números, relevância para o cargo; diga o que melhorar e faça a próxima pergunta. Use os meus projetos do portfólio para escolher as perguntas.`); return true; }
+  if (a === "crcenadd" || a === "crcen0") { const tt = a === "crcen0" ? ds.t : String(F["dc.t"] || "").trim(); if (!tt) return true; C.dec.cen.push({ id: uid(), t: tt, s: {} }); delete F["dc.t"]; touch("carreira", { label: "Cenário" }); return true; }
+  if (a === "crcendel") { C.dec.cen = C.dec.cen.filter(x => x.id !== ds.id); touch("carreira", { label: "Cenário apagado" }); undoToast("Cenário apagado"); return true; }
+  if (a === "crcritadd") { const n = String(F["dc.c"] || "").trim(); if (!n) return true; C.dec.crit.push({ id: uid(), n, w: 3 }); delete F["dc.c"]; touch("carreira", { label: "Critério" }); return true; }
+  if (a === "crcritdel") { C.dec.crit = C.dec.crit.filter(c => c.id !== ds.id); touch("carreira", { label: "Critério apagado" }); undoToast("Critério apagado"); return true; }
+  if (a === "crdecai") { const R = crDecCalc(); crAskCar(`Estou decidindo entre caminhos de carreira. Matriz (critério, peso; notas de 1 a 5 por cenário): ${C.dec.crit.map(c => `${c.n} (peso ${c.w}): ${C.dec.cen.map(x => `${x.t} ${x.s?.[c.id] || "–"}`).join(", ")}`).join(" | ")}. Ranking: ${R.rows.map(r => `${r.x.t} ${r.score == null ? "–" : num(r.score, 2)}`).join("; ")}. Questione as minhas notas e os pesos, aponte o que estou subestimando, e diga o que teria que ser verdade para a primeira opção dar errado.`); return true; }
+  if (a === "crbadd") { const ral = +F["bm.ral"]; if (!(ral > 0)) { toast("Informe a RAL da referência."); return true; } C.merc.bench.push({ id: uid(), ral, cargo: String(F["bm.cargo"] || "").trim(), cidade: String(F["bm.cidade"] || "").trim(), tipo: F["bm.tipo"] || CR_BTIPO[0], fonte: String(F["bm.fonte"] || "").trim(), data: TODAY }); ["ral", "cargo", "fonte"].forEach(k => delete F["bm." + k]); touch("carreira", { label: "Referência de mercado" }); return true; }
+  if (a === "crbdel") { C.merc.bench = C.merc.bench.filter(b => b.id !== ds.id); touch("carreira", { label: "Referência apagada" }); undoToast("Referência apagada"); return true; }
+  if (a === "crmadd") { const k = ds.k, v = String(F["m." + k] || "").trim(); if (!v) return true; C.merc[k].push({ id: uid(), t: v, proj: F["m." + k + "p"] || "" }); delete F["m." + k]; delete F["m." + k + "p"]; touch("carreira", { label: "Dossiê" }); return true; }
+  if (a === "crmdel") { C.merc[ds.k] = C.merc[ds.k].filter(i => i.id !== ds.id); touch("carreira", { label: "Apagado" }); return true; }
+  if (a === "crdoss") { saveFile(`dossie-negociacao-${TODAY}.md`, crDossMd()); return true; }
+  if (a === "crnegai") { crAskCar(`Vamos ensaiar a conversa de negociação com a minha empresa. Faça o papel do diretor ou do RH, com objeções realistas (orçamento, momento, enquadramento no CCNL), uma por vez, e espere a minha resposta. Depois de cada resposta, diga o que funcionou e o que eu poderia dizer melhor. Use o meu dossiê: ${crDossMd().slice(0, 3500)}`); return true; }
+  return false;
+}
+function crChange2(t) {
+  const ds = t.dataset, C = crExtra();
+  if (ds.crdw) { const c = C.dec.crit.find(z => z.id === ds.crdw); if (c) { c.w = clamp(Math.round(+t.value || 0), 0, 5); touch("carreira", { label: "Peso" }); } return true; }
+  if (ds.crds) { const [xid, cid] = ds.crds.split("|"), x = C.dec.cen.find(z => z.id === xid); if (x) { x.s ||= {}; if (t.value) x.s[cid] = +t.value; else delete x.s[cid]; touch("carreira", { label: "Nota do cenário" }); } return true; }
+  if (ds.crmp) { C.merc.pedido[ds.crmp] = ds.crmp === "ral" ? (+t.value || "") : t.value.trim(); touch("carreira", { label: "Pedido" }); return true; }
   return false;
 }
 
@@ -8211,8 +8506,8 @@ function render() {
     integ: () => ["Integrações", "Notion, agenda, Apple Health, Google Fit e bancos, nos dois sentidos onde dá", pInteg],
     ajustes: () => ["Ajustes", "Metas, áreas, listas, mentores e aparência", pAjustes],
     lazer: () => ["Lazer", { inicio: "Oito temas, cada um com um mentor que conversa no seu nível", existencial: "Os quatro mentores da Jornada, dentro do Lazer" }[SUB] || (lzDiv(SUB)?.mid ? `${esc(lzDiv(SUB).nome)} com ${esc(MENTOR_DEF[lzDiv(SUB).mid].nome)}` : ""), pLazerHub],
-    carreira: () => ["Carreira", { panorama: "Onde você está, aonde quer chegar, como e com o quê", avaliacao: "O retrato de hoje: perfil, competências, pontos fortes e gaps", objetivos: "O norte, as trilhas e os objetivos com prazo", geotecnia: "Uma frente nova, no seu ritmo", plano: "Do gap à ação, com marcos verificáveis", biblioteca: "Normas, cursos, livros e ferramentas por tópico" }[SUB] || "", pCarreiraHub],
-    jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", confluencias: "Onde os quatro caminhos se encontram", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
+    carreira: () => ["Carreira", { panorama: "Onde você está, aonde quer chegar, como e com o quê", avaliacao: "O retrato de hoje: perfil, competências, pontos fortes e gaps", portfolio: "Os projetos que provam o que você sabe", decisoes: "Cenários comparados com os seus critérios e pesos", mercado: "Referências de mercado e o dossiê para negociar", objetivos: "O norte, as trilhas e os objetivos com prazo", geotecnia: "Uma frente nova, no seu ritmo", plano: "Do gap à ação, com marcos verificáveis", biblioteca: "Normas, cursos, livros e ferramentas por tópico" }[SUB] || "", pCarreiraHub],
+    jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", confluencias: "Onde os quatro caminhos se encontram", praticas: "Programas guiados, sessões de prática e o que elas mudam", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
     semana: () => ["Fechamento da semana", `Semana de ${wkLabel(fsWk())}`, pSemana],
     radar: () => ["Radar", "Alertas antes que aconteçam, com evidência do seu histórico e conferência depois", pRadar],
     exp: () => ["Experimentos", "Teste uma mudança e meça o efeito em você", pExp],
@@ -8297,7 +8592,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (capClick(t) || bmClick(t) || jClick(t) || crClick(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (capClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -8374,7 +8669,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (capChange(t) || bmChange(t) || jChange(t) || crChange(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (capChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }
