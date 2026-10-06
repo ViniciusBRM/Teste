@@ -150,6 +150,7 @@ function exampleData() {
   exampleAprofunda(D);
   exampleRedesenho(D);
   exampleJardim(D);
+  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: `${TODAY}T19:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
   return D;
 }
 

@@ -227,7 +227,7 @@ function paintLive() {
   scrollChat(true);
 }
 function scrollChat(soft) { const c = $("#mchat"); if (c && (!soft || c.scrollHeight - c.scrollTop - c.clientHeight < 160)) c.scrollTop = c.scrollHeight; }
-const USO_TXT = { salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"], ajustar_nivel: ["sprout", "Ajustou o nível"] };
+const USO_TXT = { ver_aba: ["eye", "Olhou a aba"], consultar_mentor: ["council", "Consultou o mentor"], levantar_conflito: ["flag", "Levou para você decidir"], salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"], ajustar_nivel: ["sprout", "Ajustou o nível"] };
 const usoHTML = us => (us || []).map(u => `<span class="uso">${ic(USO_TXT[u.t]?.[0] || "bolt")}<b>${USO_TXT[u.t]?.[1] || u.t}</b> ${esc(u.d)}</span>`).join("");
 function propHTML(mid, mi, p) {
   const lab = { tarefa: "Tarefa", meta: "Meta", habito: "Hábito", lembrete: "Lembrete" }[p.tipo];

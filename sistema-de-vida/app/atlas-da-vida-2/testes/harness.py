@@ -45,6 +45,15 @@ MOCK = r"""
     const P = promptOf(input);
     if (/TAREFA: CARTA DA SEMANA/.test(P)) { await emit("Esta semana mostrou **humor estável** e sono um pouco melhor.\n\n**Para celebrar:** a entrega no prazo.\n\n**Para observar:** as noites tardias.\n\n**Próxima semana:**\n1. Preparar a entrevista: separar 1 hora na segunda."); return { text, truncated: false }; }
     if (/TAREFA: RESUMO MENSAL/.test(P)) { await emit("Mês de entrevistas e estudo; humor oscilou com o sono, e os encontros com amigos ajudaram."); return { text, truncated: false }; }
+    if (T.ver_aba && /Você é o Secretário da Vida/.test(P)) {
+      const r1 = await T.ver_aba.execute({ aba: "agora" }, ctx); window.__calls.push({ kind: "tool", name: "ver_aba", n: String(r1).length });
+      const r2 = await T.consultar_mentor.execute({ mentor: "fin", pergunta: "Como está o orçamento do mês?" }, ctx); window.__calls.push({ kind: "tool", name: "consultar_mentor", r: r2 });
+      await emit("Olhei o **Agora** e falei com o Mentor do Dinheiro: o orçamento de restaurantes estourou.\n\n");
+      await T.propor.execute({ tipo: "lembrete", titulo: "Revisar o orçamento", quando: "2026-12-01T18:00", motivo: "restaurantes acima do teto" }, ctx);
+      await T.levantar_conflito.execute({ titulo: "Treino ou estudo às 18h?", contexto: "Os dois blocos disputam o mesmo horário.", opcoes: ["Treino", "Estudo"] }, ctx);
+      await emit("Proponho um lembrete e preciso que você decida o horário das 18h.");
+      return { text, truncated: false };
+    }
     if (T.consultar) { try { const r = await T.consultar.execute({ metrica: "sono", meses: 6 }, ctx); window.__calls.push({ kind: "tool", name: "consultar", r }); } catch (e) { window.__calls.push({ kind: "toolerr", name: "consultar", m: String(e.message || e) }); } }
     if (T.cruzar) { try { const r = await T.cruzar.execute({ x: "sono", y: "bem" }, ctx); window.__calls.push({ kind: "tool", name: "cruzar", r }); } catch (e) { window.__calls.push({ kind: "toolerr", name: "cruzar", m: String(e.message || e) }); } }
     if (T.buscar_diario) { const r = await T.buscar_diario.execute({ tema: "financas" }, ctx); window.__calls.push({ kind: "tool", name: "buscar_diario", n: r.length }); }
