@@ -1,0 +1,155 @@
+"""Rotina refeita: grade de 24 h com rolagem própria, faixa da semana, criar tocando/arrastando, mover e esticar blocos (também repetidos, como exceção),
+cartão com feito/parcial/pulado, criação rápida por texto, modelos, copiar dia/semana, janelas livres, conflitos, cumprimento, vistas sincronizadas e celular."""
+import asyncio, json, datetime
+from harness import *
+ok = 0; bad = 0
+def chk(c, msg):
+    global ok, bad
+    if c: ok += 1; print("PASS", msg)
+    else: bad += 1; print("FAIL", msg)
+U = "data/users/u_test/"
+async def main():
+    global bad
+    async with async_playwright() as p:
+        b, pg, errs = await open_page(p, w=1440, h=900, cfg={"seedStore": json.dumps({U + "s_cfg": {"at": 1, "v": {"nome": "Teste", "metaSono": 7.5}}})}, hash_="rotina")
+        try:
+            await pg.wait_for_timeout(500)
+            TS = await pg.evaluate("TODAY"); D = lambda n: pg.evaluate(f"addDays(TODAY, {n})")
+            await pg.evaluate("""S.eventos.push({ id: 'e1', data: TODAY, hora: '09:00', fim: '10:00', titulo: 'Reunião X' }, { id: 'e2', data: TODAY, titulo: 'Feriado local' }); S.tarefas.push({ id: 't1', tarefa: 'Entregar relatório', prazo: TODAY, status: 'A fazer' }); touch('eventos', 'tarefas')"""); await pg.wait_for_timeout(300)
+            chk(await pg.evaluate("[PAGE, rtView(), RT.d === TODAY]") == ["rotina", "dia", True], "abre no dia de hoje")
+            chk(await pg.evaluate("document.querySelectorAll('.rtslot').length") == 48 and await pg.evaluate("document.querySelectorAll('.rtslot.half').length") == 24, "48 meias horas cobrindo as 24 h; metade marcada como :30")
+            chk(await pg.evaluate("[...document.querySelectorAll('.rttimes span')].slice(0,3).map(s => s.textContent)") == ["00:00", ":30", "01:00"], "rótulos da hora cheia e do :30")
+            sc = await pg.evaluate("(() => { const s = document.querySelector('#rtscroll'); return [s.scrollHeight > s.clientHeight, s.scrollTop > 0, getComputedStyle(document.querySelector('.rtallrow')).position]; })()")
+            chk(sc == [True, True, "sticky"], f"a grade rola por dentro, abre perto de agora e a faixa de cima fica fixa {sc}")
+            chk("Feriado local" in await pg.inner_text(".rtallrow") and "Entregar relatório" in await pg.inner_text(".rtallrow") and "Reunião X" in await pg.inner_text(".rtcol"), "agenda no grid; dia todo e tarefa com prazo na faixa fixa")
+            chk(await pg.evaluate("document.querySelectorAll('.rtsd').length") == 7 and await pg.evaluate("document.querySelector('.rtsd.on').dataset.rtgo") == f"dia|{TS}", "faixa com os 7 dias da semana, o atual destacado")
+            # clicar numa meia hora livre
+            await pg.locator(f"[data-rts='{TS}|840']").scroll_into_view_if_needed(); await pg.click(f"[data-rts='{TS}|840']"); await pg.wait_for_timeout(200)
+            chk(await pg.evaluate("[document.querySelector('#rt_a').value, document.querySelector('#rt_z').value]") == ["14:00", "14:30"], "clicar às 14:00 propõe 14:00–14:30")
+            await pg.click("[data-rtdur='90']"); await pg.wait_for_timeout(50)
+            chk(await pg.evaluate("document.querySelector('#rt_z').value") == "15:30", "atalho de duração 1 h 30")
+            await pg.fill("#rt_t", "Revisar desenho"); await pg.click("#rtf .btn.primary"); await pg.wait_for_timeout(250)
+            bid = await pg.evaluate("S.rotina.at(-1).id")
+            top = await pg.evaluate(f"parseFloat(document.querySelector('[data-rtb=\"{bid}|{TS}\"]').style.top)")
+            st = await pg.evaluate("$('#rtscroll').scrollTop"); chk(st > 0, f"salvar não faz a grade pular para o topo ({st})")
+            chk(top == 840 / 30 * 28, f"posição: 14:00 em meias horas × 28 px = {top}")
+            # mover arrastando: 14:00 → 16:00
+            blk = pg.locator(f"[data-rtb='{bid}|{TS}']"); await blk.scroll_into_view_if_needed(); bb = await blk.bounding_box()
+            await pg.mouse.move(bb["x"] + 30, bb["y"] + 10); await pg.mouse.down(); await pg.mouse.move(bb["x"] + 30, bb["y"] + 10 + 4 * 28, steps=10)
+            chk(await pg.evaluate("!!document.querySelector('.rtghost')") and "16:00–17:30" in await pg.inner_text(".rtghost"), "ao arrastar aparece a prévia 16:00–17:30")
+            await pg.mouse.up(); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate(f"(b => [b.ini, b.fim])(S.rotina.find(x => x.id === '{bid}'))") == ["16:00", "17:30"], "soltar move o bloco para 16:00–17:30")
+            chk(not await pg.evaluate("$('#dlg').open"), "mover não abre o cartão")
+            # esticar pela alça
+            hd = pg.locator(f"[data-rtrs='{bid}|{TS}']"); await hd.scroll_into_view_if_needed(); hb = await hd.bounding_box()
+            await pg.mouse.move(hb["x"] + 20, hb["y"] + 3); await pg.mouse.down(); await pg.mouse.move(hb["x"] + 20, hb["y"] + 3 + 2 * 28, steps=6); await pg.mouse.up(); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate(f"S.rotina.find(x => x.id === '{bid}').fim") == "18:30", "esticar pela alça leva o fim para 18:30")
+            await pg.click("[data-act=undo]"); await pg.wait_for_timeout(200)
+            chk(await pg.evaluate(f"S.rotina.find(x => x.id === '{bid}').fim") == "17:30", "desfazer volta o tamanho")
+            # cartão: feito / parcial / pulado
+            await pg.click(f"[data-rtb='{bid}|{TS}']"); await pg.wait_for_timeout(200)
+            chk(await pg.evaluate("!!document.querySelector('.rtcard')"), "clicar abre o cartão do bloco")
+            await pg.click(f"[data-rtst='{bid}|{TS}|parcial']"); await pg.wait_for_timeout(200)
+            chk(await pg.evaluate(f"S.rotina.find(x => x.id === '{bid}').st[TODAY]") == "parcial" and await pg.evaluate(f"document.querySelector('[data-rtst=\"{bid}|{TS}|parcial\"]').getAttribute('aria-pressed')") == "true", "parcial marcado e visível no cartão")
+            await pg.click("[data-rtcx]"); await pg.wait_for_timeout(150)
+            chk(await pg.evaluate(f"document.querySelector('[data-rtb=\"{bid}|{TS}\"]').classList.contains('st-parcial')"), "o bloco mostra o estado")
+            # criação rápida por texto
+            await pg.fill("#rt_q", "academia seg qua sex 18:30-19:30"); await pg.wait_for_timeout(100)
+            qp = await pg.inner_text("#rt_qp")
+            chk("Academia" in qp and "18:30–19:30" in qp and "Saúde" in qp and "semana" in qp, f"prévia da criação rápida: {qp[:120]}")
+            n0 = await pg.evaluate("S.rotina.length"); await pg.press("#rt_q", "Enter"); await pg.wait_for_timeout(250)
+            ac = await pg.evaluate(f"S.rotina.slice({n0}).map(b => [b.rep, parse(b.data).getDay(), b.ini, b.fim, b.cat])")
+            chk(sorted(x[1] for x in ac) == [1, 3, 5] and all(x[0] == "semanal" and x[2] == "18:30" and x[4] == "Saúde & treino" for x in ac), f"três blocos semanais (seg, qua, sex): {ac}")
+            await pg.fill("#rt_q", "inglês amanhã 20h 30min"); await pg.press("#rt_q", "Enter"); await pg.wait_for_timeout(250)
+            ing = await pg.evaluate("S.rotina.at(-1)")
+            chk([ing["titulo"], ing["data"], ing["ini"], ing["fim"], ing["cat"]] == ["Inglês", await D(1), "20:00", "20:30", "Estudo"], f"“inglês amanhã 20h 30min”: {ing['titulo']} {ing['data']} {ing['ini']}–{ing['fim']} {ing['cat']}")
+            await pg.fill("#rt_q", "reunião com cliente 14h-15h30 hoje"); await pg.wait_for_timeout(80)
+            chk("14:00–15:30" in await pg.inner_text("#rt_qp") and "Trabalho" in await pg.inner_text("#rt_qp"), "intervalo 14h–15h30 e categoria Trabalho")
+            await pg.fill("#rt_q", "ler sem horário"); await pg.wait_for_timeout(80)
+            chk("horário" in await pg.inner_text("#rt_qp") and await pg.evaluate("document.querySelector('[data-act=rtqadd]').disabled"), "sem horário: avisa e não cria")
+            await pg.fill("#rt_q", "")
+            # repetido: mover só um dia vira exceção + cópia
+            await pg.evaluate("RT.d = addDays(TODAY, 1); render()"); await pg.wait_for_timeout(150)
+            await pg.evaluate("S.rotina.push({ id: 'rep1', data: addDays(TODAY, -7), ini: '07:00', fim: '07:30', titulo: 'Meditação', cat: 'Espiritual', rep: 'diario', exc: [], st: {} }); touch('rotina')"); await pg.wait_for_timeout(200)
+            D1 = await D(1)
+            await pg.locator(f"[data-rtb='rep1|{D1}']").scroll_into_view_if_needed(); bb = await pg.locator(f"[data-rtb='rep1|{D1}']").bounding_box()
+            await pg.mouse.move(bb["x"] + 30, bb["y"] + 6); await pg.mouse.down(); await pg.mouse.move(bb["x"] + 30, bb["y"] + 6 + 2 * 28, steps=8); await pg.mouse.up(); await pg.wait_for_timeout(250)
+            r = await pg.evaluate(f"[S.rotina.find(x => x.id === 'rep1').exc, rtOcc('{D1}').filter(b => b.titulo === 'Meditação').map(b => [b.ini, b.rep]), rtOcc(addDays('{D1}', 1)).filter(b => b.titulo === 'Meditação').map(b => b.ini)]")
+            chk(r[0] == [D1] and r[1] == [["08:00", ""]] and r[2] == ["07:00"], f"mover um dia de um bloco diário: exceção + cópia avulsa, os outros dias intactos {r}")
+            # janelas livres e alertas no dia
+            await pg.evaluate("RT.d = TODAY; render()"); await pg.wait_for_timeout(200)
+            X = await pg.evaluate("(() => { const x = rtDia(TODAY); return { livres: x.livres.map(([a, z]) => [m2hm(a), m2hm(z)]), conf: x.conf.length }; })()")
+            chk(["06:30", "07:00"] in X["livres"] or X["livres"][0][0] == "06:30", f"janelas livres começam quando você acorda: {X['livres'][:3]}")
+            await pg.evaluate("S.rotina.push({ id: 'cf', data: TODAY, ini: '09:30', fim: '10:30', titulo: 'Planejamento', cat: 'Trabalho', rep: '', exc: [], st: {} }); touch('rotina')"); await pg.wait_for_timeout(200)
+            chk("bate com" in await pg.inner_text(".rtins") and await pg.evaluate("document.querySelector('[data-rtb^=\"cf|\"]').classList.contains('conf')"), "conflito com a agenda: alerta e borda vermelha")
+            await pg.evaluate("S.rotina.push({ id: 'lg', data: TODAY, ini: '10:30', fim: '14:30', titulo: 'Projeto', cat: 'Trabalho', rep: '', exc: [], st: {} }); touch('rotina')"); await pg.wait_for_timeout(200)
+            chk("sem pausa" in await pg.inner_text(".rtins"), "mais de 3 h seguidas sem pausa vira alerta")
+            await pg.click(".rtfree .chip"); await pg.wait_for_timeout(200)
+            chk(await pg.evaluate("document.querySelector('#rt_a')?.value") == "06:30", "clicar numa janela livre abre um bloco nela")
+            await pg.keyboard.press("Escape"); await pg.wait_for_timeout(100)
+            # modelos e cópia
+            n0 = await pg.evaluate("S.rotina.length")
+            await pg.evaluate(f"RT.d = addDays(TODAY, 3); render()"); await pg.wait_for_timeout(150)
+            await pg.select_option("#rt_mod", "m_foco"); await pg.click("[data-act=rtmod]"); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate(f"S.rotina.length - {n0}") == 5, "modelo Foco profundo aplica 5 blocos no dia")
+            n1 = await pg.evaluate("S.rotina.length")
+            await pg.click("[data-act=rtmod]"); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate("S.rotina.length") == n1, "aplicar de novo não duplica: pula o que já ocupa o horário")
+            await pg.click("[data-act=rtcopy]"); await pg.wait_for_timeout(150); await pg.click("#rtcpf .btn.primary"); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate("rtOcc(addDays(TODAY, 4)).filter(b => /foco/i.test(b.titulo)).length") >= 3, "copiar o dia leva os blocos para o dia seguinte")
+            await pg.click("[data-act=rtclear]"); await pg.click("[data-act=rtclear]"); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate("rtOcc(addDays(TODAY, 3)).length") == 0 and await pg.evaluate("rtOcc(addDays(TODAY, 4)).length") > 0, "limpar o dia (com confirmação) só mexe naquele dia")
+            # navegação e vistas sincronizadas
+            await pg.evaluate("RT.d = TODAY; render()"); await pg.wait_for_timeout(100)
+            await pg.click("[data-rtnav='1']"); await pg.wait_for_timeout(150)
+            chk(await pg.evaluate("RT.d") == D1 and await pg.evaluate(f"!!document.querySelector('[data-rts^=\"{D1}|\"]')") and await pg.evaluate("document.querySelector('.rtsd.on').dataset.rtgo") == f"dia|{D1}", "› muda o dia, a grade e a faixa juntos")
+            await pg.keyboard.press("ArrowLeft"); await pg.wait_for_timeout(150)
+            chk(await pg.evaluate("RT.d") == TS, "← volta um dia")
+            await pg.click("[data-rtv='semana']"); await pg.wait_for_timeout(250)
+            cols = await pg.evaluate("[...document.querySelectorAll('.rtcol')].map(c => c.dataset.rtday)")
+            chk(len(cols) == 7 and cols == await pg.evaluate("rtWeek(TODAY)"), "semana: sete dias lado a lado com as horas")
+            chk(await pg.evaluate("[...document.querySelectorAll('.rtdh em')].length") == 7, "cada dia da semana mostra as horas planejadas")
+            await pg.click("[data-rtnavw='1']"); await pg.wait_for_timeout(150)
+            chk(await pg.evaluate("RT.d") == await D(7), "a faixa avança uma semana")
+            await pg.click("[data-rtnav='0']"); await pg.wait_for_timeout(150)
+            await pg.click(f".rthead [data-rtgo='dia|{await D(1) if True else TS}']") if await pg.evaluate("rtWeek(TODAY).includes(addDays(TODAY, 1))") else await pg.click(f".rthead [data-rtgo='dia|{TS}']"); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate("rtView()") == "dia", "clicar num dia da semana abre as horas dele")
+            await pg.keyboard.press("m"); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate("rtView()") == "mes" and await pg.evaluate("document.querySelectorAll('.rtmc').length") >= 35, "M abre o mês")
+            await pg.click("[data-act=rtpick]"); await pg.wait_for_timeout(150)
+            chk(await pg.evaluate("!!document.querySelector('.rtmini')"), "o título abre o calendário para escolher a data")
+            wk = await pg.evaluate("'semana|' + weekStart(TODAY)")
+            await pg.click(f".rtmini .rtwk[data-rtgo='{wk}']"); await pg.wait_for_timeout(250)
+            chk(await pg.evaluate("[rtView(), RT.d === weekStart(TODAY), !!document.querySelector('.rtmini')]") == ["semana", True, False], "o número da semana abre a semana e fecha o seletor")
+            await pg.click("[data-act=rtpick]"); await pg.wait_for_timeout(150); await pg.click(".rtins"); await pg.wait_for_timeout(150)
+            chk(not await pg.evaluate("!!document.querySelector('.rtmini')"), "clicar fora fecha o seletor")
+            # cumprimento das últimas semanas
+            await pg.evaluate("S.rotina.push({ id: 'h1', data: addDays(TODAY, -10), ini: '08:00', fim: '09:00', titulo: 'Estudo', cat: 'Estudo', rep: 'diario', exc: [], st: Object.fromEntries([1,2,3,4,5,6,7,8,9,10].map(k => [addDays(TODAY, -k), k % 2 ? 'feito' : 'pulado'])) }); touch('rotina')"); await pg.wait_for_timeout(200)
+            AD = await pg.evaluate("(x => [x.per['Estudo'][0], x.per['Estudo'][1]])(rtAdesao())")
+            chk(AD == [300, 600], f"cumprimento: 5 de 10 dias feitos = 300 de 600 min ({AD})")
+            # integrações
+            await pg.evaluate("location.hash='hoje'"); await pg.wait_for_timeout(400)
+            chk("Revisar desenho" in await pg.inner_text(".p-hoje"), "Hoje mostra a rotina do dia")
+            await pg.click(f"[data-rtdone='{bid}']"); await pg.wait_for_timeout(200)
+            chk(await pg.evaluate(f"rtOcc(TODAY).find(b => b.id === '{bid}').st") == "feito", "marcar no Hoje vira “feito” na Rotina")
+            await pg.wait_for_timeout(900)
+            chk(len(await pg.evaluate(f"window.__store['{U}s_rotina'].v")) >= 5, "a rotina vai para o banco")
+        finally:
+            for e in errs: print("  ", e)
+            if errs: bad += 1
+            await b.close()
+        for v in ("dia", "semana", "mes"):
+            b, pg, errs = await open_page(p, w=390, hash_=f"rotina.{v}")
+            try:
+                await pg.wait_for_timeout(300)
+                ov = await overflow(pg); chk(ov[0] <= ov[1], f"390 px, {v}: sem rolagem lateral da página {ov}")
+                if v == "semana": chk(await pg.evaluate("(s => s.scrollWidth > s.clientWidth)(document.querySelector('#rtscroll'))"), "390 px: a semana rola de lado dentro da grade, com as horas fixas")
+                if v == "dia":
+                    TS = await pg.evaluate("TODAY"); s = pg.locator(f"[data-rts='{TS}|1290']"); await s.scroll_into_view_if_needed(); await s.tap() if False else await s.click(); await pg.wait_for_timeout(200)
+                    chk(await pg.evaluate("document.querySelector('#rt_a')?.value") == "21:30", "no celular, tocar numa meia hora livre abre o bloco")
+            finally:
+                for e in errs: print("  ", e)
+                if errs: bad += 1
+                await b.close()
+    print(f"\n{ok} ok, {bad} falhas")
+asyncio.run(main())

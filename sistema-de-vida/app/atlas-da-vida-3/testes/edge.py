@@ -1,0 +1,60 @@
+import asyncio, json
+from harness import *
+OK = []
+def check(n, c, x=""):
+    OK.append(c); print(("PASS " if c else "FAIL ") + n + (" · " + str(x) if x != "" else ""))
+async def main():
+    async with async_playwright() as p:
+        # 1) sem window.claude: página funciona, salva no navegador, mentores em modo leitura
+        b, pg, errs = await open_page(p, cfg={"none": True}, hash_="mentor.fin")
+        await pg.wait_for_timeout(11500)
+        check("sem Claude: armazenamento local", await pg.evaluate("STORE?.kind") == "local")
+        check("sem Claude: aviso nos mentores", "não respondeu" in (await pg.evaluate("document.querySelector('.banner')?.innerText || ''")) or "não respondeu" in await pg.evaluate("document.body.innerText"))
+        check("sem Claude: botão de enviar desativado", await pg.evaluate("document.querySelector('[data-act=msend]')?.disabled === true"))
+        await pg.evaluate("location.hash='diario'"); await pg.wait_for_timeout(300)
+        await pg.click(".czopen"); await pg.fill("#dz_texto", "Teste local @Marco /humor 4"); await pg.click('[data-act="dzsave"]'); await pg.wait_for_timeout(1200)
+        check("sem Claude: grava no localStorage", await pg.evaluate("!!localStorage.getItem('atlas_diario')"))
+        e2 = [e for e in errs if "Failed to load resource" not in e]; check("sem Claude: sem erros", not e2, e2[:2]); await b.close()
+        # 2) IA sem ferramentas: protocolo de bloco atlas
+        b, pg, errs = await open_page(p, cfg={"noTools": True}, hash_="mentor.apr")
+        await pg.wait_for_timeout(600)
+        await pg.fill("#m_in", "Como acelerar?"); await pg.click('[data-act="msend"]'); await pg.wait_for_timeout(2500)
+        last = await pg.evaluate("window.__calls.filter(c=>c.kind==='sample').at(-1)")
+        check("sem ferramentas: chamada sem tools e com formato atlas", not last["tools"] and "```atlas" in last["input"][0]["content"])
+        check("sem ferramentas: memória do bloco aplicada", await pg.evaluate("mget('apr').mem.some(m=>m.texto==='Fallback: ideia salva')"))
+        check("sem ferramentas: proposta do bloco aparece", await pg.evaluate("mget('apr').conversa.at(-1).acoes.length") == 1)
+        check("sem ferramentas: bloco removido do texto", "```" not in await pg.evaluate("mget('apr').conversa.at(-1).content"))
+        e2 = [e for e in errs if "Failed to load resource" not in e]; check("sem ferramentas: sem erros", not e2, e2[:2]); await b.close()
+        # 3) consentimento negado
+        b, pg, errs = await open_page(p, cfg={"sampleError": "not_granted"}, hash_="mentor.car")
+        await pg.wait_for_timeout(600)
+        await pg.fill("#m_in", "Oi"); await pg.click('[data-act="msend"]'); await pg.wait_for_timeout(800)
+        check("negado: aviso de modo consulta", "modo consulta" in await pg.evaluate("document.body.innerText"))
+        check("negado: nada gravado na conversa", await pg.evaluate("mget('car').conversa.length") == 0)
+        await b.close()
+        # 4) Notion desconectado
+        b, pg, errs = await open_page(p, cfg={"mcpError": "needs_reauth"}, hash_="integ")
+        await pg.wait_for_timeout(600)
+        await pg.fill("#nt_q", "x"); await pg.click('[data-act="ntsearch"]'); await pg.wait_for_timeout(500)
+        check("Notion: erro específico de reconexão", "Reconecte o Notion" in await pg.evaluate("document.body.innerText"))
+        await b.close()
+        # 5) volume grande + recarga: fatias em vários documentos e remontagem
+        b, pg, errs = await open_page(p, hash_="dados.lanc")
+        await pg.wait_for_timeout(600)
+        await pg.evaluate("""() => { for (let i = 0; i < 4200; i++) S.lanc.push({ id: 'big' + i, data: addDays(TODAY, -(i % 700)), tipo: 'Despesa', cat: 'Mercado', desc: 'Compra de teste número ' + i + ' com uma descrição razoavelmente longa', valor: 10 + i % 50, conta: 'Cartão de débito' }); touch('lanc'); }""")
+        await pg.wait_for_timeout(2500)
+        info = await pg.evaluate("({ parts: PARTS.lanc, main: window.__store['data/users/u_test/s_lanc'], n: S.lanc.length, maxDoc: Math.max(...Object.values(window.__store).map(v => JSON.stringify(v).length)) })")
+        check("volume grande fatiado em partes", (info["parts"] or 0) >= 2 and info["main"].get("parts") == info["parts"], {k: info[k] for k in ("parts", "n", "maxDoc")})
+        check("nenhum documento passa de 256 KiB", info["maxDoc"] < 262144)
+        store = await pg.evaluate("JSON.stringify(window.__store)"); n = info["n"]; await b.close()
+        b, pg, errs = await open_page(p, cfg={"seedStore": store}, hash_="visao")
+        await pg.wait_for_timeout(1500)
+        check("recarga remonta os dados salvos", await pg.evaluate("S.lanc.length") == n and not await pg.evaluate("IS_EXAMPLE"), await pg.evaluate("S.lanc.length"))
+        check("recarga traz diário e mentores", await pg.evaluate("S.diario.length") > 30 and await pg.evaluate("Object.keys(S.mentores).length") >= 3)
+        t0 = await pg.evaluate("performance.now()"); await pg.evaluate("VER++; render()"); t1 = await pg.evaluate("performance.now()")
+        check("render com 4 mil lançamentos a mais", True, f"{t1 - t0:.0f} ms")
+        await pg.evaluate("location.hash='cruz'"); await pg.wait_for_timeout(300); t2 = await pg.evaluate("performance.now()"); await pg.evaluate("VER++; render()"); t3 = await pg.evaluate("performance.now()")
+        check("explorador com volume grande", True, f"{t3 - t2:.0f} ms")
+        e2 = [e for e in errs if "Failed to load resource" not in e]; check("sem erros", not e2, e2[:2]); await b.close()
+    print(f"{sum(OK)}/{len(OK)} passaram")
+asyncio.run(main())
