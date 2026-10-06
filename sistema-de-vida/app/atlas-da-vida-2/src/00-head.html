@@ -1,6 +1,7 @@
 <title>Atlas da Vida 2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&amp;text=%E7%81%B5%E7%A6%85%E9%81%93%E4%BD%9B%E5%BF%83%E5%9B%AD&amp;display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
 <style>
 /* Layout: barra lateral de atlas + tela de relatório em 12 colunas com trilho de contexto à direita; abas de páginas embaixo (estilo Power BI).
@@ -1425,7 +1426,7 @@ tr.dim td{opacity:.5}
 /* ===== jardim interior, mandala e bússola vivas */
 .jdlay+.g2c{align-items:start}.jdlay{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:start;margin:12px 0 14px}
 @media (max-width:1100px){.jdlay{grid-template-columns:minmax(0,1fr)}}
-.jdmain{padding:10px}.jdscene{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#f2ead9;max-width:860px;margin:0 auto}.jdscene>svg{display:block;width:100%;height:auto}
+.jdmain{padding:10px}.jdscene{max-width:880px;margin:0 auto;padding:6px 0}.jdscene>svg{display:block;width:100%;height:auto}
 .jdaside{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}.jdaside h3{display:flex;gap:8px;align-items:center;margin:2px 0 6px;font-size:17px}
 @media (max-width:1100px){.jdaside{position:static;max-height:none}}
 .jdplaces{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.jdplaces .chip{display:inline-flex;gap:5px;align-items:center;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:12.5px;cursor:pointer;color:var(--ink-2)}
@@ -1442,41 +1443,45 @@ tr.dim td{opacity:.5}
 .jdparts small{color:var(--muted)}.jdaxes{display:grid;gap:4px;margin:8px 0}.jdaxes>div{display:grid;grid-template-columns:52px 1fr 40px;gap:8px;align-items:center;font-size:12.5px}.jdaxes .jdbar{margin:0}
 .jdsvg .jd-hot{cursor:pointer;outline:none}.jdsvg .jd-hot:focus-visible{outline:none}.jdsvg .jd-hot:focus-visible>*:not(text){filter:drop-shadow(0 0 4px var(--accent))}
 .jdsvg .jd-hot.on{filter:drop-shadow(0 0 6px rgba(255,236,150,.9))}.jdsvg .jd-hot:hover{filter:brightness(1.06) drop-shadow(0 0 3px rgba(255,255,255,.6))}
-.jd-soil{fill:#26221e;opacity:.18}.jd-fruit{stroke:#26221e;stroke-width:.7}.jd-lbl{font:600 15px/1 "Kaiti SC","STKaiti","KaiTi","Songti SC","Noto Serif",Georgia,serif;fill:#26221e;paint-order:stroke;stroke:rgba(242,234,217,.85);stroke-width:3.5px;letter-spacing:.02em}
-.jd-sub{font:italic 11.5px/1 "Noto Serif",Georgia,serif;fill:#4a4239;paint-order:stroke;stroke:rgba(242,234,217,.85);stroke-width:3px}
-.jd-title{font:italic 22px "Noto Serif",Georgia,serif;fill:#26221e;opacity:.55;letter-spacing:.3em}
-.jd-sway{transform-box:fill-box;transform-origin:50% 100%;animation:jdsway var(--d,5s) ease-in-out infinite alternate}.jd-dorm{filter:grayscale(.7)}
-.jd-seed{animation:jdpulse 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.jd-blos{animation:jdbloom 1.2s ease-out both;transform-box:fill-box;transform-origin:center}
-.jd-petal{animation:jdfall 6s linear infinite}.jd-drops ellipse{fill:#5f7f9a;animation:jddrop 1.1s ease-in 3 both}
-.jd-water{fill:none;stroke:#7d98ad;stroke-opacity:.8;stroke-linecap:round}.jd-flow{fill:none;stroke:#f6f0e2;stroke-dasharray:10 34;stroke-linecap:round;opacity:.65;animation:jdflow 4s linear infinite}.jd-ripple{fill:none;stroke:#f6f0e2;stroke-width:1.2;opacity:.7}
+.jdsvg{filter:drop-shadow(0 10px 22px rgba(0,0,0,.28))}.jd-mount{fill:#d8c39c;stroke:#6b5236;stroke-width:2.5}
+.jd-moondisc{fill:#fbf5e6;stroke:#1d1915;stroke-opacity:.22;stroke-width:.8}.jd-unlit{fill:#1d1915;fill-opacity:.2}
+.jd-it{font:600 11.5px/1 var(--f-ui),system-ui,sans-serif;letter-spacing:.26em}.jd-il{font:italic 14.5px/1 var(--f-display),Georgia,serif}.jd-is{font:italic 11.5px/1 var(--f-display),Georgia,serif;opacity:.72}
+.jd-seal-c{display:none;font:21px/1 "Ma Shan Zheng",serif;fill:#f1e6cf}.jd-cjk .jd-seal-c{display:inline}.jd-cjk .jd-seal-s{display:none}.jd-gseal .jd-seal-c{font-size:17px}
+.jd-plabel{font:italic 14px var(--f-display),Georgia,serif;fill:#1d1915;paint-order:stroke;stroke:rgba(241,230,207,.92);stroke-width:4px;pointer-events:none}
+.jdsimb{display:flex;gap:6px;align-items:flex-start;color:var(--ink-2);margin:-2px 0 8px}.jdsimb .ico svg{width:14px;height:14px}
+.jd-fruit{stroke:#1d1915;stroke-width:.6;stroke-opacity:.75}.jd-seed{animation:jdpulse 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.jd-blos,.jd-lotus{animation:jdbloom 1.2s ease-out both;transform-box:fill-box;transform-origin:center}.jd-lotus{transform-origin:50% 100%}
+.jd-petal{animation:jdfall 7s linear infinite}.jd-drops ellipse{fill:#6f8fa3;animation:jddrop 1.1s ease-in 3 both}
+.jd-flow{fill:none;stroke:#1d1915;stroke-opacity:.42;stroke-width:1.15;stroke-linecap:round;stroke-dasharray:34 14 8 18;animation:jdflow 6s linear infinite}.jd-flow.still{animation:none;stroke-opacity:.2}
 .jd-hitw{fill:none;stroke:transparent;stroke-width:28}
-.jd-pondeye{fill:#f4ecdc;stroke:#26221e;stroke-opacity:.5;stroke-width:1.5}.jd-pad{fill:#4d6a4c;fill-opacity:.75}.jd-lotus path{fill:#e7a3b8;stroke:#a24a64;stroke-width:.7;animation:jdbloom 1.4s ease-out both;transform-box:fill-box;transform-origin:50% 100%}.jd-lotus .jd-lc{fill:#f6d2df}
-.jd-cambed{fill:none;stroke:#26221e;stroke-opacity:.16;stroke-width:12;stroke-linecap:round}
-.jd-cam{fill:none;stroke:#e9dcbf;stroke-width:6;stroke-linecap:round;stroke-dasharray:9 6}.jd-cam.jd-off{stroke:#b9ad95;stroke-width:3;stroke-dasharray:2 8;opacity:.9}.jd-cam.jd-ready{stroke:#d9a441;animation:jdready 1.6s ease-in-out infinite}
-.jd-open .jd-cam{animation:jdopen 1.4s ease-out both}.jd-arch{fill:none;stroke:#26221e;stroke-width:4;stroke-opacity:.85}.jd-arch.jd-ruin{stroke-dasharray:4 7;opacity:.45}.jd-deck{stroke:#8b6b46;stroke-width:4}
-.jd-mosaic{fill:#efe4c9;stroke:#26221e;stroke-width:2.2}.jd-mosaic2{fill:none;stroke:#26221e;stroke-opacity:.35;stroke-dasharray:2 4}.jd-rose{fill:#26221e;fill-opacity:.75}.jd-rose.sm{fill-opacity:.35}
-.jd-needle{transform-box:view-box;transform-origin:500px 500px;transition:transform 1s}
-.jd-rockw{fill:#5d574f;fill-opacity:.42}.jd-hole{fill:#f2ead9;stroke:#26221e;stroke-opacity:.6}.jd-rock{fill:#6e675e;fill-opacity:.55;stroke:#26221e;stroke-width:1.6}.jd-block{fill:#e6dbc4;stroke:#26221e;stroke-opacity:.7}
-.jd-ready-ring{fill:none;stroke:#b23a2a;stroke-width:2;stroke-dasharray:4 5;animation:jdready 1.6s ease-in-out infinite}
-.jd-hit .jd-rock,.jd-shop.jd-hit .jd-wood{animation:jdshake .45s ease-in-out 2}
-.jd-mnt{fill:#26221e;fill-opacity:.42}.jd-mnt2{fill:#26221e;fill-opacity:.18}.jd-mist{stroke:#f2ead9;stroke-width:9;stroke-linecap:round;opacity:.85}.jd-mini{fill:#b23a2a}
-.jd-thatch{fill:#7a6a52;fill-opacity:.5}.jd-log{fill:#8a6a48;fill-opacity:.7;stroke:#26221e;stroke-width:1.2}.jd-ring{fill:none;stroke:#f2ead9;stroke-width:.9}.jd-plank{fill:#d6bc8f;stroke:#26221e;stroke-width:.7}
-.jd-wood{fill:#a3845c;stroke:#26221e;stroke-width:.8}.jd-post,.jd-cord{stroke:#26221e;stroke-width:3;stroke-linecap:round}.jd-cord{stroke-width:1.3}
-.jd-wall{fill:#e8ddc6;stroke:#26221e;stroke-width:2}.jd-moongate{fill:#26221e;fill-opacity:.55}.jd-eave{fill:none;stroke:#26221e;stroke-width:3.4;stroke-linecap:round}
-.jd-eye{fill:#26221e;fill-opacity:.62}.jd-stone{fill:#e8ddc6;stroke:#26221e;stroke-width:1.4}.jd-step{stroke:#26221e;stroke-width:1.2;opacity:.7}.jd-col{fill:#9c3b2b;stroke:#26221e;stroke-width:.8}.jd-cap{fill:#d8c7a2;stroke:#26221e;stroke-width:.6}
-.jd-roof{fill:#26221e;fill-opacity:.92}.jd-door{fill:#f2ead9;fill-opacity:.92;stroke:#26221e;stroke-width:1.3}.jd-glass{fill:#f2ead9;stroke:#26221e;stroke-width:1}.jd-bell{fill:#b8913e;stroke:#26221e;stroke-width:.9}.jd-altar{fill:#9c3b2b}
-.jd-flame path{fill:#e0782f;filter:drop-shadow(0 0 4px #ffcc66);transform-box:fill-box;transform-origin:50% 100%;animation:jdflick 1.2s ease-in-out infinite alternate}.jd-ember path{fill:#8f8a7f}
-.jd-ghost{opacity:.6}.jd-ghost *{fill:none!important;stroke:#f2ead9!important;stroke-dasharray:3 4;stroke-width:1!important;filter:none!important}
+.jd-cambed{fill:none;stroke:#1d1915;stroke-opacity:.22;stroke-width:6;stroke-linecap:round;stroke-dasharray:.1 18}.jd-cambed.off{stroke-opacity:.14;stroke-width:4}
+.jd-cam{fill:none;stroke:#efe5cf;stroke-opacity:.7;stroke-width:3.4;stroke-linecap:round;stroke-dasharray:.1 18}.jd-cam.jd-off{stroke-opacity:.3;stroke-width:2.4}
+.jd-cam.jd-ready{stroke:#b0352a;stroke-opacity:1;stroke-width:5.5;animation:jdready 1.6s ease-in-out infinite}.jd-open .jd-cam{animation:jdopen 1.4s ease-out both}
+.jd-arch{fill:none;stroke:#1d1915;stroke-width:3;stroke-opacity:.9;paint-order:stroke}.jd-bridge .jd-arch{stroke-width:2.6}.jd-arch.jd-ruin{stroke-dasharray:3 7;opacity:.45}
+.jd-bridge{filter:drop-shadow(0 0 1.5px #efe5cf)}.jd-deck{stroke:#1d1915;stroke-width:2.2}.jd-rail{fill:none;stroke:#1d1915;stroke-width:1.1;stroke-opacity:.85}
+.jd-step{stroke:#1d1915;stroke-width:2;stroke-linecap:round;stroke-opacity:.75}
+.jd-stone{fill:#e9dfca;stroke:#1d1915;stroke-width:1.1}.jd-joint{stroke:#1d1915;stroke-width:.8;stroke-opacity:.6}.jd-floor{fill:#cdb48a;fill-opacity:.75;stroke:#1d1915;stroke-width:.8}
+.jd-col{fill:#a8402e;stroke:#1d1915;stroke-width:.6}.jd-cap{fill:#d8c7a2;stroke:#1d1915;stroke-width:.5}
+.jd-roof{fill:#1d1915;fill-opacity:.9}.jd-tile{stroke:#f1e6cf;stroke-opacity:.28;stroke-width:1}.jd-eave{fill:none;stroke:#1d1915;stroke-width:2.6;stroke-linecap:round}.jd-finial{fill:#1d1915}
+.jd-glass{fill:#f1e6cf;stroke:#1d1915;stroke-width:.8}.jd-bell{fill:#b8913e;stroke:#1d1915;stroke-width:.8}.jd-cord{stroke:#1d1915;stroke-width:1.2;fill:none;stroke-linecap:round}
+.jd-post{stroke:#a8402e;stroke-width:3;stroke-linecap:round}.jd-lintel{fill:none;stroke:#1d1915;stroke-width:2.4;stroke-linecap:round}
+.jd-altar{fill:#7a5b33;stroke:#1d1915;stroke-width:.6}.jd-smoke{fill:none;stroke:#1d1915;stroke-opacity:.38;stroke-width:1;stroke-dasharray:60;animation:jdsmoke 4.5s linear infinite}.jd-glow{fill:#f0a040;filter:drop-shadow(0 0 3px #ffb347)}
+.jd-ember .jd-altar{fill:#6d6457}
+.jd-ghost{opacity:.7}.jd-ghost *{fill:none!important;stroke:#776d5f!important;stroke-dasharray:2.5 3;stroke-width:.9!important;filter:none!important}
 .jd-pop{animation:jdpop .9s cubic-bezier(.2,1.4,.4,1) both;transform-box:fill-box;transform-origin:50% 100%}
-.jd-fog{fill:#f2ead9;opacity:.9;animation:jdfog 9s ease-in-out infinite alternate}.jd-lock rect{fill:#26221e;opacity:.7}.jd-lock path{stroke:#26221e;stroke-width:2.4;opacity:.7}.jd-fogg{pointer-events:none}
-.jd-fly{fill:#fff3a0;filter:drop-shadow(0 0 5px #fff3a0);animation:jdfly 4s ease-in-out infinite alternate}.jd-bfly path{fill:#26221e;fill-opacity:.7;animation:jdfly 5s ease-in-out infinite alternate}
-.jd-star{fill:#fdf6d8;animation:jdtw 3s ease-in-out infinite}.jd-nightveil{fill:#0e1626;opacity:.5;pointer-events:none}.jd-duskveil{fill:#c86a3a;opacity:.1;pointer-events:none}.jd-leaf{pointer-events:none}
-.jd-seal,.jd-cloud,.jd-title{pointer-events:none}
-.jdsvg .jd-hot.on{filter:drop-shadow(0 0 7px rgba(178,58,42,.55))}.jdsvg .jd-hot:hover{filter:drop-shadow(0 0 4px rgba(38,34,30,.35))}
-@keyframes jdfall{from{transform:translateY(0);opacity:.8}to{transform:translate(14px,60px);opacity:0}}
+.jd-mosaic{fill:#efe5cf;stroke:#1d1915;stroke-width:1}.jd-rose{fill:#1d1915;fill-opacity:.7}.jd-rose.sm{fill-opacity:.35}.jd-needle-l{stroke:#b0352a;stroke-width:1.8;stroke-linecap:round}
+.jd-cairn{fill:#d6cdbb;stroke:#1d1915;stroke-width:.9}.jd-ready-ring{fill:none;stroke:#b0352a;stroke-width:1.6;stroke-dasharray:3 4;animation:jdready 1.6s ease-in-out infinite}
+.jd-hit path,.jd-shop.jd-hit .jd-slips{animation:jdshake .45s ease-in-out 2}
+.jd-fog{fill:#f1e6cf;opacity:.92;animation:jdfog 9s ease-in-out infinite alternate}.jd-fogg{pointer-events:none}
+.jd-fly{fill:#fff3a0;filter:drop-shadow(0 0 5px #fff3a0);animation:jdfly 4s ease-in-out infinite alternate}.jd-bfly path{animation:jdfly 5s ease-in-out infinite alternate}.jd-crane{animation:jdfly 7s ease-in-out infinite alternate}
+.jd-nightveil{fill:#0c1322;opacity:.5;pointer-events:none}.jd-duskveil{fill:#c8743a;opacity:.1;pointer-events:none}.jd-leaf{pointer-events:none}
+.jd-seal,.jd-gseal,.jd-bagua{pointer-events:none}
+.jdsvg .jd-hot.on{filter:drop-shadow(0 0 6px rgba(176,53,42,.65))}.jdsvg .jd-hot:hover{filter:drop-shadow(0 0 4px rgba(176,53,42,.4))}
+.jdproj td{vertical-align:top;font-size:12.5px}.jdproj td:nth-child(3){min-width:220px}
+@keyframes jdfall{from{transform:translateY(0);opacity:.8}to{transform:translate(14px,60px);opacity:0}}@keyframes jdsmoke{from{stroke-dashoffset:60;opacity:.1}50%{opacity:.5}to{stroke-dashoffset:0;opacity:0}}
 @keyframes jdsway{from{transform:rotate(-1.4deg)}to{transform:rotate(1.4deg)}}@keyframes jdtw{50%{opacity:.3}}@keyframes jdpulse{50%{transform:scale(1.25)}}
-@keyframes jddrop{from{transform:translateY(-14px);opacity:0}30%{opacity:1}to{transform:translateY(46px);opacity:0}}@keyframes jdflow{to{stroke-dashoffset:-56}}
-@keyframes jdbloom{from{transform:scale(.2);opacity:0}}@keyframes jdready{50%{opacity:.45}}@keyframes jdopen{from{stroke-dasharray:0 900}to{stroke-dasharray:900 0}}
+@keyframes jddrop{from{transform:translateY(-14px);opacity:0}30%{opacity:1}to{transform:translateY(46px);opacity:0}}@keyframes jdflow{to{stroke-dashoffset:-74}}
+@keyframes jdbloom{from{transform:scale(.2);opacity:0}}@keyframes jdready{50%{opacity:.45}}@keyframes jdopen{from{opacity:0}}
 @keyframes jdshake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}@keyframes jdflick{from{transform:scaleY(.9) skewX(-3deg)}to{transform:scaleY(1.12) skewX(3deg)}}
 @keyframes jdpop{from{transform:translateY(-30px) scale(.9);opacity:0}}@keyframes jdfog{to{transform:translateX(14px);opacity:.6}}@keyframes jdfly{to{transform:translate(18px,-14px)}}
 .jmctl,.bmctl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:center;margin:0 0 8px}.jmrange{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}.jmrange input{width:180px}
@@ -1493,7 +1498,7 @@ p.jmx{border:0;padding:0;text-align:center}
 .bmc-ng{transform-box:view-box;transform-origin:300px 300px;transition:transform .7s cubic-bezier(.3,1.3,.5,1)}.bmc-ng.spin{transition:transform 1.8s cubic-bezier(.15,.75,.2,1)}
 .bmc-new{fill:none;stroke:var(--accent);stroke-width:1.4;stroke-dasharray:3 3;animation:jdready 2.4s ease-in-out infinite}.bmc-web{fill:none;stroke-width:1.2;opacity:.4}.bmc-web.hot{stroke-width:2.6;opacity:.95}
 .bmc-wedge0{fill:transparent;stroke-width:1.2;stroke-dasharray:4 5;opacity:.55}.bmc-wedge{opacity:.28;stroke:none;transition:opacity .2s}.bmc-wedge:hover{opacity:.45}.bmlegend{text-align:center;margin:6px 0 0}
-@media (prefers-reduced-motion:reduce){.jd-sway,.jd-flow,.jd-star,.jd-fog,.jd-petal,.jd-blos,.jd-fly,.jd-bfly path,.jd-flame path,.jd-seed,.jd-ready-ring,.jd-cam.jd-ready,.bmc-new,.jmandala.anim .jm-p{animation:none!important}.bmc-ng,.bmc-ng.spin,.jd-needle{transition:none}}
+@media (prefers-reduced-motion:reduce){.jd-sway,.jd-flow,.jd-star,.jd-fog,.jd-petal,.jd-blos,.jd-lotus,.jd-smoke,.jd-crane,.jd-fly,.jd-bfly path,.jd-flame path,.jd-seed,.jd-ready-ring,.jd-cam.jd-ready,.bmc-new,.jmandala.anim .jm-p{animation:none!important}.bmc-ng,.bmc-ng.spin,.jd-needle{transition:none}}
 @media (max-width:640px){.jdscene{overflow-x:auto;overscroll-behavior-x:contain}.jdscene>svg{min-width:620px}.jdmain{padding:6px}.jdplaces .chip{font-size:12px;padding:4px 8px}.jmrange input{width:130px}}
 </style>
 

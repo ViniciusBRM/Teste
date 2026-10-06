@@ -112,6 +112,9 @@ async def open_page(p, w=1440, h=900, theme="dark", cfg=None, hash_=""):
     await pg.route("https://atlas.test/", lambda r: r.fulfill(body=html, content_type="text/html"))
     await pg.route("https://cdnjs.cloudflare.com/**", lambda r: r.fulfill(path=str(JSPDF), content_type="application/javascript") if JSPDF.exists() else r.continue_())
     await pg.route("https://fonts.googleapis.com/**", lambda r: r.fulfill(body="", content_type="text/css"))
+    if (cfg or {}).get("cjkFont"):  # fonte de pincel dos selos servida localmente (só nas capturas)
+        await pg.route("https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng**", lambda r: r.fulfill(body="@font-face{font-family:'Ma Shan Zheng';src:url(https://fonts.test/msz.woff2) format('woff2')}", content_type="text/css"))
+        await pg.route("https://fonts.test/msz.woff2", lambda r: r.fulfill(path=str(ROOT / "msz.woff2"), content_type="font/woff2", headers={"access-control-allow-origin": "*"}))
     # internet simulada: clima, câmbio, notícias e geocodificação (cfg.noNet = sem acesso)
     NET = {"api.open-meteo.com": {"current": {"temperature_2m": 18.4, "apparent_temperature": 17.6, "precipitation": 0, "weather_code": 1, "wind_speed_10m": 8}, "daily": {"temperature_2m_max": [24.1], "temperature_2m_min": [11.2], "precipitation_probability_max": [10], "weather_code": [2], "uv_index_max": [5.2]}},
            "api.frankfurter.dev": {"amount": 1.0, "base": "BRL", "date": "2026-10-02", "rates": {"EUR": 0.17062}},

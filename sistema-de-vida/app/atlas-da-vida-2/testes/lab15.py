@@ -50,7 +50,7 @@ async def main():
             chk(await pg.evaluate("document.querySelectorAll('.jd-fly').length") == 3 and await pg.evaluate("!!document.querySelector('.jd-nightveil')") and await pg.evaluate("!!document.querySelector('.jd-moon')"), "à noite: lua de hoje e um vagalume por exame da semana")
             await pg.evaluate("JD.h = 10; render()"); await pg.wait_for_timeout(150)
             chk(await pg.evaluate("document.querySelectorAll('.jd-bfly').length") == 3 and not await pg.evaluate("!!document.querySelector('.jd-fly')"), "de dia viram borboletas")
-            await sel(pg, "pedreira"); chk("Ponte do centro" in await pg.inner_text(".jdaside"), "pedreira fechada até 3 noites de exame")
+            await sel(pg, "pedreira"); chk("Ponte sobre o rio" in await pg.inner_text(".jdaside"), "pedreira fechada até 3 noites de exame")
             await pg.click("[data-act=jdcam][data-id=ponte]"); await pg.wait_for_timeout(200)
             chk(await pg.evaluate("jdCamOpen('ponte')") and await pg.evaluate("!!document.querySelector('.jd-bridge')"), "a ponte aparece sobre o rio")
             # pedra
