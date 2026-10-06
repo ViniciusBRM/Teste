@@ -16,7 +16,8 @@ Os mentores das áreas se reúnem como diretores da vida da pessoa; o Intermedia
 3. O Intermediador decide cada turno em JSON. Quando ele fala com você, a sessão pausa: responda no campo de baixo (Enter envia). Pelo mesmo campo você **intervém** a qualquer momento.
 4. **Pausar**, **Pular fase** e **Encerrar e gerar ata** ficam no topo. Uma sessão interrompida (pausa, falha ou página fechada) continua de onde parou.
 5. A ata traz insights, decisões, 1 a 5 ações (área, prazo, critério), notas 0–10 com justificativa ao lado do placar dos dados, pontos de atenção e uma pergunta de reflexão. As ações aparecem no topo das abas das áreas para marcar como feitas e entram na memória do mentor responsável.
-6. Um alerta grave do Radar ou uma queda forte do placar de uma área mostra a sugestão de sessão extraordinária do mentor daquela área. Ela só começa quando você toca em Iniciar.
+6. **Modo observador** (marque ao iniciar): os diretores discutem o tema entre si e a reunião segue sem esperar por você. O Intermediador não pode chamá-lo; quem é citado pelo nome responde direto (até `maxReplicas` réplicas seguidas). Entre na discussão pelo campo de baixo quando quiser; a reunião continua depois. No fim, a ata traz propostas de definição e ações propostas, que só valem quando você as aprova (painel "Aguardando sua aprovação"); ao aprovar, a ação entra na aba da área e na memória do mentor.
+7. Um alerta grave do Radar ou uma queda forte do placar de uma área mostra a sugestão de sessão extraordinária do mentor daquela área. Ela só começa quando você toca em Iniciar.
 
 **Parâmetros (`conselhoConfig` em `src/41-conselho.js`; os marcados com * também se ajustam na própria aba)**
 
@@ -35,6 +36,7 @@ Os mentores das áreas se reúnem como diretores da vida da pessoa; o Intermedia
 | `tierIntermediador`, `tierMentor`, `tierResumo`, `tierAta` | default, default, quick, complex | nível do modelo de cada chamada |
 | `cadencia` * | semanal | quando a próxima ordinária fica disponível |
 | `minAcoes`, `maxAcoes` | 1, 5 | ações exigidas na ata |
+| `maxReplicas` | 2 | modo observador: réplicas diretas seguidas entre diretores, sem o Intermediador no meio |
 
 ## Testes (Playwright + Chromium)
 
@@ -46,6 +48,7 @@ Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` 
 | `lab2.py` | radar (contra cálculo independente), fechamento semanal, capítulos e livro em PDF, busca por significado |
 | `lab3.py` | espaço a dois (duas pessoas), agenda .ics (recorrências contra a `python-dateutil`), Apple Health, Google Fit, Notion, extrato que aprende |
 | `lab4.py` | bússola moral: valores, foco, exame da noite (índice conferido à parte), decisões com revisita, caminhos, Hoje |
+| `lab19.py` | Conselho em modo observador: a reunião segue sem esperar o CEO (o Intermediador não pode chamá-lo), réplicas diretas de quem é citado pelo nome, o CEO entra quando quiser, ata com propostas e ações propostas que só valem depois de aprovadas; ícones dos cartões dos mentores centralizados |
 | `lab18.py` | Administração Pessoal: sessão simulada com dados de exemplo pelas 10 fases, Intermediador só em JSON (nova tentativa e fallback), diretores com o próprio prompt e memória, briefings de até 300 palavras, pausa para o CEO, intervenção, limites de falas, resumo corrente, falha da IA sem perder o estado, pular fase, encerrar, ata validada que vira memória e aparece nas abas, área sem dados, setor privado, retomada depois de recarregar, celular |
 | `lab17.py` | Secretário da Vida: janela flutuante (abrir, arrastar, redimensionar, guardar posição), Agora consolidado de várias abas, ações com confirmação em contas, modos e perfis editáveis, lembretes por texto e voz (sem hora ele pergunta), aviso na hora, conflitos rotina × agenda e dia sobrecarregado para a pessoa decidir, conversa com ferramentas (ver aba, consultar mentor só para informação, propor, levantar conflito), privacidade, sem IA, celular |
 | `lab16.py` | roteiro de áudio do Painel do dia: 13 blocos com frases-modelo pessoais, o roteiro falado preenche todas as abas (inclui tarefas concluídas, casa, contas sem gasto em dobro, blocos da rotina e exame da Bússola), um bloco por vez, copiar e baixar |

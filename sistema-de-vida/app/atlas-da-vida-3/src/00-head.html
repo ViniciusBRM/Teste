@@ -1077,7 +1077,7 @@ tr.dim td{opacity:.5}
 .jhoje .jta{font-size:15px}
 .jmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .jmc{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);color:inherit;text-decoration:none;border-top:2px solid var(--c)}
-.jmc:hover{border-color:color-mix(in srgb,var(--c) 50%,var(--line))}.jmc span{display:flex;flex-direction:column;min-width:0}.jmc b{font-family:var(--f-display);font-size:16.5px;font-weight:500}.jmc small{color:var(--c);font-size:12px;font-weight:600}.jmc em{font-style:normal;color:var(--muted);font-size:12px;margin-top:3px}
+.jmc:hover{border-color:color-mix(in srgb,var(--c) 50%,var(--line))}.jmc>span:not(.mav){display:flex;flex-direction:column;min-width:0}.jmc b{font-family:var(--f-display);font-size:16.5px;font-weight:500}.jmc small{color:var(--c);font-size:12px;font-weight:600}.jmc em{font-style:normal;color:var(--muted);font-size:12px;margin-top:3px}
 .jmh2{position:static;margin:26px 0 12px;align-items:center}.jmh2 .ico{color:var(--a-pro)}.jmh2 small{font-family:var(--f-ui);font-size:12.5px;color:var(--muted)}
 .jrr{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;padding:6px 0}.jrr a{display:flex;align-items:center;gap:7px;color:var(--c);font-weight:600;font-size:13px;text-decoration:none}.jrr .jstrip{width:100%}
 .jfeed{display:grid;gap:4px}
@@ -1554,6 +1554,7 @@ p.jmx{border:0;padding:0;text-align:center}
 @media (max-width:1100px){.csgrid{grid-template-columns:1fr}.csside{position:static}}
 @media (max-width:640px){.csfases li span{display:none}.csfases li.cur span{display:block;position:absolute;left:16px;margin-top:14px}.csfases{position:relative;margin-bottom:28px}.csmeta{margin-left:0;width:100%}.cschat{max-height:none}.csm .mav{width:28px;height:28px}.csac>.row{grid-column:1/-1}.csin{position:sticky;bottom:0;background:var(--surface);padding-bottom:6px}.csata .dt{display:block;overflow-x:auto}}
 @media print{.csside,.csctrl,.csin{display:none}}
+.cschk{display:flex;gap:10px;align-items:flex-start;margin:4px 0 12px;font-size:13.5px;line-height:1.45;cursor:pointer}.cschk input{margin-top:3px;width:auto;flex:none}.cspend{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
 /* ===== Secretário da Vida: janela flutuante */
 .secfab{position:fixed;right:18px;bottom:84px;z-index:60;display:inline-flex;align-items:center;gap:7px;padding:10px 14px 10px 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer;font:600 13px var(--f-ui)}
 .secfab:hover{border-color:var(--accent)}.secfab .ico svg{width:17px;height:17px;color:var(--accent)}.secfab i{font-style:normal;min-width:19px;height:19px;border-radius:99px;background:var(--crit,#e5534b);color:#fff;font-size:11px;display:grid;place-items:center;padding:0 5px}

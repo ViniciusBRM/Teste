@@ -1077,7 +1077,7 @@ tr.dim td{opacity:.5}
 .jhoje .jta{font-size:15px}
 .jmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .jmc{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);color:inherit;text-decoration:none;border-top:2px solid var(--c)}
-.jmc:hover{border-color:color-mix(in srgb,var(--c) 50%,var(--line))}.jmc span{display:flex;flex-direction:column;min-width:0}.jmc b{font-family:var(--f-display);font-size:16.5px;font-weight:500}.jmc small{color:var(--c);font-size:12px;font-weight:600}.jmc em{font-style:normal;color:var(--muted);font-size:12px;margin-top:3px}
+.jmc:hover{border-color:color-mix(in srgb,var(--c) 50%,var(--line))}.jmc>span:not(.mav){display:flex;flex-direction:column;min-width:0}.jmc b{font-family:var(--f-display);font-size:16.5px;font-weight:500}.jmc small{color:var(--c);font-size:12px;font-weight:600}.jmc em{font-style:normal;color:var(--muted);font-size:12px;margin-top:3px}
 .jmh2{position:static;margin:26px 0 12px;align-items:center}.jmh2 .ico{color:var(--a-pro)}.jmh2 small{font-family:var(--f-ui);font-size:12.5px;color:var(--muted)}
 .jrr{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;padding:6px 0}.jrr a{display:flex;align-items:center;gap:7px;color:var(--c);font-weight:600;font-size:13px;text-decoration:none}.jrr .jstrip{width:100%}
 .jfeed{display:grid;gap:4px}
@@ -1554,6 +1554,7 @@ p.jmx{border:0;padding:0;text-align:center}
 @media (max-width:1100px){.csgrid{grid-template-columns:1fr}.csside{position:static}}
 @media (max-width:640px){.csfases li span{display:none}.csfases li.cur span{display:block;position:absolute;left:16px;margin-top:14px}.csfases{position:relative;margin-bottom:28px}.csmeta{margin-left:0;width:100%}.cschat{max-height:none}.csm .mav{width:28px;height:28px}.csac>.row{grid-column:1/-1}.csin{position:sticky;bottom:0;background:var(--surface);padding-bottom:6px}.csata .dt{display:block;overflow-x:auto}}
 @media print{.csside,.csctrl,.csin{display:none}}
+.cschk{display:flex;gap:10px;align-items:flex-start;margin:4px 0 12px;font-size:13.5px;line-height:1.45;cursor:pointer}.cschk input{margin-top:3px;width:auto;flex:none}.cspend{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
 /* ===== Secretário da Vida: janela flutuante */
 .secfab{position:fixed;right:18px;bottom:84px;z-index:60;display:inline-flex;align-items:center;gap:7px;padding:10px 14px 10px 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer;font:600 13px var(--f-ui)}
 .secfab:hover{border-color:var(--accent)}.secfab .ico svg{width:17px;height:17px;color:var(--accent)}.secfab i{font-style:normal;min-width:19px;height:19px;border-radius:99px;background:var(--crit,#e5534b);color:#fff;font-size:11px;display:grid;place-items:center;padding:0 5px}
@@ -11623,6 +11624,7 @@ const conselhoConfig = {
   tierIntermediador: "default", tierMentor: "default", tierResumo: "quick", tierAta: "complex",
   cadencia: "semanal",               // ordinária: semanal ou mensal
   minAcoes: 1, maxAcoes: 5,
+  maxReplicas: 2,                    // modo observador: réplicas diretas seguidas entre diretores, sem o Intermediador no meio
 };
 /* o que a pessoa pode ajustar na própria aba (o resto fica no código) */
 const CS_EDIT = [["maxTurnos", "Turnos por sessão", 12, 80], ["maxFalasPorFase", "Falas por mentor em cada fase", 1, 6], ["palavrasPorFala", "Palavras por fala", 60, 300], ["resumoACada", "Resumo corrente a cada (turnos)", 3, 12], ["palavrasBriefing", "Palavras por briefing", 120, 600]];
@@ -11640,10 +11642,10 @@ const CS_FASE = {
   ATA: ["Ata", "Gerar a ata da sessão."],
 };
 const CS_TIPOS = { ordinaria: ["Ordinária", "Revisão geral da semana ou do mês."], trimestral: ["Trimestral", "Balanço profundo e ajuste de metas."], anual: ["Anual", "Visão, valores e direção de longo prazo."], extraordinaria: ["Extraordinária", "Uma crise ou um alerta grave, com foco nele."] };
-const CS_ST = { aberta: "aberta", feita: "feita", nao_feita: "não feita" };
+const CS_ST = { aberta: "aberta", feita: "feita", nao_feita: "não feita", proposta: "aguardando aprovação", recusada: "recusada" };
 /* abas onde as ações do Conselho aparecem para marcar como feitas */
 const CS_PAGE_AREAS = { ...PAGE_AREAS, carreira: ["Carreira"], idiomas: ["Aprendizado"], lazer: ["Lazer & criatividade"], jornada: ["Propósito & espiritualidade", "Bússola moral"] };
-const CS = { tipo: "ordinaria", foco: "", input: "", busy: false, ctl: null, status: "", live: null, ver: null, area: "geral", stick: true };
+const CS = { tipo: "ordinaria", foco: "", obs: false, input: "", busy: false, ctl: null, status: "", live: null, ver: null, area: "geral", stick: true };
 
 /* ---------------------------------------------------------------- estado e rótulos */
 const csD = () => (S.conselho ||= { cfg: {}, atas: [], sessao: null });
@@ -11736,7 +11738,7 @@ LIMITES: turno ${s.turno + 1} de ${C.maxTurnos} (restam ${C.maxTurnos - s.turno}
 DIRETORES (id: nome · área · manchete do briefing):
 ${st.dir.map(m => `- ${m}: ${MENTOR_DEF[m].nome} · ${csArea(m)} · ${csBriefOf(m).head}`).join("\n")}
 ${st.conv.length ? `CONVIDADOS (chame só quando o tema tocar neles):\n${st.conv.map(m => `- ${m}: ${MENTOR_DEF[m].nome} · ${MENTOR_DEF[m].papel}`).join("\n")}` : ""}${st.priv.length ? `\nFORA DA SESSÃO (setor privado, não chame): ${st.priv.map(m => MENTOR_DEF[m].nome).join(", ")}` : ""}
-CEO: a própria pessoa. Use "CEO" para perguntar, confirmar ou pedir uma decisão; a sessão pausa até a resposta.
+${s.obs ? `MODO OBSERVADOR: o CEO assiste à reunião e entra quando quiser; ela segue sem esperar por ele. NÃO use "CEO" como próximo. Faça os diretores debaterem entre si: dê a palavra a quem foi citado, questionado ou afetado pela última fala, peça réplicas, contrapontos e dados que confirmem ou desmintam. Em CONFLITOS e DELIBERACOES, peça aos diretores propostas de definição com trade-offs explícitos (o que cada opção custa e para quem); ninguém decide: o CEO aprova ou recusa depois, na ata. Quando o CEO entrar na discussão (falas [Você (CEO)]), leve o que ele disse à mesa na próxima pergunta.` : `CEO: a própria pessoa. Use "CEO" para perguntar, confirmar ou pedir uma decisão; a sessão pausa até a resposta.`}
 ATA ANTERIOR: ${ult ? `${fmtD(ult.data)} (${CS_TIPOS[ult.tipo]?.[0] || ult.tipo}), foco "${ult.foco}". Pergunta de reflexão deixada: "${ult.pergunta_reflexao}". Pontos de atenção: ${(ult.pontos_atencao || []).join("; ") || "nenhum"}.` : "não há; esta é a primeira sessão."}
 AÇÕES DO CONSELHO EM ABERTO: ${ab.length ? ab.map(x => `[${x.area}] ${x.acao} (até ${x.prazo}; critério: ${x.criterio})`).join("; ") : "nenhuma"}.
 RESUMO CORRENTE DA SESSÃO: ${s.resumo || "(ainda não há)"}
@@ -11744,13 +11746,14 @@ FALAS RECENTES:
 ${csTranscript() || "(a sessão está começando)"}
 ${nota ? `\nATENÇÃO: ${nota}\n` : ""}
 RESPONDA SOMENTE com um objeto JSON, sem nenhum texto fora dele:
-{"fase":"${F}${fi < C.fases.length - 2 ? `|${csNext(F)}` : ""}","proximo":"<id de diretor ou convidado | CEO | FIM>","pergunta":"o que você diz agora a quem vai falar (até 90 palavras)","motivo":"por que esta pessoa e esta pergunta agora (uma frase)"}
+{"fase":"${F}${fi < C.fases.length - 2 ? `|${csNext(F)}` : ""}","proximo":"<id de diretor ou convidado${s.obs ? "" : " | CEO"} | FIM>","pergunta":"o que você diz agora a quem vai falar (até 90 palavras)","motivo":"por que esta pessoa e esta pergunta agora (uma frase)"}
 Mude "fase" para a seguinte quando o objetivo da atual estiver cumprido; a "pergunta" então já abre a nova fase. Use "FIM" só para encerrar a reunião e gerar a ata.`;
 }
 function csValid(d) {
-  const s = csD().sessao, st = csSeats(), ok = [...st.dir, ...st.conv, "CEO", "FIM"];
+  const s = csD().sessao, st = csSeats(), ok = [...st.dir, ...st.conv, ...(s.obs ? [] : ["CEO"]), "FIM"];
   if (!d || typeof d !== "object" || Array.isArray(d)) return "não é um objeto JSON";
   if (![s.fase, csNext(s.fase)].includes(d.fase)) return `fase "${d.fase}" inválida: use ${s.fase} ou ${csNext(s.fase)}`;
+  if (s.obs && d.proximo === "CEO") return `modo observador: o CEO só assiste; passe a palavra a um diretor (${st.dir.join(", ")})`;
   if (!ok.includes(d.proximo)) return `proximo "${d.proximo}" inválido: use um destes ids ${ok.join(", ")}`;
   if (d.proximo !== "FIM" && (typeof d.pergunta !== "string" || d.pergunta.trim().length < 3)) return "pergunta vazia";
   return "";
@@ -11781,7 +11784,7 @@ Agora você participa como diretor da sua área numa reunião em que os mentores
 - Fale dentro da sua competência, mas pensando no todo. Traga dados concretos do briefing (números, datas, metas, recaídas, padrões), não opiniões genéricas.
 - Se uma decisão ou um hábito de outra área afeta a sua, questione o diretor dela pelo nome.
 - Sem dados suficientes, diga "Sem dados suficientes" e o que precisaria ser registrado. Nunca invente.
-- Até ~${C.palavrasPorFala} palavras, falando ao Intermediador e ao CEO. Sem elogios vazios, sem cumprimentos. Não decida pelo CEO.
+- Até ~${C.palavrasPorFala} palavras, falando ao Intermediador e ao CEO. Sem elogios vazios, sem cumprimentos. Não decida pelo CEO.${s.obs ? `\n- MODO OBSERVADOR: o CEO assiste. Debata com os outros diretores: concorde, discorde, peça dados. Para questionar alguém, chame pelo nome exato (por exemplo, "${MENTOR_DEF[st.dir.find(m => m !== mid) || mid].nome}"), e ele poderá responder direto a você. Proponha definições, não decida.` : ""}
 FASE: ${CS_FASE[s.fase][0]}: ${CS_FASE[s.fase][1]}${s.fase === "RELATORIOS" ? `\nFORMATO DO RELATÓRIO: **Estado:** … **Tendência:** ↑, ↓ ou → (e por quê) **Vitória:** … **Atenção:** …` : ""}
 OUTRAS ÁREAS (manchetes): ${st.dir.filter(m => m !== mid).map(m => `${csArea(m)}: ${csBriefOf(m).head}`).join("; ")}
 ${citados.length ? `BRIEFINGS RELEVANTES:\n${citados.map(m => `## ${csArea(m)} (${MENTOR_DEF[m].nome})\n${csBriefOf(m).txt}`).join("\n")}\n` : ""}RESUMO DA SESSÃO: ${s.resumo || "(ainda não há)"}
@@ -11789,13 +11792,13 @@ FALAS RECENTES:
 ${csTranscript(6) || "(nenhuma)"}
 PERGUNTA DO INTERMEDIADOR PARA VOCÊ: """${pergunta}"""`;
 }
-async function csMentor(mid, pergunta) {
+async function csMentor(mid, pergunta, resp) {
   const s = csD().sessao, C = csCfg(), b = csBriefOf(mid), key = `${s.fase}|${mid}`;
   s.falas[key] = (s.falas[key] || 0) + 1;
   if (b.priv) { csMsg("sis", `${MENTOR_DEF[mid].nome} não participa: setor privado.`); return; }
   /* relatório de área sem dados: o próprio Atlas registra, sem gastar uma chamada */
   if (b.sem && s.fase === "RELATORIOS") { csMsg(mid, `**Sem dados suficientes** para um relatório de ${csArea(mid)}. Para eu ter o que dizer na próxima sessão, registre ${MENTOR_DEF[mid].area ? "metas, hábitos ou registros desta área" : "as práticas e reflexões desta área"} no Atlas.`, { local: true }); return; }
-  const msg = csMsg(mid, "", { live: true }); CS.live = msg; render();
+  const msg = csMsg(mid, "", { live: true, ...(resp ? { resp } : {}) }); CS.live = msg; render();
   csStatus(`${MENTOR_DEF[mid].nome} está falando…`);
   try {
     const r = await csCall(MENTOR_DEF[mid].nome, () => csMentorPrompt(mid, pergunta), { modelTier: C.tierMentor, onText: ({ text }) => { msg.texto = text; csPaintLive(msg); } });
@@ -11823,7 +11826,7 @@ function csAtaPrompt(nota) {
 ${csIntPersona()}
 
 A reunião terminou. Escreva a ata a partir do resumo e das falas. Use só o que foi dito e os dados dos briefings; não invente decisões que o CEO não tomou (decisões pendentes viram pontos de atenção).
-TIPO: ${CS_TIPOS[s.tipo][0]}. FOCO: ${s.foco || "revisão geral"}.
+TIPO: ${CS_TIPOS[s.tipo][0]}. FOCO: ${s.foco || "revisão geral"}.${s.obs ? `\nMODO OBSERVADOR: o CEO assistiu e não decidiu durante a reunião. Em "decisoes" ponha só o que ele mesmo afirmou nas falas [Você (CEO)] (ou nada). Em "propostas", as definições que os diretores propuseram, cada uma com a área e o trade-off. As ações também são propostas: o CEO aprova ou recusa cada uma depois.` : ""}
 ÁREAS VÁLIDAS: ${areas.join(" | ")}
 PLACAR DE DADOS POR ÁREA (0–10, calculado dos registros): ${st.dir.map(m => `${csArea(m)}: ${csBriefOf(m).head}`).join("; ")}
 AÇÕES DA ATA ANTERIOR EM ABERTO (id: ação): ${ab.map(x => `${x.id}: ${x.acao}`).join("; ") || "nenhuma"}
@@ -11832,19 +11835,21 @@ FALAS DESDE O RESUMO:
 ${csTranscript(40)}
 ${nota ? `\nATENÇÃO: ${nota}\n` : ""}
 RESPONDA SOMENTE com um objeto JSON:
-{"insights":["3 principais insights"],"decisoes":["decisões tomadas pelo CEO"],"acoes":[{"area":"uma das áreas válidas","acao":"ação concreta","prazo":"AAAA-MM-DD","criterio":"como saber que foi feita"}],"notas":{"<área>":{"nota":0,"justificativa":"uma frase com dados"},"geral":0},"pontos_atencao":["..."],"pergunta_reflexao":"uma pergunta final","transcricao_resumida":"a sessão em até 200 palavras","revisao_acoes":[{"id":"id de ação anterior","status":"feita|nao_feita"}]}
+{"insights":["3 principais insights"],"decisoes":["decisões tomadas pelo CEO"],${s.obs ? `"propostas":[{"texto":"definição proposta","area":"uma das áreas válidas","tradeoff":"o que custa e para quem"}],` : ""}"acoes":[{"area":"uma das áreas válidas","acao":"ação concreta","prazo":"AAAA-MM-DD","criterio":"como saber que foi feita"}],"notas":{"<área>":{"nota":0,"justificativa":"uma frase com dados"},"geral":0},"pontos_atencao":["..."],"pergunta_reflexao":"uma pergunta final","transcricao_resumida":"a sessão em até 200 palavras","revisao_acoes":[{"id":"id de ação anterior","status":"feita|nao_feita"}]}
 Regras: de ${C.minAcoes} a ${C.maxAcoes} ações (o ideal são 3 a 5), cada uma com área, prazo depois de ${TODAY} e critério de sucesso; notas de 0 a 10 para cada área que participou, com justificativa; "revisao_acoes" só para ações anteriores cujo status ficou claro na sessão.`;
 }
 function csAtaNorm(d) {
   const C = csCfg(), st = csSeats(), areas = [...st.dir.map(csArea), "Geral"], s = csD().sessao;
   if (!d || typeof d !== "object") return [null, "não é um objeto JSON"];
   const arr = v => Array.isArray(v) ? v.map(x => String(x).trim()).filter(Boolean) : [];
-  const acoes = (Array.isArray(d.acoes) ? d.acoes : []).filter(x => x && x.acao).slice(0, C.maxAcoes).map(x => { const area = areas.includes(x.area) ? x.area : "Geral"; return { id: uid(), area, mid: csMidOfArea(area), acao: String(x.acao).slice(0, 300), prazo: /^\d{4}-\d{2}-\d{2}$/.test(x.prazo || "") && x.prazo >= TODAY ? x.prazo : addDays(TODAY, 7), criterio: String(x.criterio || "").slice(0, 300), status: "aberta" }; });
+  const acoes = (Array.isArray(d.acoes) ? d.acoes : []).filter(x => x && x.acao).slice(0, C.maxAcoes).map(x => { const area = areas.includes(x.area) ? x.area : "Geral"; return { id: uid(), area, mid: csMidOfArea(area), acao: String(x.acao).slice(0, 300), prazo: /^\d{4}-\d{2}-\d{2}$/.test(x.prazo || "") && x.prazo >= TODAY ? x.prazo : addDays(TODAY, 7), criterio: String(x.criterio || "").slice(0, 300), status: s.obs ? "proposta" : "aberta" }; });
+  const propostas = !s.obs ? [] : (Array.isArray(d.propostas) ? d.propostas : []).filter(x => x && x.texto).slice(0, 8).map(x => ({ texto: String(x.texto).slice(0, 400), area: areas.includes(x.area) ? x.area : "Geral", tradeoff: String(x.tradeoff || "").slice(0, 300), status: "proposta" }));
+  const ceoFalou = s.msgs.some(m => m.quem === "ceo");
   if (acoes.length < C.minAcoes) return [null, `a ata precisa de pelo menos ${C.minAcoes} ação concreta`];
   const notas = {}; for (const [k, v] of Object.entries(d.notas || {})) { if (k === "geral") continue; if (!areas.includes(k) || !v) continue; const n = +v.nota; if (isNum(n)) notas[k] = { nota: clamp(Math.round(n * 10) / 10, 0, 10), justificativa: String(v.justificativa || "").slice(0, 300) }; }
   const g = +d.notas?.geral; notas.geral = isNum(g) ? clamp(Math.round(g * 10) / 10, 0, 10) : null;
   const placar = {}; for (const m of st.dir) { if (!MENTOR_DEF[m].area) continue; const v = calcAt(mkey(TODAY)).areas.find(x => x.a === MENTOR_DEF[m].area)?.dados; placar[csArea(m)] = isNum(v) ? v : null; }
-  return [{ id: s.id, data: TODAY, tipo: s.tipo, foco: s.foco || "Revisão geral", insights: arr(d.insights).slice(0, 5), decisoes: arr(d.decisoes), acoes, notas, placar_dados: placar, pontos_atencao: arr(d.pontos_atencao), pergunta_reflexao: String(d.pergunta_reflexao || "").slice(0, 400), transcricao_resumida: String(d.transcricao_resumida || s.resumo || "").slice(0, 3000), turnos: s.turno, chamadas: s.chamadas || 0, revisao: (Array.isArray(d.revisao_acoes) ? d.revisao_acoes : []).filter(x => x && ["feita", "nao_feita"].includes(x.status)) }, ""];
+  return [{ id: s.id, data: TODAY, tipo: s.tipo, foco: s.foco || "Revisão geral", insights: arr(d.insights).slice(0, 5), decisoes: s.obs && !ceoFalou ? [] : arr(d.decisoes), ...(s.obs ? { observador: true, propostas } : {}), acoes, notas, placar_dados: placar, pontos_atencao: arr(d.pontos_atencao), pergunta_reflexao: String(d.pergunta_reflexao || "").slice(0, 400), transcricao_resumida: String(d.transcricao_resumida || s.resumo || "").slice(0, 3000), turnos: s.turno, chamadas: s.chamadas || 0, revisao: (Array.isArray(d.revisao_acoes) ? d.revisao_acoes : []).filter(x => x && ["feita", "nao_feita"].includes(x.status)) }, ""];
 }
 async function csAta() {
   const C = csCfg(), s = csD().sessao; let nota = "", err = "";
@@ -11858,8 +11863,8 @@ async function csAta() {
         const D = csD(), ids = new Set(csAbertas().map(x => x.id));
         for (const rv of ata.revisao) if (ids.has(rv.id)) for (const a of D.atas) for (const x of a.acoes || []) if (x.id === rv.id) x.status = rv.status;
         delete ata.revisao; D.atas.push(ata); D.sessao = null; CS.ver = ata.id;
-        for (const x of ata.acoes) if (x.mid && MENTOR_DEF[x.mid]) addMemory(x.mid, { tipo: "compromisso", texto: `Conselho de ${fmtD(TODAY)}: ${x.acao} (até ${fmtD(x.prazo)}; critério: ${x.criterio})`, origem: "conselho" });
-        touch("conselho", "mentores", { label: "Ata do Conselho" }); toast("Ata registrada. As ações já aparecem nas abas das áreas."); return true;
+        for (const x of ata.acoes) if (x.status === "aberta") csMemAcao(x);
+        touch("conselho", "mentores", { label: "Ata do Conselho" }); toast(ata.observador ? "Ata registrada. As propostas esperam a sua aprovação." : "Ata registrada. As ações já aparecem nas abas das áreas."); return true;
       }
     } catch (e) { if (e?.code !== "invalid_json") throw e; err = "a resposta não era JSON"; }
     nota = `a ata anterior foi recusada (${err}). Responda só o JSON, no formato pedido.`;
@@ -11893,7 +11898,21 @@ async function csStep() {
   if (s.fase === "RELATORIOS") s.relFila = (s.relFila || []).filter(m => m !== d.proximo);
   if ((s.falas[`${s.fase}|${d.proximo}`] || 0) >= C.maxFalasPorFase) { csMsg("sis", `${MENTOR_DEF[d.proximo].nome} já falou ${C.maxFalasPorFase} vezes nesta fase; a palavra volta ao Intermediador.`); return "ok"; }
   await csMentor(d.proximo, String(d.pergunta));
+  await csReplica(d.proximo);
   return "ok";
+}
+/* modo observador: quem foi chamado pelo nome responde direto, até maxReplicas vezes seguidas */
+async function csReplica(de) {
+  const s = csD().sessao, C = csCfg(); if (!s?.obs || s.fase === "RELATORIOS") return;
+  let quem = de;
+  for (let n = 0; n < C.maxReplicas && csD().sessao === s && !s.pausada && s.turno < C.maxTurnos; n++) {
+    const m = s.msgs.at(-1); if (!m || m.quem !== quem || m.local) return;
+    const st = csSeats(), alvo = [...st.dir, ...st.conv].find(x => x !== quem && m.texto.includes(MENTOR_DEF[x].nome));
+    if (!alvo || (s.falas[`${s.fase}|${alvo}`] || 0) >= C.maxFalasPorFase) return;
+    csSave(); render(); s.turno++;
+    await csMentor(alvo, `${MENTOR_DEF[quem].nome} se dirigiu a você: """${trunc(m.texto, 500)}""" Responda diretamente a ${MENTOR_DEF[quem].nome}, com dados.`, quem);
+    quem = alvo;
+  }
 }
 async function csRun() {
   const s = csD().sessao; if (!s || CS.busy) return;
@@ -11911,10 +11930,10 @@ async function csRun() {
 }
 function csStart() {
   const D = csD(); if (D.sessao) return;
-  const st = csSeats(), s = D.sessao = { id: uid(), tipo: CS.tipo, foco: CS.foco.trim(), inicio: Date.now(), fase: "REVISAO_ATA", turno: 0, chamadas: 0, falas: {}, msgs: [], resumo: "", resumoAte: 0, briefs: {}, relFila: [], aguardaCEO: false, pausada: false, erro: null };
+  const st = csSeats(), s = D.sessao = { id: uid(), tipo: CS.tipo, foco: CS.foco.trim(), inicio: Date.now(), fase: "REVISAO_ATA", turno: 0, chamadas: 0, falas: {}, msgs: [], resumo: "", resumoAte: 0, briefs: {}, relFila: [], aguardaCEO: false, pausada: false, erro: null, obs: !!CS.obs };
   for (const m of [...st.dir, ...st.priv]) s.briefs[m] = csBrief(m);
   const sem = st.dir.filter(m => s.briefs[m].sem).map(m => csArea(m));
-  csMsg("sis", `Sessão ${CS_TIPOS[s.tipo][0].toLowerCase()} aberta${s.foco ? ` com o foco "${s.foco}"` : ""}. Briefings prontos para ${plural(st.dir.length, "diretor", "diretores")}${sem.length ? `; sem dados suficientes: ${sem.join(", ")}` : ""}${st.priv.length ? `; fora por privacidade: ${st.priv.map(csArea).join(", ")}` : ""}.`);
+  csMsg("sis", `Sessão ${CS_TIPOS[s.tipo][0].toLowerCase()} aberta${s.foco ? ` com o foco "${s.foco}"` : ""}. Briefings prontos para ${plural(st.dir.length, "diretor", "diretores")}${sem.length ? `; sem dados suficientes: ${sem.join(", ")}` : ""}${st.priv.length ? `; fora por privacidade: ${st.priv.map(csArea).join(", ")}` : ""}.${s.obs ? " Modo observador: os diretores discutem entre si e a reunião segue sem esperar por você; entre quando quiser e aprove as propostas no fim." : ""}`);
   csMsg("sis", CS_FASE.REVISAO_ATA[0], { divisor: true, fase: "REVISAO_ATA" });
   CS.foco = ""; CS.ver = null; csSave("Sessão do Conselho aberta"); csRun();
 }
@@ -11947,7 +11966,20 @@ function csAlerta() {
 const csProxOrd = () => { const u = [...csD().atas].reverse().find(a => a.tipo === "ordinaria"); return u ? addDays(u.data, csCfg().cadencia === "mensal" ? 30 : 7) : TODAY; };
 
 /* ---------------------------------------------------------------- ações nas abas das áreas */
-function csSetSt(ataId, acaoId, st) { const a = csD().atas.find(x => x.id === ataId), x = a?.acoes.find(y => y.id === acaoId); if (!x || !CS_ST[st]) return; x.status = st; x.em = TODAY; touch("conselho", { label: `Ação do Conselho: ${CS_ST[st]}` }); }
+const csMemAcao = x => { if (x.mid && MENTOR_DEF[x.mid]) addMemory(x.mid, { tipo: "compromisso", texto: `Conselho de ${fmtD(TODAY)}: ${x.acao} (até ${fmtD(x.prazo)}; critério: ${x.criterio})`, origem: "conselho" }); };
+function csSetSt(ataId, acaoId, st) {
+  const a = csD().atas.find(x => x.id === ataId), x = a?.acoes.find(y => y.id === acaoId); if (!x || !CS_ST[st]) return;
+  const aprova = x.status === "proposta" && st === "aberta"; x.status = st; x.em = TODAY;
+  if (aprova) { csMemAcao(x); touch("conselho", "mentores", { label: "Ação do Conselho aprovada" }); } else touch("conselho", { label: `Ação do Conselho: ${CS_ST[st]}` });
+}
+function csSetProp(ataId, i, st) {
+  const a = csD().atas.find(x => x.id === ataId), p = a?.propostas?.[+i]; if (!p || p.status !== "proposta" || !["aprovada", "recusada"].includes(st)) return;
+  p.status = st; p.em = TODAY; if (st === "aprovada") a.decisoes.push(`${p.texto} (aprovada por você em ${fmtD(TODAY)})`);
+  touch("conselho", { label: `Proposta do Conselho ${st}` });
+}
+const csPendentes = () => csD().atas.flatMap(a => [...(a.propostas || []).map((p, i) => ({ k: "p", a, p, i })).filter(x => x.p.status === "proposta"), ...(a.acoes || []).filter(x => x.status === "proposta").map(x => ({ k: "a", a, x }))]);
+const csPendHTML = q => q.k === "p" ? `<li class="csac"><span class="mav sm" style="--c:var(--accent)">${ic("flag")}</span><div><b>${esc(q.p.texto)}</b><small>${esc(q.p.area)}${q.p.tradeoff ? ` · trade-off: ${esc(q.p.tradeoff)}` : ""} · ata de ${fmtD(q.a.data)}</small></div><span class="row"><button type="button" class="btn sm" data-cspr="${q.a.id}|${q.i}|aprovada">${ic("check")}Aprovar</button><button type="button" class="btn sm ghost" data-cspr="${q.a.id}|${q.i}|recusada">Recusar</button></span></li>`
+  : `<li class="csac"><span class="mav sm" style="--c:${q.x.mid ? mcol(q.x.mid) : "var(--accent)"}">${ic(q.x.mid ? mico(q.x.mid) : "council")}</span><div><b>${esc(q.x.acao)}</b><small>ação proposta · ${esc(q.x.area)} · até ${fmtD(q.x.prazo)}${q.x.criterio ? ` · critério: ${esc(q.x.criterio)}` : ""}</small></div><span class="row"><button type="button" class="btn sm" data-csst="${q.a.id}|${q.x.id}|aberta">${ic("check")}Aprovar</button><button type="button" class="btn sm ghost" data-csst="${q.a.id}|${q.x.id}|recusada">Recusar</button></span></li>`;
 function csAcaoHTML(x) {
   const late = x.prazo < TODAY;
   return `<li class="csac${late ? " late" : ""}"><span class="mav sm" style="--c:${x.mid ? mcol(x.mid) : "var(--accent)"}">${ic(x.mid ? mico(x.mid) : "council")}</span><div><b>${esc(x.acao)}</b><small>${esc(x.area)} · até ${fmtD(x.prazo)}${late ? " · atrasada" : ""}${x.criterio ? ` · critério: ${esc(x.criterio)}` : ""}</small></div><span class="row"><button type="button" class="btn sm" data-csst="${x.ata}|${x.id}|feita" aria-label="Marcar como feita">${ic("check")}Feita</button><button type="button" class="btn sm ghost" data-csst="${x.ata}|${x.id}|nao_feita">Não feita</button></span></li>`;
@@ -11964,7 +11996,7 @@ function csMsgHTML(m) {
   if (m.quem === "sis") return m.divisor ? `<div class="csdiv"><span>${esc(m.texto)}</span></div>` : `<div class="cssys">${ic("info")}${esc(m.texto)}</div>`;
   const int = m.quem === "int", ceo = m.quem === "ceo", c = int ? "var(--accent)" : ceo ? "var(--good)" : mcol(m.quem);
   const av = int ? `<span class="mav csintav" style="--c:${c}">${ic("council")}</span>` : ceo ? `<span class="mav" style="--c:${c}">${ic("user")}</span>` : mavatar(m.quem);
-  const who = int ? `Intermediador${m.para ? ` <span class="muted">→ ${esc(csNome(m.para === "CEO" ? "ceo" : m.para))}</span>` : ""}` : ceo ? `Você (CEO)${m.interv ? ` <span class="muted">· intervenção</span>` : ""}` : `${esc(MENTOR_DEF[m.quem]?.nome || m.quem)} <span class="muted">· ${esc(csArea(m.quem))}</span>`;
+  const who = int ? `Intermediador${m.para ? ` <span class="muted">→ ${esc(csNome(m.para === "CEO" ? "ceo" : m.para))}</span>` : ""}` : ceo ? `Você (CEO)${m.interv ? ` <span class="muted">· intervenção</span>` : ""}` : `${esc(MENTOR_DEF[m.quem]?.nome || m.quem)} <span class="muted">· ${esc(csArea(m.quem))}${m.resp ? ` · responde a ${esc(MENTOR_DEF[m.resp]?.nome || m.resp)}` : ""}</span>`;
   return `<article class="csm${int ? " int" : ""}${ceo ? " ceo" : ""}${m.live ? " live" : ""}" id="csm_${m.id}" style="--c:${c}">${av}<div class="csb"><header>${who}</header><div class="cstx">${m.texto ? md(m.texto) : `<span class="thinking">${ic("spark")}pensando…</span>`}</div>${int && m.motivo ? `<details class="csmot"><summary>por quê</summary>${esc(m.motivo)}</details>` : ""}</div></article>`;
 }
 function csPaintLive(m) { const el = $(`#csm_${m.id} .cstx`); if (el) { el.innerHTML = md(m.texto); const ch = $("#cschat"); if (ch && CS.stick) ch.scrollTop = ch.scrollHeight; } }
@@ -11978,11 +12010,11 @@ function csSessaoHTML(s) {
     <button type="button" class="btn sm ghost" data-csa="pular"${s.fase === "ATA" ? " disabled" : ""}>Pular fase</button><button type="button" class="btn sm ghost" data-csa="encerrar"${s.fase === "ATA" && run ? " disabled" : ""}>${ic("check")}Encerrar e gerar ata</button>
     <span class="muted csmeta">turno ${s.turno} de ${C.maxTurnos} · ${plural(s.chamadas || 0, "chamada", "chamadas")} à IA</span></div>`;
   const err = s.erro ? `<div class="banner warn">${ic("info")}<span>${esc(s.erro)}</span></div>` : "";
-  const st = run ? `<div class="csstatus" id="csstatus" role="status">${esc(CS.status || "Trabalhando…")}</div>` : s.aguardaCEO ? `<div class="csstatus ceo" role="status">${ic("user")}O Intermediador espera a sua resposta.</div>` : !s.erro ? `<div class="csstatus" role="status">Sessão pausada. Tudo está salvo: continue quando quiser.</div>` : "";
-  const ph = s.aguardaCEO ? "Sua resposta ao Intermediador (Enter envia)" : "Intervir: diga algo à mesa a qualquer momento (Enter envia)";
+  const st = run ? `<div class="csstatus" id="csstatus" role="status">${esc(CS.status || "Trabalhando…")}</div>` : s.obs && !s.erro ? `<div class="csstatus" role="status">Reunião pausada. Tudo está salvo: toque em Continuar para os diretores seguirem.</div>` : s.aguardaCEO ? `<div class="csstatus ceo" role="status">${ic("user")}O Intermediador espera a sua resposta.</div>` : !s.erro ? `<div class="csstatus" role="status">Sessão pausada. Tudo está salvo: continue quando quiser.</div>` : "";
+  const ph = s.aguardaCEO ? "Sua resposta ao Intermediador (Enter envia)" : s.obs ? "Entrar na discussão: diga algo à mesa; a reunião continua depois (Enter envia)" : "Intervir: diga algo à mesa a qualquer momento (Enter envia)";
   return `${csFasesHTML(s)}${ctrl}${err}
     <div class="cschat" id="cschat" aria-live="polite">${s.msgs.map(csMsgHTML).join("")}</div>${st}
-    <div class="csin${s.aguardaCEO ? " ceo" : ""}"><textarea id="cs_in" rows="2" placeholder="${ph}">${esc(CS.input)}</textarea><button type="button" class="btn primary" data-csa="enviar">${s.aguardaCEO ? "Responder" : "Intervir"}</button></div>`;
+    <div class="csin${s.aguardaCEO ? " ceo" : ""}"><textarea id="cs_in" rows="2" placeholder="${ph}">${esc(CS.input)}</textarea><button type="button" class="btn primary" data-csa="enviar">${s.aguardaCEO ? "Responder" : s.obs ? "Entrar" : "Intervir"}</button></div>`;
 }
 function csIniciarHTML() {
   const ai = !!SAMPLE, al = csAlerta(), C = csCfg(), st = csSeats(), u = csAtaUlt(), po = csProxOrd();
@@ -11990,6 +12022,7 @@ function csIniciarHTML() {
     ${panel(`${ic("council")}Iniciar sessão`, `<p class="muted">O Intermediador conduz 10 fases, da revisão da ata anterior à nova ata. ${plural(st.dir.length, "diretor participa", "diretores participam")}${st.conv.length ? ` e ${plural(st.conv.length, "convidado pode", "convidados podem")} ser chamado` : ""}; você responde, intervém e decide. Uma sessão completa faz algo como ${Math.round(C.maxTurnos * 1.5)} chamadas à IA no máximo.</p>
       <div class="form f2"><label>Tipo<select id="cs_tipo">${Object.entries(CS_TIPOS).map(([k, [l, d]]) => `<option value="${k}"${CS.tipo === k ? " selected" : ""}>${l}: ${d}</option>`).join("")}</select></label>
       <label>Foco (opcional)<input type="text" id="cs_foco" value="${esc(CS.foco)}" placeholder="Ex.: equilíbrio entre trabalho e saúde"></label></div>
+      <label class="cschk"><input type="checkbox" id="cs_obs"${CS.obs ? " checked" : ""}><span><b>Modo observador</b>: os diretores discutem o tema entre si e a reunião segue sem esperar por você. Entre na discussão quando quiser; no fim, você aprova ou recusa as propostas.</span></label>
       <div class="row wrap"><button type="button" class="btn primary" data-csa="iniciar"${ai ? "" : " disabled"}>${ic("spark")}Iniciar sessão</button><span class="muted">${u ? `Última sessão em ${fmtD(u.data)}. ` : "Ainda não houve sessão. "}Próxima ordinária (${C.cadencia}): ${po <= TODAY ? "já pode acontecer" : fmtD(po)}.</span></div>
       ${ai ? "" : `<p class="note">A IA do Claude não está disponível nesta visualização: as atas, as ações e o gráfico continuam abaixo.</p>`}`, { cls: "csstart" })}
     ${u ? csAtaHTML(u, true) : ""}`;
@@ -12000,7 +12033,8 @@ function csAtaHTML(a, resumo) {
     <div class="csata">
       <section><h3>Principais insights</h3><ol>${a.insights.map(x => `<li>${esc(x)}</li>`).join("") || "<li class='muted'>nenhum</li>"}</ol></section>
       ${a.decisoes.length ? `<section><h3>Decisões do CEO</h3><ul>${a.decisoes.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>` : ""}
-      <section><h3>Ações</h3><table class="dt"><thead><tr><th>Área</th><th>Ação</th><th>Prazo</th><th>Critério</th><th>Status</th></tr></thead><tbody>${a.acoes.map(x => `<tr><td>${esc(x.area)}</td><td>${esc(x.acao)}</td><td>${fmtD(x.prazo)}</td><td>${esc(x.criterio)}</td><td>${x.status === "aberta" ? `<button type="button" class="btn sm" data-csst="${a.id}|${x.id}|feita">Feita</button><button type="button" class="btn sm ghost" data-csst="${a.id}|${x.id}|nao_feita">Não feita</button>` : pill(x.status === "feita" ? "good" : "crit", CS_ST[x.status])}</td></tr>`).join("")}</tbody></table></section>
+      ${a.propostas?.length ? `<section><h3>Propostas de definição</h3><ul class="csacs">${a.propostas.map((p, i) => p.status === "proposta" ? csPendHTML({ k: "p", a, p, i }) : `<li>${esc(p.texto)} ${pill(p.status === "aprovada" ? "good" : "none", p.status)}</li>`).join("")}</ul></section>` : ""}
+      <section><h3>Ações${a.observador ? " propostas" : ""}</h3><table class="dt"><thead><tr><th>Área</th><th>Ação</th><th>Prazo</th><th>Critério</th><th>Status</th></tr></thead><tbody>${a.acoes.map(x => `<tr><td>${esc(x.area)}</td><td>${esc(x.acao)}</td><td>${fmtD(x.prazo)}</td><td>${esc(x.criterio)}</td><td>${x.status === "aberta" ? `<button type="button" class="btn sm" data-csst="${a.id}|${x.id}|feita">Feita</button><button type="button" class="btn sm ghost" data-csst="${a.id}|${x.id}|nao_feita">Não feita</button>` : x.status === "proposta" ? `<button type="button" class="btn sm" data-csst="${a.id}|${x.id}|aberta">Aprovar</button><button type="button" class="btn sm ghost" data-csst="${a.id}|${x.id}|recusada">Recusar</button>` : pill(x.status === "feita" ? "good" : x.status === "recusada" ? "none" : "crit", CS_ST[x.status])}</td></tr>`).join("")}</tbody></table></section>
       ${resumo ? "" : `<section><h3>Notas de saúde</h3><p><b>Geral: ${a.notas?.geral ?? "–"}/10</b></p><table class="dt"><thead><tr><th>Área</th><th>Nota do Conselho</th><th>Placar dos dados</th><th>Justificativa</th></tr></thead><tbody>${nt.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v.nota}</td><td>${a.placar_dados?.[k] != null ? num(a.placar_dados[k]) : "–"}</td><td>${esc(v.justificativa)}</td></tr>`).join("")}</tbody></table></section>
       ${a.pontos_atencao.length ? `<section><h3>Pontos de atenção</h3><ul>${a.pontos_atencao.map(x => `<li>${esc(x)}</li>`).join("")}</ul></section>` : ""}
       ${a.transcricao_resumida ? `<section><h3>A sessão em resumo</h3><p>${esc(a.transcricao_resumida)}</p></section>` : ""}`}
@@ -12012,7 +12046,9 @@ function csLadoHTML() {
   const areas = [...new Set(atas.flatMap(a => Object.keys(a.notas || {}).filter(k => k !== "geral")))];
   const L = atas.map(a => fmtD(a.data)), series = [{ name: "Geral", color: "var(--accent)", data: atas.map(a => a.notas?.geral ?? null) }];
   if (CS.area !== "geral" && areas.includes(CS.area)) series.push({ name: CS.area, color: acol(CS.area) || "var(--good)", data: atas.map(a => a.notas?.[CS.area]?.nota ?? null) }, { name: "Placar dos dados", color: "var(--muted)", dash: true, fill: false, data: atas.map(a => a.placar_dados?.[CS.area] ?? null) });
+  const pend = csPendentes();
   return `<aside class="csside">
+    ${pend.length ? panel(`${ic("flag")}Aguardando sua aprovação <small>${pend.length}</small>`, `<ul class="csacs">${pend.map(csPendHTML).join("")}</ul>`, { cls: "cspend" }) : ""}
     ${panel(`${ic("check")}Ações em aberto <small>${ab.length}</small>`, ab.length ? `<ul class="csacs">${ab.map(x => csAcaoHTML(x)).join("")}</ul>` : `<p class="muted">Nenhuma ação em aberto.</p>`)}
     ${panel(`${ic("scatter")}Evolução das notas`, `${atas.length ? `<label class="cssel">Área<select id="cs_area"><option value="geral">Só a geral</option>${areas.map(a => `<option${CS.area === a ? " selected" : ""}>${esc(a)}</option>`).join("")}</select></label>${lineChart(L, series, { w: 320, h: 180, min: 0, max: 10, fmt: v => num(v, 1), empty: "Notas aparecem depois da primeira ata." })}` : `<p class="muted">As notas aparecem depois da primeira ata.</p>`}`)}
     ${panel(`${ic("file")}Histórico de atas`, atas.length ? `<ul class="csatas">${[...atas].reverse().map(a => `<li><button type="button" class="csatab" data-csa="ver" data-id="${a.id}"><span><b>${fmtD(a.data)}</b> · ${esc(CS_TIPOS[a.tipo]?.[0] || a.tipo)}</span><small>${esc(trunc(a.foco, 60))} · nota ${a.notas?.geral ?? "–"}</small></button></li>`).join("")}</ul>` : `<p class="muted">Nenhuma ata ainda.</p>`)}
@@ -12024,7 +12060,7 @@ function csLadoHTML() {
 }
 function pAdmin() {
   const D = csD(), s = D.sessao, ver = CS.ver && D.atas.find(a => a.id === CS.ver);
-  const main = s ? panel(`${ic("council")}Sessão ${esc(CS_TIPOS[s.tipo][0].toLowerCase())}${s.foco ? ` · ${esc(s.foco)}` : ""}`, csSessaoHTML(s), { cls: "cssess" }) : ver ? csAtaHTML(ver, false) : csIniciarHTML();
+  const main = s ? panel(`${ic("council")}Sessão ${esc(CS_TIPOS[s.tipo][0].toLowerCase())}${s.foco ? ` · ${esc(s.foco)}` : ""}${s.obs ? ` <span class="pill good">modo observador</span>` : ""}`, csSessaoHTML(s), { cls: "cssess" }) : ver ? csAtaHTML(ver, false) : csIniciarHTML();
   return `${aiBanner()}<div class="csgrid"><div class="csmain">${main}</div>${csLadoHTML()}</div>`;
 }
 function csAfterRender() { const ch = $("#cschat"); if (ch && CS.stick) ch.scrollTop = ch.scrollHeight; }
@@ -12033,6 +12069,7 @@ function csAfterRender() { const ch = $("#cschat"); if (ch && CS.stick) ch.scrol
 function csClick(t) {
   const ds = t.dataset;
   if (ds.csst) { const [a, x, st] = ds.csst.split("|"); csSetSt(a, x, st); return true; }
+  if (ds.cspr) { const [a, i, st] = ds.cspr.split("|"); csSetProp(a, i, st); return true; }
   const a = ds.csa; if (!a) return false;
   if (a === "iniciar") csStart();
   else if (a === "continuar") csRun();
@@ -12052,6 +12089,7 @@ function csInput(t) {
 }
 function csChange(t) {
   if (t.id === "cs_tipo") { CS.tipo = t.value; return true; }
+  if (t.id === "cs_obs") { CS.obs = t.checked; return true; }
   if (t.id === "cs_area") { CS.area = t.value; render(); return true; }
   const k = t.dataset.cscfg; if (!k) return false;
   const D = csD(), e = CS_EDIT.find(x => x[0] === k);
