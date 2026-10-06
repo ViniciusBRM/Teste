@@ -3,7 +3,7 @@
    Tudo passa pela mesma revisão e pelo mesmo “desfazer” do painel. O texto e a voz preenchem estas seções também. */
 PD_KEYS.push("peso"); PD_LBL.peso = "Peso";
 const pdL = () => { PD.L ||= {}; for (const k of ["tar", "cont", "est", "ler"]) PD.L[k] ||= []; PD.chk ||= {}; for (const k of ["tdone", "rot", "conta"]) PD.chk[k] ||= {}; return PD.L; };
-const PD_SEC = [["sec_saude", "Saúde", "pulse"], ["sec_din", "Finanças", "coins"], ["sec_hab", "Hábitos", "repeat"], ["sec_tar", "Tarefas", "checksq"], ["sec_pes", "Pessoas", "users"], ["sec_est", "Estudo & idiomas", "book"], ["sec_jor", "Jornada & lazer", "lotus"], ["sec_casa", "Casa", "house"], ["sec_dia", "Diário", "pen"]];
+const PD_SEC = [["sec_saude", "Saúde", "pulse"], ["sec_din", "Finanças", "coins"], ["sec_hab", "Hábitos", "repeat"], ["sec_tar", "Tarefas", "checksq"], ["sec_pes", "Pessoas", "users"], ["sec_est", "Estudo & idiomas", "book"], ["sec_jor", "Jornada & lazer", "lotus"], ["sec_bm", "Bússola & rotina", "compass"], ["sec_casa", "Casa", "house"], ["sec_dia", "Diário", "pen"]];
 const CT_TIPOS = ["Encontro", "Ligação", "Videochamada", "Mensagem", "Evento / grupo"];
 const estItens = () => ["Inglês", "Italiano", ...S.aprend.filter(a => a.status === "Em andamento" && !/^(inglês|italiano)$/i.test(a.titulo)).map(a => a.titulo)];
 const lerItens = () => S.aprend.filter(a => a.status === "Em andamento" && (a.tipo === "Livro" || +a.total)).map(a => a.titulo);
@@ -18,7 +18,7 @@ function pdMapa(rows) {
   const d = PD.date, B = pdBase(d), s = S.saude[d] || {}, has = id => rows.some(r => r.on && r.id.startsWith(id));
   const st = { sec_saude: [["humor", "sono", "energia", "estresse", "passos", "treino", "peso"].some(k => s[k] != null && s[k] !== ""), has("s.")], sec_din: [S.lanc.some(l => l.data === d), has("g.")], sec_hab: [S.habitos.some(h => S.marks[`${h.id}|${d}`]), has("h.")],
     sec_tar: [S.tarefas.some(t => t.concluida === d), has("t.")], sec_pes: [S.contatos.some(c => c.data === d), has("c.")], sec_est: [S.estudo.some(x => x.data === d), has("e.") || has("r.")],
-    sec_jor: [B.sess.length > 0 || B.lz.length > 0, has("j.") || has("l.")], sec_casa: [S.rotinas.some(r => r.ultima === d) || (S.contasCasa || []).some(c => Object.values(c.pagos || {}).includes(d)), has("k.")], sec_dia: [B.ent.length > 0, has("d.")] };
+    sec_jor: [B.sess.length > 0 || B.lz.length > 0, has("j.") || has("l.")], sec_casa: [S.rotinas.some(r => r.ultima === d) || (S.contasCasa || []).some(c => Object.values(c.pagos || {}).includes(d)), has("k.")], sec_dia: [B.ent.length > 0, has("d.")], sec_bm: [!!bmEx()[d] || rtOcc(d).some(b => b.st), has("b.") || has("q.")] };
   return `<nav class="pdmapa" aria-label="Abas do dia">${PD_SEC.map(([id, l, i]) => { const [ok, pend] = st[id] || []; return `<a href="#painel" class="pdmc${ok ? " ok" : ""}${pend ? " pend" : ""}" data-pdgo="${id}" title="${ok ? "já tem registro neste dia" : pend ? "há registros esperando para salvar" : "nada ainda"}">${ic(ok ? "check" : i)}<span>${l}</span>${pend ? "<i></i>" : ""}</a>`; }).join("")}</nav>`;
 }
 function pdMoreHTML(C) {
@@ -42,7 +42,7 @@ function pdMoreHTML(C) {
     <div class="pdblk" id="sec_casa"><div class="pdfl"><span class="pdlab">${ic("house")}Casa</span><small class="pdhint">${CD.rot.length + CD.contas.length ? "o que está vencido ou vence em até 3 dias" : "nada pendente"}</small></div>
       ${CD.rot.map(r => `<label class="ckl pdck"><input type="checkbox" data-pdck="rot|${r.id}"${PD.chk.rot[r.id] ? " checked" : ""}><span>Fiz: ${esc(r.rotina)}<small class="muted">${esc(r.nivel || "")}${r.min ? ` · ${r.min} min` : ""}</small></span></label>`).join("")}
       ${CD.contas.map(({ c, v }) => `<label class="ckl pdck"><input type="checkbox" data-pdck="conta|${c.id}|${v}"${PD.chk.conta[`${c.id}|${v}`] ? " checked" : ""}><span>Paguei: ${esc(c.conta)} · ${eur(+c.valor || 0, 2)}<small class="${v < d ? "st-crit" : "muted"}">vence ${fmtD(v)}</small></span></label>`).join("")}</div>
-    <div class="pdrow3"><div class="pdf ${pdSt(C, "peso")}" data-pdbox="peso"><div class="pdfl"><label for="pd_peso">Peso (kg)</label>${s.peso ? `<em class="pdsrc">${num(s.peso)} salvo</em>` : ""}</div><div class="pdfi"><input type="text" id="pd_peso" data-pdf="peso" inputmode="decimal" autocomplete="off" value="${esc(V.peso ?? "")}" placeholder="72,5" aria-describedby="pdm_peso"></div>${pdMsg(C, "peso")}</div></div>`;
+    <div class="pdrow3"><div class="pdf ${pdSt(C, "peso")}" data-pdbox="peso"><div class="pdfl"><label for="pd_peso">Peso (kg)</label>${s.peso ? `<em class="pdsrc">${num(s.peso)} salvo</em>` : ""}</div><div class="pdfi"><input type="text" id="pd_peso" data-pdf="peso" inputmode="decimal" autocomplete="off" value="${esc(V.peso ?? "")}" placeholder="72,5" aria-describedby="pdm_peso"></div>${pdMsg(C, "peso")}</div></div>${pdMore3HTML()}`;
 }
 /* texto e voz: o que antes virava “outros registros” agora cai na seção da aba */
 function pdReset2() { const L = pdL(); for (const k of Object.keys(L)) L[k] = L[k].filter(r => r.src !== "texto"); }
@@ -78,6 +78,7 @@ function pdRows2(rows, cmd, B, d, bad) {
   for (const key of Object.keys(PD.chk.conta)) { if (!PD.chk.conta[key]) continue; const [cid, v] = key.split("|"), c = (S.contasCasa || []).find(z => z.id === cid); if (!c || contaPaga(c, v)) continue;
     rows.push({ id: `k.c.${key}`, txt: `Conta paga: ${c.conta} · ${eur(+c.valor || 0, 2)}`, kind: "novo", dest: "contasCasa", on: true, apply: () => { const x = S.contasCasa.find(z => z.id === cid); x.pagos = { ...(x.pagos || {}), [v]: d }; const ks = ["contasCasa"], cat = /aluguel|condom/i.test(x.cat || "") ? "Moradia" : "Contas da casa";
       if (+x.valor > 0 && cat in CAT_DESP) { S.lanc.push({ id: uid(), data: d, tipo: "Despesa", cat, desc: x.conta, valor: +x.valor, conta: x.debito === "Sim" ? "Conta corrente" : "PIX / transferência", origem: "casa" }); ks.push("lanc"); } return ks; } }); }
+  pdRows3(rows, d);
 }
 const pdLtotal = () => { const L = pdL(); return L.tar.length + L.cont.length + L.est.length + L.ler.length; };
 function pd2Click(t) {
@@ -85,7 +86,7 @@ function pd2Click(t) {
   if (ds.pdgo) { document.getElementById(ds.pdgo)?.scrollIntoView({ behavior: "smooth", block: "start" }); return true; }
   if (ds.pdladd) { const L = pdL(), k = ds.pdladd; L[k].push({ id: uid(), src: "mao", ...(k === "cont" ? { tipo: "Encontro" } : {}) }); pdStore(); render(); setTimeout(() => document.querySelector(`#sec_${{ tar: "tar", cont: "pes", est: "est", ler: "est" }[k]} .pdlr:last-of-type input, #sec_${{ tar: "tar", cont: "pes", est: "est", ler: "est" }[k]} .pdlr:last-of-type select`)?.focus(), 30); return true; }
   if (ds.pdldel) { const [k, i] = ds.pdldel.split("|"); pdL()[k].splice(+i, 1); pdStore(); render(); return true; }
-  if (ds.pdck) { const [k, ...rest] = ds.pdck.split("|"), key = rest.join("|"); pdL(); if (t.checked) PD.chk[k][key] = 1; else delete PD.chk[k][key]; pdStore(); pdPaint(); return true; }
+  if (ds.pdck) { const [k, ...rest] = ds.pdck.split("|"), key = rest.join("|"); pdL(); delete PD.chkT?.[ds.pdck]; if (t.checked) PD.chk[k][key] = 1; else delete PD.chk[k][key]; pdStore(); pdPaint(); return true; }
   return false;
 }
 function pd2Input(t) { if (t.dataset.pdl) { const [k, i, f] = t.dataset.pdl.split("|"), r = pdL()[k][+i]; if (r) { r[f] = t.value; r.src = "mao"; } pdStore(); if (t.tagName !== "SELECT") pdPaint(); return true; } return false; }

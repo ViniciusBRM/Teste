@@ -1500,6 +1500,19 @@ p.jmx{border:0;padding:0;text-align:center}
 .bmc-wedge0{fill:transparent;stroke-width:1.2;stroke-dasharray:4 5;opacity:.55}.bmc-wedge{opacity:.28;stroke:none;transition:opacity .2s}.bmc-wedge:hover{opacity:.45}.bmlegend{text-align:center;margin:6px 0 0}
 @media (prefers-reduced-motion:reduce){.jd-sway,.jd-flow,.jd-star,.jd-fog,.jd-petal,.jd-blos,.jd-lotus,.jd-smoke,.jd-crane,.jd-fly,.jd-bfly path,.jd-flame path,.jd-seed,.jd-ready-ring,.jd-cam.jd-ready,.bmc-new,.jmandala.anim .jm-p{animation:none!important}.bmc-ng,.bmc-ng.spin,.jd-needle{transition:none}}
 @media (max-width:640px){.jdscene{overflow-x:auto;overscroll-behavior-x:contain}.jdscene>svg{min-width:620px}.jdmain{padding:6px}.jdplaces .chip{font-size:12px;padding:4px 8px}.jmrange input{width:130px}}
+/* ===== roteiro de áudio do painel */
+.pdrot{grid-column:1/-1}.pdrot>summary{display:flex;gap:8px;align-items:center;flex-wrap:wrap;cursor:pointer;list-style:none}.pdrot>summary::-webkit-details-marker{display:none}
+.pdrot>summary .ico{color:var(--accent)}.pdract{margin:8px 0 10px}
+.pdrprog{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:4px 0 10px}.pdrprog i{display:block;height:100%;background:var(--accent);transition:width .4s}
+.pdrl{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.pdrl li{display:grid;grid-template-columns:26px 1fr;gap:4px 10px;border:1px solid var(--line);border-radius:10px;padding:9px 10px;position:relative}
+.pdrl li.ok{border-color:color-mix(in srgb,var(--ok,#3fb37f) 55%,var(--line));background:color-mix(in srgb,var(--ok,#3fb37f) 7%,transparent)}
+.pdrn{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;background:var(--surface-2);color:var(--ink-2)}.pdrl li.ok .pdrn{background:var(--ok,#3fb37f);color:#fff}.pdrn .ico svg{width:14px;height:14px}
+.pdrl p{margin:2px 0;font-size:13px}.pdrex{font-family:var(--f-display);font-style:italic;color:var(--ink)}.pdrs{grid-column:2;color:var(--muted);font-size:11.5px}
+.pdtele{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:8px}.pdtl-top{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted)}
+.pdtl-q{font-size:18px;margin:0}.pdtl-ex{font:italic 20px/1.35 var(--f-display);margin:0;color:var(--ink)}.pdrs.ok{color:var(--ok,#3fb37f)}
+.pdbm{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:4px 0;border-bottom:1px dashed var(--line)}.pdbm .segs .seg{font-size:12px}
+@media (max-width:640px){.pdrl{grid-template-columns:1fr}.pdtl-ex{font-size:17px}}
 </style>
 
 <div class="app">
@@ -8913,11 +8926,11 @@ const PD_LBL = { humor: "Humor", energia: "Energia", estresse: "Estresse", sono:
 const PD_REQ_OPC = ["humor", "energia", "estresse", "sono", "passos", "treino", "gastos", "habitos", "texto"];
 const PD_REQ_DEF = ["humor", "sono"];
 const PD_KEYS = ["humor", "energia", "estresse", "sono", "passos", "treino", "min", "ppid", "pmin", "lzat", "lzh"];
-const pdNew = (date = TODAY) => ({ date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], L: { tar: [], cont: [], est: [], ler: [] }, chk: { tdone: {}, rot: {}, conta: {} }, step: "form", done: null, inf: [] });
+const pdNew = (date = TODAY) => ({ bm: {}, rt: {}, chkT: {}, date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], L: { tar: [], cont: [], est: [], ler: [] }, chk: { tdone: {}, rot: {}, conta: {} }, step: "form", done: null, inf: [] });
 let PD = pdLoad() || pdNew();
 function pdLoad() { try { const v = JSON.parse(localStorage.getItem("atlas_painel") || "null"); return v && v.date && v.v ? { ...pdNew(v.date), ...v, step: "form", done: null } : null; } catch { return null; } }
 const pdStore = debounce(() => { if (EX_MODE) return; try { pdEmpty() ? localStorage.removeItem("atlas_painel") : localStorage.setItem("atlas_painel", JSON.stringify({ ...PD, done: null, step: "form" })); } catch {} }, 400);
-const pdEmpty = () => !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !pdLtotal() && !Object.values(PD.chk || {}).some(o => Object.keys(o).length) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
+const pdEmpty = () => !Object.keys(PD.bm || {}).length && !Object.keys(PD.rt || {}).length && !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !pdLtotal() && !Object.values(PD.chk || {}).some(o => Object.keys(o).length) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
 const pdReq = () => Array.isArray(S.cfg.pdReq) ? S.cfg.pdReq : PD_REQ_DEF;
 const pdRev = () => S.cfg.pdRev !== false;
 const pdLang = () => S.cfg.pdLang || "pt-BR";
@@ -9044,7 +9057,7 @@ const PD_PRAT = [[/\b(meditei|meditacao|medita\w*|respirei|respiracao|atencao pl
 function pdParse(o = {}) {
   /* volta ao que as abas têm o que veio do texto antes; o que foi digitado ou falado no campo fica */
   for (const k of PD_KEYS) if (PD.src[k] === "texto") { PD.src[k] = ""; if (k !== "ppid") PD.v[k] = ""; }
-  PD.inf = []; PD.gastos = PD.gastos.filter(g => g.src !== "texto"); pdReset2();
+  PD.inf = []; PD.gastos = PD.gastos.filter(g => g.src !== "texto"); pdReset2(); pdReset3();
   for (const id of Object.keys(PD.hsrc)) if (PD.hsrc[id] === "texto") { delete PD.hsrc[id]; delete PD.habs[id]; }
   pdSyncBase();
   const txt = pdNorm(pdWords(PD.text)), extras = [];
@@ -9067,11 +9080,12 @@ function pdParse(o = {}) {
   }
   /* prática da jornada: verbo + minutos no mesmo trecho */
   if (PD.src.pmin !== "mao" && PD.src.pmin !== "voz") for (const { F } of capSplit(txt)) { const hit = PD_PRAT.find(([rx]) => rx.test(F)); if (!hit) continue; const mn = capMinutes(F); if (mn) { take("ppid", hit[1]); take("pmin", String(mn)); break; } }
+  pdParse3(txt);
   PD.extras = extras;
 }
 
 /* ---------------------------------------------------------------- o que vai ser salvo: uma linha por registro, comparada com o que o dia já tem */
-const PD_DEST = { rotinas: ["Casa › Limpeza", "casa.limpeza"], contasCasa: ["Casa › Contas", "casa.contas"], saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
+const PD_DEST = { bmExames: ["Jornada › Exame da noite", "jornada.exame"], rotina: ["Rotina", "rotina.dia"], rotinas: ["Casa › Limpeza", "casa.limpeza"], contasCasa: ["Casa › Contas", "casa.contas"], saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
 function pdRows() {
   const d = PD.date, B = pdBase(d), C = pdCheck(), V = PD.v, rows = [], bad = k => C.f[k]?.st === "err";
   const ctx = { date: d, area: "", humor: +V.humor || null };
@@ -9199,6 +9213,7 @@ function pPainel() {
   const sess = B.sess.length ? `<small class="pdhint">Já neste dia: ${B.sess.map(x => `${esc(J_PIL[x.pid]?.nome || x.pid)} ${x.min} min`).join(", ")}</small>` : "";
   const lzs = B.lz.length ? `<small class="pdhint">Já neste dia: ${B.lz.map(x => `${esc(x.atividade)} ${num(x.horas, 1)} h`).join(", ")}</small>` : "";
   return `${done}<div class="pd">
+    ${pdRoteiroHTML()}
     <section class="pn pdtxt" aria-label="Conte o dia">
       <div class="pdday ${pdSt(C, "date")}"><label class="pdd">Dia<input type="date" id="pd_date" value="${d}" max="${TODAY}"></label><div class="seg-g" role="group" aria-label="Atalhos de dia"><button type="button" class="seg" data-pdday="${TODAY}" aria-pressed="${d === TODAY}">Hoje</button><button type="button" class="seg" data-pdday="${addDays(TODAY, -1)}" aria-pressed="${d === addDays(TODAY, -1)}">Ontem</button></div>${pdMsg(C, "date")}
         <span class="pdvst ${why ? "off" : ""}" title="${esc(why ? PD_WHY[why] + " " + PD_DICT[pdPlat()] : "Voz pelo navegador, em " + pdLang())}">${ic("mic")}${why ? "voz pelo ditado do sistema" : "voz pronta · " + pdLang()}</span></div>
@@ -9275,6 +9290,7 @@ function pdPaint() {
   foot.querySelector(".pdinfo").innerHTML = pdFootInfo(C, on, on.filter(r => r.kind === "subst" || r.kind === "apagar").length);
   const go = foot.querySelector('[data-act="pdrev"],[data-act="pdsave"]'), cl = foot.querySelector('[data-act="pdclear"]');
   if (go) go.disabled = !!(C.errs.length || C.missing.length) || !on.length; if (cl && !cl.dataset.c) cl.disabled = pdEmpty();
+  pdRotPaint();
 }
 function pdAddGasto() { PD.gastos.push({ id: uid(), v: "", d: "", cat: "", src: "mao" }); pdStore(); render(); setTimeout(() => document.getElementById(`pd_gv${PD.gastos.length - 1}`)?.focus(), 30); }
 const pdParseDeb = debounce(() => { pdParse(); pdStore(); pdPaint(); }, 250);
@@ -9986,7 +10002,7 @@ const exBanner = () => EX_MODE ? `<div class="banner exb">${ic("eye")}<span><b>M
    Tudo passa pela mesma revisão e pelo mesmo “desfazer” do painel. O texto e a voz preenchem estas seções também. */
 PD_KEYS.push("peso"); PD_LBL.peso = "Peso";
 const pdL = () => { PD.L ||= {}; for (const k of ["tar", "cont", "est", "ler"]) PD.L[k] ||= []; PD.chk ||= {}; for (const k of ["tdone", "rot", "conta"]) PD.chk[k] ||= {}; return PD.L; };
-const PD_SEC = [["sec_saude", "Saúde", "pulse"], ["sec_din", "Finanças", "coins"], ["sec_hab", "Hábitos", "repeat"], ["sec_tar", "Tarefas", "checksq"], ["sec_pes", "Pessoas", "users"], ["sec_est", "Estudo & idiomas", "book"], ["sec_jor", "Jornada & lazer", "lotus"], ["sec_casa", "Casa", "house"], ["sec_dia", "Diário", "pen"]];
+const PD_SEC = [["sec_saude", "Saúde", "pulse"], ["sec_din", "Finanças", "coins"], ["sec_hab", "Hábitos", "repeat"], ["sec_tar", "Tarefas", "checksq"], ["sec_pes", "Pessoas", "users"], ["sec_est", "Estudo & idiomas", "book"], ["sec_jor", "Jornada & lazer", "lotus"], ["sec_bm", "Bússola & rotina", "compass"], ["sec_casa", "Casa", "house"], ["sec_dia", "Diário", "pen"]];
 const CT_TIPOS = ["Encontro", "Ligação", "Videochamada", "Mensagem", "Evento / grupo"];
 const estItens = () => ["Inglês", "Italiano", ...S.aprend.filter(a => a.status === "Em andamento" && !/^(inglês|italiano)$/i.test(a.titulo)).map(a => a.titulo)];
 const lerItens = () => S.aprend.filter(a => a.status === "Em andamento" && (a.tipo === "Livro" || +a.total)).map(a => a.titulo);
@@ -10001,7 +10017,7 @@ function pdMapa(rows) {
   const d = PD.date, B = pdBase(d), s = S.saude[d] || {}, has = id => rows.some(r => r.on && r.id.startsWith(id));
   const st = { sec_saude: [["humor", "sono", "energia", "estresse", "passos", "treino", "peso"].some(k => s[k] != null && s[k] !== ""), has("s.")], sec_din: [S.lanc.some(l => l.data === d), has("g.")], sec_hab: [S.habitos.some(h => S.marks[`${h.id}|${d}`]), has("h.")],
     sec_tar: [S.tarefas.some(t => t.concluida === d), has("t.")], sec_pes: [S.contatos.some(c => c.data === d), has("c.")], sec_est: [S.estudo.some(x => x.data === d), has("e.") || has("r.")],
-    sec_jor: [B.sess.length > 0 || B.lz.length > 0, has("j.") || has("l.")], sec_casa: [S.rotinas.some(r => r.ultima === d) || (S.contasCasa || []).some(c => Object.values(c.pagos || {}).includes(d)), has("k.")], sec_dia: [B.ent.length > 0, has("d.")] };
+    sec_jor: [B.sess.length > 0 || B.lz.length > 0, has("j.") || has("l.")], sec_casa: [S.rotinas.some(r => r.ultima === d) || (S.contasCasa || []).some(c => Object.values(c.pagos || {}).includes(d)), has("k.")], sec_dia: [B.ent.length > 0, has("d.")], sec_bm: [!!bmEx()[d] || rtOcc(d).some(b => b.st), has("b.") || has("q.")] };
   return `<nav class="pdmapa" aria-label="Abas do dia">${PD_SEC.map(([id, l, i]) => { const [ok, pend] = st[id] || []; return `<a href="#painel" class="pdmc${ok ? " ok" : ""}${pend ? " pend" : ""}" data-pdgo="${id}" title="${ok ? "já tem registro neste dia" : pend ? "há registros esperando para salvar" : "nada ainda"}">${ic(ok ? "check" : i)}<span>${l}</span>${pend ? "<i></i>" : ""}</a>`; }).join("")}</nav>`;
 }
 function pdMoreHTML(C) {
@@ -10025,7 +10041,7 @@ function pdMoreHTML(C) {
     <div class="pdblk" id="sec_casa"><div class="pdfl"><span class="pdlab">${ic("house")}Casa</span><small class="pdhint">${CD.rot.length + CD.contas.length ? "o que está vencido ou vence em até 3 dias" : "nada pendente"}</small></div>
       ${CD.rot.map(r => `<label class="ckl pdck"><input type="checkbox" data-pdck="rot|${r.id}"${PD.chk.rot[r.id] ? " checked" : ""}><span>Fiz: ${esc(r.rotina)}<small class="muted">${esc(r.nivel || "")}${r.min ? ` · ${r.min} min` : ""}</small></span></label>`).join("")}
       ${CD.contas.map(({ c, v }) => `<label class="ckl pdck"><input type="checkbox" data-pdck="conta|${c.id}|${v}"${PD.chk.conta[`${c.id}|${v}`] ? " checked" : ""}><span>Paguei: ${esc(c.conta)} · ${eur(+c.valor || 0, 2)}<small class="${v < d ? "st-crit" : "muted"}">vence ${fmtD(v)}</small></span></label>`).join("")}</div>
-    <div class="pdrow3"><div class="pdf ${pdSt(C, "peso")}" data-pdbox="peso"><div class="pdfl"><label for="pd_peso">Peso (kg)</label>${s.peso ? `<em class="pdsrc">${num(s.peso)} salvo</em>` : ""}</div><div class="pdfi"><input type="text" id="pd_peso" data-pdf="peso" inputmode="decimal" autocomplete="off" value="${esc(V.peso ?? "")}" placeholder="72,5" aria-describedby="pdm_peso"></div>${pdMsg(C, "peso")}</div></div>`;
+    <div class="pdrow3"><div class="pdf ${pdSt(C, "peso")}" data-pdbox="peso"><div class="pdfl"><label for="pd_peso">Peso (kg)</label>${s.peso ? `<em class="pdsrc">${num(s.peso)} salvo</em>` : ""}</div><div class="pdfi"><input type="text" id="pd_peso" data-pdf="peso" inputmode="decimal" autocomplete="off" value="${esc(V.peso ?? "")}" placeholder="72,5" aria-describedby="pdm_peso"></div>${pdMsg(C, "peso")}</div></div>${pdMore3HTML()}`;
 }
 /* texto e voz: o que antes virava “outros registros” agora cai na seção da aba */
 function pdReset2() { const L = pdL(); for (const k of Object.keys(L)) L[k] = L[k].filter(r => r.src !== "texto"); }
@@ -10061,6 +10077,7 @@ function pdRows2(rows, cmd, B, d, bad) {
   for (const key of Object.keys(PD.chk.conta)) { if (!PD.chk.conta[key]) continue; const [cid, v] = key.split("|"), c = (S.contasCasa || []).find(z => z.id === cid); if (!c || contaPaga(c, v)) continue;
     rows.push({ id: `k.c.${key}`, txt: `Conta paga: ${c.conta} · ${eur(+c.valor || 0, 2)}`, kind: "novo", dest: "contasCasa", on: true, apply: () => { const x = S.contasCasa.find(z => z.id === cid); x.pagos = { ...(x.pagos || {}), [v]: d }; const ks = ["contasCasa"], cat = /aluguel|condom/i.test(x.cat || "") ? "Moradia" : "Contas da casa";
       if (+x.valor > 0 && cat in CAT_DESP) { S.lanc.push({ id: uid(), data: d, tipo: "Despesa", cat, desc: x.conta, valor: +x.valor, conta: x.debito === "Sim" ? "Conta corrente" : "PIX / transferência", origem: "casa" }); ks.push("lanc"); } return ks; } }); }
+  pdRows3(rows, d);
 }
 const pdLtotal = () => { const L = pdL(); return L.tar.length + L.cont.length + L.est.length + L.ler.length; };
 function pd2Click(t) {
@@ -10068,7 +10085,7 @@ function pd2Click(t) {
   if (ds.pdgo) { document.getElementById(ds.pdgo)?.scrollIntoView({ behavior: "smooth", block: "start" }); return true; }
   if (ds.pdladd) { const L = pdL(), k = ds.pdladd; L[k].push({ id: uid(), src: "mao", ...(k === "cont" ? { tipo: "Encontro" } : {}) }); pdStore(); render(); setTimeout(() => document.querySelector(`#sec_${{ tar: "tar", cont: "pes", est: "est", ler: "est" }[k]} .pdlr:last-of-type input, #sec_${{ tar: "tar", cont: "pes", est: "est", ler: "est" }[k]} .pdlr:last-of-type select`)?.focus(), 30); return true; }
   if (ds.pdldel) { const [k, i] = ds.pdldel.split("|"); pdL()[k].splice(+i, 1); pdStore(); render(); return true; }
-  if (ds.pdck) { const [k, ...rest] = ds.pdck.split("|"), key = rest.join("|"); pdL(); if (t.checked) PD.chk[k][key] = 1; else delete PD.chk[k][key]; pdStore(); pdPaint(); return true; }
+  if (ds.pdck) { const [k, ...rest] = ds.pdck.split("|"), key = rest.join("|"); pdL(); delete PD.chkT?.[ds.pdck]; if (t.checked) PD.chk[k][key] = 1; else delete PD.chk[k][key]; pdStore(); pdPaint(); return true; }
   return false;
 }
 function pd2Input(t) { if (t.dataset.pdl) { const [k, i, f] = t.dataset.pdl.split("|"), r = pdL()[k][+i]; if (r) { r[f] = t.value; r.src = "mao"; } pdStore(); if (t.tagName !== "SELECT") pdPaint(); return true; } return false; }
@@ -11024,6 +11041,128 @@ function jdClick(t) {
 function jdInput(t) { const k = t.dataset.jdt; if (!k) return false; JD.txt[k] = t.value; return true; }
 function jdChange(t) { const k = t.dataset.jdt; if (!k) return false; JD.txt[k] = t.value; return true; }
 
+/* ================================================================ roteiro de áudio do Painel do dia
+   Um guia de fala, em 13 blocos, que cobre tudo o que o dia alimenta: cada bloco diz o que falar, dá uma frase-modelo que o
+   leitor do texto entende (montada com os seus hábitos, tarefas, contas, blocos da rotina, livros e valores em foco) e mostra,
+   ao vivo, se aquele bloco já foi capturado. A gravação é o próprio campo “Conte o dia” (microfone ou ditado do sistema).
+   O leitor do texto ganhou o que antes só se marcava à mão: tarefas concluídas, limpezas e contas da casa, blocos da Rotina
+   (feito, parcial, pulado) e as notas do exame da noite da Bússola (pratiquei, tentei, esqueci). Tudo passa pela revisão. */
+const PDR = { open: (() => { try { return localStorage.getItem("atlas_pdrot") !== "0"; } catch { return true; } })(), tele: false, i: 0 };
+const PDX_STOP = new Set("a o as os de da do das dos e em no na nos nas para pra por com um uma uns umas que ate sem sobre ao aos meu minha seu sua dia".split(" "));
+const pdKw = s => fold(String(s || "")).replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(w => w.length >= 3 && !PDX_STOP.has(w));
+/* o trecho fala daquele item: as palavras do nome aparecem (pelo radical), pelo menos duas quando o nome tem mais de uma */
+function pdHit(F, title) { const ws = pdKw(title); if (!ws.length) return false; const n = ws.filter(w => new RegExp(`\\b${w.slice(0, Math.max(3, w.length - 2))}`).test(F)).length; return n >= Math.min(2, ws.length); }
+const PDX_TASK = /\b(conclui|terminei|finalizei|entreguei|resolvi|fiz|enviei|mandei|marquei|agendei|liguei|paguei|comprei|consegui|fechei|cumpri)\b/;
+const PDX_CASA = /\b(limpei|lavei|arrumei|passei|aspirei|tirei|troquei|fiz|organizei|varri|esfreguei|guardei|reguei|dobrei|recolhi)\b/;
+const PDX_CONTA = /\b(paguei|quitei|transferi)\b/;
+const PDX_BLK = [[/\b(pulei|faltei|nao fiz|perdi|deixei de)\b/, "pulado"], [/\b(metade|em parte|parcial|pela metade)\b/, "parcial"], [/\b(fiz|cumpri|completei|segui|consegui)\b/, "feito"]];
+const PDX_BM = [[/^(nao pratiquei|esqueci(?: de)?|falhei(?: em| na| no)?)$/, 0], [/^tentei$/, 1], [/^(pratiquei|vivi|exercitei)$/, 2]];
+const pdR3 = () => { PD.bm ||= {}; PD.rt ||= {}; PD.chkT ||= {}; pdL(); return PD; };
+function pdReset3() {
+  pdR3();
+  for (const k of Object.keys(PD.chkT)) { const [g, ...r] = k.split("|"); delete PD.chk[g]?.[r.join("|")]; }
+  PD.chkT = {};
+  for (const id of Object.keys(PD.bm)) if (PD.bm[id].src === "texto") delete PD.bm[id];
+  for (const id of Object.keys(PD.rt)) if (PD.rt[id].src === "texto") delete PD.rt[id];
+}
+function pdParse3(txt) {
+  pdR3(); const d = PD.date, cl = capSplit(txt), CD = pdCasaDia(d), mark = (g, key) => { if (PD.chk[g][key] && !PD.chkT[`${g}|${key}`]) return; PD.chk[g][key] = 1; PD.chkT[`${g}|${key}`] = 1; };
+  for (const { F } of cl) {
+    if (PDX_TASK.test(F)) for (const t of pdTarefasDia(d)) if (pdHit(F, t.tarefa)) mark("tdone", t.id);
+    if (PDX_CASA.test(F)) for (const r of CD.rot) if (pdHit(F, r.rotina)) mark("rot", r.id);
+    if (PDX_CONTA.test(F)) for (const { c, v } of CD.contas) if (pdHit(F, c.conta) || pdKw(c.cat).some(w => new RegExp(`\\b${w}`).test(F) && w.length >= 4)) {
+      mark("conta", `${c.id}|${v}`);
+      /* a conta paga já lança a despesa: o gasto do mesmo trecho não entra em dobro */
+      PD.gastos = PD.gastos.filter(g => !(g.src === "texto" && (pdHit(fold(g.d || ""), c.conta) || (Math.abs((pdMoney(g.v) || 0) - (+c.valor || 0)) < .01 && F.includes(fold(String(g.d || "")).slice(0, 6))))));
+    }
+  }
+  /* blocos da rotina: cada verbo vale até o próximo (“fiz o café, pulei o deslocamento”) */
+  { const F = fold(txt), rx = /\b(pulei|faltei|nao fiz|perdi|deixei de|fiz pela metade|fiz metade|fiz em parte|fiz|cumpri|completei|segui)\b/g, hits = []; let m;
+    while ((m = rx.exec(F))) hits.push([m.index, m[0], m.index + m[0].length]);
+    hits.forEach(([, verb, end], i) => { const stop = Math.min(hits[i + 1]?.[0] ?? F.length, (F.slice(end).search(/[.;!?\n]/) + 1 || F.length + 1) - 1 + end), seg = F.slice(end, stop), st = /pulei|faltei|nao fiz|perdi|deixei/.test(verb) ? "pulado" : /metade|em parte/.test(verb + seg.slice(0, 30)) ? "parcial" : "feito";
+      for (const b of rtOcc(d)) if (pdHit(seg, b.titulo) && PD.rt[b.id]?.src !== "mao") PD.rt[b.id] = { st, src: "texto" }; }); }
+  /* exame da noite: “pratiquei paciência e gentileza, tentei humildade, esqueci a temperança” */
+  const F = fold(txt), names = BM_V.map(v => [v.id, fold(v.nome)]), rx = /\b(nao pratiquei|esqueci(?: de)?|falhei(?: em| na| no)?|tentei|pratiquei|vivi|exercitei)\b/g; let m; const hits = [];
+  while ((m = rx.exec(F))) hits.push([m.index, m[0], m.index + m[0].length]);
+  hits.forEach(([, verb, end], i) => { const stop = Math.min(hits[i + 1]?.[0] ?? F.length, (F.slice(end).search(/[.;!?\n]/) + 1 || F.length + 1) - 1 + end), seg = F.slice(end, stop), v = PDX_BM.find(([r]) => r.test(verb))?.[1];
+    if (v == null) return; for (const [id, nm] of names) if (new RegExp(`\\b${nm}\\b`).test(seg) && PD.bm[id]?.src !== "mao") PD.bm[id] = { v, src: "texto" }; });
+}
+function pdRows3(rows, d) {
+  pdR3(); const e = bmEx()[d] || {}, set = Object.entries(PD.bm).filter(([id]) => bmV(id));
+  if (set.length) { const diff = set.filter(([id, x]) => e.n?.[id] !== x.v), lbl = ["esqueci", "tentei", "pratiquei"];
+    if (diff.length) rows.push({ id: "b.exame", txt: `Exame da noite: ${diff.map(([id, x]) => `${bmV(id).nome} ${lbl[x.v]}`).join(", ")}`, kind: diff.some(([id]) => e.n?.[id] != null) ? "subst" : "novo", old: diff.filter(([id]) => e.n?.[id] != null).map(([id]) => `${bmV(id).nome} ${lbl[e.n[id]]}`).join(", "), dest: "bmExames", on: true,
+      apply: () => { const cur = bmEx()[d] || { n: {} }; S.bmExames = { ...bmEx(), [d]: { ...cur, n: { ...(cur.n || {}), ...Object.fromEntries(diff.map(([id, x]) => [id, x.v])) }, at: Date.now() } }; return ["bmExames"]; } }); }
+  const occ = rtOcc(d);
+  for (const [id, x] of Object.entries(PD.rt)) { const b = occ.find(z => z.id === id); if (!b || b.st === x.st) continue;
+    rows.push({ id: `q.${id}`, txt: `Rotina: ${b.titulo} ${b.ini}–${b.fim} · ${ST_TXT[x.st] || x.st}`, kind: b.st ? "subst" : "novo", old: b.st ? ST_TXT[b.st] || b.st : "", dest: "rotina", on: true, apply: () => { const z = S.rotina.find(q => q.id === id); if (z) { if (z.feitos) delete z.feitos[d]; z.st = { ...(z.st || {}), [d]: x.st }; } return ["rotina"]; } }); }
+}
+/* bloco manual: exame da noite e blocos da rotina de hoje */
+function pdMore3HTML() {
+  pdR3(); const d = PD.date, e = bmEx()[d] || {}, foco = [...new Set([...(bmFoco().length ? bmFoco() : ["consciencia", "paciencia", "compaixao"]), ...Object.keys(PD.bm)])].filter(id => bmV(id)), occ = rtOcc(d), lbl = ["esqueci", "tentei", "pratiquei"];
+  const tag = src => src === "texto" ? `<em class="pdsrc s-texto">do texto</em>` : "";
+  return `<div class="pdblk" id="sec_bm"><div class="pdfl"><span class="pdlab">${ic("compass")}Exame da noite e rotina</span><small class="pdhint">${e.n && Object.keys(e.n).length ? "o exame deste dia já tem notas" : "valores em foco"}</small></div>
+    ${foco.map(id => { const x = PD.bm[id], cur = x ? x.v : e.n?.[id]; return `<div class="pdbm"><span>${esc(bmV(id).nome)}${tag(x?.src)}</span><div class="segs">${lbl.map((l, v) => `<button type="button" class="seg" data-pdbm="${id}|${v}" aria-pressed="${cur === v}">${l}</button>`).join("")}</div></div>`; }).join("")}
+    ${occ.length ? `<div class="flbl">Blocos da rotina de ${relDay(d) === "hoje" ? "hoje" : fmtD(d)}</div>${occ.map(b => { const x = PD.rt[b.id], cur = x ? x.st : b.st; return `<div class="pdbm"><span>${esc(b.titulo)} <small class="muted">${b.ini}–${b.fim}</small>${tag(x?.src)}</span><div class="segs">${[["feito", "feito"], ["parcial", "parcial"], ["pulado", "pulei"]].map(([k, l]) => `<button type="button" class="seg" data-pdrt="${b.id}|${k}" aria-pressed="${cur === k}">${l}</button>`).join("")}</div></div>`; }).join("")}` : ""}</div>`;
+}
+
+/* ---------------------------------------------------------------- o roteiro */
+const pdList = (a, n = 3, sep = ", ") => a.slice(0, n).join(sep);
+function pdRotBlocks() {
+  pdR3(); const d = PD.date, V = PD.v, L = pdL(), tds = pdTarefasDia(d), CD = pdCasaDia(d), occ = rtOcc(d), foco = (bmFoco().length ? bmFoco() : ["consciencia", "paciencia", "compaixao"]).map(id => bmV(id)?.nome.toLowerCase()).filter(Boolean);
+  const hab = S.habitos.map(h => h.nome.toLowerCase().replace(/\s*\d.*$/, "").trim()).filter(Boolean), livro = lerItens()[0], pessoa = S.pessoas[0]?.nome?.split(" ")[0], pessoa2 = S.pessoas[1]?.nome?.split(" ")[0], nOn = o => Object.keys(o || {}).length, has = k => V[k] !== "" && V[k] != null;
+  const habOn = S.habitos.filter(pdHabOn).length;
+  return [
+    { id: "dia", t: "Abertura", q: "Diga de que dia você está falando.", ex: "Hoje.", hint: "Se for o dia anterior, comece com “Ontem”.", dest: "todas as abas", st: [true, relDay(d) === "hoje" ? "hoje" : fmtD(d)] },
+    { id: "corpo", t: "Sono e corpo", q: "Quantas horas dormiu e como estão humor, energia e estresse, de 1 a 5. Se mediu, peso e passos.", ex: "Dormi 7 e meia, humor 4, energia 3, estresse 2, pesei 72,5, 8 mil passos.", dest: "Saúde",
+      st: (() => { const n = ["sono", "humor", "energia", "estresse"].filter(has).length; return [n >= 2, `${n} de 4${has("peso") ? " · peso" : ""}${has("passos") ? " · passos" : ""}`]; })() },
+    { id: "treino", t: "Movimento", q: "Que treino fez e por quantos minutos.", ex: "Corri 30 minutos.", hint: "Outros jeitos: “academia 50 minutos”, “caminhei 40 minutos”. Se não treinou, pule.", dest: "Saúde", st: [has("treino"), has("treino") ? `${V.treino}${V.min ? " " + V.min + " min" : ""}` : "nada ainda"] },
+    { id: "din", t: "Dinheiro", q: "Cada gasto com valor e onde; o que recebeu; o que guardou.", ex: "Gastei 12,50 no almoço e 32,40 no mercado. Recebi 2800 de salário. Guardei 200 na reserva.", dest: "Finanças", st: [PD.gastos.some(g => g.v), plural(PD.gastos.filter(g => g.v).length, "lançamento", "lançamentos")] },
+    { id: "casa", t: "Casa", q: "O que limpou ou arrumou e que conta pagou.", ex: [CD.rot[0] ? `Fiz ${CD.rot[0].rotina.toLowerCase()}.` : "Limpei a cozinha.", CD.contas[0] ? `Paguei a conta de ${CD.contas[0].c.conta.toLowerCase()}.` : ""].filter(Boolean).join(" "), dest: "Casa & docs",
+      hint: CD.rot.length + CD.contas.length ? `Pendentes: ${pdList([...CD.rot.map(r => r.rotina), ...CD.contas.map(x => x.c.conta)], 4)}` : "nada vencendo", st: [nOn(PD.chk.rot) + nOn(PD.chk.conta) > 0 || !(CD.rot.length + CD.contas.length), `${nOn(PD.chk.rot) + nOn(PD.chk.conta)} de ${CD.rot.length + CD.contas.length}`] },
+    { id: "hab", t: "Hábitos", q: "Diga cada hábito que cumpriu, pelo nome.", ex: hab.length ? `${pdList(hab, 4)}: feito.` : "Meditei, li, bebi água.", dest: "Hábitos", hint: hab.length ? `Seus hábitos: ${pdList(S.habitos.map(h => h.nome), 8)}` : "", st: [habOn > 0, `${habOn} de ${S.habitos.length}`] },
+    { id: "tar", t: "Tarefas", q: "O que concluiu e o que surgiu para fazer, com prazo.", ex: `${tds[0] ? `Concluí ${tds[0].tarefa.toLowerCase()}. ` : ""}Preciso ligar para o banco até sexta.`, dest: "Metas & tarefas", hint: tds.length ? `Vencendo: ${pdList(tds.map(t => t.tarefa), 4)}` : "",
+      st: [nOn(PD.chk.tdone) + L.tar.length > 0, `${nOn(PD.chk.tdone)} concluída(s) · ${L.tar.length} nova(s)`] },
+    { id: "rot", t: "Rotina", q: "Quais blocos do dia você fez, fez pela metade ou pulou.", ex: occ.length ? `Fiz ${occ[0].titulo.toLowerCase()}${occ.find(b => norm(b.titulo) !== norm(occ[0].titulo)) ? `, pulei ${occ.find(b => norm(b.titulo) !== norm(occ[0].titulo)).titulo.toLowerCase()}` : ""}.` : "Fiz o bloco de estudo, pulei a academia.", dest: "Rotina", hint: occ.length ? `Blocos de hoje: ${pdList(occ.map(b => b.titulo), 5)}` : "sem blocos neste dia",
+      st: [nOn(PD.rt) > 0 || !occ.length, `${nOn(PD.rt)} de ${occ.length}`] },
+    { id: "pes", t: "Pessoas", q: "Com quem conversou, como e por quanto tempo.", ex: `Almocei com ${pessoa || "a Ana"}. Liguei para ${pessoa2 || "o Pedro"} 20 minutos.`, dest: "Relações", st: [L.cont.length > 0, plural(L.cont.length, "contato", "contatos")] },
+    { id: "est", t: "Estudo, idiomas e leitura", q: "Quanto estudou de cada idioma ou curso e quantas páginas leu.", ex: `Estudei inglês 30 minutos. Estudei italiano 15 minutos. Li 20 páginas de ${livro || "o livro"}.`, dest: "Idiomas · Crescimento", st: [L.est.length + L.ler.length > 0, `${L.est.length} estudo(s) · ${L.ler.length} leitura(s)`] },
+    { id: "jor", t: "Jornada e Bússola", q: "A prática do dia, com minutos, e o exame da noite: o que praticou, tentou ou esqueceu.", ex: `Meditei 15 minutos. Pratiquei ${foco[0] || "paciência"}, tentei ${foco[1] || "humildade"}, esqueci ${foco[2] || "gentileza"}.`, dest: "Jornada existencial",
+      st: [has("pmin") || nOn(PD.bm) > 0, `${has("pmin") ? `${V.pmin} min de prática` : "sem prática"} · ${nOn(PD.bm)} valor(es)`] },
+    { id: "lz", t: "Lazer", q: "O que fez por prazer e por quanto tempo.", ex: "Fui ao cinema 2 horas.", dest: "Lazer", st: [has("lzat"), has("lzat") ? `${V.lzat}${V.lzh ? " " + V.lzh + " h" : ""}` : "nada ainda"] },
+    { id: "diario", t: "Fechamento", q: "Em poucas frases: o que marcou o dia, onde agi bem, onde falhei, pelo que sou grato e o que levo para amanhã.", ex: "O que marcou hoje foi a conversa com a equipe. Agi bem quando escutei antes de responder. Falhei quando me irritei no trânsito. Sou grato pelo almoço em família. Amanhã quero dormir mais cedo.", dest: "Diário", st: [PD.text.trim().split(/\s+/).length >= 40 && PD.diario, `${PD.text.trim() ? PD.text.trim().split(/\s+/).length : 0} palavras`] }];
+}
+function pdRotList() {
+  const B = pdRotBlocks(), ok = B.filter(b => b.st[0]).length;
+  if (PDR.tele) { const i = Math.min(PDR.i, B.length - 1), b = B[i];
+    return `<div class="pdtele"><div class="pdtl-top"><span>${i + 1} de ${B.length} · ${esc(b.t)}</span><span class="pdrs ${b.st[0] ? "ok" : ""}">${ic(b.st[0] ? "check" : "clock")}${esc(b.st[1])}</span></div><p class="pdtl-q">${esc(b.q)}</p><p class="pdtl-ex">“${esc(b.ex)}”</p>${b.hint ? `<p class="small muted">${esc(b.hint)}</p>` : ""}
+      <div class="row wrap"><button type="button" class="btn sm" data-act="pdrprev"${i ? "" : " disabled"}>${ic("back")}Anterior</button><button type="button" class="btn sm primary" data-act="pdrnext"${i < B.length - 1 ? "" : " disabled"}>Próximo${ic("arrow")}</button><span class="muted small">${ok} de ${B.length} blocos capturados</span></div></div>`; }
+  return `<div class="pdrprog"><i style="width:${Math.round(100 * ok / B.length)}%"></i></div><ol class="pdrl">${B.map((b, i) => `<li class="${b.st[0] ? "ok" : ""}"><span class="pdrn">${b.st[0] ? ic("check") : i + 1}</span><div><b>${esc(b.t)}</b> <small class="muted">→ ${esc(b.dest)}</small><p>${esc(b.q)}</p><p class="pdrex">“${esc(b.ex)}”</p>${b.hint ? `<small class="muted">${esc(b.hint)}</small>` : ""}</div><small class="pdrs">${esc(b.st[1])}</small></li>`).join("")}</ol>`;
+}
+function pdRoteiroHTML() {
+  const B = pdRotBlocks(), ok = B.filter(b => b.st[0]).length;
+  return `<details class="pn pdrot" id="pd_rot"${PDR.open ? " open" : ""}><summary data-act="pdropen">${ic("mic")}<b>Roteiro de áudio do dia</b><span class="muted small">13 blocos · cerca de 3 minutos · <span id="pd_rotn">${ok} de ${B.length}</span> capturados</span></summary>
+    <p class="small muted">Leia o bloco e responda em voz alta, no tom de uma conversa. Tudo vai para o campo “Conte o dia”, que preenche as abas; nada é salvo antes da revisão. Pule o que não se aplica.</p>
+    <div class="row wrap pdract"><button type="button" class="btn sm primary" data-act="pdrrec">${ic("mic")}${VOZ.on === "texto" ? "Parar a gravação" : "Gravar as respostas"}</button><button type="button" class="btn sm" data-act="pdrtele" aria-pressed="${PDR.tele}">${ic("eye")}${PDR.tele ? "Ver a lista" : "Um bloco por vez"}</button><button type="button" class="btn sm ghost" data-act="pdrcopy">${ic("copy")}Copiar o roteiro</button><button type="button" class="btn sm ghost" data-act="pdrtxt">${ic("download")}Baixar (.txt)</button></div>
+    <div id="pd_rotl">${pdRotList()}</div></details>`;
+}
+function pdRotText() {
+  const B = pdRotBlocks();
+  return `ROTEIRO DE ÁUDIO · PAINEL DO DIA · ${fmtDL(PD.date)}\nResponda em voz alta, na ordem. Pule o que não se aplica.\n\n` + B.map((b, i) => `${i + 1}. ${b.t.toUpperCase()} (vai para: ${b.dest})\n   ${b.q}\n   Exemplo: “${b.ex}”${b.hint ? `\n   ${b.hint}` : ""}`).join("\n\n") + `\n\nDepois: cole ou dite as respostas no campo “Conte o dia” do Painel, revise e salve.\n`;
+}
+function pdRotPaint() { const el = $("#pd_rotl"); if (!el) return; const h = pdRotList(); if (el.innerHTML !== h) el.innerHTML = h; const n = $("#pd_rotn"); if (n) { const B = pdRotBlocks(); n.textContent = `${B.filter(b => b.st[0]).length} de ${B.length}`; } }
+function pd3Click(t) {
+  const ds = t.dataset, a = ds.act;
+  if (a === "pdropen") { setTimeout(() => { PDR.open = $("#pd_rot")?.open ?? PDR.open; try { localStorage.setItem("atlas_pdrot", PDR.open ? "1" : "0"); } catch {} }, 0); return false; }
+  if (a === "pdrtele") { PDR.tele = !PDR.tele; render(); return true; }
+  if (a === "pdrnext" || a === "pdrprev") { PDR.i = Math.max(0, Math.min(12, PDR.i + (a === "pdrnext" ? 1 : -1))); pdRotPaint(); return true; }
+  if (a === "pdrrec") { $('[data-pdmic="texto"]')?.click(); setTimeout(() => render(), 50); return true; }
+  if (a === "pdrcopy") { const tx = pdRotText(); (navigator.clipboard?.writeText(tx) || Promise.reject()).then(() => toast("Roteiro copiado"), () => { saveFile("roteiro-do-dia.txt", tx); }); return true; }
+  if (a === "pdrtxt") { saveFile(`roteiro-do-dia-${PD.date}.txt`, pdRotText()); return true; }
+  if (ds.pdbm) { const [id, v] = ds.pdbm.split("|"); pdR3(); if (PD.bm[id]?.v === +v) delete PD.bm[id]; else PD.bm[id] = { v: +v, src: "mao" }; pdStore(); render(); return true; }
+  if (ds.pdrt) { const [id, st] = ds.pdrt.split("|"); pdR3(); if (PD.rt[id]?.st === st) delete PD.rt[id]; else PD.rt[id] = { st, src: "mao" }; pdStore(); render(); return true; }
+  return false;
+}
+
 
 /* ================================================================ render */
 let RELAYOUT = false;
@@ -11141,7 +11280,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (rtClick(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (rtClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }

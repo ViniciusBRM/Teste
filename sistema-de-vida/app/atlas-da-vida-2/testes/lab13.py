@@ -22,7 +22,7 @@ async def main():
         try:
             await pg.wait_for_timeout(400)
             secs = await pg.evaluate("[...document.querySelectorAll('.pdmc > span:not(.ico)')].map(x => x.textContent)")
-            chk(secs == ["Saúde", "Finanças", "Hábitos", "Tarefas", "Pessoas", "Estudo & idiomas", "Jornada & lazer", "Casa", "Diário"], f"o painel mostra todas as abas do dia: {secs}")
+            chk(secs == ["Saúde", "Finanças", "Hábitos", "Tarefas", "Pessoas", "Estudo & idiomas", "Jornada & lazer", "Bússola & rotina", "Casa", "Diário"], f"o painel mostra todas as abas do dia: {secs}")
             await pg.fill("#pd_txt", "Humor 4, dormi 7 horas. Recebi 300 do freela e guardei 100 na reserva. Pesei 72,5. Liguei para a Mãe 20 min. Estudei 1 hora de inglês. Li 30 páginas do Il nome della rosa. Preciso ligar para o banco até sexta")
             await pg.wait_for_timeout(600)
             st = await pg.evaluate("({ g: PD.gastos.map(g => [g.tipo, g.v]), L: { tar: PD.L.tar.map(r => r.t), cont: PD.L.cont.map(r => [r.pessoa, r.tipo, r.min]), est: PD.L.est.map(r => [r.item, r.min]), ler: PD.L.ler.map(r => [r.item, r.pag]) }, peso: PD.v.peso })")

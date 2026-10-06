@@ -16,6 +16,7 @@ Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` 
 | `lab2.py` | radar (contra cálculo independente), fechamento semanal, capítulos e livro em PDF, busca por significado |
 | `lab3.py` | espaço a dois (duas pessoas), agenda .ics (recorrências contra a `python-dateutil`), Apple Health, Google Fit, Notion, extrato que aprende |
 | `lab4.py` | bússola moral: valores, foco, exame da noite (índice conferido à parte), decisões com revisita, caminhos, Hoje |
+| `lab16.py` | roteiro de áudio do Painel do dia: 13 blocos com frases-modelo pessoais, o roteiro falado preenche todas as abas (inclui tarefas concluídas, casa, contas sem gasto em dobro, blocos da rotina e exame da Bússola), um bloco por vez, copiar e baixar |
 | `lab15.py` | saúde espiritual: jardim (árvores, rio, folha que não guarda texto, pedras, tábuas, templo, caminhos, noite), camadas e explorador da mandala, respiração, camadas, agulha e sorteio da bússola |
 | `lab14.py` | rotina: dia, semana e mês sincronizados, meias horas, criar tocando e arrastando, repetições e exceções, sobreposição, agenda junto, Idiomas e Hoje |
 | `lab13.py` | painel com todas as abas, feed do dia pelo banco, mandala e bússola grandes, Google Calendar (leitura em páginas, blocos de estudo, erros) |

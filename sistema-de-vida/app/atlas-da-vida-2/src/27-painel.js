@@ -6,11 +6,11 @@ const PD_LBL = { humor: "Humor", energia: "Energia", estresse: "Estresse", sono:
 const PD_REQ_OPC = ["humor", "energia", "estresse", "sono", "passos", "treino", "gastos", "habitos", "texto"];
 const PD_REQ_DEF = ["humor", "sono"];
 const PD_KEYS = ["humor", "energia", "estresse", "sono", "passos", "treino", "min", "ppid", "pmin", "lzat", "lzh"];
-const pdNew = (date = TODAY) => ({ date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], L: { tar: [], cont: [], est: [], ler: [] }, chk: { tdone: {}, rot: {}, conta: {} }, step: "form", done: null, inf: [] });
+const pdNew = (date = TODAY) => ({ bm: {}, rt: {}, chkT: {}, date, dateSrc: "", v: { ppid: "med" }, src: {}, gastos: [], habs: {}, hsrc: {}, text: "", diario: true, xoff: [], off: [], on: [], extras: [], L: { tar: [], cont: [], est: [], ler: [] }, chk: { tdone: {}, rot: {}, conta: {} }, step: "form", done: null, inf: [] });
 let PD = pdLoad() || pdNew();
 function pdLoad() { try { const v = JSON.parse(localStorage.getItem("atlas_painel") || "null"); return v && v.date && v.v ? { ...pdNew(v.date), ...v, step: "form", done: null } : null; } catch { return null; } }
 const pdStore = debounce(() => { if (EX_MODE) return; try { pdEmpty() ? localStorage.removeItem("atlas_painel") : localStorage.setItem("atlas_painel", JSON.stringify({ ...PD, done: null, step: "form" })); } catch {} }, 400);
-const pdEmpty = () => !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !pdLtotal() && !Object.values(PD.chk || {}).some(o => Object.keys(o).length) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
+const pdEmpty = () => !Object.keys(PD.bm || {}).length && !Object.keys(PD.rt || {}).length && !PD.text.trim() && !PD.gastos.some(g => g.v || g.d) && !pdLtotal() && !Object.values(PD.chk || {}).some(o => Object.keys(o).length) && !Object.keys(PD.hsrc).length && !Object.values(PD.src).some(s => s && s !== "base");
 const pdReq = () => Array.isArray(S.cfg.pdReq) ? S.cfg.pdReq : PD_REQ_DEF;
 const pdRev = () => S.cfg.pdRev !== false;
 const pdLang = () => S.cfg.pdLang || "pt-BR";
@@ -137,7 +137,7 @@ const PD_PRAT = [[/\b(meditei|meditacao|medita\w*|respirei|respiracao|atencao pl
 function pdParse(o = {}) {
   /* volta ao que as abas têm o que veio do texto antes; o que foi digitado ou falado no campo fica */
   for (const k of PD_KEYS) if (PD.src[k] === "texto") { PD.src[k] = ""; if (k !== "ppid") PD.v[k] = ""; }
-  PD.inf = []; PD.gastos = PD.gastos.filter(g => g.src !== "texto"); pdReset2();
+  PD.inf = []; PD.gastos = PD.gastos.filter(g => g.src !== "texto"); pdReset2(); pdReset3();
   for (const id of Object.keys(PD.hsrc)) if (PD.hsrc[id] === "texto") { delete PD.hsrc[id]; delete PD.habs[id]; }
   pdSyncBase();
   const txt = pdNorm(pdWords(PD.text)), extras = [];
@@ -160,11 +160,12 @@ function pdParse(o = {}) {
   }
   /* prática da jornada: verbo + minutos no mesmo trecho */
   if (PD.src.pmin !== "mao" && PD.src.pmin !== "voz") for (const { F } of capSplit(txt)) { const hit = PD_PRAT.find(([rx]) => rx.test(F)); if (!hit) continue; const mn = capMinutes(F); if (mn) { take("ppid", hit[1]); take("pmin", String(mn)); break; } }
+  pdParse3(txt);
   PD.extras = extras;
 }
 
 /* ---------------------------------------------------------------- o que vai ser salvo: uma linha por registro, comparada com o que o dia já tem */
-const PD_DEST = { rotinas: ["Casa › Limpeza", "casa.limpeza"], contasCasa: ["Casa › Contas", "casa.contas"], saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
+const PD_DEST = { bmExames: ["Jornada › Exame da noite", "jornada.exame"], rotina: ["Rotina", "rotina.dia"], rotinas: ["Casa › Limpeza", "casa.limpeza"], contasCasa: ["Casa › Contas", "casa.contas"], saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
 function pdRows() {
   const d = PD.date, B = pdBase(d), C = pdCheck(), V = PD.v, rows = [], bad = k => C.f[k]?.st === "err";
   const ctx = { date: d, area: "", humor: +V.humor || null };
@@ -292,6 +293,7 @@ function pPainel() {
   const sess = B.sess.length ? `<small class="pdhint">Já neste dia: ${B.sess.map(x => `${esc(J_PIL[x.pid]?.nome || x.pid)} ${x.min} min`).join(", ")}</small>` : "";
   const lzs = B.lz.length ? `<small class="pdhint">Já neste dia: ${B.lz.map(x => `${esc(x.atividade)} ${num(x.horas, 1)} h`).join(", ")}</small>` : "";
   return `${done}<div class="pd">
+    ${pdRoteiroHTML()}
     <section class="pn pdtxt" aria-label="Conte o dia">
       <div class="pdday ${pdSt(C, "date")}"><label class="pdd">Dia<input type="date" id="pd_date" value="${d}" max="${TODAY}"></label><div class="seg-g" role="group" aria-label="Atalhos de dia"><button type="button" class="seg" data-pdday="${TODAY}" aria-pressed="${d === TODAY}">Hoje</button><button type="button" class="seg" data-pdday="${addDays(TODAY, -1)}" aria-pressed="${d === addDays(TODAY, -1)}">Ontem</button></div>${pdMsg(C, "date")}
         <span class="pdvst ${why ? "off" : ""}" title="${esc(why ? PD_WHY[why] + " " + PD_DICT[pdPlat()] : "Voz pelo navegador, em " + pdLang())}">${ic("mic")}${why ? "voz pelo ditado do sistema" : "voz pronta · " + pdLang()}</span></div>
@@ -368,6 +370,7 @@ function pdPaint() {
   foot.querySelector(".pdinfo").innerHTML = pdFootInfo(C, on, on.filter(r => r.kind === "subst" || r.kind === "apagar").length);
   const go = foot.querySelector('[data-act="pdrev"],[data-act="pdsave"]'), cl = foot.querySelector('[data-act="pdclear"]');
   if (go) go.disabled = !!(C.errs.length || C.missing.length) || !on.length; if (cl && !cl.dataset.c) cl.disabled = pdEmpty();
+  pdRotPaint();
 }
 function pdAddGasto() { PD.gastos.push({ id: uid(), v: "", d: "", cat: "", src: "mao" }); pdStore(); render(); setTimeout(() => document.getElementById(`pd_gv${PD.gastos.length - 1}`)?.focus(), 30); }
 const pdParseDeb = debounce(() => { pdParse(); pdStore(); pdPaint(); }, 250);
