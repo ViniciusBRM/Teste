@@ -49,8 +49,8 @@ async def main():
             # cartão: feito / parcial / pulado
             await pg.click(f"[data-rtb='{bid}|{TS}']"); await pg.wait_for_timeout(200)
             chk(await pg.evaluate("!!document.querySelector('.rtcard')"), "clicar abre o cartão do bloco")
-            await pg.click(f"[data-rtst='{bid}|{TS}|parcial']"); await pg.wait_for_timeout(200)
-            chk(await pg.evaluate(f"S.rotina.find(x => x.id === '{bid}').st[TODAY]") == "parcial" and await pg.evaluate(f"document.querySelector('[data-rtst=\"{bid}|{TS}|parcial\"]').getAttribute('aria-pressed')") == "true", "parcial marcado e visível no cartão")
+            await pg.click(f"#dlg [data-rtst='{bid}|{TS}|parcial']"); await pg.wait_for_timeout(200)
+            chk(await pg.evaluate(f"S.rotina.find(x => x.id === '{bid}').st[TODAY]") == "parcial" and await pg.evaluate(f"document.querySelector('#dlg [data-rtst=\"{bid}|{TS}|parcial\"]').getAttribute('aria-pressed')") == "true", "parcial marcado e visível no cartão")
             await pg.click("[data-rtcx]"); await pg.wait_for_timeout(150)
             chk(await pg.evaluate(f"document.querySelector('[data-rtb=\"{bid}|{TS}\"]').classList.contains('st-parcial')"), "o bloco mostra o estado")
             # criação rápida por texto

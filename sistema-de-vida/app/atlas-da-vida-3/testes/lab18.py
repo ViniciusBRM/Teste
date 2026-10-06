@@ -236,6 +236,27 @@ async def main():
         allerr = errs + errs2 + errs3
         chk(not allerr, f"sem erros no console ({allerr[:3]})")
 
+        # banco vazio começa vazio: o exemplo só aparece pelo botão
+        b, pg, e5 = await open_page(p, w=1440, h=900, hash_="fin.lanc", cfg={"realBoot": True})
+        try:
+            await pg.wait_for_timeout(900)
+            r = await pg.evaluate("[S.lanc.length, S.diario.length, S.conselho.atas.length, IS_EXAMPLE, !!document.querySelector('.banner')?.textContent.includes('Atlas vazio')]")
+            chk(r == [0, 0, 0, False, True], f"banco vazio abre vazio, sem dados de exemplo, com o aviso ({r})")
+            await pg.evaluate("exOn()"); await pg.wait_for_timeout(300); n = await pg.evaluate("S.lanc.length")
+            await pg.evaluate("exOff()"); await pg.wait_for_timeout(300)
+            chk(n > 10 and await pg.evaluate("S.lanc.length") == 0, "o exemplo só aparece com o botão Exemplo e some ao desligar")
+        finally:
+            await b.close()
+        seed = {"data/users/u_test/s_lanc": {"v": [{"id": "x1", "data": "2026-10-01", "tipo": "Despesa", "cat": "Mercado", "desc": "real", "valor": 10, "conta": "C"}], "at": 1}}
+        b, pg, e6 = await open_page(p, w=1440, h=900, hash_="fin.lanc", cfg={"realBoot": True, "seedStore": json.dumps(seed)})
+        try:
+            await pg.wait_for_timeout(900)
+            r = await pg.evaluate("[S.lanc.map(x => x.desc), S.diario.length, S.metas.length, S.mentores.fis ? 1 : 0, IS_EXAMPLE]")
+            chk(r == [["real"], 0, 0, 0, False], f"com dados salvos (como as finanças), só eles aparecem, sem exemplo misturado ({r})")
+        finally:
+            await b.close()
+        chk(not (e5 + e6), f"sem erros ao abrir vazio ({(e5 + e6)[:2]})")
+
         # celular
         b, pg, errs4 = await open_page(p, w=390, h=820, hash_="admin")
         try:

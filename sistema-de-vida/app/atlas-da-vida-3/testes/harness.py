@@ -122,6 +122,7 @@ MOCK = r"""
     window.__say = (t, fin = true) => { const r = window.__sr; r.onresult({ resultIndex: 0, results: [Object.assign([{ transcript: t }], { isFinal: fin })] }); if (fin && !r.continuous) r.onend(); };
     window.__srErr = c => { const r = window.__sr; r.onerror({ error: c }); r.onend(); }; }
   if (cfg.policyNoMic) Object.defineProperty(document, "permissionsPolicy", { value: { allowsFeature: f => f !== "microphone" }, configurable: true });
+  if (!cfg.realBoot) window.__atlasDemo = true;
   const caps = { db, user, sample, mcp, downloads };
   if (!cfg.none) window.claude = { use: async n => (cfg.off || []).includes(n) ? null : caps[n] || null };
 })();

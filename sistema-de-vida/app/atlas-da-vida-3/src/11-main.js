@@ -41,7 +41,8 @@ function render() {
   };
   const [title, sub, fn] = (pages[PAGE] || pages.visao)();
   let body; try { body = fn(R); } catch (err) { console.error(err); body = `<div class="emptyb">${ic("info")}<b>Esta página encontrou um problema ao desenhar.</b><span>${esc(String(err?.message || err))}</span><a class="btn sm" href="#visao">Voltar para a visão geral</a></div>`; }
-  const banner = EX_MODE ? exBanner() : IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
+  const vazio = LOADED && !IS_EXAMPLE && !["lanc", "diario", "metas", "tarefas", "habitos", "pessoas", "saude"].some(k => Object.keys(S[k] || {}).length);
+  const banner = EX_MODE ? exBanner() : vazio ? `<div class="banner">${ic("info")}<span><b>Atlas vazio.</b> Comece registrando, importe o backup do Atlas 2 em Dados → Importar, ou ligue o <b>Exemplo</b> no topo para ver tudo preenchido com dados fictícios (nada é salvo).</span></div>` : IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
   const ae = document.activeElement, focusId = ae?.id, selS = ae?.selectionStart, selE = ae?.selectionEnd, scT = ae?.scrollTop, chat = $("#mchat"), chatTop = chat ? chat.scrollTop : null, chatBottom = chat ? chat.scrollHeight - chat.scrollTop - chat.clientHeight < 40 : true;
   $("#nav").innerHTML = navHTML(R);
   $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}${csStrip()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
@@ -228,7 +229,9 @@ window.addEventListener("resize", debounce(() => { const old = REPW; measureGrid
 /* ================================================================ inicialização */
 (async function init() {
   try { const th = localStorage.getItem("atlas_theme"); if (th) document.documentElement.dataset.theme = th; } catch {}
-  S = exampleData(); IS_EXAMPLE = true; VER++; applyLists();
+  /* banco vazio começa vazio: o exemplo só aparece pelo botão Exemplo (os testes ligam a demonstração com __atlasDemo) */
+  const DEMO = window.__atlasDemo === true;
+  S = DEMO ? exampleData() : EMPTY(); IS_EXAMPLE = DEMO; VER++; applyLists();
   REF = +TODAY.slice(8) <= 7 ? addMonth(mkey(TODAY), -1) : mkey(TODAY);
   DIA.draft = loadDraft(); snapAll(); route();
   const use = n => { try { return Promise.resolve(window.claude?.use?.(n)).catch(() => null); } catch { return Promise.resolve(null); } };
