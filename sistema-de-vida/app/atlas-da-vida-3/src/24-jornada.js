@@ -316,6 +316,7 @@ function jEstAt(pid, sid, d) {
 const jmBackDate = () => addDays(TODAY, -30 * (J.mback || 0));
 const jmBackTxt = () => J.mback ? `${fmtDY(jmBackDate())} · há ${plural(J.mback, "mês", "meses")}` : "hoje";
 function jmWeekFill(pid, i) { const ws = addDays(weekStart(TODAY), -7 * (4 - i)); return jActDays(pid, ws, addDays(ws, 6)).size; }
+const jmReduced = () => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch { return false; } };
 function jMandala(o = {}) {
   const W = 520, C = 260, ang = { esp: -90, med: 0, bud: 90, tao: 180 }, sc = bmScores(28), lay = o.mini ? "est" : J.mlay || "est", hd = lay === "hist" ? jmBackDate() : null, it = !o.mini;
   let g = `<circle cx="${C}" cy="${C}" r="236" class="jm-o"/><circle cx="${C}" cy="${C}" r="168" class="jm-i"/><g class="jm-pg">`, k = 0;
@@ -324,7 +325,10 @@ function jMandala(o = {}) {
     D.est.forEach((e, i) => { const v = hd ? jEstAt(pid, e.id, hd) : jEstV(pid, e.id), a = a0 + (i - 2) * 15 + 90, key = `${pid}|${e.id}`, on = it && J.msel === key;
       const wk = lay === "ritmo" ? jmWeekFill(pid, i) : 0, fo = lay === "ritmo" ? (wk ? .14 + .8 * Math.min(1, wk / 5) : 0) : J_FILL[v];
       const tip = lay === "ritmo" ? `${D.nome} · semana de ${fmtD(addDays(weekStart(TODAY), -7 * (4 - i)))}: ${plural(wk, "dia", "dias")}` : `${D.nome} · ${e.nome}: ${J_EST[v][1]}${hd ? ` em ${fmtD(hd)}` : ""}`;
-      g += `<g class="jm-p${it ? " click" : ""}${on ? " on" : ""}"${it ? ` data-act="jmsel" data-k="${key}" role="button" tabindex="0" data-tip="${esc(tip)}"` : ""} aria-label="${esc(D.nome)}: ${esc(e.nome)}, ${J_EST[v][1]}" transform="translate(${C} ${C}) rotate(${a})" style="--i:${k++}"><path d="${jPetal(64, 158, 13)}" style="fill:${D.cor};fill-opacity:${fo};stroke:${D.cor}"${(lay === "ritmo" ? wk : v) ? "" : ' stroke-dasharray="3 3"'}/></g>`; });
+      /* a posição fica no grupo de fora (atributo transform); o crescimento é SMIL no grupo de dentro e o CSS só mexe na opacidade:
+         CSS animando transform num elemento que já tem o atributo transform faz o Safari jogar as pétalas para o canto (0,0) */
+      const grow = it && J.manim && !jmReduced() ? `<animateTransform attributeName="transform" type="scale" from=".2" to="1" dur=".7s" begin="${k * 28}ms" fill="freeze" calcMode="spline" keySplines=".2 1 .4 1" keyTimes="0;1"/>` : "";
+      g += `<g transform="translate(${C} ${C}) rotate(${a})"><g class="jm-p${it ? " click" : ""}${on ? " on" : ""}"${it ? ` data-act="jmsel" data-k="${key}" role="button" tabindex="0" data-tip="${esc(tip)}"` : ""} aria-label="${esc(D.nome)}: ${esc(e.nome)}, ${J_EST[v][1]}" style="--i:${k++}">${grow}<path d="${jPetal(64, 158, 13)}" style="fill:${D.cor};fill-opacity:${fo};stroke:${D.cor}"${(lay === "ritmo" ? wk : v) ? "" : ' stroke-dasharray="3 3"'}/></g></g>`; });
   }
   g += `</g>`;
   for (const pid of J_ORDER) { const D = J_PIL[pid], a0 = ang[pid], mo = jMoonInfo(pid), t = a0 * Math.PI / 180, x = C + 200 * Math.cos(t), y = C + 200 * Math.sin(t);

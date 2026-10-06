@@ -23,7 +23,7 @@ const JD_ARV = {
   esp: { nome: "Ameixeira", art: "a", estilo: "xieyi, o pincel livre", cena: "brota da pedra no olho do yang e floresce sob a lua", sim: "Floresce no inverno, em galho nu, e renasce a cada ano: a fé que persevera e o Espírito que recomeça. Cresce da pedra das imperfeições em direção à luz.", insc: { l: ["Nascer, morrer,", "renascer ainda", "e progredir sem cessar."], f: "túmulo de Kardec" } },
   med: { nome: "Bambu", art: "o", estilo: "pintura chan (zen)", cena: "enso e bambu ao luar, pintados em branco sobre o yin", sim: "Oco por dentro e flexível ao vento: a mente que se esvazia e não quebra. O enso se fecha conforme a prática cresce.", insc: { l: ["Sentado em silêncio,", "a primavera chega", "e a relva cresce sozinha."], f: "Zenrin Kushu" } },
   tao: { nome: "Pinheiro", art: "o", estilo: "shanshui, montanha e água", cena: "na encosta, junto à cascata que alimenta o rio; o mirante fica no pico", sim: "Verde no inverno: a constância que não força, símbolo taoista de longevidade. Em flor, a garça dos imortais passa pelo pico.", insc: { l: ["A bondade suprema", "é como a água."], f: "Tao Te Ching, 8" } },
-  bud: { nome: "Figueira-bodhi", art: "a", estilo: "baimiao, o traço fino em ouro", cena: "sobre o assento vazio, onde o rio chega ao mar, abaixo do lago de lótus", sim: "A árvore sob a qual Siddhartha despertou. O assento vazio é o modo antigo de representar o Buda: a presença sem figura.", insc: { l: ["Do monte de lixo", "à beira da estrada", "nasce o lótus."], f: "Dhammapada, 58" } } };
+  bud: { nome: "Figueira-bodhi", art: "a", estilo: "baimiao, o traço fino em branco reservado sobre o yin", cena: "sobre o assento vazio, onde o rio chega ao mar, abaixo do lago de lótus", sim: "A árvore sob a qual Siddhartha despertou. O assento vazio é o modo antigo de representar o Buda: a presença sem figura.", insc: { l: ["Do monte de lixo", "à beira da estrada", "nasce o lótus."], f: "Dhammapada, 58" } } };
 const JD_SIMB = {
   rio: "O S do yin-yang. Nasce no norte, junto ao Espiritismo, e deságua no sul, junto ao Budismo: separa e une as duas forças.",
   lago: "O olho do yin: a luz que nasce dentro do escuro, como o lótus que floresce da lama.",
@@ -107,9 +107,15 @@ function jdMoonF() { const ph = (((Date.now() - Date.UTC(2000, 0, 6, 18, 14)) / 
    onde as forças se tocam, o pavilhão do templo sobre a Bússola. Cada pilar num gênero da pintura chinesa:
    Espiritismo em xieyi (ameixeira que brota da pedra e floresce sob a lua), Taoísmo em shanshui (montanha, pinheiro,
    cascata e o mirante no pico), Meditação em pintura chan (enso e bambu ao luar, em branco sobre o yin) e Budismo em baimiao
-   dourado (figueira-bodhi sobre o assento vazio), com o lótus em mogu (só cor, sem contorno). O templo é jiehua, o desenho
-   de arquitetura: o que ainda não foi construído aparece só como esboço a carvão. */
-const INK = "#1d1915", PAPER = "#f1e6cf", PALE = "#efe5cf", SEAL = "#b0352a", GOLD = "#dcbb68", JD_SEAL = { esp: "灵", med: "禅", tao: "道", bud: "佛" };
+   (figueira-bodhi sobre o assento vazio), com o lótus em mogu (só cor, sem contorno). O templo é jiehua, o desenho
+   de arquitetura: o que ainda não foi construído aparece só como esboço a carvão.
+   Unidade: uma técnica (traço de pincel jdBr com o mesmo tremor de tinta, aguadas jdwash) e uma paleta (tinta, papel, ocre,
+   índigo acinzentado, carmim e o vermelho do selo); no yang pinta-se com tinta, no yin com o branco reservado do papel.
+   O jardim inteiro está sempre presente: o que ainda não cresceu aparece em esboço de tinta rala, e a prática o preenche.
+   O qi (jdQi*) liga tudo num ciclo: a pérola desce o rio e cada lugar responde com o mesmo gesto de onda. */
+/* uma paleta só, a da pintura de tinta com cor leve (qianjiang): tinta, papel, ocre, índigo acinzentado, carmim e o vermelho do selo.
+   Regra do taiji: no yang (papel) pinta-se com tinta; no yin (tinta), com o branco reservado do papel. */
+const INK = "#1d1915", PAPER = "#f1e6cf", PALE = "#efe5cf", SEAL = "#b0352a", GOLD = "#d9c497", QIAN = "#a3814f", DAI = "#5d7180", ROUGE = "#b8566a", JD_SEAL = { esp: "灵", med: "禅", tao: "道", bud: "佛" };
 const jdR = (s, i) => { const x = Math.sin((s + 1) * 12.9898 + i * 78.233) * 43758.5453; return x - Math.floor(x); };
 const jf = v => (+v).toFixed(1);
 const jdRad = d => d * Math.PI / 180;
@@ -162,8 +168,8 @@ const JD_PLUM_FL = [[466, 151, 3], [488, 136, 3], [512, 129, 3], [398, 172, 3], 
 const jdBranch = (pts, w, ink, op, sd) => jdF(jdBr(pts, w * 1.25, { a: .95, m: .08, b: .35, sd, j: .14 }), ink, op * .32) + jdF(jdBr(pts.map(([x, y]) => [x + .6, y + .4]), w * .62, { a: .9, m: .1, b: .25, sd: sd + 1, j: .1 }), ink, op * .95);
 function jdBloss(x, y, r, i) {
   const rot = jdR(i, 3) * 72; let g = "";
-  for (let k = 0; k < 5; k++) { const a = jdRad(rot + k * 72); g += `<circle cx="${jf(x + Math.cos(a) * r * .6)}" cy="${jf(y + Math.sin(a) * r * .6)}" r="${jf(r * .52)}" fill="#f2b3bd" fill-opacity=".9" stroke="#8d3b48" stroke-opacity=".75" stroke-width=".6"/>`; }
-  return g + [0, 1, 2, 3].map(k => { const a = jdRad(rot + k * 90 + 20); return `<line x1="${jf(x)}" y1="${jf(y)}" x2="${jf(x + Math.cos(a) * r * .62)}" y2="${jf(y + Math.sin(a) * r * .62)}" stroke="${INK}" stroke-width=".5" stroke-opacity=".7"/>`; }).join("") + `<circle cx="${jf(x)}" cy="${jf(y)}" r="${jf(r * .2)}" fill="#c99a2e"/>`;
+  for (let k = 0; k < 5; k++) { const a = jdRad(rot + k * 72); g += `<circle cx="${jf(x + Math.cos(a) * r * .6)}" cy="${jf(y + Math.sin(a) * r * .6)}" r="${jf(r * .52)}" fill="${ROUGE}" fill-opacity=".42" stroke="${ROUGE}" stroke-opacity=".8" stroke-width=".7"/>`; }
+  return g + [0, 1, 2, 3].map(k => { const a = jdRad(rot + k * 90 + 20); return `<line x1="${jf(x)}" y1="${jf(y)}" x2="${jf(x + Math.cos(a) * r * .62)}" y2="${jf(y + Math.sin(a) * r * .62)}" stroke="${INK}" stroke-width=".5" stroke-opacity=".7"/>`; }).join("") + `<circle cx="${jf(x)}" cy="${jf(y)}" r="${jf(r * .2)}" fill="${QIAN}"/>`;
 }
 function jdMoonSVG() {
   const f = jdMoonF(), ill = (1 - Math.cos(2 * Math.PI * f)) / 2, x = 404, y = 126, r = 40, side = f < .5 ? 0 : 1, tsw = ill < .5 ? side : 1 - side, nome = f < .03 || f > .97 ? "nova" : f < .22 ? "crescente" : f < .28 ? "quarto crescente" : f < .47 ? "gibosa crescente" : f < .53 ? "cheia" : f < .72 ? "gibosa minguante" : f < .78 ? "quarto minguante" : "minguante";
@@ -178,13 +184,17 @@ function jdPlum(T, fx) {
   else { for (const [pts, w, ms] of JD_PLUM) if (s >= ms) br += jdBranch(pts, w, ink, op, pts[0][0]);
     br += [[440, 238], [424, 210], [420, 188]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="2.6" ry="1.6" fill="${ink}"/>`).join("");
     const fl = JD_PLUM_FL.filter(f => s >= f[2]), n = T.dorm ? 0 : Math.round(fl.length * (.3 + .7 * T.v));
-    g += fl.slice(0, n).map(([x, y], i) => `<g class="jd-blos" style="animation-delay:${(i * .1).toFixed(2)}s">${jdBloss(x, y, 6.2, i)}</g>`).join("") + fl.slice(n).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.2" fill="${ink}" fill-opacity=".9"/><circle cx="${x + .6}" cy="${y - .6}" r=".9" fill="#e48fa0"/>`).join("");
-    g += [[470, 162], [496, 145], [394, 162], [385, 140], [414, 242], [366, 226], [508, 137], [446, 169]].slice(0, Math.min(8, T.frutos)).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" class="jd-fruit" fill="#a9b86b"/>`).join("");
-    if (s === 5 && !T.dorm) g += [[430, 180], [470, 165], [380, 200], [505, 160], [350, 160]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="2.6" fill="#f2b3bd" class="jd-petal" style="animation-delay:${i * 1.3}s"/>`).join(""); }
-  const pl = jdOrchids(T.plantas, [[434, 336], [566, 340], [418, 332], [586, 336], [452, 342]], J_PIL.esp.cor);
+    g += fl.slice(0, n).map(([x, y], i) => `<g class="jd-blos" style="animation-delay:${(i * .1).toFixed(2)}s">${jdBloss(x, y, 6.2, i)}</g>`).join("") + fl.slice(n).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.2" fill="${ink}" fill-opacity=".9"/><circle cx="${x + .6}" cy="${y - .6}" r=".9" fill="${ROUGE}"/>`).join("");
+    g += [[470, 162], [496, 145], [394, 162], [385, 140], [414, 242], [366, 226], [508, 137], [446, 169]].slice(0, Math.min(8, T.frutos)).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" class="jd-fruit" fill="${QIAN}"/>`).join("");
+    if (s === 5 && !T.dorm) g += [[430, 180], [470, 165], [380, 200], [505, 160], [350, 160]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="2.6" fill="${ROUGE}" fill-opacity=".7" class="jd-petal" style="animation-delay:${i * 1.3}s"/>`).join(""); }
+  const pl = jdOrchids(T.plantas, [[434, 336], [566, 340], [418, 332], [586, 336], [452, 342]]);
   return `<rect x="340" y="80" width="190" height="200" fill="transparent"/><g filter="url(#jdink)">${br}</g>${g}${pl}${fx ? jdDrops(440, 190) : ""}`;
 }
-const jdOrchids = (n, P, col) => P.slice(0, Math.min(5, n)).map(([x, y], i) => `<g fill="${col}" fill-opacity=".8">${[[-128, 26, .22], [-96, 30, .12], [-64, 22, -.2], [-150, 16, .3]].map(([a, l, b], k) => jdF(jdBlade(x, y, a, l, 2.6, b, i * 7 + k), col, .8)).join("")}</g>`).join("");
+const jdTone = (x, y) => jdIsDark(x, y) ? PALE : INK;
+/* o jardim inteiro já está pintado em esboço: a forma adulta de cada árvore aparece em tinta rala, e a prática a preenche */
+const JD_SK = { s: 5, dorm: true, sk: true, v: 1, g: 55, frutos: 0, plantas: 0 };
+const jdSketch = (T, fn, dark) => T.s >= 5 ? "" : `<g class="jd-sketch" filter="url(#jdsketch)" opacity="${dark ? .34 : .3}" pointer-events="none">${fn(JD_SK, false).replace(/<rect [^>]*fill="transparent"\/>/g, "")}</g>`;
+const jdOrchids = (n, P) => P.slice(0, Math.min(5, n)).map(([x, y], i) => `<g>${[[-128, 26, .22], [-96, 30, .12], [-64, 22, -.2], [-150, 16, .3]].map(([a, l, b], k) => jdF(jdBlade(x, y, a, l, 2.6, b, i * 7 + k), jdTone(x, y), .8)).join("")}</g>`).join("");
 const jdDrops = (x, y) => `<g class="jd-drops">${[-12, 0, 12].map((d, i) => `<ellipse cx="${x + d}" cy="${y}" rx="2.3" ry="3.8" style="animation-delay:${i * .18}s"/>`).join("")}</g>`;
 function jdRock(nh) {
   const c = [500, 272], P = [[-42, 52], [-52, 30], [-46, 4], [-56, -22], [-44, -48], [-22, -62], [-4, -52], [14, -66], [36, -56], [46, -32], [38, -8], [54, 18], [44, 44], [28, 60], [0, 64], [-22, 62]].map(([x, y]) => [c[0] + x, c[1] + y]);
@@ -224,12 +234,12 @@ function jdPine(T, fx) {
     tr += [[258, 590], [262, 570], [278, 552], [292, 536], [303, 516]].slice(0, s + 1).map(([x, y]) => `<path d="M${x - 4} ${y}a4 3 0 0 1 8 0" fill="none" stroke="${PAPER}" stroke-opacity=".6" stroke-width="1"/>`).join("");
     const pads = [[344, 549, 40, 3], [320, 540, 30, 3], [228, 561, 26, 3], [310, 463, 32, 4], [290, 485, 24, 4], [296, 597, 22, 4], [364, 564, 24, 5], [326, 450, 22, 5], [212, 576, 20, 5]];
     g += pads.filter(p => s >= p[3]).map(([x, y, w]) => jdPad(x, y, w, nd, ink)).join("");
-    g += [[338, 556], [230, 568], [312, 470], [318, 548], [290, 492], [296, 604], [362, 570], [214, 582]].slice(0, Math.min(8, T.frutos)).map(([x, y]) => `<ellipse cx="${x}" cy="${y + 4}" rx="2.8" ry="3.8" class="jd-fruit" fill="#a7814a"/>`).join("");
+    g += [[338, 556], [230, 568], [312, 470], [318, 548], [290, 492], [296, 604], [362, 570], [214, 582]].slice(0, Math.min(8, T.frutos)).map(([x, y]) => `<ellipse cx="${x}" cy="${y + 4}" rx="2.8" ry="3.8" class="jd-fruit" fill="${QIAN}"/>`).join("");
     if (s === 5 && !T.dorm) g += jdCrane(214, 372);
   }
-  return `<rect x="200" y="440" width="180" height="195" fill="transparent"/>${tr}${g}${jdGrass(T.plantas, [[248, 610], [280, 612], [240, 618], [290, 618], [262, 622]], J_PIL.tao.cor)}${fx ? jdDrops(300, 480) : ""}`;
+  return `<rect x="200" y="440" width="180" height="195" fill="transparent"/>${tr}${g}${jdGrass(T.plantas, [[248, 610], [280, 612], [240, 618], [290, 618], [262, 622]])}${fx ? jdDrops(300, 480) : ""}`;
 }
-const jdGrass = (n, P, col, light) => P.slice(0, Math.min(5, n)).map(([x, y], i) => [[-110, 14, .2], [-80, 17, .05], [-60, 12, -.2]].map(([a, l, b], k) => jdF(jdBlade(x, y, a, l, 2, b, i * 5 + k), col, light ? .7 : .85)).join("")).join("");
+const jdGrass = (n, P) => P.slice(0, Math.min(5, n)).map(([x, y], i) => [[-110, 14, .2], [-80, 17, .05], [-60, 12, -.2]].map(([a, l, b], k) => jdF(jdBlade(x, y, a, l, 2, b, i * 5 + k), jdTone(x, y), jdIsDark(x, y) ? .7 : .85)).join("")).join("");
 
 /* ---------------------------------------------------------------- leste: Meditação (enso e bambu ao luar, em branco sobre o yin) */
 function jdEnso(p) { const c = [796, 546], r = 92, a0 = -62, n = Math.max(8, Math.round(54 * p)), pts = Array.from({ length: n + 1 }, (_, i) => jdPol(jdRad(a0 + 360 * p * i / n), r + (jdR(i, 7) - .5) * 3, c));
@@ -246,20 +256,20 @@ function jdBamboo(T, fx) {
     g += L(150 + i * 6, 32, tx, ty, i) + L(118, 26, tx, ty, i + 1) + L(40 - i * 4, 28, tx, ty, i + 2);
     if (s >= 3) g += L(160, 26, tx - h * lean * .4, ty + h * .35, i + 3) + L(132, 22, tx - h * lean * .4, ty + h * .35, i + 4) + L(24, 24, tx, ty + h * .55, i + 5) + L(58, 20, tx, ty + h * .55, i + 6);
   }
-  g += [[774, 656], [822, 658], [800, 660], [746, 656], [846, 654], [760, 662], [834, 662], [788, 664]].slice(0, s ? Math.min(8, T.frutos) : 0).map(([x, y], i) => jdF(jdBr([[x, y], [x + 1, y - 6], [x, y - 12]], 5, { a: .95, m: .2, b: 0, n: 4, sd: i }), "#c9ae78", .85)).join("");
+  g += [[774, 656], [822, 658], [800, 660], [746, 656], [846, 654], [760, 662], [834, 662], [788, 664]].slice(0, s ? Math.min(8, T.frutos) : 0).map(([x, y], i) => jdF(jdBr([[x, y], [x + 1, y - 6], [x, y - 12]], 5, { a: .95, m: .2, b: 0, n: 4, sd: i }), QIAN, .85)).join("");
   if (s === 5 && !T.dorm) g += `<g class="jd-bird"><ellipse cx="822" cy="${base - 128}" rx="7" ry="4.6" fill="${PALE}" fill-opacity=".9"/><circle cx="828" cy="${base - 132}" r="3" fill="${PALE}"/><path d="M831 ${base - 132}l4 1" stroke="${PALE}" stroke-width="1.2"/><path d="M816 ${base - 127}l-9 4" stroke="${PALE}" stroke-width="2"/></g>`;
-  return `<rect x="730" y="440" width="140" height="230" fill="transparent"/>${g}${jdGrass(T.plantas, [[760, 658], [828, 660], [744, 662], [846, 660], [806, 664]], PALE, true)}${fx ? jdDrops(796, 480) : ""}`;
+  return `<rect x="730" y="440" width="140" height="230" fill="transparent"/>${g}${jdGrass(T.plantas, [[760, 658], [828, 660], [744, 662], [846, 660], [806, 664]])}${fx ? jdDrops(796, 480) : ""}`;
 }
 
 /* ---------------------------------------------------------------- sul: Budismo (figueira-bodhi em baimiao sobre o assento vazio) e o lótus */
 function jdBLeaf(x, y, ang, s, op) { const t = `M0 ${-s}C${jf(s * .9)} ${jf(-s * 1.3)} ${jf(s * 1.3)} ${jf(-s * .1)} ${jf(s * .55)} ${jf(s * .55)}C${jf(s * .3)} ${jf(s * .8)} ${jf(s * .12)} ${jf(s * 1.05)} 0 ${jf(s * 2)}C${jf(-s * .12)} ${jf(s * 1.05)} ${jf(-s * .3)} ${jf(s * .8)} ${jf(-s * .55)} ${jf(s * .55)}C${jf(-s * 1.3)} ${jf(-s * .1)} ${jf(-s * .9)} ${jf(-s * 1.3)} 0 ${-s}Z`;
-  return `<g transform="translate(${jf(x)} ${jf(y)}) rotate(${jf(ang)})"><path d="${t}" fill="#2a251e" fill-opacity="${jf(.55 * op)}" stroke="${GOLD}" stroke-opacity="${jf(.95 * op)}" stroke-width="1"/><path d="M0 ${-s * .8}V${jf(s * 1.6)}" stroke="${GOLD}" stroke-opacity="${jf(.6 * op)}" stroke-width=".6"/></g>`; }
+  return `<g transform="translate(${jf(x)} ${jf(y)}) rotate(${jf(ang)})"><path d="${t}" fill="${QIAN}" fill-opacity="${jf(.3 * op)}" stroke="${PALE}" stroke-opacity="${jf(.92 * op)}" stroke-width="1"/><path d="M0 ${-s * .8}V${jf(s * 1.6)}" stroke="${PALE}" stroke-opacity="${jf(.55 * op)}" stroke-width=".6"/></g>`; }
 const JD_BODHI_L = Array.from({ length: 30 }, (_, i) => { const t = (i * .618) % 1, a = Math.PI * (-.05 + 1.1 * t), rr = .35 + ((i * .382) % 1) * .7; return [642 + Math.cos(a) * 112 * rr, 724 - Math.sin(a) * 84 * rr, (jdR(i, 63) - .5) * 50 - Math.cos(a) * 35, 8.5 + jdR(i, 64) * 2.5]; }).filter(([x, y]) => Math.hypot(x - 500, y - 730) > 76 && Math.hypot(x - 500, y - 500) < 440);
 function jdBodhi(T, fx) {
-  const s = T.s, op = T.dorm ? .5 : .62 + .38 * T.v, gd = T.dorm ? "#a8a193" : GOLD; let g = "";
+  const s = T.s, op = T.dorm ? .5 : .62 + .38 * T.v, gd = T.dorm ? "#a8a193" : PALE; let g = "";
   const ln = (pts, w, o2 = {}) => jdF(jdBr(pts, w * 1.35, { a: .7, m: .2, b: .3, ...o2 }), gd, op);
   g += `<g class="jd-seat" stroke="${gd}" stroke-opacity="${jf(op)}" fill="none" stroke-width="1.2"><ellipse cx="500" cy="874" rx="34" ry="8" fill="${INK}" fill-opacity=".3"/><path d="M466 874V890Q500 900 534 890V874"/>${[474, 487, 500, 513, 526].map(x => `<path d="M${x - 5} 893q5-8 10 0"/>`).join("")}${s === 5 && !T.dorm ? `<circle cx="500" cy="883" r="5"/><path d="M500 878v10M495 883h10"/>` : ""}</g>`;
-  if (s === 5 && !T.dorm) g += `<g class="jd-halo" fill="none" stroke="${GOLD}">${[18, 27, 36].map((r, i) => `<circle cx="500" cy="846" r="${r}" stroke-opacity="${[.6, .38, .2][i]}" stroke-width="${1.2 - i * .3}"/>`).join("")}</g>`;
+  if (s === 5 && !T.dorm) g += `<g class="jd-halo" fill="none" stroke="${PALE}">${[18, 27, 36].map((r, i) => `<circle cx="500" cy="846" r="${r}" stroke-opacity="${[.6, .38, .2][i]}" stroke-width="${1.2 - i * .3}"/>`).join("")}</g>`;
   if (s === 0) g += `<ellipse cx="662" cy="878" rx="3.5" ry="5" fill="${gd}" class="jd-seed"/>`;
   else if (s <= 2) { g += ln([[664, 884], [660, 862], [654, 842]], s === 1 ? 2.4 : 3.6); g += (s === 1 ? [[654, 840, -20, 6]] : [[654, 840, -20, 7], [646, 850, 30, 6.5], [668, 852, -40, 6.5], [658, 862, 50, 6]]).map(([x, y, a, z]) => jdBLeaf(x, y, a, z, op)).join(""); }
   else {
@@ -268,18 +278,18 @@ function jdBodhi(T, fx) {
     g += ln([[646, 774], [624, 744], [600, 726], [578, 716]], 2.6, { a: .9, m: .1, b: .2 }) + ln([[650, 772], [652, 732], [648, 700]], 2.2, { a: .9, m: .1, b: .2 }) + ln([[656, 782], [684, 758], [702, 746]], 2, { a: .9, m: .1, b: .2 });
     if (s >= 4) g += ln([[624, 744], [612, 714], [606, 694]], 1.6, { a: .9, b: .1 }) + ln([[684, 758], [700, 726], [702, 704]], 1.4, { a: .9, b: .1 });
     g += [[600, 727], [624, 745], [690, 752]].map(([x, y], i) => `<path d="M${x} ${y}q${(i - 1) * 3} 30 ${(i - 1) * 2} ${56 - i * 8}" stroke="${gd}" stroke-opacity="${jf(op * .55)}" fill="none" stroke-width=".8"/>`).join("");
-    const nL = Math.round([0, 0, 0, 16, 22, 28][s] * (T.dorm ? .3 : .45 + .55 * T.v));
+    const nL = T.sk ? 28 : Math.round([0, 0, 0, 16, 22, 28][s] * (T.dorm ? .3 : .45 + .55 * T.v));
     g += JD_BODHI_L.slice(0, nL).map(([x, y, a, z]) => jdBLeaf(x, y, a, z, op)).join("");
-    g += [[600, 712], [640, 690], [680, 716], [620, 700], [660, 676], [700, 730], [590, 740], [670, 700]].slice(0, Math.min(8, T.frutos)).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" class="jd-fruit" fill="${GOLD}"/>`).join("");
+    g += [[600, 712], [640, 690], [680, 716], [620, 700], [660, 676], [700, 730], [590, 740], [670, 700]].slice(0, Math.min(8, T.frutos)).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" class="jd-fruit" fill="${QIAN}"/>`).join("");
     if (T.dorm || T.v < .4) g += [[620, 820], [690, 840]].map(([x, y], i) => `<g class="jd-petal" style="animation-delay:${i * 2}s">${jdBLeaf(x, y, 20 + i * 40, 5.5, .7)}</g>`).join("");
   }
-  return `<rect x="560" y="640" width="160" height="260" fill="transparent"/><rect x="460" y="840" width="80" height="60" fill="transparent"/>${g}${jdGrass(T.plantas, [[636, 892], [690, 888], [624, 898], [700, 896], [662, 900]], GOLD, true)}${fx ? jdDrops(640, 660) : ""}`;
+  return `<rect x="560" y="640" width="160" height="260" fill="transparent"/><rect x="460" y="840" width="80" height="60" fill="transparent"/>${g}${jdGrass(T.plantas, [[636, 892], [690, 888], [624, 898], [700, 896], [662, 900]])}${fx ? jdDrops(640, 660) : ""}`;
 }
 function jdLotusPond() {
   const nl = jdLotus(), pads = [[472, 714, 15], [530, 750, 13], [488, 764, 11], [532, 704, 10], [456, 744, 9]], fl = [[476, 702], [526, 734], [500, 744], [540, 694], [458, 728], [512, 712], [486, 684]];
-  let g = `<circle cx="500" cy="730" r="64" fill="${PAPER}" fill-opacity=".96" filter="url(#jdsoft)"/><circle cx="500" cy="730" r="60" fill="#7f98a8" fill-opacity=".09"/>` + [44, 28].map((r, i) => `<ellipse cx="${506 - i * 6}" cy="${736 + i * 4}" rx="${r}" ry="${r * .42}" fill="none" stroke="${INK}" stroke-opacity=".14" stroke-width=".8" class="jd-rip"/>`).join("");
-  g += pads.map(([x, y, r], i) => `<g><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${jf(r * .62)}" fill="#5d7a4c" fill-opacity=".62" filter="url(#jdink)"/><ellipse cx="${x}" cy="${y}" rx="${jf(r * .45)}" ry="${jf(r * .28)}" fill="#3f5a36" fill-opacity=".45"/>${[0, 60, 120, 180, 240, 300].map(a => `<path d="M${x} ${y}l${jf(Math.cos(jdRad(a + i * 13)) * r * .9)} ${jf(Math.sin(jdRad(a + i * 13)) * r * .55)}" stroke="#2f4428" stroke-opacity=".35" stroke-width=".6"/>`).join("")}</g>`).join("");
-  g += fl.map(([x, y], i) => i < nl ? `<g class="jd-lotus" style="animation-delay:${i * .25}s">${[-46, -18, 18, 46, 0].map((a, k) => `<path d="M${x} ${y}c-4-4-5-11 0-16c5 5 4 12 0 16Z" transform="rotate(${a} ${x} ${y})" fill="${k === 4 ? "#f3c4d2" : "#e48fab"}" fill-opacity="${k === 4 ? .95 : .78}"/>`).join("")}<circle cx="${x}" cy="${y - 4}" r="2.2" fill="#e2c35a"/></g>` : i < nl + 2 ? `<path d="M${x} ${y}c-3-3-4-9 0-13c4 4 3 10 0 13Z" fill="#e48fab" fill-opacity=".55"/>` : "").join("");
+  let g = `<circle cx="500" cy="730" r="64" fill="${PAPER}" fill-opacity=".96" filter="url(#jdsoft)"/><circle cx="500" cy="730" r="60" fill="${DAI}" fill-opacity=".1"/>` + [44, 28].map((r, i) => `<ellipse cx="${506 - i * 6}" cy="${736 + i * 4}" rx="${r}" ry="${r * .42}" fill="none" stroke="${INK}" stroke-opacity=".14" stroke-width=".8" class="jd-rip"/>`).join("");
+  g += pads.map(([x, y, r], i) => `<g><ellipse cx="${x}" cy="${y}" rx="${r}" ry="${jf(r * .62)}" fill="${INK}" fill-opacity=".42" filter="url(#jdwash)"/><ellipse cx="${x}" cy="${y}" rx="${jf(r * .45)}" ry="${jf(r * .28)}" fill="${INK}" fill-opacity=".3"/>${[0, 60, 120, 180, 240, 300].map(a => `<path d="M${x} ${y}l${jf(Math.cos(jdRad(a + i * 13)) * r * .9)} ${jf(Math.sin(jdRad(a + i * 13)) * r * .55)}" stroke="${PAPER}" stroke-opacity=".3" stroke-width=".6"/>`).join("")}</g>`).join("");
+  g += fl.map(([x, y], i) => i < nl ? `<g class="jd-lotus" style="animation-delay:${i * .25}s">${[-46, -18, 18, 46, 0].map((a, k) => `<path d="M${x} ${y}c-4-4-5-11 0-16c5 5 4 12 0 16Z" transform="rotate(${a} ${x} ${y})" fill="${ROUGE}" fill-opacity="${k === 4 ? .35 : .6}" stroke="${ROUGE}" stroke-opacity=".75" stroke-width=".5"/>`).join("")}<circle cx="${x}" cy="${y - 4}" r="2" fill="${QIAN}"/></g>` : i < nl + 2 ? `<path d="M${x} ${y}c-3-3-4-9 0-13c4 4 3 10 0 13Z" fill="${ROUGE}" fill-opacity=".4"/>` : "").join("");
   return g;
 }
 
@@ -289,13 +299,13 @@ function jdTemploSVG() {
   let g = `<g class="${c("alicerce")}"><path d="M428 508V521A72 18 0 0 0 572 521V508" class="jd-stone"/><ellipse cx="500" cy="508" rx="72" ry="18" class="jd-stone"/>${[446, 470, 500, 530, 554].map(x => `<path d="M${x} ${x === 500 ? 526 : 523}v-6" class="jd-joint"/>`).join("")}</g>`;
   g += `<g class="${c("piso")}"><ellipse cx="500" cy="505" rx="55" ry="12" class="jd-floor"/></g>`;
   if (D.piso) g += `<g class="${jdChama() ? "jd-flame" : "jd-ember"}"><path d="M492 503h16l-2-8h-12Z" class="jd-altar"/><path d="M494 503v3M506 503v3" class="jd-joint"/>${jdChama() ? `<path d="M500 494c-6-8 6-12 0-20c-6-8 5-12 1-20" class="jd-smoke"/><circle cx="500" cy="494" r="1.8" class="jd-glow"/>` : ""}</g>`;
-  [["esp", 458], ["med", 482], ["tao", 518], ["bud", 542]].forEach(([pid, x]) => { g += `<g class="${c("col_" + pid)}"><rect x="${x - 2.6}" y="450" width="5.2" height="${x === 482 || x === 518 ? 58 : 54}" class="jd-col"/><rect x="${x - 4}" y="446" width="8" height="5" class="jd-cap" style="${D["col_" + pid] ? `fill:${J_PIL[pid].cor}` : ""}"/></g>`; });
+  [["esp", 458], ["med", 482], ["tao", 518], ["bud", 542]].forEach(([pid, x]) => { g += `<g class="${c("col_" + pid)}"><rect x="${x - 2.6}" y="450" width="5.2" height="${x === 482 || x === 518 ? 58 : 54}" class="jd-col"/><rect x="${x - 4}" y="446" width="8" height="5" class="jd-cap"/></g>`; });
   g += `<g class="${c("portal")}"><path d="M404 500V470M426 500V470" class="jd-post"/><path d="M398 468Q415 462 432 468M400 474H430" class="jd-lintel"/><path d="M396 466l-3-4M434 466l3-4" class="jd-lintel"/></g>`;
   g += `<g class="${c("telhado")}"><path d="M424 448C450 446 474 434 494 410H506C526 434 550 446 576 448C566 452 556 456 548 456Q500 462 452 456C444 456 434 452 424 448Z" class="jd-roof"/>${[452, 466, 480, 494, 506, 520, 534, 548].map(x => `<path d="M${x} ${452 + Math.abs(x - 500) * -.04}l${(x - 500) * .06} -${16 - Math.abs(x - 500) * .2}" class="jd-tile"/>`).join("")}<path d="M424 448q-8-4-8-12M576 448q8-4 8-12" class="jd-eave"/><path d="M500 410v-8" class="jd-eave"/><circle cx="500" cy="398" r="4.2" class="jd-finial"/></g>`;
-  const vit = D.vitral ? J_ORDER.flatMap((pid, k) => J_PIL[pid].est.map((e, i) => `<path d="${jPetal(1.4, 7.4, 2.2)}" transform="translate(500 436) rotate(${(k * 5 + i) * 18})" style="fill:${J_PIL[pid].cor};fill-opacity:${J_FILL[jEstV(pid, e.id)]};stroke:${J_PIL[pid].cor};stroke-width:.4"/>`)).join("") : "";
+  const vit = D.vitral ? J_ORDER.flatMap((pid, k) => J_PIL[pid].est.map((e, i) => `<path d="${jPetal(1.4, 7.4, 2.2)}" transform="translate(500 436) rotate(${(k * 5 + i) * 18})" style="fill:${QIAN};fill-opacity:${J_FILL[jEstV(pid, e.id)]};stroke:${INK};stroke-opacity:.6;stroke-width:.4"/>`)).join("") : "";
   g += `<g class="${c("vitral")}"><circle cx="500" cy="436" r="9" class="jd-glass"/>${vit}</g>`;
   g += `<g class="${c("sino")}"><path d="M584 437v14" class="jd-cord"/><path d="M578 462q0-11 6-11t6 11Z" class="jd-bell"/></g>`;
-  return `<g class="jd-hot jd-templo${JD.sel === "templo" ? " on" : ""}${lock ? " jd-lockd" : ""}" data-act="jdsel" data-k="templo" role="button" tabindex="0" aria-label="Templo: ${n} de ${JD_TEMPLO.length} partes" data-tip="Templo · ${n} de ${JD_TEMPLO.length} partes"><g transform="translate(500 500) scale(1.22) translate(-500 -500)"><path d="M392 528V396H600V528Z" fill="transparent"/>${g}</g></g>`;
+  return `<g class="jd-hot jd-templo${JD.sel === "templo" ? " on" : ""}${lock ? " jd-lockd" : ""}" data-act="jdsel" data-k="templo" role="button" tabindex="0" aria-label="Templo: ${n} de ${JD_TEMPLO.length} partes" data-tip="Templo · ${n} de ${JD_TEMPLO.length} partes"><g transform="translate(500 500) scale(1.22) translate(-500 -500)" filter="url(#jdink)"><path d="M392 528V396H600V528Z" fill="transparent"/>${g}</g></g>`;
 }
 function jdCompass() {
   const v = bmDayValue(), ang = { norte: -90, leste: 0, sul: 90, oeste: 180, centro: -90 }[v.ax], t = jdRad(ang);
@@ -310,12 +320,17 @@ function jdOficina(st) {
   g += Array.from({ length: 7 }, (_, i) => jdF(jdBr([[778 + i * 9, 300 - Math.abs(3 - i) * 2], [774 + i * 10, 306]], 1.2, { a: .8, m: .5, b: .2 }), PALE, .45)).join("");
   g += `<path d="M774 308V344M846 308V344" stroke="${PALE}" stroke-opacity=".8" stroke-width="2.4" stroke-linecap="round"/><path d="M766 344H854" stroke="${PALE}" stroke-opacity=".55" stroke-width="1.6"/><rect x="800" y="318" width="20" height="26" fill="${night ? "#f2c46d" : INK}" fill-opacity="${night ? .55 : .35}" stroke="${PALE}" stroke-opacity=".7" stroke-width="1"/>`;
   g += Array.from({ length: toras }, (_, i) => `<path d="M${858 + i * 3} 344L${868 + i * 3.6} ${292 + (i % 3) * 3}" stroke="${PALE}" stroke-opacity=".75" stroke-width="2.6" stroke-linecap="round"/>`).join("");
-  if (tab) g += `<g class="jd-slips">${Array.from({ length: tab }, (_, i) => `<rect x="${742 + i * 4.6}" y="324" width="3.6" height="22" fill="#d9c48f" fill-opacity=".85" stroke="${INK}" stroke-width=".4"/>`).join("")}<path d="M740 330H${746 + tab * 4.6}M740 340H${746 + tab * 4.6}" stroke="${SEAL}" stroke-width=".9"/></g>`;
+  if (tab) g += `<g class="jd-slips">${Array.from({ length: tab }, (_, i) => `<rect x="${742 + i * 4.6}" y="324" width="3.6" height="22" fill="${QIAN}" fill-opacity=".55" stroke="${PALE}" stroke-width=".5"/>`).join("")}<path d="M740 330H${746 + tab * 4.6}M740 340H${746 + tab * 4.6}" stroke="${SEAL}" stroke-width=".9"/></g>`;
   return jdHit("oficina", `Oficina do eremita: ${plural(st.toras, "tora", "toras")} e ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")}`, `Oficina · ${plural(st.toras, "tora", "toras")} · ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")}`, `<rect x="730" y="268" width="160" height="90" fill="transparent"/>${g}`, `${JD.fx?.k === "talho" ? " jd-hit" : ""} jd-shop`);
 }
 function jdPortao() {
-  const g = `<g transform="translate(214 218)"><rect x="-38" y="-14" width="76" height="30" fill="${PAPER}" stroke="${INK}" stroke-width="1.2" stroke-opacity=".75"/><path d="M-44 -14H44L38 -22H-38Z" fill="${INK}" fill-opacity=".86" filter="url(#jdink)"/>${[-30, -20, -10, 0, 10, 20, 30].map(x => `<path d="M${x} -22v8" stroke="${PAPER}" stroke-opacity=".3" stroke-width=".8"/>`).join("")}<path d="M-44 -14q-5-1-8-6M44 -14q5-1 8-6" class="jd-eave"/><circle cx="0" cy="2" r="11.5" fill="${INK}" fill-opacity=".6" stroke="${INK}" stroke-width="1.5"/><path d="M-11 8h22" stroke="${INK}" stroke-opacity=".5" stroke-width=".8"/><path d="M-40 16h80" stroke="${INK}" stroke-opacity=".35" stroke-width="1"/></g>`;
-  return jdHit("portao", "Portão da lua: como o jardim funciona", "Portão da lua · o portão do céu, no noroeste · como o jardim funciona", `<circle cx="214" cy="214" r="42" fill="transparent"/>${g}`, " jd-gate");
+  const cx = 214, cy = 222, r = 15, ring = Array.from({ length: 26 }, (_, i) => jdPol(jdRad(-96 + i * 14.6), r, [cx, cy]));
+  /* muro caiado (o próprio papel), telhado a pincel e a abertura redonda deixando ver a sombra do outro lado */
+  const g = jdF(jdBr([[168, 204], [168, 240]], 1.6, { a: .6, m: .3, b: .6, sd: 86 }), INK, .45) + jdF(jdBr([[260, 204], [260, 240]], 1.6, { a: .6, m: .3, b: .6, sd: 87 }), INK, .45) + jdF(jdBr([[162, 199], [214, 195], [266, 199]], 7, { a: .7, m: .3, b: .6, sd: 81 }), INK, .88)
+    + jdF(jdBr([[164, 199], [156, 192]], 3, { a: .9, m: .3, b: .1, sd: 82 }), INK, .8) + jdF(jdBr([[264, 199], [272, 192]], 3, { a: .9, m: .3, b: .1, sd: 83 }), INK, .8)
+    + `<circle cx="${cx}" cy="${cy}" r="${r - 1}" fill="${INK}" fill-opacity=".42" filter="url(#jdwash)"/>` + jdF(jdBr(ring, 3, { a: .8, m: .2, b: .45, sd: 84, j: .12 }), INK, .85)
+    + jdF(jdBr([[166, 242], [214, 243], [264, 241]], 2.2, { a: .5, m: .4, b: .3, sd: 85 }), INK, .5) + jdMoss(176, 240, 3, 6) + jdMoss(252, 240, 3, 6);
+  return jdHit("portao", "Portão da lua: como o jardim funciona", "Portão da lua · o portão do céu, no noroeste · como o jardim funciona", `<circle cx="214" cy="218" r="42" fill="transparent"/>${g}`, " jd-gate");
 }
 /* os oito trigramas na ordem do Rei Wen (norte ☵ água, nordeste ☶ montanha, leste ☳ trovão e madeira, sudeste ☴ vento,
    sul ☲ fogo e luz, sudoeste ☷ terra, oeste ☱ lago, noroeste ☰ céu, o "portão do céu") marcam o anel da mandala */
@@ -333,8 +348,34 @@ function jdCams() {
     g += `<g class="jd-hot${JD.sel === "cam:" + c.id ? " on" : ""}${JD.fx?.k === "cam" && JD.fx.id === c.id ? " jd-open" : ""}" data-act="jdsel" data-k="cam:${c.id}" role="button" tabindex="0" aria-label="${esc(c.nome)}: ${op ? "aberto" : rd ? "pronto para abrir" : `fechado, ${Math.min(a, b)} de ${b}`}" data-tip="${esc(c.nome)} · ${op ? "aberto" : rd ? "pronto para abrir" : `${c.t} (${Math.min(a, b)} de ${b})`}"><path d="${c.d}" class="jd-hitw"/>${vis}</g>`; }
   return g;
 }
-/* nuvens auspiciosas sobre o que ainda está fechado */
-const jdCloudMotif = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})" stroke="${INK}" stroke-opacity=".5" stroke-width="1.1" stroke-linecap="round" fill="none"><path d="M-30 8C-40 4-36-10-24-8C-24-20-6-22-2-12C4-22 22-20 22-8C32-10 38 2 28 8Z" fill="${PAPER}" fill-opacity=".94" stroke-opacity=".38"/><path d="M-22 2c-2-6 6-8 8-3c1 3-2 5-4 3"/><path d="M0-6c-1-7 9-8 10-2c0 4-4 5-6 3"/><path d="M14 4c2-5 9-4 9 0"/><path d="M-36 12C-20 14 6 13 34 10c8-1 14 1 18 5"/></g>`;
+
+/* ---------------------------------------------------------------- o qi: um ciclo de 24 s que liga os quatro pilares
+   Uma pérola de luz desce o rio da nascente (Espiritismo, norte) ao mar (Budismo, sul), passando pela Meditação, pelo templo
+   e pelo lado do Taoísmo; cada lugar responde quando ela passa, com o mesmo gesto de onda; depois a névoa sobe pelo anel do
+   oeste e o ciclo recomeça. Tudo em SMIL (animate, animateMotion, animateTransform) num grupo sem transform próprio, que o
+   Safari e o Chrome executam igual; com "reduzir movimento" o qi não é desenhado. */
+const JD_QI = { dur: 24, rio: .62, esp: .02, med: .155, templo: .31, tao: .465, lago: .53, bud: .6 };
+const jdQiOn = () => !(typeof jmReduced === "function" && jmReduced());
+const jdKT = (t, w) => [Math.max(.001, t - w * .35), t, Math.min(.998, t + w)].map(v => v.toFixed(3));
+const jdLoop = `dur="${JD_QI.dur}s" repeatCount="indefinite"`;
+function jdQiRing(x, y, t, r0 = 10, r1 = 84) {
+  if (!jdQiOn()) return ""; const [a, , b] = jdKT(t, .09), kt = `0;${a};${b};1`;
+  return `<circle cx="${x}" cy="${y}" r="${r0}" fill="none" stroke="${jdTone(x, y)}" stroke-width="1.5" opacity="0"><animate attributeName="r" values="${r0};${r0};${r1};${r1}" keyTimes="${kt}" ${jdLoop}/><animate attributeName="opacity" values="0;.6;0;0" keyTimes="${kt}" ${jdLoop}/></circle>`;
+}
+function jdQiSway(x, y, t, deg) {
+  if (!jdQiOn()) return ""; const [a, m, b] = jdKT(t, .1), r = v => `${v} ${x} ${y}`;
+  return `<animateTransform attributeName="transform" type="rotate" values="${r(0)};${r(0)};${r(-deg)};${r(deg * .45)};${r(0)};${r(0)}" keyTimes="0;${a};${m};${((+m + +b) / 2).toFixed(3)};${b};1" ${jdLoop}/>`;
+}
+/* pétalas da ameixeira que caem quando o qi passa pela nascente */
+const jdQiPetals = (T) => !jdQiOn() || T.s < 3 || T.dorm ? "" : [[466, 151, 0], [398, 172, .012], [488, 136, .024]].map(([x, y, d]) => { const [a, , b] = jdKT(JD_QI.esp + d, .16);
+  return `<circle cx="${x}" cy="${y}" r="2.6" fill="${ROUGE}" fill-opacity=".75" opacity="0"><animateMotion path="M0 0C8 16 -6 30 6 48C12 58 4 70 10 82" keyPoints="0;0;1;1" keyTimes="0;${a};${b};1" calcMode="linear" ${jdLoop}/><animate attributeName="opacity" values="0;0;.9;0;0" keyTimes="0;${a};${((+a + +b) / 2).toFixed(3)};${b};1" ${jdLoop}/></circle>`; }).join("");
+function jdQiPearl() {
+  if (!jdQiOn()) return ""; const r = JD_QI.rio, mp = id => `<mpath href="#${id}" xlink:href="#${id}"/>`;
+  return `<g class="jd-qi" pointer-events="none"><path id="jdqiring" d="M500 934A434 434 0 0 1 500 66" fill="none"/>
+    <circle r="22" fill="url(#jdpearl)" opacity="0"><animateMotion keyPoints="0;1;1" keyTimes="0;${r};1" calcMode="linear" ${jdLoop}>${mp("jdriver")}</animateMotion><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;${(r - .02).toFixed(2)};${r};1" ${jdLoop}/></circle>
+    <ellipse rx="46" ry="14" fill="${INK}" fill-opacity=".16" filter="url(#jdblur8)" opacity="0"><animateMotion keyPoints="0;0;1;1" keyTimes="0;${(r + .02).toFixed(2)};.97;1" calcMode="linear" rotate="auto" ${jdLoop}>${mp("jdqiring")}</animateMotion><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${(r + .02).toFixed(2)};${(r + .07).toFixed(2)};.92;.97;1" ${jdLoop}/></ellipse></g>`;
+}
+const jdQiWaves = () => jdQiOn() ? `<g class="jd-qiwave" pointer-events="none">${jdQiRing(440, 196, JD_QI.esp)}${jdQiRing(792, 560, JD_QI.med)}${jdQiRing(500, 500, JD_QI.templo, 14, 110)}${jdQiRing(268, 560, JD_QI.tao)}${jdQiRing(500, 730, JD_QI.lago, 8, 58)}${jdQiRing(640, 800, JD_QI.bud)}</g>` : "";
 
 /* ---------------------------------------------------------------- composição */
 function jdScene() {
@@ -347,6 +388,8 @@ function jdScene() {
     <filter id="jddry" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".35 .35" numOctaves="2" seed="4" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.6 2" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in" result="s"/><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="9" result="n2"/><feDisplacementMap in="s" in2="n2" scale="2.5"/></filter>
     <filter id="jddryv" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".08 .9" numOctaves="2" seed="6" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 2" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in" result="s"/><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="2" result="n2"/><feDisplacementMap in="s" in2="n2" scale="2.4"/></filter>
     <filter id="jdsoft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2.4"/></filter>
+    <filter id="jdsketch"><feColorMatrix type="saturate" values="0"/></filter>
+    <radialGradient id="jdpearl" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffaf0"/><stop offset=".45" stop-color="${PAPER}" stop-opacity=".95"/><stop offset=".7" stop-color="${INK}" stop-opacity=".28"/><stop offset="1" stop-color="${INK}" stop-opacity="0"/></radialGradient>
     <filter id="jdblur8" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter>
     <filter id="jdblur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
     <filter id="jdgrain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="2"/><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .33  0 0 0 0 .2  0 0 0 .1 0"/></filter>
@@ -365,14 +408,14 @@ function jdScene() {
   g += `<path d="M${dark}Z" fill="${INK}" fill-opacity=".74" filter="url(#jdwash)" class="jd-yin"/><g clip-path="url(#jdyinclip)"><path d="${JD_RIVER}" fill="none" stroke="${INK}" stroke-width="150" stroke-opacity=".3" filter="url(#jdblur)"/></g><clipPath id="jdyinclip"><path d="M${dark}Z"/></clipPath><circle cx="500" cy="500" r="460" fill="url(#jdyinfade)"/>`;
   /* o rio no S: papel reservado, linhas de água (shuiwen) correndo da fonte ao mar */
   const w = 16 + 18 * R.f, nlin = R.n ? 2 + Math.round(3 * R.f) : 1;
-  g += jdHit("rio", `Rio: ${R.st}`, `Rio · ${R.st} · ${R.n} de 14 noites de exame`, `<path d="${JD_RIVER}" class="jd-hitw"/><path id="jdriver" d="${JD_RIVER}" fill="none" stroke="${PAPER}" stroke-width="${jf(w)}" stroke-opacity=".93" filter="url(#jdsoft)"/><path d="${JD_RIVER}" fill="none" stroke="#7f98a8" stroke-width="${jf(w * .8)}" stroke-opacity=".1"/>
+  g += jdHit("rio", `Rio: ${R.st}`, `Rio · ${R.st} · ${R.n} de 14 noites de exame`, `<path d="${JD_RIVER}" class="jd-hitw"/><path id="jdriver" d="${JD_RIVER}" fill="none" stroke="${PAPER}" stroke-width="${jf(w)}" stroke-opacity=".93" filter="url(#jdsoft)"/><path d="${JD_RIVER}" fill="none" stroke="${DAI}" stroke-width="${jf(w * .8)}" stroke-opacity=".1"/>
     ${Array.from({ length: nlin }, (_, i) => { const off = (i - (nlin - 1) / 2) * (w / (nlin + 1)), pts = jdSPts(off, 40); return `<path d="M${pts.map(p => `${jf(p[0])} ${jf(p[1])}`).join("L")}" class="jd-flow${R.n ? "" : " still"}" style="animation-duration:${jf(9 - 5 * R.f)}s;animation-delay:-${i * 1.7}s"/>`; }).join("")}
     ${jdF(jdBr(jdSPts(-w / 2 - 1, 40).filter((_, i) => i % 2 === 0), 1.6, { a: .3, m: .5, b: .3, j: .25, sd: 70 }), INK, .45)}`, " jd-rio");
   /* o anel do bagua, o caminho circular e os outros caminhos (pedras de passo) */
   g += `<g class="jd-bagua">${jdBagua()}</g>` + jdCams();
   /* norte: lua, ameixeira, pedra */
   g += jdMoonSVG();
-  g += jdHit("arv:esp", `${JD_ARV.esp.nome} de Espiritismo: ${T.esp.nome}`, `${JD_ARV.esp.nome} · Espiritismo · ${T.esp.nome}${T.esp.dorm ? " (dormindo)" : ""}`, jdPlum(T.esp, JD.fx?.k === "rega" && JD.fx.id === "esp") + jdInsc(554, 122, "esp", false), ` jd-tree${T.esp.dorm ? " jd-dorm" : ""}`);
+  g += jdHit("arv:esp", `${JD_ARV.esp.nome} de Espiritismo: ${T.esp.nome}`, `${JD_ARV.esp.nome} · Espiritismo · ${T.esp.nome}${T.esp.dorm ? " (dormindo)" : ""}`, jdSketch(T.esp, jdPlum) + `<g>${jdPlum(T.esp, JD.fx?.k === "rega" && JD.fx.id === "esp")}${jdQiSway(452, 292, JD_QI.esp + .01, 1.1)}</g>` + jdQiPetals(T.esp) + jdInsc(554, 122, "esp", false), ` jd-tree${T.esp.dorm ? " jd-dorm" : ""}`);
   const brutas = D.pedras.filter(p => !p.lav), POS = [[590, 236], [614, 288], [586, 330], [640, 238], [556, 360]];
   g += jdHit("pedreira", `Pedreira, no olho do yang: ${plural(brutas.length, "pedra bruta", "pedras brutas")}`, `Pedreira · a pedra no olho do yang · ${plural(lav, "furo", "furos")} lavrados · ${plural(Math.max(0, st.pedras), "pedra", "pedras")} no estoque`, `<circle cx="500" cy="272" r="70" fill="transparent"/>${jdRock(Math.min(6, lav))}${Array.from({ length: Math.min(6, Math.max(0, st.pedras)) }, (_, i) => `<ellipse cx="${664 + (i % 2) * 1.5}" cy="${334 - i * 9}" rx="${16 - i * 2}" ry="${jf(5.6 - i * .4)}" class="jd-cairn"/>`).join("")}`, " jd-quarry");
   brutas.slice(0, 5).forEach((p, i) => { const [x, y] = POS[i], k = jdMarks(p).length, pts = Array.from({ length: 8 }, (_, j) => { const a = j / 8 * 6.283, r = 12 + jdR(j, p.id.length + i) * 6 - Math.min(3, k) * 1.4; return [x + Math.cos(a) * r * 1.15, y + Math.sin(a) * r * .8]; });
@@ -380,14 +423,14 @@ function jdScene() {
   /* oeste: montanha, pinheiro, mirante */
   g += jdMountains();
   g += jdHit("mirante", "Mirante, no pico", "Mirante · a mandala e a bússola vistas do alto", `<rect x="150" y="280" width="60" height="44" fill="transparent"/><g transform="translate(178 300)"><path d="M-12 0q12-7 24 0" class="jd-eave"/><path d="M-13 0q-3-1-4-4M13 0q3-1 4-4" class="jd-eave"/><path d="M0-6v-4" class="jd-cord"/><path d="M-7 0v9M7 0v9" class="jd-cord"/><path d="M-10 9h20" class="jd-cord"/></g>`, " jd-mir");
-  g += jdHit("arv:tao", `${JD_ARV.tao.nome} de Taoísmo: ${T.tao.nome}`, `${JD_ARV.tao.nome} · Taoísmo · ${T.tao.nome}${T.tao.dorm ? " (dormindo)" : ""}`, jdPine(T.tao, JD.fx?.k === "rega" && JD.fx.id === "tao") + jdInsc(122, 684, "tao", false), ` jd-tree${T.tao.dorm ? " jd-dorm" : ""}`);
+  g += jdHit("arv:tao", `${JD_ARV.tao.nome} de Taoísmo: ${T.tao.nome}`, `${JD_ARV.tao.nome} · Taoísmo · ${T.tao.nome}${T.tao.dorm ? " (dormindo)" : ""}`, jdSketch(T.tao, jdPine) + `<g>${jdPine(T.tao, JD.fx?.k === "rega" && JD.fx.id === "tao")}${jdQiSway(262, 604, JD_QI.tao, 1.6)}</g>` + jdInsc(122, 684, "tao", false), ` jd-tree${T.tao.dorm ? " jd-dorm" : ""}`);
   /* leste: enso, bambu e a oficina */
-  g += jdHit("arv:med", `${JD_ARV.med.nome} de Meditação: ${T.med.nome}`, `${JD_ARV.med.nome} · Meditação · ${T.med.nome}${T.med.dorm ? " (dormindo)" : ""}`, jdEnso(.45 + .5 * Math.min(1, T.med.g / 55)) + jdBamboo(T.med, JD.fx?.k === "rega" && JD.fx.id === "med") + jdInsc(896, 380, "med", true, "end"), ` jd-tree${T.med.dorm ? " jd-dorm" : ""}`);
+  g += jdHit("arv:med", `${JD_ARV.med.nome} de Meditação: ${T.med.nome}`, `${JD_ARV.med.nome} · Meditação · ${T.med.nome}${T.med.dorm ? " (dormindo)" : ""}`, `<g opacity=".22" pointer-events="none">${jdEnso(1)}</g>` + jdEnso(.45 + .5 * Math.min(1, T.med.g / 55)) + jdSketch(T.med, jdBamboo, true) + `<g class="jd-qsway-med">${jdBamboo(T.med, JD.fx?.k === "rega" && JD.fx.id === "med")}${jdQiSway(792, 654, JD_QI.med, 2.4)}</g>` + jdInsc(896, 380, "med", true, "end"), ` jd-tree${T.med.dorm ? " jd-dorm" : ""}`);
   g += jdOficina(st);
   /* sul: lago de lótus (olho do yin), figueira-bodhi e o assento vazio */
   const nl = jdLotus();
   g += jdHit("lago", `Lago de lótus, no olho do yin: ${nl} de 7 flores`, `Lago de lótus · olho do yin · ${nl} de 7 flores esta semana`, jdLotusPond(), " jd-lago");
-  g += jdHit("arv:bud", `${JD_ARV.bud.nome} de Budismo: ${T.bud.nome}`, `${JD_ARV.bud.nome} · Budismo · ${T.bud.nome}${T.bud.dorm ? " (dormindo)" : ""}`, jdBodhi(T.bud, JD.fx?.k === "rega" && JD.fx.id === "bud") + jdInsc(386, 596, "bud", true), ` jd-tree${T.bud.dorm ? " jd-dorm" : ""}`);
+  g += jdHit("arv:bud", `${JD_ARV.bud.nome} de Budismo: ${T.bud.nome}`, `${JD_ARV.bud.nome} · Budismo · ${T.bud.nome}${T.bud.dorm ? " (dormindo)" : ""}`, jdSketch(T.bud, jdBodhi, true) + `<g>${jdBodhi(T.bud, JD.fx?.k === "rega" && JD.fx.id === "bud")}${jdQiSway(662, 886, JD_QI.bud, 1.2)}</g>` + jdInsc(386, 596, "bud", true), ` jd-tree${T.bud.dorm ? " jd-dorm" : ""}`);
   /* centro: templo e bússola */
   g += jdTemploSVG() + jdCompass();
   g += jdPortao();
@@ -395,9 +438,11 @@ function jdScene() {
   g += `<g class="jd-seal jd-gseal" transform="translate(312 902)"><rect x="-11" y="-21" width="22" height="42" rx="2.5" fill="${SEAL}" filter="url(#jdink)"/><g class="jd-seal-s"><circle cy="-9" r="5.5" fill="none" stroke="${PAPER}" stroke-width="1.4"/><path d="M-5 6h10M0 1v10" stroke="${PAPER}" stroke-width="1.6"/></g><text class="jd-seal-c" y="-3" text-anchor="middle">心</text><text class="jd-seal-c" y="16" text-anchor="middle">园</text></g>`;
   /* nomes dos lugares (opcional) */
   if (JD.lbl) g += [[500, 350, "Pedreira"], [810, 372, "Oficina"], [500, 548, "Templo · Bússola"], [150, 290, "Mirante"], [500, 815, "Lago de lótus"], [228, 238, "Portão da lua"], [660, 172, "Rio"]].map(([x, y, t]) => `<text x="${x}" y="${y}" text-anchor="middle" class="jd-plabel">${t}</text>`).join("");
+  /* o qi que percorre o jardim */
+  g += jdQiWaves() + jdQiPearl();
   /* névoa sobre o que ainda está fechado */
   const FOG = { margem: [[500, 730, 82, 74], [262, 776, 54, 34]], ponte: [[806, 318, 84, 56], [560, 282, 120, 92]], escada: [[500, 462, 96, 74]], mirante: [[150, 342, 70, 52]] };
-  for (const [cam, es] of Object.entries(FOG)) if (!jdCamOpen(cam)) g += `<g class="jd-fogg"><g filter="url(#jdblur)">${es.map(([x, y, rx, ry], i) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" class="jd-fog" style="animation-delay:${i * 1.3}s"/>`).join("")}</g>${jdCloudMotif(es[0][0] + 10, es[0][1] + 6, .9)}</g>`;
+  for (const [cam, es] of Object.entries(FOG)) if (!jdCamOpen(cam)) g += `<g class="jd-fogg"><g filter="url(#jdblur)">${es.map(([x, y, rx, ry], i) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" class="jd-fog" style="animation-delay:${i * 1.3}s"/>`).join("")}</g></g>`;
   /* noite, entardecer, vagalumes ou borboletas (as noites de exame da semana) */
   if (night) g += `<rect width="1000" height="1000" class="jd-nightveil"/>` + jdMoonSVG();
   if (sky === "entardecer") g += `<rect width="1000" height="1000" class="jd-duskveil"/>`;
@@ -541,7 +586,7 @@ function pJardim() {
 function jdFolhaAnim() {
   const svg = $(".jdsvg"), p = $("#jdriver"); if (!svg || !p) return;
   const ns = "http://www.w3.org/2000/svg", g = document.createElementNS(ns, "g"); g.setAttribute("class", "jd-leaf");
-  g.innerHTML = `<path d="M-10 0Q0-7 10 0Q0 7-10 0Z" fill="#c98a2b"/><path d="M-10 0H10" stroke="#7a4f18" stroke-width="1"/>`;
+  g.innerHTML = `<path d="M-10 0Q0-7 10 0Q0 7-10 0Z" fill="${QIAN}" fill-opacity=".8" stroke="${INK}" stroke-width=".7"/><path d="M-10 0H10" stroke="${INK}" stroke-opacity=".7" stroke-width=".8"/>`;
   const an = document.createElementNS(ns, "animateMotion"); an.setAttribute("dur", "5s"); an.setAttribute("fill", "freeze"); an.setAttribute("rotate", "auto"); an.setAttribute("begin", "indefinite"); an.setAttribute("path", p.getAttribute("d")); an.setAttribute("keyPoints", "0.42;1"); an.setAttribute("keyTimes", "0;1"); an.setAttribute("calcMode", "linear");
   g.appendChild(an); svg.appendChild(g); try { an.beginElement(); } catch {} setTimeout(() => g.remove(), 5200);
 }
