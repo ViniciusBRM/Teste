@@ -1555,6 +1555,29 @@ p.jmx{border:0;padding:0;text-align:center}
 @media (max-width:640px){.csfases li span{display:none}.csfases li.cur span{display:block;position:absolute;left:16px;margin-top:14px}.csfases{position:relative;margin-bottom:28px}.csmeta{margin-left:0;width:100%}.cschat{max-height:none}.csm .mav{width:28px;height:28px}.csac>.row{grid-column:1/-1}.csin{position:sticky;bottom:0;background:var(--surface);padding-bottom:6px}.csata .dt{display:block;overflow-x:auto}}
 @media print{.csside,.csctrl,.csin{display:none}}
 .cschk{display:flex;gap:10px;align-items:flex-start;margin:4px 0 12px;font-size:13.5px;line-height:1.45;cursor:pointer}.cschk input{margin-top:3px;width:auto;flex:none}.cspend{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+/* ===== Filosofia (estoicismo, na Jornada) */
+.filprinc{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:0 0 16px}
+.filp{background:var(--surface);border:1px solid var(--line);border-top:2px solid #8d8270;border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:6px}.filp b{font-family:var(--f-display);font-size:16.5px;font-weight:500}.filp p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.5}.filp .jquote{margin:4px 0 0}
+.filvirt{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:10px}.filv{display:flex;flex-direction:column;gap:4px}.filv b{font-size:14px}.filv small{color:var(--muted);font-size:11.5px}
+.filsrc{display:flex;flex-direction:column;gap:8px}.filsrcs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.filchip{cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filtri{display:flex;flex-direction:column;gap:8px}.filcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}.filcols.sm p{margin:0;font-size:13px}.filcols .flbl{display:block}
+.filtris{display:flex;flex-direction:column;gap:10px}.filtr{border-left:3px solid #8d8270;padding:6px 10px;background:var(--surface-2);border-radius:0 10px 10px 0}.filtr header{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}.filtr p{margin:4px 0}
+.fillens{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin:8px 0 12px}.fillen{border:1px solid var(--line);border-left:3px solid var(--c);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:3px;font-size:13px}.fillen b{color:var(--c)}
+.fillente{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}.fillast summary{cursor:pointer;font-size:13px;color:var(--ink-2);margin-top:10px}
+.filexe,.filpads{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}.filexe li,.filpads li{display:flex;flex-direction:column;gap:2px;font-size:13.5px}.filexe small,.filpads small{font-size:11.5px}
+.filconf td{vertical-align:top;font-size:13px;line-height:1.45}
+/* ===== Psicologia */
+.psiform{display:flex;flex-direction:column;gap:10px}.psivals{margin-top:6px}
+.psicard{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--surface-2)}.psicard.sm{padding:8px 11px}.psicard header{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;margin-bottom:4px}.psicard p{margin:4px 0;line-height:1.5}
+.psipauta,.psisug,.psifios{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:8px}.psipauta li,.psisug li{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;font-size:13.5px}.psipauta li>span,.psisug li>span{flex:1;min-width:0}.psifios li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
+.psiadd{gap:8px;flex-wrap:nowrap}.psiadd input{flex:1;min-width:0}
+.psiproc{padding:6px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px}.psiproc:last-child{border-bottom:0}.psiproc p{margin:2px 0}
+.psitl{list-style:none;margin:8px 0;padding:0 0 0 14px;border-left:2px solid var(--line-2);display:flex;flex-direction:column;gap:8px}.psitl li{display:flex;flex-direction:column;gap:2px;font-size:13.5px}.psitl small{color:var(--muted)}
+.psistoa{display:flex;gap:6px;align-items:flex-start}.psistoa .ico{flex:none;margin-top:2px;color:#8d8270}
+.psimodos{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.psimodos .chip{cursor:pointer}.psimodos .chip.on{background:color-mix(in srgb,var(--a-men) 22%,var(--surface));border-color:var(--a-men);color:var(--ink)}
+.psiform .chip{cursor:pointer}.psiform .chip.on{background:color-mix(in srgb,var(--c,var(--a-men)) 22%,var(--surface));border-color:var(--c,var(--a-men));color:var(--ink)}
+.psimodo{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:0 0 12px;color:var(--ink-2)}
+@media (max-width:640px){.filcols{grid-template-columns:1fr}.psiadd{flex-wrap:wrap}.psipauta li,.psisug li{flex-direction:column}}
 /* ===== Secretário da Vida: janela flutuante */
 .secfab{position:fixed;right:18px;bottom:84px;z-index:60;display:inline-flex;align-items:center;gap:7px;padding:10px 14px 10px 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer;font:600 13px var(--f-ui)}
 .secfab:hover{border-color:var(--accent)}.secfab .ico svg{width:17px;height:17px;color:var(--accent)}.secfab i{font-style:normal;min-width:19px;height:19px;border-radius:99px;background:var(--crit,#e5534b);color:#fff;font-size:11px;display:grid;place-items:center;padding:0 5px}

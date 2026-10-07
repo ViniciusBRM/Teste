@@ -1555,6 +1555,29 @@ p.jmx{border:0;padding:0;text-align:center}
 @media (max-width:640px){.csfases li span{display:none}.csfases li.cur span{display:block;position:absolute;left:16px;margin-top:14px}.csfases{position:relative;margin-bottom:28px}.csmeta{margin-left:0;width:100%}.cschat{max-height:none}.csm .mav{width:28px;height:28px}.csac>.row{grid-column:1/-1}.csin{position:sticky;bottom:0;background:var(--surface);padding-bottom:6px}.csata .dt{display:block;overflow-x:auto}}
 @media print{.csside,.csctrl,.csin{display:none}}
 .cschk{display:flex;gap:10px;align-items:flex-start;margin:4px 0 12px;font-size:13.5px;line-height:1.45;cursor:pointer}.cschk input{margin-top:3px;width:auto;flex:none}.cspend{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+/* ===== Filosofia (estoicismo, na Jornada) */
+.filprinc{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:0 0 16px}
+.filp{background:var(--surface);border:1px solid var(--line);border-top:2px solid #8d8270;border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:6px}.filp b{font-family:var(--f-display);font-size:16.5px;font-weight:500}.filp p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.5}.filp .jquote{margin:4px 0 0}
+.filvirt{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:10px}.filv{display:flex;flex-direction:column;gap:4px}.filv b{font-size:14px}.filv small{color:var(--muted);font-size:11.5px}
+.filsrc{display:flex;flex-direction:column;gap:8px}.filsrcs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.filchip{cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filtri{display:flex;flex-direction:column;gap:8px}.filcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}.filcols.sm p{margin:0;font-size:13px}.filcols .flbl{display:block}
+.filtris{display:flex;flex-direction:column;gap:10px}.filtr{border-left:3px solid #8d8270;padding:6px 10px;background:var(--surface-2);border-radius:0 10px 10px 0}.filtr header{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}.filtr p{margin:4px 0}
+.fillens{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin:8px 0 12px}.fillen{border:1px solid var(--line);border-left:3px solid var(--c);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:3px;font-size:13px}.fillen b{color:var(--c)}
+.fillente{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}.fillast summary{cursor:pointer;font-size:13px;color:var(--ink-2);margin-top:10px}
+.filexe,.filpads{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}.filexe li,.filpads li{display:flex;flex-direction:column;gap:2px;font-size:13.5px}.filexe small,.filpads small{font-size:11.5px}
+.filconf td{vertical-align:top;font-size:13px;line-height:1.45}
+/* ===== Psicologia */
+.psiform{display:flex;flex-direction:column;gap:10px}.psivals{margin-top:6px}
+.psicard{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--surface-2)}.psicard.sm{padding:8px 11px}.psicard header{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;margin-bottom:4px}.psicard p{margin:4px 0;line-height:1.5}
+.psipauta,.psisug,.psifios{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:8px}.psipauta li,.psisug li{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;font-size:13.5px}.psipauta li>span,.psisug li>span{flex:1;min-width:0}.psifios li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
+.psiadd{gap:8px;flex-wrap:nowrap}.psiadd input{flex:1;min-width:0}
+.psiproc{padding:6px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px}.psiproc:last-child{border-bottom:0}.psiproc p{margin:2px 0}
+.psitl{list-style:none;margin:8px 0;padding:0 0 0 14px;border-left:2px solid var(--line-2);display:flex;flex-direction:column;gap:8px}.psitl li{display:flex;flex-direction:column;gap:2px;font-size:13.5px}.psitl small{color:var(--muted)}
+.psistoa{display:flex;gap:6px;align-items:flex-start}.psistoa .ico{flex:none;margin-top:2px;color:#8d8270}
+.psimodos{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.psimodos .chip{cursor:pointer}.psimodos .chip.on{background:color-mix(in srgb,var(--a-men) 22%,var(--surface));border-color:var(--a-men);color:var(--ink)}
+.psiform .chip{cursor:pointer}.psiform .chip.on{background:color-mix(in srgb,var(--c,var(--a-men)) 22%,var(--surface));border-color:var(--c,var(--a-men));color:var(--ink)}
+.psimodo{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:0 0 12px;color:var(--ink-2)}
+@media (max-width:640px){.filcols{grid-template-columns:1fr}.psiadd{flex-wrap:wrap}.psipauta li,.psisug li{flex-direction:column}}
 /* ===== Secretário da Vida: janela flutuante */
 .secfab{position:fixed;right:18px;bottom:84px;z-index:60;display:inline-flex;align-items:center;gap:7px;padding:10px 14px 10px 12px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer;font:600 13px var(--f-ui)}
 .secfab:hover{border-color:var(--accent)}.secfab .ico svg{width:17px;height:17px;color:var(--accent)}.secfab i{font-style:normal;min-width:19px;height:19px;border-radius:99px;background:var(--crit,#e5534b);color:#fff;font-size:11px;display:grid;place-items:center;padding:0 5px}
@@ -1777,13 +1800,13 @@ function applyLists() {
 const relArea = r => ({ "Família": "Família", "Parceria": "Amor & parceria", "Amizade": "Amizades & social", "Trabalho": "Carreira", "Mentoria": "Carreira", "Comunidade": "Propósito & espiritualidade" }[r] || "Amizades & social");
 
 /* ================================================================ estado */
-const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx", "rotina", "rotinaModelos", "jardim", "secretario", "conselho"];
+const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx", "rotina", "rotinaModelos", "jardim", "secretario", "conselho", "filosofia", "psique"];
 const EMPTY = () => ({
   cfg: { nome: "", moeda: "€", metaPoup: .2, metaReserva: 6, usoSobra: .7, maxParcela: .3, metaSono: 7.5, metaTreinos: 4, metaPassos: 8000, metaEstudo: 24, metaLivros: 12, metaLazer: 6, alertaDocs: 90, alertaAniv: 30, mentorNivel: "default", mentorTom: "Direto e caloroso", mentorNotion: true },
   lanc: [], orc: {}, patr: {}, saude: {}, habitos: [], marks: {}, roda: {}, alvo: {}, revisao: {}, metas: [], tarefas: [],
   pessoas: [], contatos: [], aprend: [], estudo: [], lazer: [], sonhos: [], docs: [], rotinas: [], assin: [], comp: [], cand: [], prio: ["", "", ""],
   diario: [], mentores: {}, listas: DEFAULT_LISTS(), regras: [], areasCfg: {}, integ: { notion: { pai: null, hist: [], tarefas: null } },
-  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {}, rotina: [], rotinaModelos: [], jardim: { pedras: [], talhos: [], templo: {}, folhas: [], cam: {} }, secretario: { modo: "acao", perfis: {}, conversa: [], lembretes: [], decisoes: [] }, conselho: { cfg: {}, atas: [], sessao: null },
+  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {}, rotina: [], rotinaModelos: [], jardim: { pedras: [], talhos: [], templo: {}, folhas: [], cam: {} }, secretario: { modo: "acao", perfis: {}, conversa: [], lembretes: [], decisoes: [] }, conselho: { cfg: {}, atas: [], sessao: null }, filosofia: { triagens: [], lentes: [] }, psique: { cfg: {}, sessoes: [], processos: [], padroes: [], reflexoes: [], pauta: [], modo: { fixo: "auto", atual: "escuta", motivo: "" } },
 });
 let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0, DBH = null;
 applyLists();
@@ -2035,7 +2058,9 @@ function exampleData() {
   exampleRedesenho(D);
   exampleJardim(D);
   D.conselho = csExemplo();
-  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${TODAY}T23:59` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
+  D.filosofia = filExemplo();
+  D.psique = psiExemplo();
+  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${addDays(TODAY, 1)}T09:00` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
   return D;
 }
 
@@ -3055,6 +3080,7 @@ function strip(days, key, mode) {
 
 /* ================================================================ ícones (traço 1.7, 24×24) */
 const ICONS = {
+  column: '<path d="M4 6h16M5 6l2-3h10l2 3M7 6v12M10.3 6v12M13.7 6v12M17 6v12M5 18h14M4 21h16"/>',
   film: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7.5 5v14M16.5 5v14M3 9.5h4.5M3 14.5h4.5M16.5 9.5H21M16.5 14.5H21"/>',
   gamepad: '<path d="M6.5 8h11a4 4 0 0 1 3.9 4.9l-.8 3.3a2.4 2.4 0 0 1-4.1 1.1L14.4 15H9.6l-2.1 2.3a2.4 2.4 0 0 1-4.1-1.1l-.8-3.3A4 4 0 0 1 6.5 8z"/><path d="M8.5 10.5v3M7 12h3"/><circle cx="15.5" cy="11" r=".9"/><circle cx="17.3" cy="13" r=".9"/>',
   plane: '<path d="M10.6 3.6a1.4 1.4 0 0 1 2.8 0V9l7.6 4.6v2.1l-7.6-2.4v4.6l2.4 1.9v1.6L12 20.4l-3.8 1V19.8l2.4-1.9v-4.6L3 15.7v-2.1L10.6 9z"/>',
@@ -3147,7 +3173,7 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 
 /* ================================================================ navegação */
 const NAV = [
-  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"], ["cruz", "Cruzamentos", "scatter"]]],
+  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"], ["cruz", "Cruzamentos", "scatter"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["idiomas", "Idiomas", "globe"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["mapa", "Mapa do Atlas", "compass"], ["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
@@ -3166,8 +3192,9 @@ const SUBS = {
   lazer: [["inicio", "Início"], ["leitura", "Leitura"], ["filmes", "Filmes e séries"], ["jogos", "Jogos"], ["viagens", "Viagens"], ["cafe", "Café"], ["aviacao", "Aviação"], ["estudos", "Estudos"], ["existencial", "Existencial"]],
   carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["caderno", "Caderno técnico"], ["rede", "Rede profissional"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
-  jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
+  jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["filosofia", "Filosofia"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   rotina: [["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]],
+  psi: [["inicio", "Início"], ["sessoes", "Sessões"], ["processos", "Processos"], ["entre", "Entre sessões"], ["padroes", "Padrões"], ["terapeuta", "O Terapeuta"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
 };
 const REPORT_TABS = [["visao", "Visão geral"], ["fin.rel", "Finanças"], ["saude.rel", "Saúde"], ["hab.rel", "Hábitos"], ["pessoas.rel", "Relações"], ["cresc.rel", "Crescimento"], ["metas.rel", "Metas"], ["cruz", "Cruzamentos"]];
@@ -3181,6 +3208,7 @@ function route() {
   /* a Bússola moral e os mentores da jornada moram na Jornada existencial; links antigos continuam valendo */
   if (p === "cresc" && s === "carreira") { p = "carreira"; s = "panorama"; }
   if (p === "bussola") { p = "jornada"; s = !s || s === "mapa" ? "bussola" : s; }
+  if (p === "mentor" && MENTOR_DEF[s]?.page) { p = MENTOR_DEF[s].page; s = MENTOR_DEF[s].sub; }
   if (p === "mentor" && MENTOR_DEF[s]?.jor) { p = "jornada"; s = jSubOfMid(s); }
   if (p === "mentor" && MENTOR_DEF[s]?.lz) { p = "lazer"; s = MENTOR_DEF[s].lz; }
   if (`${p}${s ? "." + s : ""}` !== location.hash.slice(1) && location.hash) try { history.replaceState(null, "", `#${p}${s ? "." + s : ""}`); } catch {}
@@ -4403,6 +4431,7 @@ function councilFacts(Hs) {
 }
 /* cx = { dados }: modo conselho. A identidade, a memória e o plano ficam; os DADOS viram o briefing da reunião */
 function mentorPrompt(mid, fallback, cx) {
+  if (MENTOR_DEF[mid].prompt) return MENTOR_DEF[mid].prompt(fallback, cx);
   if (MENTOR_DEF[mid].jor) return jPrompt(mid, fallback, cx);
   if (MENTOR_DEF[mid].lz) return lzPrompt(mid, fallback, cx);
   const def = MENTOR_DEF[mid], m = mget(mid), Hs = []; for (let k = 5; k >= 0; k--) Hs.push(calcAt(addMonth(mkey(TODAY), -k)));
@@ -4465,7 +4494,7 @@ function mentorTools(mid, live) {
   if (NOTION_OK && S.cfg.mentorNotion) T.push({ name: "buscar_notion", description: "Busca páginas no Notion da pessoa por palavras-chave e devolve até 5 resultados com título, link e trecho. Use para projetos, anotações e planos que estão lá.",
     inputSchema: { type: "object", properties: { consulta: { type: "string" } }, required: ["consulta"] },
     execute: async (inp, ctx) => { const res = await MCP.callTool("Notion", "notion-search", { query: String(inp.consulta).slice(0, 200), page_size: 5 }, { signal: ctx.signal }); const rs = (res.payload?.results || []).slice(0, 5).map(x => ({ titulo: x.title, link: x.url, trecho: trunc(String(x.highlight || "").replace(/\*\*/g, ""), 300) })); note("buscar_notion", `“${trunc(inp.consulta, 40)}” · ${rs.length} páginas`); return rs; } });
-  const out = def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T;
+  const out = def.tools ? def.tools(live, T) : def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T;
   return TOOLS_MAX && TOOLS_MAX < out.length ? out.slice(0, TOOLS_MAX) : out;
 }
 function mkProposal(inp) {
@@ -4479,6 +4508,7 @@ async function askMentor(mid, text, mode = "chat") {
   if (!SAMPLE) { toast(AI_OFF || "A IA do Claude não está disponível nesta visualização."); return; }
   if (MST.live) { toast("Espere a resposta atual terminar ou toque em Parar."); return; }
   if (blockedMentor(mid)) { toast(`${ashort(MENTOR_DEF[mid].area || MENTOR_DEF[mid].gate)} está fora da IA em Privacidade. Libere o setor para conversar com este mentor.`); return; }
+  MENTOR_DEF[mid].before?.(text);
   const m = mget(mid), user = { role: "user", content: text, at: Date.now(), mode };
   const live = MST.live = { mid, text: "", uso: [], acoes: [], ctl: new AbortController(), user, mode };
   MST.input[mid] = ""; render(); scrollChat();
@@ -4555,11 +4585,11 @@ function pMentores(R) {
       ${nud ? `<div class="mnud ${nud.st}">${ic("bolt")}<span>${nud.t}</span></div>` : ""}
       <footer><span class="muted">${m.conversa?.length ? `conversa ${relDay(iso(new Date(m.visto || m.conversa.at(-1).at)))}` : "nunca conversaram"} · ${plural((m.mem || []).length, "memória", "memórias")}${sl.out.length && m.visto ? ` · desde então: ${esc(sl.out.slice(0, 2).join(", "))}` : ""}</span><a class="btn sm${mid === "conselho" ? " primary" : ""}" href="#mentor.${mid}">${ic("spark")}Conversar</a></footer></article>`; };
   return `${aiBanner()}<p class="lead">Um mentor para cada área da vida e um Conselho que olha o todo. Cada um lê os seus números e o seu diário, lembra do que vocês combinaram e propõe melhorias, que só viram tarefa, meta ou hábito quando você aprova.</p>
-    <div class="mgrid">${MIDS.filter(m => !MENTOR_DEF[m].jor && !MENTOR_DEF[m].lz).map(card).join("")}</div>
+    <div class="mgrid">${MIDS.filter(m => !MENTOR_DEF[m].jor && !MENTOR_DEF[m].lz && !MENTOR_DEF[m].page).map(card).join("")}</div>
     <div class="mhead jmh2">${ic("palette")}Mentores do lazer<small>um para cada tema, do básico ao avançado</small></div>
     <div class="jmgrid">${LZ_MIDS.map(mid => { const def = MENTOR_DEF[mid]; return `<a class="jmc" href="#lazer.${def.lz}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${esc(lzDiv(def.lz).nome)}</small><em>${esc(def.arq)}</em></span></a>`; }).join("")}</div>
-    <div class="mhead jmh2">${ic("lotus")}Mentores da jornada existencial<small>um para cada pilar e o Navegante da Bússola moral</small></div>
-    <div class="jmgrid">${J_MIDS.map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>`;
+    <div class="mhead jmh2">${ic("lotus")}Mentores da vida interior<small>um para cada pilar, o Navegante da Bússola, o Mestre do Pórtico e o Terapeuta</small></div>
+    <div class="jmgrid">${[...J_MIDS, "sto", "psi"].map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#${mid === "psi" ? "psi.terapeuta" : "jornada." + jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : mid === "sto" ? "Filosofia · estoicismo" : mid === "psi" ? "Psicologia" : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>`;
 }
 function aiBanner() {
   if (AI_OFF) return `<div class="banner warn">${ic("info")}<span>${esc(AI_OFF)}</span></div>`;
@@ -7576,7 +7606,7 @@ Object.assign(MENTOR_DEF, {
 });
 MIDS.push(...["esp", "med", "tao", "bud", "bm"].filter(m => !MIDS.includes(m)));
 const J_MIDS = ["esp", "med", "tao", "bud", "bm"];
-const jSubOfMid = mid => mid === "bm" ? "navegante" : J_PIL[jMidP(mid)]?.sub || "inicio";
+const jSubOfMid = mid => mid === "bm" ? "navegante" : mid === "sto" ? "filosofia" : J_PIL[jMidP(mid)]?.sub || "inicio";
 
 /* ---------------------------------------------------------------- o que cada mentor recebe */
 function jPilarFacts(pid, full) {
@@ -7605,6 +7635,8 @@ function jCommonFacts(skip) {
   L.push("OS OUTROS PILARES DA PESSOA:\n" + J_ORDER.filter(p => p !== skip).map(p => `## ${J_PIL[p].nome} (mentor: ${MENTOR_DEF[J_PIL[p].mid].nome})\n${jPilarFacts(p, false).join("\n")}`).join("\n"));
   const sc = bmScores(28); L.push(`Bússola moral: valores em foco ${bmFoco().map(id => bmV(id).nome).join(", ") || "nenhum"}; prática dos valores nas últimas 4 semanas ${sc.idx == null ? "sem exames" : pct(sc.idx)} em ${sc.dias} noites com exame.`);
   if (C.vivos.length) L.push("Temas de confluência que a pessoa marcou como vivos na própria vida: " + C.vivos.map(id => { const t = J_CONV.find(x => x.id === id); return t ? t.t + (C.notas[id] ? ` (nota: ${trunc(C.notas[id], 160)})` : "") : ""; }).filter(Boolean).join("; "));
+  const tr = filD().triagens.slice(-2); if (tr.length) L.push("Filosofia (estoicismo) — triagens do controle recentes: " + tr.map(t => `“${trunc(t.sit, 90)}”: depende de mim ${trunc(t.meu || "–", 80)}; não depende ${trunc(t.nao || "–", 80)}`).join(" | "));
+  L.push(...psiFactsBrief());
   const ci = C.circulos.slice(-2); if (ci.length) L.push("Círculos recentes dos mentores:\n" + ci.map(c => `- ${fmtD(iso(new Date(c.at)))}: “${trunc(c.pergunta, 140)}” → ${trunc(jSection(c.texto, "Onde convergem") || c.texto, 260)}`).join("\n"));
   return L;
 }
@@ -7763,6 +7795,7 @@ function pJornada(R) {
   if (SUB === "jardim") return pJardim();
   if (J_SUB2P[SUB]) return jPilar(J_SUB2P[SUB]);
   if (SUB === "confluencias") return jConf();
+  if (SUB === "filosofia") return jFilosofia();
   if (SUB === "praticas") return jPraticas();
   if (SUB === "navegante") return jBmNav() + jNavegante();
   return jBmNav() + pBussola(R);
@@ -7785,8 +7818,8 @@ function jInicio() {
         <div class="flbl">Uma reflexão rápida</div><textarea class="jta" rows="3" data-jq="1" placeholder="O que você viveu, percebeu ou aprendeu?">${esc(Q.txt)}</textarea>
         <div class="row wrap jqrow">${J_ORDER.map(p => jChip(p, Q.p.includes(p), `data-act="jqp" data-p="${p}"`)).join("")}</div>
         <div class="row wrap jqrow"><div class="segs">${J_TIPOS.map(t => `<button type="button" class="seg" data-act="jqt" data-v="${t}" aria-pressed="${Q.tipo === t}">${t}</button>`).join("")}</div><button type="button" class="btn sm primary" data-act="jqsave">${ic("check")}Guardar</button></div>`, { cls: "jhoje" })}
-      ${panel(`${ic("council")}Seus mentores`, `<div class="jmgrid">${J_MIDS.map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid), last = m.conversa?.length ? relDay(iso(new Date(m.conversa.at(-1).at))) : "";
-          return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : last ? `conversaram ${last}` : "ainda não conversaram"}</em></span></a>`; }).join("")}</div>`, { cls: "span2" })}
+      ${panel(`${ic("council")}Seus mentores`, `<div class="jmgrid">${[...J_MIDS, "sto"].map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid), last = m.conversa?.length ? relDay(iso(new Date(m.conversa.at(-1).at))) : "";
+          return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : mid === "sto" ? "Filosofia · estoicismo" : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : last ? `conversaram ${last}` : "ainda não conversaram"}</em></span></a>`; }).join("")}</div>`, { cls: "span2" })}
       ${rev ? panel(`${ic("clock")}Para revisitar`, `<p class="muted">${esc(rev.quando)} você escreveu, em ${esc(J_PIL[rev.pid].nome)}:</p><blockquote class="jquote sm" style="--c:${J_PIL[rev.pid].cor}">${esc(trunc(rev.r.texto, 420))}<cite>${fmtDY(rev.r.data)} · ${esc(rev.r.tipo)}</cite></blockquote>
         <label class="flbl" for="jrev">O que mudou desde então?</label><textarea id="jrev" class="jta" rows="2" data-jrev="1" placeholder="Releia com calma. O que você vê agora?">${esc(J.rev)}</textarea><div class="row"><button type="button" class="btn sm" data-act="jrevsave" data-p="${rev.pid}" data-id="${rev.r.id}">${ic("check")}Guardar como reflexão</button></div>`) : ""}
       ${(() => { const at = J_PROG.filter(p => jProgInfo(p) && !jProgInfo(p).fim); return at.length ? panel(`${ic("flag")}Programas em andamento`, `<div class="jprogs">${at.map(p => jProgCard(p)).join("")}</div>`, { act: `<a class="lnk" href="#jornada.praticas">práticas</a>` }) : panel(`${ic("flag")}Programas guiados`, `<p class="muted">Quatro caminhos com começo, meio e fim: 8 semanas de atenção plena, o Tao Te Ching em 81 dias, o Dhammapada em 26 capítulos e O Evangelho segundo o Espiritismo em 28 semanas.</p><a class="btn sm" href="#jornada.praticas">${ic("arrow")}Escolher um</a>`); })()}
@@ -9429,6 +9462,8 @@ const TAB_INFO = {
   diario: { cor: "var(--a-men)", cena: "notebook", foto: "Caderno de capa de couro aberto, caneta tinteiro e xícara de café", missao: "O lugar das palavras: o que aconteceu, o que você sentiu e o que aprendeu, ligado às pessoas, temas e metas.", resolve: "Memória do que viveu e padrões que só aparecem escritos.", entra: "Seus textos, @pessoas, #temas e comandos “/”.", sai: "Cruzamentos, Capítulos, mentores (se você permitir).", manual: ["@ menciona uma pessoa, # marca um tema, [[ liga a uma meta ou tarefa.", "Linhas começando com / registram dados (ex.: /gasto 12 almoço).", "Em Perguntar, busque por significado: “quando me senti sozinho?”."] },
   jornada: { cor: "var(--jp-med)", cena: "lotus", foto: "Flor de lótus num lago parado ao amanhecer", missao: "Cultivar a vida interior em quatro caminhos (Espiritismo, meditação, Taoísmo e Budismo) e a bússola moral que orienta as decisões.", resolve: "Prática espiritual que fica solta, sem continuidade nem reflexão.", entra: "Sessões de prática, reflexões, exame da noite, decisões.", sai: "Métricas de prática nos Cruzamentos e o Hoje.", manual: ["Comece pela aba de um pilar e registre a estação em que você está.", "Saúde espiritual é o jardim: cada árvore cresce com um pilar, o rio com o exame da noite, e o templo com as inclinações que você trabalha.", "Na mandala, toque numa pétala para explorar; as camadas mostram ritmo e evolução.", "Práticas guarda programas guiados e sessões (com estado antes e depois).", "A Bússola moral tem o exame da noite e as oito perguntas antes de decidir."] },
   mentores: { cor: "var(--accent)", cena: "spark", foto: "Mesa de conversa com duas cadeiras e luz suave", missao: "Um conselheiro por área, que lê os seus dados (só os que você liberar) e lembra do que vocês combinaram.", resolve: "Conselho genérico que ignora a sua situação real.", entra: "Os dados das áreas liberadas em Privacidade.", sai: "Tarefas, metas e hábitos que você aceitar.", manual: ["Escolha o mentor da área; o Conselho vê todas.", "As propostas só viram tarefa quando você aceita.", "Privacidade controla o que cada mentor pode ler."] },
+  psi: { cor: "var(--a-men)", cena: "notebook", foto: "Duas poltronas frente a frente numa sala com luz de janela", missao: "Acompanhar o trabalho psicológico de verdade: as sessões, os processos ao longo do tempo, o que se repete e o que você faz entre uma sessão e outra, ligado à sua jornada.", resolve: "Insights da terapia que se perdem até a sessão seguinte, e um trabalho interior separado do resto da vida.", entra: "Sessões, registros entre sessões, padrões, e a jornada, a Bússola e a Filosofia.", sai: "A pauta da próxima sessão, triagens estoicas, padrões na Filosofia, e o resumo que os mentores e o Conselho leem.", manual: ["Logo depois da sessão, registre os temas, um insight e o combinado.", "Entre sessões, responda a pergunta do dia ou faça um registro de pensamento quando algo pesar; dali dá para ir à triagem estoica.", "Nomeie os padrões que se repetem: a Filosofia mostra o exercício estoico que conversa com cada um.", "O Terapeuta muda de forma conforme o que você pede; toque numa forma para fixá-la. Ele não substitui o seu terapeuta."] },
+  "jornada.filosofia": { cena: "chapters", missao: "O estoicismo tecido na jornada: a dicotomia do controle aplicada às suas decisões, padrões e tarefas, as quatro virtudes lidas nos seus exames e o mesmo dilema visto por todas as tradições." },
   admin: { cor: "var(--accent)", cena: "constel", foto: "Mesa redonda de reunião vista de cima, com cadeiras de cores diferentes", missao: "O Conselho de Administração da sua vida: os mentores de todas as áreas reunidos como diretores, conduzidos pelo Intermediador, para ver o todo e decidir o que importa.", resolve: "Cada área otimizada sozinha, sem ver o que uma custa à outra.", entra: "Os briefings de cada área, a memória de cada mentor e a ata anterior.", sai: "A ata, com decisões e ações que aparecem nas abas das áreas e na memória dos mentores.", manual: ["Escolha o tipo de sessão e, se quiser, um foco; toque em Iniciar sessão.", "Quando o Intermediador falar com você, a sessão pausa e espera a sua resposta.", "Intervenha a qualquer momento pelo campo de baixo; Pular fase e Encerrar e gerar ata estão sempre à mão.", "Marque as ações como feitas aqui ou na aba da área. Uma sessão interrompida continua de onde parou."] },
   cruz: { cor: "var(--a-apr)", cena: "scatter", foto: "Fios coloridos se cruzando num tear", missao: "Descobrir o que anda junto na sua vida: sono e humor, gastos e estresse, prática e foco.", resolve: "Intuições sobre si que nunca são conferidas.", entra: "As séries diárias de todas as abas.", sai: "Ideias para Experimentos.", manual: ["Escolha duas métricas ou deixe o Atlas procurar as relações mais fortes.", "Correlação não é causa: teste em Experimentos antes de mudar a rotina."] },
   fin: { cor: "var(--a-fin)", cena: "growth", foto: "Mesa com caderno de contas, calculadora e moedas de euro e real", missao: "Saber para onde vai o dinheiro, quanto sobra e se o futuro está sendo construído, em euro e em real.", resolve: "Fim de mês sem saber o que aconteceu e decisões grandes sem número.", entra: "Lançamentos, orçamento, patrimônio, salário (Carreira), contas da casa.", sai: "Futuro financeiro, Visão geral, mentor de Finanças.", manual: ["Lançamentos: registre ou importe extratos; categorias aprendem com você.", "Orçamento & patrimônio: teto por categoria, assinaturas e o patrimônio do fim do mês.", "Futuro financeiro: reserva, TFR e previdência com as contas feitas.", "Itália & Brasil: contas dos dois países e o total em euro na cotação do dia."] },
@@ -9490,13 +9525,13 @@ document.addEventListener("toggle", e => { const d = e.target; if (d.matches?.("
 /* ---------------------------------------------------------------- Mapa do Atlas: estrutura, fluxo e lacunas */
 const MAPA_GRUPOS = [
   ["O dia", ["hoje", "painel", "rotina", "diario"], "Começar o dia, registrar o que aconteceu, escrever o que importa."],
-  ["Vida interior", ["jornada", "mentores", "admin"], "Prática, valores e conselho."],
+  ["Vida interior", ["jornada", "psi", "mentores", "admin"], "Prática, valores, filosofia, psicologia e conselho."],
   ["Áreas", ["fin", "saude", "hab", "metas", "pessoas", "cresc", "carreira", "idiomas", "lazer", "casa", "roda"], "Cada área com seus registros, relatório e manual."],
   ["Laboratório", ["cruz", "semana", "radar", "exp", "capitulos", "dupla"], "Entender padrões, fechar ciclos, testar mudanças."],
   ["Sistema", ["dados", "integ", "privacidade", "ajustes"], "Dados, conexões e limites."],
 ];
 const MAPA_FLUXO = [
-  ["painel", "saude", "sono, humor, energia, treino"], ["painel", "fin", "gastos"], ["painel", "hab", "hábitos feitos"], ["painel", "jornada", "sessões de prática"], ["painel", "diario", "o texto do dia"], ["rotina", "idiomas", "blocos ocupados saem do tempo de estudo"], ["rotina", "hoje", "a rotina do dia"], ["integ", "rotina", "compromissos do Google Calendar"],
+  ["psi", "jornada", "processos e sessões ligados aos pilares e valores"], ["jornada", "psi", "triagens estoicas na pauta da sessão"], ["painel", "saude", "sono, humor, energia, treino"], ["painel", "fin", "gastos"], ["painel", "hab", "hábitos feitos"], ["painel", "jornada", "sessões de prática"], ["painel", "diario", "o texto do dia"], ["rotina", "idiomas", "blocos ocupados saem do tempo de estudo"], ["rotina", "hoje", "a rotina do dia"], ["integ", "rotina", "compromissos do Google Calendar"],
   ["carreira", "fin", "salário → TFR e previdência"], ["carreira", "metas", "objetivos e ações"], ["carreira", "idiomas", "inglês técnico como gap"], ["pessoas", "carreira", "contatos de trabalho → Rede"],
   ["idiomas", "cresc", "horas de estudo"], ["casa", "fin", "conta paga → lançamento"], ["fin", "hoje", "orçamento → ideias que cabem no bolso"], ["lazer", "hoje", "gostos → ideias para sair da rotina"],
   ["saude", "cruz", "séries diárias"], ["cruz", "exp", "hipótese para testar"], ["metas", "hoje", "o que vence"], ["semana", "hoje", "prioridades"],
@@ -11666,7 +11701,7 @@ function secBoot() {
 const conselhoConfig = {
   fases: ["REVISAO_ATA", "ABERTURA", "RELATORIOS", "CRUZAMENTO", "DEBATE", "CONTEMPLACAO", "CONFLITOS", "PREVISOES", "DELIBERACOES", "ATA"],
   diretores: ["fis", "men", "fin", "car", "apr", "fam", "amo", "ami", "laz", "pro", "cas", "bm"],
-  convidados: ["esp", "med", "tao", "bud", "lzlei", "lzfil", "lzjog", "lzvia", "lzcaf", "lzavi", "lzest"],
+  convidados: ["sto", "psi", "esp", "med", "tao", "bud", "lzlei", "lzfil", "lzjog", "lzvia", "lzcaf", "lzavi", "lzest"],
   maxTurnos: 40, maxFalasPorFase: 3, palavrasPorFala: 150, resumoACada: 5, palavrasBriefing: 300,
   relatoriosEmSequencia: true,       // na fase de relatórios os diretores falam em ordem, sem uma chamada do Intermediador antes de cada um
   esperaMs: [2000, 4000],            // novas tentativas só para falha passageira do serviço (upstream_error)
@@ -11693,7 +11728,7 @@ const CS_FASE = {
 const CS_TIPOS = { ordinaria: ["Ordinária", "Revisão geral da semana ou do mês."], trimestral: ["Trimestral", "Balanço profundo e ajuste de metas."], anual: ["Anual", "Visão, valores e direção de longo prazo."], extraordinaria: ["Extraordinária", "Uma crise ou um alerta grave, com foco nele."] };
 const CS_ST = { aberta: "aberta", feita: "feita", nao_feita: "não feita", proposta: "aguardando aprovação", recusada: "recusada" };
 /* abas onde as ações do Conselho aparecem para marcar como feitas */
-const CS_PAGE_AREAS = { ...PAGE_AREAS, carreira: ["Carreira"], idiomas: ["Aprendizado"], lazer: ["Lazer & criatividade"], jornada: ["Propósito & espiritualidade", "Bússola moral"] };
+const CS_PAGE_AREAS = { ...PAGE_AREAS, psi: ["Saúde mental"], carreira: ["Carreira"], idiomas: ["Aprendizado"], lazer: ["Lazer & criatividade"], jornada: ["Propósito & espiritualidade", "Bússola moral"] };
 const CS = { tipo: "ordinaria", foco: "", obs: false, input: "", busy: false, ctl: null, status: "", live: null, ver: null, area: "geral", stick: true };
 
 /* ---------------------------------------------------------------- estado e rótulos */
@@ -11732,7 +11767,7 @@ function csBrief(mid) {
     const es = aiEntries(S.diario.filter(e => e.data >= addDays(TODAY, -21) && parseEntry(e.texto).areas.includes(a)).sort((x, y) => y.data.localeCompare(x.data)));
     if (es.length) L.push(`DIÁRIO (21 dias): ${plural(es.length, "entrada", "entradas")}; a mais recente, ${fmtD(es[0].data)}: "${trunc(snippet(es[0], 160), 160)}".`);
   } else {
-    const facts = MENTOR_DEF[mid].jor ? (mid === "bm" ? jBmFacts() : jPilarFacts(jMidP(mid), false)) : MENTOR_DEF[mid].lz ? lzFacts(MENTOR_DEF[mid].lz) : [];
+    const facts = MENTOR_DEF[mid].facts ? MENTOR_DEF[mid].facts() : MENTOR_DEF[mid].jor ? (mid === "bm" ? jBmFacts() : jPilarFacts(jMidP(mid), false)) : MENTOR_DEF[mid].lz ? lzFacts(MENTOR_DEF[mid].lz) : [];
     const txt = facts.join(" ").replace(/\s+/g, " ").trim(); sem = txt.length < 60;
     head = trunc(txt, 90) || "sem registros"; L.push("ESTADO: " + (txt || "sem registros nesta área."));
   }
@@ -12160,6 +12195,541 @@ function csExemplo() {
   ] };
 }
 
+/* ================================================================ Filosofia: o estoicismo tecido na jornada
+   Não é um quinto pilar nem um módulo à parte: parte do que o Atlas já tem. A Bússola já traz uma voz estoica em cada valor;
+   aqui ela vira prática sobre as decisões, os padrões da psicologia, as tarefas e os alertas que a pessoa já registrou:
+   - triagem do controle (Epicteto): o que depende de mim, o que não depende, o que depende em parte; a virtude que o caso pede;
+   - as quatro virtudes cardeais lidas nos próprios exames da noite (os 17 valores da Bússola agrupados nelas);
+   - lentes: o mesmo dilema visto pelo estoicismo, pelos quatro pilares e pela psicoterapia, em diálogo;
+   - confluências honestas (onde convergem e onde não) e o Mestre do Pórtico, mentor com memória própria.
+   Dados: filosofia = { triagens: [{id, data, at, sit, origem: {k, id, rot}, meu, nao, parte, acao, aceite, virtude, terapia}],
+   lentes: [{id, at, dilema, origem, texto}] }. */
+const FIL = { tri: null, dil: "", dsrc: null, busy: false, ctl: null, txt: "" };
+const filD = () => { const d = (S.filosofia ||= {}); d.triagens ||= []; d.lentes ||= []; return d; };
+const FIL_PRINC = [
+  { id: "controle", nome: "O que depende de mim", txt: "Juízos, escolhas, esforço e caráter dependem de você; resultado, corpo, reputação, passado e o que os outros fazem, não. A serenidade nasce de pôr a energia só no primeiro grupo.", cit: ["Das coisas existentes, algumas dependem de nós, outras não.", "Epicteto, Enchiridion, 1"] },
+  { id: "juizo", nome: "Não são as coisas, são os juízos", txt: "Entre o que acontece e o que você sente há um juízo. Examiná-lo não é negar a emoção: é ver se a história que você conta é verdadeira e útil.", cit: ["Não são as coisas que perturbam os homens, mas os juízos sobre as coisas.", "Epicteto, Enchiridion, 5"] },
+  { id: "aceitar", nome: "Aceitar o inevitável", txt: "Querer que as coisas aconteçam como acontecem não é resignação: é parar de gastar força contra o que já é, para usá-la no que ainda pode ser.", cit: ["Não queiras que os acontecimentos aconteçam como queres; quer que aconteçam como acontecem, e a tua vida fluirá bem.", "Epicteto, Enchiridion, 8"] },
+  { id: "virtude", nome: "A virtude como único bem", txt: "Sabedoria, justiça, coragem e temperança são o único bem que ninguém tira; saúde, dinheiro e fama são “indiferentes preferíveis”: bons de ter, mas não o que faz uma vida boa.", cit: ["Se encontrares na vida humana algo melhor que a justiça, a verdade, a temperança e a coragem, volta-te para isso com toda a alma.", "Marco Aurélio, Meditações, III, 6"] },
+  { id: "obstaculo", nome: "O obstáculo é o caminho", txt: "Toda dificuldade é matéria para alguma virtude: a espera treina paciência, a perda treina desapego, o conflito treina justiça.", cit: ["O que impede a ação faz avançar a ação; o que está no caminho torna-se o caminho.", "Marco Aurélio, Meditações, V, 20"] },
+  { id: "tempo", nome: "Lembrar que o tempo acaba", txt: "Memento mori não é morbidez: é o lembrete que devolve prioridade ao que importa hoje.", cit: ["Tudo, Lucílio, é alheio; só o tempo é nosso.", "Sêneca, Cartas a Lucílio, 1"] }];
+/* os 17 valores da Bússola agrupados nas quatro virtudes cardeais (com a palavra grega) */
+const FIL_VIRT = [
+  { id: "sabedoria", nome: "Sabedoria", gr: "sophia", v: ["consciencia", "espiritualidade", "sabedoria", "educacao"], d: "ver o que é bom, mau e indiferente" },
+  { id: "justica", nome: "Justiça", gr: "dikaiosynē", v: ["justica", "igualdade", "fraternidade", "respeito", "tolerancia", "compaixao", "gentileza", "caridade"], d: "agir pelo bem comum" },
+  { id: "coragem", nome: "Coragem", gr: "andreia", v: ["paciencia"], d: "suportar e ousar o que é certo" },
+  { id: "temperanca", nome: "Temperança", gr: "sōphrosynē", v: ["temperanca", "equilibrio", "desprendimento", "humildade"], d: "a medida certa nos desejos" }];
+const FIL_EXE = [
+  ["Triagem do controle", "Separar o que depende de você do que não depende, e agir só no primeiro.", "Epicteto, Enchiridion, 1"],
+  ["Exame da noite", "Sêneca terminava o dia perguntando: que mal curei hoje? a que vício resisti? em que estou melhor? É o mesmo gesto do exame da Bússola.", "Sêneca, Da Ira, III, 36"],
+  ["Premeditação dos males", "Imaginar com calma o que pode dar errado, para não ser pego de surpresa e descobrir que daria para atravessar.", "Sêneca, Cartas a Lucílio, 91"],
+  ["Vista do alto", "Ver a situação de cima, como parte da cidade, do país, do tempo; a aflição volta ao tamanho real.", "Marco Aurélio, Meditações, IX, 30"],
+  ["Cláusula de reserva", "Querer com a ressalva “se nada impedir”: o esforço é seu, o resultado não.", "Sêneca, Da Tranquilidade da Alma, 13"]];
+/* onde aplicar: padrões que a psicologia nomeou e o exercício estoico que conversa com cada um */
+const FIL_PAD = [
+  [/catastrof|pior cen|desgra/i, "Premeditação dos males ao contrário: escreva o pior realista e o que você faria; quase sempre há um caminho.", "Sêneca, Cartas a Lucílio, 91"],
+  [/rumina|remo|repass/i, "Volte ao presente: o passado já não depende de você; o que depende é o próximo passo.", "Marco Aurélio, Meditações, II, 14"],
+  [/raiva|irrita|explos/i, "Ganhe tempo antes de reagir e examine o juízo que acendeu a raiva.", "Sêneca, Da Ira, II, 29; Epicteto, Enchiridion, 5"],
+  [/perfeccion|exig|cobran/i, "Troque a meta externa (o resultado) pela interna (fazer bem a sua parte).", "Epicteto, Enchiridion, 1"],
+  [/control/i, "Triagem do controle: escreva o que depende e o que não depende, e solte o segundo.", "Epicteto, Enchiridion, 1"],
+  [/apego|perd|ciúme|ciume/i, "Diga “devolvi” em vez de “perdi”: nada nos pertence para sempre.", "Epicteto, Enchiridion, 11"],
+  [/procrast|adia/i, "Ao acordar com preguiça, lembre para que você existe: para agir.", "Marco Aurélio, Meditações, V, 1"],
+  [/culpa|vergonha/i, "Progresso, não perfeição: o estoico se corrige sem se condenar.", "Epicteto, Discursos, IV, 12"],
+  [/ansie|medo|preocup/i, "Separe o que é agora do que é imaginação sobre o futuro; prepare-se no que depende de você.", "Sêneca, Cartas a Lucílio, 13"],
+  [/compar|inveja|reconhec|aprova/i, "A opinião alheia não depende de você; o seu caráter depende.", "Epicteto, Enchiridion, 24"]];
+const FIL_LENTE = [["sto", "Estoicismo", "O que aqui depende de mim, e que virtude isso me pede?"], ["esp", "Espiritismo", "Que lei moral e que oportunidade de reforma íntima isso traz?"],
+  ["tao", "Taoísmo", "Onde estou forçando? O que flui se eu ceder?"], ["bud", "Budismo", "Onde está o apego? O que aqui é impermanente?"],
+  ["med", "Meditação", "O que sinto no corpo quando penso nisso, sem julgar?"], ["psi", "Psicoterapia", "Que padrão antigo isso ativa? O que isso me lembra?"]];
+const FIL_CONF = [
+  ["Espiritismo", "Exame de consciência diário (O Livro dos Espíritos, q. 919) e exame de Sêneca; fraternidade universal e o cosmopolitismo de Hiérocles; a reforma íntima e o progresso moral (prokopē).", "O Espiritismo afirma a alma imortal que progride por muitas existências; os estoicos não ensinavam reencarnação, e para muitos deles a alma durava, no máximo, até o fim do ciclo do cosmos."],
+  ["Budismo", "Impermanência: tudo flui como um rio (Meditações, IV, 43); não se apegar ao que não depende de nós.", "O estoicismo afirma um eu racional que escolhe (o hegemonikon) e valoriza o dever cívico; o Budismo ensina o não-eu (anattā) e a cessação do sofrimento."],
+  ["Taoísmo", "Viver segundo a natureza e seguir o Tao; aceitar em vez de forçar.", "O estoico cultiva virtudes nomeadas com esforço deliberado; o Tao Te Ching desconfia das virtudes nomeadas (cap. 38) e prefere o não-agir (wu wei)."],
+  ["Meditação", "Prosochē, a atenção a si mesmo, e sati, a atenção plena.", "A prosochē vigia os juízos para corrigi-los; a atenção plena pede observar sem julgar."],
+  ["Psicoterapia", "A TCC reconhece Epicteto como precursor (Albert Ellis e Aaron Beck o citam); a ACT une aceitação e ação por valores; a logoterapia de Frankl fala da liberdade de escolher a atitude.", "Mal lido, o estoicismo vira “engolir o choro”. Os próprios estoicos distinguiam os primeiros movimentos involuntários das paixões (Sêneca, Da Ira, II, 2–4): a emoção vem primeiro, o exame do juízo depois. A terapia valida antes de reavaliar."]];
+
+/* ---------------------------------------------------------------- dados que a filosofia lê do resto do Atlas */
+const filVal = id => (typeof bmV === "function" ? bmV(id) : null);
+function filVirtudes() {
+  const sc = bmScores(28).val;
+  return FIL_VIRT.map(V => { const vs = V.v.filter(id => sc[id] != null); return { ...V, n: vs.length, nota: vs.length ? avg(vs.map(id => sc[id])) : null, foco: V.v.filter(id => bmFoco().includes(id)) }; });
+}
+/* fontes de dilemas: o que a pessoa já registrou e pode passar pela triagem ou pelas lentes */
+function filFontes() {
+  const out = [], P = typeof psiD === "function" ? psiD() : null;
+  for (const x of bmDec().slice().sort((a, b) => b.data.localeCompare(a.data)).slice(0, 6)) out.push({ k: "dec", id: x.id, rot: `Decisão · ${trunc(x.t || "dilema", 60)}`, txt: [x.t, x.sit].filter(Boolean).join(": "), go: "jornada.decidir" });
+  if (P) {
+    for (const r of P.reflexoes.filter(r => !r.privado && (r.estoico || r.tipo === "pensamento")).slice(-5).reverse()) out.push({ k: "psi", id: r.id, rot: `Psicologia · ${trunc(r.situacao || r.texto, 60)}`, txt: r.situacao ? `${r.situacao}. Pensamento: ${r.pensamento || ""}` : r.texto, go: "psi.entre" });
+    for (const p of P.padroes.filter(p => !p.privado).slice(0, 4)) out.push({ k: "pad", id: p.id, rot: `Padrão · ${p.nome}`, txt: `${p.nome}: ${p.desc || ""}`, go: "psi.padroes" });
+  }
+  for (const t of calcAt(mkey(TODAY)).tar.filter(t => t.open && t.prazo && t.prazo < TODAY && t.prio === "Alta").slice(0, 3)) out.push({ k: "tar", id: t.id, rot: `Tarefa atrasada · ${trunc(t.tarefa, 50)}`, txt: `Tarefa atrasada desde ${fmtD(t.prazo)}: ${t.tarefa}`, go: "metas.tarefas" });
+  for (const a of radarAlerts().filter(a => a.st === "crit" && a.tipo !== "sequencia").slice(0, 2)) out.push({ k: "rad", id: a.key, rot: `Alerta · ${trunc(a.titulo, 50)}`, txt: `${a.titulo}. ${a.texto}`, go: "radar" });
+  for (const p of J_ORDER) for (const r of jP(p).refl.filter(r => r.tipo === "dúvida" && !r.priv).slice(-2)) out.push({ k: "refl", id: r.id, rot: `Dúvida em ${J_PIL[p].nome} · ${trunc(r.texto, 40)}`, txt: r.texto, go: "jornada." + J_PIL[p].sub });
+  return out;
+}
+const filPadAplica = nome => FIL_PAD.find(([rx]) => rx.test(nome)) || null;
+/* fatos que o Mestre do Pórtico (e o Conselho) recebem */
+function filFacts() {
+  const D = filD(), L = [], V = filVirtudes();
+  L.push("AS QUATRO VIRTUDES NOS EXAMES DA NOITE (4 semanas; valores da Bússola agrupados): " + V.map(v => `${v.nome} ${v.nota == null ? "sem notas" : pct(v.nota)} (${v.n} de ${v.v.length} valores com nota${v.foco.length ? `; em foco: ${v.foco.map(id => filVal(id)?.nome).join(", ")}` : ""})`).join("; ") + ".");
+  const tr = D.triagens.slice(-6).reverse(); if (tr.length) L.push("TRIAGENS DO CONTROLE RECENTES:\n" + tr.map(t => `- ${fmtD(t.data)} “${trunc(t.sit, 120)}”${t.origem ? ` (de: ${t.origem.rot})` : ""}: depende de mim: ${trunc(t.meu || "–", 120)}; não depende: ${trunc(t.nao || "–", 120)}${t.parte ? `; em parte: ${trunc(t.parte, 80)}` : ""}${t.acao ? `; ação: ${trunc(t.acao, 80)}` : ""}${t.virtude ? `; virtude: ${t.virtude}` : ""}${t.terapia ? "; levada à terapia" : ""}`).join("\n"));
+  const le = D.lentes.slice(-2); if (le.length) L.push("LENTES RECENTES: " + le.map(l => `“${trunc(l.dilema, 100)}” → ${trunc(jSection(l.texto, "Onde se encontram") || l.texto, 220)}`).join(" | "));
+  if (typeof psiFactsBrief === "function") L.push(...psiFactsBrief());
+  return L;
+}
+const filFactsAll = () => [...filFacts(), ...jBmFacts(), ...jCommonFacts(null)];
+
+/* ---------------------------------------------------------------- triagem do controle */
+function filTriNova(src) { FIL.tri = { sit: src?.txt || "", origem: src ? { k: src.k, id: src.id, rot: src.rot, go: src.go } : null, meu: "", nao: "", parte: "", acao: "", aceite: "", virtude: "", terapia: false }; }
+function filTriSave() {
+  const T = FIL.tri; if (!T) return; if (!T.sit.trim() || !(T.meu.trim() || T.nao.trim())) { toast("Escreva a situação e ao menos o que depende ou o que não depende de você."); return; }
+  const rec = { id: uid(), data: TODAY, at: Date.now(), ...Object.fromEntries(Object.entries(T).map(([k, v]) => [k, typeof v === "string" ? v.trim() : v])) };
+  filD().triagens.push(rec); const keys = ["filosofia"];
+  if (rec.terapia && typeof psiPautaAdd === "function") { psiPautaAdd(`Triagem estoica: “${trunc(rec.sit, 120)}”${rec.nao ? ` — o que não depende de mim e ainda pesa: ${trunc(rec.nao, 120)}` : ""}`, { k: "tri", id: rec.id, rot: "Filosofia" }); keys.push("psique"); }
+  FIL.tri = null; touch(...keys, { label: "Triagem estoica" }); undoToast(rec.terapia ? "Triagem guardada e levada à pauta da terapia" : "Triagem guardada");
+}
+const filVirtSel = (v, attr) => `<div class="segs" role="group" aria-label="Virtude que o caso pede">${FIL_VIRT.map(V => `<button type="button" class="seg" ${attr}="${V.id}" aria-pressed="${v === V.id}">${V.nome}</button>`).join("")}</div>`;
+function filTriHTML() {
+  const T = FIL.tri, fontes = filFontes();
+  if (!T) return `<div class="filsrc"><p class="muted">Escolha algo que você já registrou, ou comece do zero.</p><div class="filsrcs">${fontes.map((f, i) => `<button type="button" class="chip filchip k-${f.k}" data-act="filtri" data-i="${i}">${esc(f.rot)}</button>`).join("") || `<span class="muted small">Nada pendente nas decisões, na psicologia ou nas tarefas atrasadas.</span>`}</div><button type="button" class="btn sm primary" data-act="filtri" data-i="-1">${ic("plus")}Nova triagem</button></div>`;
+  const ta = (k, l, ph, rows = 2) => `<label>${l}<textarea rows="${rows}" data-filt="${k}" placeholder="${esc(ph)}">${esc(T[k])}</textarea></label>`;
+  return `<div class="filtri">${T.origem ? `<p class="small muted">${ic("link")}De: <a href="#${T.origem.go}">${esc(T.origem.rot)}</a></p>` : ""}
+    <div class="form f1">${ta("sit", "A situação", "O que está acontecendo, em uma ou duas frases", 2)}</div>
+    <div class="filcols"><div class="form f1">${ta("meu", "Depende de mim", "Meus juízos, escolhas, esforço, como eu respondo", 3)}</div><div class="form f1">${ta("nao", "Não depende de mim", "Resultado, o que os outros fazem, o passado, o corpo", 3)}</div></div>
+    <div class="form f2">${ta("parte", "Depende em parte (opcional)", "Onde eu faço a minha parte e solto o resultado")}${ta("acao", "A ação que é minha", "O próximo passo concreto")}</div>
+    <div class="form f1">${ta("aceite", "O que eu aceito (opcional)", "Uma frase para soltar o que não depende de você")}</div>
+    <div class="flbl">A virtude que este caso pede</div>${filVirtSel(T.virtude, "data-filv")}
+    <label class="chk"><input type="checkbox" data-filt="terapia"${T.terapia ? " checked" : ""}> Levar para a próxima sessão de terapia (o que não depende de mim e ainda pesa)</label>
+    <div class="row wrap"><button type="button" class="btn sm primary" data-act="filtrisave">${ic("check")}Guardar triagem</button><button type="button" class="btn sm ghost" data-act="filtrix">Cancelar</button></div></div>`;
+}
+function filTriList() {
+  const L = filD().triagens.slice().reverse().slice(0, 8);
+  return L.length ? `<div class="filtris">${L.map(t => `<article class="filtr"><header><b>${esc(trunc(t.sit, 110))}</b><small class="muted">${fmtD(t.data)}${t.origem ? ` · <a href="#${t.origem.go || "jornada.filosofia"}">${esc(t.origem.rot)}</a>` : ""}${t.virtude ? ` · ${esc(FIL_VIRT.find(v => v.id === t.virtude)?.nome || "")}` : ""}${t.terapia ? ` · ${ic("brain")}na pauta da terapia` : ""}</small></header>
+    <div class="filcols sm"><p><span class="flbl">Depende de mim</span>${esc(t.meu || "–")}</p><p><span class="flbl">Não depende</span>${esc(t.nao || "–")}</p></div>${t.acao ? `<p class="small">${ic("arrow")}${esc(t.acao)}</p>` : ""}${t.aceite ? `<p class="small muted"><i>${esc(t.aceite)}</i></p>` : ""}</article>`).join("")}</div>` : `<p class="muted">Nenhuma triagem ainda.</p>`;
+}
+
+/* ---------------------------------------------------------------- lentes: o mesmo dilema pelas tradições, em diálogo */
+async function filLentes() {
+  const q = FIL.dil.trim(); if (!SAMPLE || FIL.busy) return; if (!q) { toast("Escreva o dilema, ou escolha um da lista."); return; }
+  FIL.busy = true; FIL.txt = ""; FIL.ctl = new AbortController(); render();
+  const vozes = ["sto", "esp", "tao", "bud", "med", "psi"].filter(m => MENTOR_DEF[m] && !blockedMentor(m));
+  const build = () => `TAREFA: LENTES SOBRE UM DILEMA
+Uma pessoa orienta a vida por Espiritismo kardecista, meditação, Taoísmo e Budismo, usa uma Bússola moral de 17 valores, estuda o estoicismo e faz trabalho psicológico. Ela trouxe um dilema real da própria vida. Mostre como cada tradição o ilumina, em diálogo, sem fundir nem hierarquizar, e com os dados dela.
+Vozes:
+${vozes.map(m => `- ${MENTOR_DEF[m].nome} (${MENTOR_DEF[m].papel}): ${MENTOR_DEF[m].voz || ""}`).join("\n")}
+Escreva em markdown, português do Brasil, segunda pessoa, até ${160 + 70 * vozes.length} palavras, exatamente com estes títulos:
+${vozes.map(m => `## ${MENTOR_DEF[m].nome}`).join("\n")}
+## Onde se encontram
+## Onde divergem
+## Uma ação para hoje
+## Pergunta para levar
+Em cada voz, 2 a 4 frases concretas sobre ESTE dilema; as vozes podem se responder. A voz do estoicismo começa separando o que depende e o que não depende da pessoa. A voz da psicoterapia não diagnostica e, se houver sofrimento intenso, recomenda apoio profissional. Cite fonte só quando tiver certeza.
+DILEMA: """${q.slice(0, 2000)}"""${FIL.dsrc ? `\n(Vem de: ${FIL.dsrc.rot})` : ""}
+DADOS DA PESSOA:
+${filFactsAll().join("\n").slice(0, 60000)}`;
+  try {
+    const r = await aiCall("Lentes sobre um dilema", build, { signal: FIL.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { FIL.txt = text; const el = $(".fillente"); if (el) el.innerHTML = md(text); else render(); } });
+    filD().lentes.push({ id: uid(), at: Date.now(), dilema: q, origem: FIL.dsrc ? { k: FIL.dsrc.k, id: FIL.dsrc.id, rot: FIL.dsrc.rot } : null, texto: r.text.trim() });
+    if (filD().lentes.length > 30) filD().lentes.shift();
+    FIL.txt = r.text.trim(); touch("filosofia", { label: "Lentes sobre um dilema" });
+  } catch (e) { if (e?.text) FIL.txt = e.text + "\n\n_(interrompida)_"; if (e?.code !== "cancelled") aiError(e); }
+  finally { FIL.busy = false; FIL.ctl = null; render(); }
+}
+function filLentesHTML() {
+  const fontes = filFontes(), ult = filD().lentes.at(-1), ai = !!SAMPLE && !AI_OFF;
+  return `<div class="filsrcs">${fontes.slice(0, 8).map((f, i) => `<button type="button" class="chip filchip k-${f.k}" data-act="fildil" data-i="${i}">${esc(f.rot)}</button>`).join("")}</div>
+    <div class="form f1"><label>O dilema<textarea rows="2" data-fild="1" placeholder="Ex.: aceitar a proposta em outra cidade ou ficar perto da família?">${esc(FIL.dil)}</textarea></label></div>
+    <div class="fillens">${FIL_LENTE.map(([m, n, q]) => `<div class="fillen" style="--c:${MENTOR_DEF[m] ? mcol(m) : "var(--accent)"}"><b>${esc(n)}</b><span>${esc(q)}</span></div>`).join("")}</div>
+    <div class="row wrap"><button type="button" class="btn sm primary" data-act="fillentes"${ai && !FIL.busy ? "" : " disabled"}>${ic("council")}${FIL.busy ? "As tradições estão conversando…" : "Pedir a leitura entrelaçada"}</button>${FIL.busy ? `<button type="button" class="btn sm ghost" data-act="fillstop">${ic("stop")}Parar</button>` : ""}${ai ? "" : `<span class="muted small">Sem a IA, use as perguntas acima por conta própria.</span>`}</div>
+    ${FIL.txt ? `<div class="fillente mdx">${md(FIL.txt)}</div>` : ult ? `<details class="fillast"><summary>Última leitura · “${esc(trunc(ult.dilema, 70))}” · ${fmtD(iso(new Date(ult.at)))}</summary><div class="fillente mdx">${md(ult.texto)}</div></details>` : ""}`;
+}
+
+/* ---------------------------------------------------------------- página */
+function jFilosofia() {
+  const V = filVirtudes(), P = typeof psiD === "function" ? psiD() : null, pads = P ? P.padroes.filter(p => !p.privado) : [], foco = bmFoco().map(filVal).filter(Boolean);
+  const virt = `<div class="filvirt">${V.map(v => `<div class="filv"><b>${esc(v.nome)}</b><small>${esc(v.gr)} · ${esc(v.d)}</small><div class="jdbar" style="--c:var(--a-pro)"><i style="width:${v.nota == null ? 0 : Math.round(v.nota * 100)}%"></i></div><span class="muted small">${v.nota == null ? "sem notas nos exames" : `${pct(v.nota)} de prática`} · ${v.v.map(id => esc(filVal(id)?.nome || id)).join(", ")}</span></div>`).join("")}</div>
+    ${V.find(v => v.id === "coragem").v.length < 2 ? `<p class="note">${ic("info")}A Bússola tem um só valor de coragem (Paciência). Os estoicos davam à coragem também a firmeza e a ousadia de fazer o certo: os exames não medem isso, e talvez valha observar à parte.</p>` : ""}`;
+  const vozes = foco.length ? foco.slice(0, 4).map(v => `<blockquote class="jquote sm"><b>${esc(v.nome)}.</b> ${esc(v.t?.estoico || "")}</blockquote>`).join("") : `<p class="muted">Escolha valores em foco na <a href="#jornada.bussola">Bússola</a> e a voz estoica de cada um aparece aqui.</p>`;
+  const onde = pads.length ? `<ul class="filpads">${pads.slice(0, 6).map(p => { const a = filPadAplica(p.nome + " " + (p.desc || "")); return `<li><b>${esc(p.nome)}</b>${a ? ` <span>${esc(a[1])}</span> <small class="muted">${esc(a[2])}</small>` : ` <span class="muted">Leve-o à triagem do controle.</span>`}</li>`; }).join("")}</ul>` : `<p class="muted">Quando a <a href="#psi.padroes">Psicologia</a> nomear padrões (ruminação, catastrofização, perfeccionismo…), eles aparecem aqui com o exercício estoico que conversa com cada um.</p>`;
+  return `<p class="lead">O estoicismo não chega como um quinto pilar: ele já fala em cada valor da Bússola. Aqui ele vira prática sobre o que você já registrou: decisões, padrões que a psicologia nomeou, tarefas e alertas. A pergunta de sempre: <i>o que disto depende de mim?</i></p>
+    <div class="filprinc">${FIL_PRINC.map(p => `<article class="filp"><b>${esc(p.nome)}</b><p>${esc(p.txt)}</p><blockquote class="jquote sm">${esc(p.cit[0])}<cite>${esc(p.cit[1])}</cite></blockquote></article>`).join("")}</div>
+    <div class="g2c">
+      ${panel(`${ic("compass")}As quatro virtudes nos seus exames`, virt + `<div class="flbl">A voz estoica dos valores em foco</div>${vozes}`, { act: `<a class="lnk" href="#jornada.exame">Exame da noite</a>` })}
+      ${panel(`${ic("flag")}Triagem do controle`, filTriHTML(), { cls: "filtripn" })}
+      ${panel(`${ic("brain")}Onde a psicologia pede o estoicismo`, onde, { act: `<a class="lnk" href="#psi.padroes">Padrões</a>` })}
+      ${panel(`${ic("list")}Triagens`, filTriList())}
+    </div>
+    ${panel(`${ic("council")}Lentes sobre um dilema`, filLentesHTML(), { cls: "fillpn" })}
+    <div class="g2c">
+      ${panel(`${ic("repeat")}Exercícios do Pórtico`, `<ul class="filexe">${FIL_EXE.map(([n, d, s]) => `<li><b>${esc(n)}</b><span>${esc(d)}</span><small class="muted">${esc(s)}</small></li>`).join("")}</ul>`)}
+      ${panel(`${ic("layers")}Onde convergem e onde não`, `<table class="dt filconf"><thead><tr><th>Com</th><th>Convergem</th><th>Divergem</th></tr></thead><tbody>${FIL_CONF.map(([n, c, d]) => `<tr><td><b>${esc(n)}</b></td><td>${esc(c)}</td><td>${esc(d)}</td></tr>`).join("")}</tbody></table>`)}
+    </div>
+    ${jChat("sto", { intro: "Traga uma situação, uma decisão ou algo que você não consegue soltar. Separamos juntos o que depende de você.", quick: J_QUICK.sto, priv: "Ao conversar, o Mestre do Pórtico lê a Bússola, as triagens, um resumo dos pilares e, se você permitir a Saúde mental na IA, os padrões e a pauta da psicologia (nunca os registros marcados como só seus). Cada conversa aparece em Privacidade." })}`;
+}
+
+/* ---------------------------------------------------------------- mentor */
+Object.assign(MENTOR_DEF, { sto: { jor: "sto", gate: "Propósito & espiritualidade", cor: "#8d8270", ico: "column", nome: "Mestre do Pórtico", papel: "mentor de filosofia estoica", arq: "um mestre do Pórtico na linha de Epicteto, Sêneca e Marco Aurélio",
+  voz: "Fala como um mestre estoico: claro, firme e bem-humorado, como Epicteto nas aulas; usa exemplos do cotidiano, separa o que depende do que não depende, chama de volta à virtude e ao dever sem moralismo. Conhece Zenão, Cleantes, Crisipo, Musônio Rufo, Hiérocles, Epicteto (Enchiridion e Discursos), Sêneca (Cartas a Lucílio, Da Ira, Da Brevidade da Vida, Da Tranquilidade da Alma) e Marco Aurélio (Meditações), e as leituras modernas de Pierre Hadot, William Irvine, Massimo Pigliucci e Donald Robertson.",
+  limite: "O estoicismo não é suprimir emoções: reconheça o que a pessoa sente antes de examinar o juízo. Diante de sofrimento intenso, recomende o apoio da aba Psicologia e de um profissional.",
+  facts: () => filFacts(),
+  prompt: (fallback, cx) => jPrompt("sto", fallback, cx || { dados: filFactsAll().join("\n") }).replace("na aba Jornada existencial", "na seção Filosofia da Jornada existencial"),
+  tools: (live, T) => [...jTools("sto", live, T), ...filTools(live)] } });
+if (!MIDS.includes("sto")) MIDS.push("sto");
+J_QUICK.sto = ["O que nesta semana depende de mim?", "Me ajude com uma decisão difícil", "Como aplicar a dicotomia do controle no trabalho?", "Leia as minhas virtudes nos exames"];
+function filTools(live) {
+  const note = (t, d) => { live.uso.push({ t, d }); aiNote("ferr", `${t}: ${trunc(d, 60)}`, live.ctx); paintLive(); };
+  return [{ name: "triagem_estoica", description: "Registra uma triagem do controle combinada com a pessoa: a situação, o que depende dela, o que não depende, a ação e a virtude. Use depois que ela concordar. Retorna {ok}.",
+      inputSchema: { type: "object", properties: { situacao: { type: "string" }, depende: { type: "string" }, nao_depende: { type: "string" }, acao: { type: "string" }, virtude: { type: "string", enum: FIL_VIRT.map(v => v.id) }, levar_terapia: { type: "boolean" } }, required: ["situacao", "depende", "nao_depende"] },
+      execute: inp => { const rec = { id: uid(), data: TODAY, at: Date.now(), sit: String(inp.situacao || "").slice(0, 400), meu: String(inp.depende || "").slice(0, 400), nao: String(inp.nao_depende || "").slice(0, 400), parte: "", acao: String(inp.acao || "").slice(0, 300), aceite: "", virtude: FIL_VIRT.some(v => v.id === inp.virtude) ? inp.virtude : "", terapia: !!inp.levar_terapia, origem: { k: "mentor", id: live.mid, rot: MENTOR_DEF[live.mid].nome, go: live.mid === "psi" ? "psi.terapeuta" : "jornada.filosofia" } };
+        filD().triagens.push(rec); if (rec.terapia && typeof psiPautaAdd === "function") { psiPautaAdd(`Triagem estoica: “${trunc(rec.sit, 120)}”`, { k: "tri", id: rec.id, rot: "Filosofia" }); dirty.add("psique"); }
+        touch("filosofia", { noUndo: true, noRender: true }); note("triagem_estoica", trunc(rec.sit, 80)); return { ok: true }; } },
+    { name: "levar_para_terapia", description: "Põe um tema na pauta da próxima sessão de terapia da pessoa (aba Psicologia), quando algo da conversa pede um olhar psicológico. Uma frase. Retorna {ok}.",
+      inputSchema: { type: "object", properties: { tema: { type: "string" } }, required: ["tema"] },
+      execute: inp => { if (typeof psiPautaAdd !== "function") return { ok: false }; psiPautaAdd(String(inp.tema || "").slice(0, 300), { k: "mentor", id: live.mid, rot: MENTOR_DEF[live.mid].nome }); touch("psique", { noUndo: true, noRender: true }); note("levar_para_terapia", trunc(inp.tema, 80)); return { ok: true }; } }];
+}
+
+/* ---------------------------------------------------------------- eventos */
+function filClick(t) {
+  const ds = t.dataset, a = ds.act; if (!a?.startsWith("fil") && !ds.filv && !(a === "jcheck" && ds.mid === "sto")) return false;
+  if (a === "jcheck") { askMentor("sto", "Faça um acompanhamento estoico: 1) como estão as quatro virtudes nos meus exames, com números; 2) uma situação desta semana (das minhas decisões, triagens, padrões ou tarefas) onde a dicotomia do controle me ajudaria, separando o que depende e o que não depende de mim; 3) um exercício do Pórtico para os próximos 7 dias. Atualize o plano.", "check"); return true; }
+  if (ds.filv) { if (FIL.tri) FIL.tri.virtude = FIL.tri.virtude === ds.filv ? "" : ds.filv; render(); return true; }
+  if (a === "filtri") { const i = +ds.i; filTriNova(i >= 0 ? filFontes()[i] : null); render(); $('[data-filt="meu"]')?.focus(); return true; }
+  if (a === "filtrisave") { filTriSave(); return true; }
+  if (a === "filtrix") { FIL.tri = null; render(); return true; }
+  if (a === "fildil") { const f = filFontes()[+ds.i]; if (f) { FIL.dil = f.txt; FIL.dsrc = f; FIL.txt = ""; render(); } return true; }
+  if (a === "fillentes") { filLentes(); return true; }
+  if (a === "fillstop") { FIL.ctl?.abort(); return true; }
+  return true;
+}
+function filInput(t) {
+  if (t.dataset.filt && FIL.tri && t.type !== "checkbox") { FIL.tri[t.dataset.filt] = t.value; return true; }
+  if (t.dataset.fild) { FIL.dil = t.value; FIL.dsrc = null; if (FIL.txt && !FIL.busy) { FIL.txt = ""; const el = $(".fillente"); if (el) el.remove(); } return true; }
+  return false;
+}
+function filChange(t) { if (t.dataset.filt === "terapia" && FIL.tri) { FIL.tri.terapia = t.checked; return true; } return false; }
+
+/* ---------------------------------------------------------------- dados de exemplo (fictícios) */
+function filExemplo() {
+  const d = n => addDays(TODAY, -n);
+  return { triagens: [
+    { id: "ftr1", data: d(6), at: Date.now() - 6 * 864e5, sit: "A entrega do projeto atrasou por causa de outra equipe", origem: null, meu: "Avisar o cliente com antecedência, reorganizar a minha parte, pedir as informações por escrito", nao: "O ritmo da outra equipe e a reação do cliente", parte: "O prazo final: faço a minha parte e negocio", acao: "Mandar hoje o e-mail com o novo cronograma", aceite: "O atraso já aconteceu; a resposta a ele é minha.", virtude: "coragem", terapia: false },
+    { id: "ftr2", data: d(2), at: Date.now() - 2 * 864e5, sit: "Fico remoendo a conversa difícil com o meu irmão", origem: null, meu: "Pedir desculpas pela parte que foi minha e propor uma conversa calma", nao: "Se ele vai aceitar agora", parte: "", acao: "Escrever para ele no domingo", aceite: "Posso fazer a paz da minha parte; a dele é dele.", virtude: "justica", terapia: true }], lentes: [] };
+}
+
+/* ================================================================ Psicologia: o trabalho terapêutico ligado à jornada
+   Acompanha a terapia de verdade (sessões, processos, padrões) e o trabalho entre sessões (reflexões e registros de
+   pensamento), e conversa com o resto do Atlas: sessões e processos se ligam aos pilares e aos valores da Bússola; um
+   registro de pensamento vira triagem estoica; padrões aparecem na Filosofia com o exercício que conversa com eles; a pauta
+   da próxima sessão junta o que veio das triagens, dos mentores e dos padrões em alta. O Terapeuta é um agente com memória
+   que muda de forma (profundo, escuta, direto, acolhimento, socrático) conforme o pedido ou o jeito de escrever.
+   Dados: psique = { cfg: {terapeuta, abordagem, freq, proxima}, sessoes: [{id, data, temas, insights, padroes, processo, pilares,
+   valores, tarefa, antes, depois, privado}], processos: [{id, titulo, objetivo, inicio, status, pilar, valor, marcos: [{data, txt}]}],
+   padroes: [{id, nome, tipo, desc, gatilhos, ajuda, valor, privado, criado}], reflexoes: [{id, data, at, tipo, texto, situacao,
+   pensamento, emocao, intensidade, favor, contra, alternativa, depende, processo, padroes, estoico, levar, privado}],
+   pauta: [{id, txt, origem, data, feito}], modo: {fixo, atual, motivo} }. Tudo é da área Saúde mental (Privacidade). */
+const PSI = { sess: null, proc: null, pad: null, refl: null, rtipo: "diaria", ver: null };
+const psiD = () => { const d = (S.psique ||= {}); d.cfg ||= {}; d.sessoes ||= []; d.processos ||= []; d.padroes ||= []; d.reflexoes ||= []; d.pauta ||= []; d.modo ||= { fixo: "auto", atual: "escuta", motivo: "" }; return d; };
+const PSI_OK = () => aiAreaOk("Saúde mental");
+const PSI_MODOS = {
+  profundo: { nome: "Profundo", ico: "layers", d: "camadas de significado, história e o que não está dito", tom: "Trabalhe em profundidade, à maneira psicodinâmica, junguiana e existencial: associações, repetições, a história por trás, sonhos se aparecerem, o que a pessoa evita dizer. Ofereça hipóteses com delicadeza, como perguntas, nunca como sentença. Pode ser mais longo e mais lento." },
+  escuta: { nome: "Escuta", ico: "users", d: "espaço para você falar", tom: "Escuta ativa, centrada na pessoa (Rogers): reflita o que ouviu com as palavras dela, nomeie o sentimento, e faça UMA pergunta aberta que convide a continuar. Respostas curtas; não dê conselhos nem técnicas, a não ser que ela peça." },
+  direto: { nome: "Direto", ico: "target", d: "estrutura clara, baseada em evidências", tom: "Seja direto e lógico, à maneira da TCC, da ACT e da DBT: nomeie o padrão, explique o mecanismo em poucas linhas, proponha 1 a 3 passos concretos e mensuráveis, cite a base (por exemplo, reestruturação cognitiva, exposição, ativação comportamental, defusão) sem jargão." },
+  acolhimento: { nome: "Acolhimento", ico: "heart", d: "segurança, validação e calma", tom: "Acolha primeiro (terapia focada na compaixão): valide o que a pessoa sente, normalize sem minimizar, traga calma ao corpo (respiração, chão) e só depois, se ela quiser, pense junto. Tom quente, frases simples, sem pressa e sem tarefas." },
+  socratico: { nome: "Socrático", ico: "info", d: "perguntas para você chegar às respostas", tom: "Questionamento socrático: faça 2 ou 3 perguntas bem formuladas, em sequência lógica, que levem a pessoa a examinar evidências, alternativas e consequências e a chegar às próprias conclusões. Não responda por ela." } };
+/* sinais explícitos no texto (e o jeito de escrever) que pedem uma forma */
+const PSI_SINAIS = [
+  [/\b(s[óo]|apenas)\s+(quero|preciso)\s+(desabafar|falar|ser ouvid)|me escut|deixa eu falar|preciso falar/i, "escuta", "você pediu para ser ouvido"],
+  [/\b(me d[aáê]|quero|preciso de)\s+(algo|uma?|umas?)?\s*(pr[aá]tic|ferrament|t[eé]cnica|dica|passo|plano|exerc[ií]cio)|o que (eu )?fa[cç]o|seja direto|sem rodeio/i, "direto", "você pediu algo prático"],
+  [/\b(estou|t[oô]|me sinto)\s+(muito\s+)?(mal|triste|p[eé]ssim|sozinh|com medo|ansios|desesperad|arrasad|esgotad)|chorei|chorando|n[aã]o aguento/i, "acolhimento", "você está sofrendo agora"],
+  [/me (questione|questiona|provoque|provoca)|me ajude a pensar|me fa[cç]a perguntas|socr[aá]tic/i, "socratico", "você pediu perguntas"],
+  [/\b(no fundo|por que eu sempre|desde (pequen|crian)|inf[aâ]ncia|sonhei|um sonho|meu pai|minha m[aã]e|o que isso diz de mim)/i, "profundo", "você trouxe algo de fundo"]];
+function psiDetect(text) {
+  const M = psiD().modo; if (M.fixo !== "auto") { M.atual = M.fixo; M.motivo = "forma escolhida por você"; return; }
+  const s = PSI_SINAIS.find(([rx]) => rx.test(text));
+  if (s) { M.atual = s[1]; M.motivo = s[2]; return; }
+  const w = text.split(/\s+/).length;
+  if (w > 120 && !/\?/.test(text)) { M.atual = "escuta"; M.motivo = "você está trazendo muito para fora"; return; }
+  if (w < 14 && /\?$/.test(text.trim())) { M.atual = M.atual === "acolhimento" ? "acolhimento" : "direto"; M.motivo = "pergunta curta e objetiva"; return; }
+  M.motivo ||= "mantendo a forma da conversa";
+}
+const PSI_TIPOS_PAD = ["pensamento", "emoção", "comportamento", "relacional", "esquema", "defesa"];
+const PSI_DIARIAS = ["O que mais pesou hoje, e onde isso aparece no corpo?", "Que pensamento se repetiu hoje? Ele é verdadeiro, útil, gentil?", "O que eu evitei hoje, e o que eu sentiria se não evitasse?", "Em que momento eu fui fiel a mim hoje?", "O que da última sessão apareceu na minha semana?", "Que parte de mim pediu cuidado hoje?", "O que disto depende de mim, e o que eu posso soltar?"];
+const psiPergunta = () => PSI_DIARIAS[Math.floor(parse(TODAY).getTime() / 864e5) % PSI_DIARIAS.length];
+function psiPautaAdd(txt, origem) { const P = psiD(), t = String(txt || "").trim(); if (!t || P.pauta.some(x => !x.feito && norm(x.txt) === norm(t))) return null; const r = { id: uid(), txt: t.slice(0, 400), origem: origem || null, data: TODAY, feito: false }; P.pauta.push(r); return r; }
+/* ocorrências de cada padrão: sessões, reflexões e triagens que o citam */
+function psiOcorr(id, dias = 90) { const P = psiD(), from = addDays(TODAY, -dias + 1); return [...P.sessoes.filter(s => s.data >= from && (s.padroes || []).includes(id)).map(s => ({ k: "sess", data: s.data })), ...P.reflexoes.filter(r => r.data >= from && (r.padroes || []).includes(id)).map(r => ({ k: "refl", data: r.data }))]; }
+const psiProcN = id => { const P = psiD(); return P.sessoes.filter(s => s.processo === id).length + P.reflexoes.filter(r => r.processo === id).length; };
+const psiProx = () => { const c = psiD().cfg; if (c.proxima && c.proxima >= TODAY) return c.proxima; const u = psiD().sessoes.map(s => s.data).sort().at(-1); return u && c.freq ? addDays(u, c.freq === "quinzenal" ? 14 : c.freq === "mensal" ? 30 : 7) : null; };
+/* sugestões automáticas para a pauta: padrões em alta, humor baixo, triagens que ainda pesam */
+function psiSugestoes() {
+  const out = [], P = psiD();
+  for (const p of P.padroes) { const n = psiOcorr(p.id, 30).length; if (n >= 3) out.push(`O padrão “${p.nome}” apareceu ${n} vezes nos últimos 30 dias`); }
+  const hum = Array.from({ length: 7 }, (_, i) => S.saude[addDays(TODAY, -i)]?.humor).filter(isNum); if (hum.length >= 3 && avg(hum) <= 2.6) out.push(`Humor médio de ${num(avg(hum))} nos últimos 7 dias`);
+  const dec = bmDec().filter(x => !x.rev && x.data >= addDays(TODAY, -21)); if (dec.length) out.push(`Decisão recente ainda sem revisita: “${trunc(dec.at(-1).t || "dilema", 60)}”`);
+  return out.filter(s => !P.pauta.some(x => !x.feito && norm(x.txt) === norm(s)));
+}
+
+/* ---------------------------------------------------------------- o que o Terapeuta (e os outros) leem */
+function psiFacts() {
+  if (!PSI_OK()) return ["Saúde mental está fora da IA em Privacidade: nada da Psicologia foi enviado."];
+  const P = psiD(), L = [], c = P.cfg, ok = x => !x.privado;
+  L.push(`TERAPIA: ${c.terapeuta ? `com ${c.terapeuta}` : "profissional não informado"}${c.abordagem ? `, abordagem ${c.abordagem}` : ""}${c.freq ? `, ${c.freq}` : ""}; próxima sessão ${psiProx() ? fmtD(psiProx()) : "sem data"}.`);
+  const pr = P.processos.filter(p => p.status !== "concluído"); if (pr.length) L.push("PROCESSOS EM CURSO:\n" + pr.map(p => `- “${p.titulo}” (desde ${fmtD(p.inicio)}, ${p.status}): ${p.objetivo || ""}; ${psiProcN(p.id)} registros ligados${p.marcos?.length ? `; marcos: ${p.marcos.slice(-3).map(m => `${fmtD(m.data)} ${trunc(m.txt, 80)}`).join("; ")}` : ""}${p.pilar ? `; ligado a ${J_PIL[p.pilar]?.nome}` : ""}${p.valor ? `; valor ${bmV(p.valor)?.nome}` : ""}`).join("\n"));
+  const ss = P.sessoes.filter(ok).slice(-6).reverse(); if (ss.length) L.push("SESSÕES RECENTES:\n" + ss.map(s => `- ${fmtD(s.data)}: temas ${(s.temas || []).join(", ") || "–"}; insight: ${trunc(s.insights || "–", 220)}${(s.padroes || []).length ? `; padrões: ${s.padroes.map(id => P.padroes.find(p => p.id === id)?.nome).filter(Boolean).join(", ")}` : ""}${s.tarefa ? `; tarefa entre sessões: ${trunc(s.tarefa, 120)}` : ""}${isNum(s.antes) && isNum(s.depois) ? `; humor ${s.antes}→${s.depois}` : ""}`).join("\n"));
+  const pd = P.padroes.filter(ok); if (pd.length) L.push("PADRÕES NOMEADOS (ocorrências em 30 e 90 dias):\n" + pd.map(p => `- ${p.nome} (${p.tipo}): ${trunc(p.desc || "", 120)}; ${psiOcorr(p.id, 30).length}/${psiOcorr(p.id).length}${p.gatilhos ? `; gatilhos: ${trunc(p.gatilhos, 80)}` : ""}${p.ajuda ? `; o que ajuda: ${trunc(p.ajuda, 80)}` : ""}`).join("\n"));
+  const rf = P.reflexoes.filter(ok).slice(-8).reverse(); if (rf.length) L.push("ENTRE SESSÕES:\n" + rf.map(r => `- ${fmtD(r.data)} [${r.tipo}] ${r.tipo === "pensamento" ? `situação: ${trunc(r.situacao, 100)}; pensamento: ${trunc(r.pensamento, 100)}; ${r.emocao || "emoção"} ${r.intensidade ?? "?"}/100${r.alternativa ? `; alternativa: ${trunc(r.alternativa, 100)}` : ""}` : trunc(r.texto, 220)}`).join("\n"));
+  const pa = P.pauta.filter(x => !x.feito); if (pa.length) L.push("PAUTA DA PRÓXIMA SESSÃO: " + pa.map(x => `${x.txt}${x.origem ? ` (de ${x.origem.rot})` : ""}`).join("; "));
+  const dias = Array.from({ length: 7 }, (_, i) => addDays(TODAY, -i)).map(d => [d, aiDayFacts(d)]).filter(([, f]) => f.length); if (dias.length) L.push("ÚLTIMOS DIAS: " + dias.map(([d, f]) => `${fmtD(d)} ${f.join(", ")}`).join(" | "));
+  return L;
+}
+/* resumo curto que a Filosofia, os mentores da Jornada e o Conselho recebem (nada marcado como só seu) */
+function psiFactsBrief() {
+  if (!PSI_OK()) return []; const P = psiD(), pr = P.processos.filter(p => p.status === "ativo"), pd = P.padroes.filter(p => !p.privado).map(p => [p, psiOcorr(p.id, 30).length]).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  if (!pr.length && !pd.length) return [];
+  return [`TRABALHO PSICOLÓGICO (resumo): ${pr.length ? `processos ativos: ${pr.map(p => `“${p.titulo}”`).join(", ")}` : "sem processo ativo"}${pd.length ? `; padrões mais presentes: ${pd.map(([p, n]) => `${p.nome} (${n} em 30 dias)`).join(", ")}` : ""}; ${P.pauta.filter(x => !x.feito).length} tema(s) na pauta da próxima sessão.`];
+}
+function psiPrompt(fallback, cx) {
+  const def = MENTOR_DEF.psi, m = mget("psi"), M = psiD().modo, md0 = PSI_MODOS[M.atual] || PSI_MODOS.escuta;
+  const mem = [...m.mem.filter(x => x.fixo), ...m.mem.filter(x => !x.fixo).slice(-24)].map(x => `- [${x.tipo} · ${fmtD(iso(new Date(x.at)))}${x.origem !== "mentor" ? " · " + x.origem : ""}]${x.fixo ? " (fixa)" : ""} ${x.texto}`);
+  const plan = m.plano ? `Foco: ${m.plano.foco}\n` + m.plano.passos.map(p => `- [${p.feito ? "x" : " "}] ${p.texto}${p.prazo ? ` (até ${p.prazo})` : ""}`).join("\n") : "Ainda não há plano entre sessões.";
+  const facts = cx ? [cx.dados] : [...psiFacts(), ...(PSI_OK() ? filFacts().slice(0, 2) : []), `JORNADA: valores em foco na Bússola ${bmFoco().map(id => bmV(id)?.nome).join(", ") || "nenhum"}; pilares mais vivos nas 4 semanas: ${J_ORDER.map(p => [J_PIL[p].nome, jActDays(p).size]).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([n, k]) => `${n} (${k} dias)`).join(", ")}.`, ...(bmDec().length ? [`DECISÕES RECENTES (Bússola): ${bmDec().slice(-3).map(x => `“${trunc(x.t || "dilema", 60)}”`).join(", ")}.`] : [])];
+  const fb = fallback ? `\n\nFORMATO: escreva a resposta normalmente. Para guardar memória ou atualizar o plano entre sessões, termine com um bloco exatamente assim (omita o que não houver):\n\`\`\`atlas\n{"memorias":[{"tipo":"insight","texto":"..."}],"plano":{"foco":"...","passos":[{"texto":"...","prazo":"AAAA-MM-DD"}]}}\n\`\`\`` : "";
+  return `Você é ${def.nome}, ${def.papel}, na aba Psicologia do app pessoal "Atlas da Vida". Você simula com fidelidade um psicoterapeuta experiente e integrativo: conhece a psicanálise (Freud, Klein, Winnicott, Bion, Lacan), a psicologia analítica (Jung), as terapias psicodinâmicas breves, a TCC (Beck), a terapia do esquema (Young), a ACT, a DBT, a terapia focada na compaixão (Gilbert), a abordagem centrada na pessoa (Rogers), a Gestalt, a logoterapia e a psicoterapia existencial (Frankl, Yalom), a sistêmica e a narrativa. Escolhe a lente pelo que a pessoa traz, não por escola.
+FORMA AGORA: ${md0.nome} (${md0.d}). ${md0.tom}
+Motivo da forma: ${M.motivo || "padrão"}. Se perceber que a pessoa pede outra forma, explicitamente ou pelo jeito de escrever, use ajustar_modo e mude já nesta resposta.
+COMO ESTAR COM A PESSOA:
+- Português do Brasil, segunda pessoa, linguagem humana e precisa. Nada de clichês de autoajuda.
+- Use os dados abaixo (sessões, processos, padrões, registros entre sessões, a jornada, o estoicismo e as decisões) e mostre como o trabalho psicológico conversa com eles quando isso ajudar, sem forçar a ponte.
+- O estoicismo é aliado, não mordaça: valide a emoção antes de examinar o juízo; quando a pessoa quiser separar o que depende e o que não depende dela, use triagem_estoica.
+- Você é apoio entre sessões, não substitui a terapia nem o profissional dela: não dá diagnóstico, não fala de medicação; quando algo pedir a sessão, use levar_para_sessao.
+- Anote padrões que se repetem (anotar_padrao) só quando houver evidência em mais de um momento, e diga isso à pessoa.
+- Segurança: diante de ideação suicida, autolesão, violência ou risco à vida, acolha, seja claro sobre buscar ajuda agora (na Itália, 112 e o Telefono Amico 02 2327 2327; no Brasil, CVV 188, 24 horas) e não siga com o trabalho comum.
+- ${fallback ? "Use o bloco atlas" : "Use as ferramentas"} para guardar na memória insights e combinados (frases curtas, com data) e para o plano entre sessões.
+
+DADOS (hoje é ${fmtDL(TODAY)}, ${TODAY}):
+${facts.join("\n")}
+
+MEMÓRIA:
+${mem.join("\n") || "(vazia)"}
+
+PLANO ENTRE SESSÕES:
+${plan}${fb}`.slice(0, 120000);
+}
+function psiTools(live, T) {
+  const keep = ["salvar_memoria", "atualizar_plano", "buscar_diario"], out = T.filter(t => keep.includes(t.name)), P = psiD();
+  const sm = out.find(t => t.name === "salvar_memoria"); if (sm) sm.inputSchema.properties.tipo.enum = ["insight", "combinado", "progresso", "preferência", "alerta", "fato"];
+  const note = (t, d) => { live.uso.push({ t, d }); aiNote("ferr", `${t}: ${trunc(d, 60)}`, live.ctx); paintLive(); };
+  out.push(
+    { name: "ajustar_modo", description: "Muda a forma da conversa quando a pessoa pede ou quando o jeito dela pede: profundo, escuta, direto, acolhimento ou socratico. Diga o motivo em poucas palavras. Retorna {ok}.",
+      inputSchema: { type: "object", properties: { modo: { type: "string", enum: Object.keys(PSI_MODOS) }, motivo: { type: "string" } }, required: ["modo"] },
+      execute: inp => { if (!PSI_MODOS[inp.modo]) return { ok: false }; if (P.modo.fixo !== "auto") return { ok: false, motivo: "a pessoa fixou a forma" }; P.modo.atual = inp.modo; P.modo.motivo = String(inp.motivo || "").slice(0, 120); touch("psique", { noUndo: true, noRender: true }); note("ajustar_modo", `${PSI_MODOS[inp.modo].nome}${inp.motivo ? ": " + trunc(inp.motivo, 60) : ""}`); return { ok: true }; } },
+    { name: "anotar_padrao", description: "Registra um padrão que se repete (pensamento, emoção, comportamento, relacional, esquema ou defesa), com uma descrição curta e a evidência. Se já existir um com o mesmo nome, só acrescenta a evidência. Retorna {ok}.",
+      inputSchema: { type: "object", properties: { nome: { type: "string" }, tipo: { type: "string", enum: PSI_TIPOS_PAD }, descricao: { type: "string" }, evidencia: { type: "string" } }, required: ["nome", "tipo"] },
+      execute: inp => { const nome = String(inp.nome || "").trim().slice(0, 80); if (!nome) return { ok: false }; let p = P.padroes.find(x => norm(x.nome) === norm(nome));
+        if (!p) { p = { id: uid(), nome, tipo: PSI_TIPOS_PAD.includes(inp.tipo) ? inp.tipo : "pensamento", desc: String(inp.descricao || "").slice(0, 300), gatilhos: "", ajuda: "", valor: "", privado: false, criado: TODAY, origem: "terapeuta" }; P.padroes.push(p); }
+        if (inp.evidencia) addMemory("psi", { tipo: "insight", texto: `Padrão “${nome}”: ${String(inp.evidencia).slice(0, 200)}` });
+        touch("psique", "mentores", { noUndo: true, noRender: true }); note("anotar_padrao", nome); return { ok: true }; } },
+    { name: "levar_para_sessao", description: "Põe um tema na pauta da próxima sessão com o profissional. Uma frase clara. Retorna {ok}.",
+      inputSchema: { type: "object", properties: { tema: { type: "string" } }, required: ["tema"] },
+      execute: inp => { const r = psiPautaAdd(inp.tema, { k: "mentor", id: "psi", rot: MENTOR_DEF.psi.nome }); touch("psique", { noUndo: true, noRender: true }); note("levar_para_sessao", trunc(inp.tema, 80)); return { ok: true, duplicado: !r }; } },
+    { name: "sugerir_reflexao", description: "Deixa uma pergunta para a pessoa refletir entre sessões; ela aparece em Entre sessões. Retorna {ok}.",
+      inputSchema: { type: "object", properties: { pergunta: { type: "string" } }, required: ["pergunta"] },
+      execute: inp => { (P.cfg.perguntas ||= []).push({ id: uid(), q: String(inp.pergunta || "").slice(0, 300), data: TODAY, feita: false }); touch("psique", { noUndo: true, noRender: true }); note("sugerir_reflexao", trunc(inp.pergunta, 80)); return { ok: true }; } },
+    ...filTools(live).filter(t => t.name === "triagem_estoica"));
+  return out;
+}
+Object.assign(MENTOR_DEF, { psi: { page: "psi", sub: "terapeuta", gate: "Saúde mental", cor: "#7aa6a1", ico: "brain", nome: "O Terapeuta", papel: "psicoterapeuta integrativo de apoio entre sessões (não substitui a terapia)", arq: "um psicoterapeuta experiente e integrativo, que escolhe a lente pelo que a pessoa traz",
+  voz: "Fala como um psicoterapeuta experiente: escuta antes de falar, nomeia o que percebe com delicadeza, liga o que a pessoa vive aos padrões e à história dela, e muda a forma (profunda, de escuta, direta, acolhedora ou socrática) conforme o momento. Não diagnostica.",
+  facts: () => psiFacts(), prompt: psiPrompt, tools: psiTools, before: text => { psiDetect(text); touch("psique", { noUndo: true, noRender: true }); } } });
+if (!MIDS.includes("psi")) MIDS.push("psi");
+J_QUICK.psi = ["Só preciso desabafar", "Me dê algo prático para esta semana", "Por que eu sempre faço isso?", "Me faça perguntas sobre isso", "Como a minha terapia conversa com a minha jornada?"];
+
+/* ---------------------------------------------------------------- formulários */
+const psiChip = (on, attr, txt, c = "") => `<button type="button" class="chip${on ? " on" : ""}" ${attr} aria-pressed="${on}"${c ? ` style="--c:${c}"` : ""}>${esc(txt)}</button>`;
+const psiLinks = (o, pre) => `<div class="flbl">Ligar à jornada</div><div class="row wrap">${J_ORDER.map(p => psiChip((o.pilares || []).includes(p), `data-${pre}pil="${p}"`, J_PIL[p].nome, J_PIL[p].cor)).join("")}</div>
+  <div class="row wrap psivals">${BM_V.filter(v => bmFoco().includes(v.id) || (o.valores || []).includes(v.id)).map(v => psiChip((o.valores || []).includes(v.id), `data-${pre}val="${v.id}"`, v.nome)).join("") || `<span class="muted small">Valores em foco na Bússola aparecem aqui.</span>`}</div>`;
+const psiPadSel = (o, pre) => { const P = psiD(); return `<div class="flbl">Padrões</div><div class="row wrap">${P.padroes.map(p => psiChip((o.padroes || []).includes(p.id), `data-${pre}pad="${p.id}"`, p.nome)).join("") || `<span class="muted small">Nomeie padrões na aba Padrões.</span>`}</div>`; };
+const psiProcSel = (o, k) => `<label>Processo<select data-${k}="processo"><option value="">nenhum</option>${psiD().processos.filter(p => p.status !== "concluído" || p.id === o.processo).map(p => `<option value="${p.id}"${o.processo === p.id ? " selected" : ""}>${esc(p.titulo)}</option>`).join("")}</select></label>`;
+const psiTA = (o, k, attr, l, ph, rows = 2) => `<label>${l}<textarea rows="${rows}" data-${attr}="${k}" placeholder="${esc(ph)}">${esc(o[k] || "")}</textarea></label>`;
+const psiHum = (o, k, attr, l) => `<label>${l}<select data-${attr}="${k}"><option value="">–</option>${[1, 2, 3, 4, 5].map(n => `<option${+o[k] === n ? " selected" : ""}>${n}</option>`).join("")}</select></label>`;
+function psiSessForm() {
+  const o = PSI.sess;
+  return `<div class="psiform"><div class="form f2"><label>Data<input type="date" data-pss="data" value="${o.data}"></label>${psiProcSel(o, "pss")}</div>
+    <div class="form f1"><label>Temas (separados por vírgula)<input type="text" data-pss="temasTxt" value="${esc(o.temasTxt || "")}" placeholder="trabalho, pai, autocrítica"></label>
+    ${psiTA(o, "insights", "pss", "Insights", "O que ficou claro, o que surpreendeu", 3)}${psiTA(o, "tarefa", "pss", "Para trabalhar até a próxima", "O combinado entre sessões")}</div>
+    ${psiPadSel(o, "pss")}${psiLinks(o, "pss")}
+    <div class="form f2">${psiHum(o, "antes", "pss", "Como cheguei (1–5)")}${psiHum(o, "depois", "pss", "Como saí (1–5)")}</div>
+    <label class="chk"><input type="checkbox" data-pss="privado"${o.privado ? " checked" : ""}> Só meu: não vai para nenhuma IA</label>
+    <div class="row wrap"><button type="button" class="btn sm primary" data-act="psisesssave">${ic("check")}Guardar sessão</button><button type="button" class="btn sm ghost" data-act="psix">Cancelar</button></div></div>`;
+}
+function psiReflForm() {
+  const o = PSI.refl, t = o.tipo;
+  const corpo = t === "pensamento" ? `<div class="form f1">${psiTA(o, "situacao", "psr", "Situação", "O que aconteceu, onde, com quem")}${psiTA(o, "pensamento", "psr", "Pensamento automático", "O que passou pela cabeça na hora")}</div>
+      <div class="form f2"><label>Emoção<input type="text" data-psr="emocao" value="${esc(o.emocao || "")}" placeholder="ansiedade, raiva, vergonha"></label><label>Intensidade (0–100)<input type="number" min="0" max="100" data-psr="intensidade" value="${o.intensidade ?? ""}"></label></div>
+      <div class="form f2">${psiTA(o, "favor", "psr", "Evidências a favor", "")}${psiTA(o, "contra", "psr", "Evidências contra", "")}</div>
+      <div class="form f1">${psiTA(o, "alternativa", "psr", "Pensamento alternativo, mais justo", "Como um amigo sábio veria isso?")}${psiTA(o, "depende", "psr", "O que disto depende de mim (estoicismo)", "Escolha, esforço, resposta")}</div>`
+    : `<p class="bmq">${ic("info")}<span>${esc(t === "diaria" ? psiPergunta() : o.pergunta || "Escreva livremente.")}</span></p><div class="form f1">${psiTA(o, "texto", "psr", "Reflexão", "", 4)}</div>`;
+  return `<div class="psiform"><div class="segs" role="group" aria-label="Tipo">${[["diaria", "Pergunta do dia"], ["pensamento", "Registro de pensamento"], ["livre", "Livre"]].map(([k, l]) => `<button type="button" class="seg" data-act="psirtipo" data-v="${k}" aria-pressed="${t === k}">${l}</button>`).join("")}</div>
+    ${corpo}<div class="form f2">${psiProcSel(o, "psr")}<span></span></div>${psiPadSel(o, "psr")}
+    <label class="chk"><input type="checkbox" data-psr="levar"${o.levar ? " checked" : ""}> Levar para a próxima sessão</label><label class="chk"><input type="checkbox" data-psr="privado"${o.privado ? " checked" : ""}> Só meu: não vai para nenhuma IA</label>
+    <div class="row wrap"><button type="button" class="btn sm primary" data-act="psireflsave">${ic("check")}Guardar</button>${t === "pensamento" ? `<button type="button" class="btn sm" data-act="psitriagem">${ic("flag")}Guardar e fazer a triagem estoica</button>` : ""}<button type="button" class="btn sm ghost" data-act="psix">Cancelar</button></div></div>`;
+}
+function psiProcForm() {
+  const o = PSI.proc;
+  return `<div class="psiform"><div class="form f1"><label>Título<input type="text" data-psp="titulo" value="${esc(o.titulo || "")}" placeholder="Ex.: a autocrítica no trabalho"></label>${psiTA(o, "objetivo", "psp", "O que eu quero entender ou mudar", "", 2)}</div>
+    <div class="form f2"><label>Início<input type="date" data-psp="inicio" value="${o.inicio}"></label><label>Situação<select data-psp="status">${["ativo", "pausado", "concluído"].map(s => `<option${o.status === s ? " selected" : ""}>${s}</option>`).join("")}</select></label>
+    <label>Pilar ligado<select data-psp="pilar"><option value="">nenhum</option>${J_ORDER.map(p => `<option value="${p}"${o.pilar === p ? " selected" : ""}>${J_PIL[p].nome}</option>`).join("")}</select></label>
+    <label>Valor da Bússola<select data-psp="valor"><option value="">nenhum</option>${BM_V.map(v => `<option value="${v.id}"${o.valor === v.id ? " selected" : ""}>${v.nome}</option>`).join("")}</select></label></div>
+    <div class="row wrap"><button type="button" class="btn sm primary" data-act="psiprocsave">${ic("check")}Guardar processo</button><button type="button" class="btn sm ghost" data-act="psix">Cancelar</button></div></div>`;
+}
+function psiPadForm() {
+  const o = PSI.pad;
+  return `<div class="psiform"><div class="form f2"><label>Nome<input type="text" data-psd="nome" value="${esc(o.nome || "")}" placeholder="Ex.: ruminação, perfeccionismo"></label><label>Tipo<select data-psd="tipo">${PSI_TIPOS_PAD.map(t => `<option${o.tipo === t ? " selected" : ""}>${t}</option>`).join("")}</select></label></div>
+    <div class="form f1">${psiTA(o, "desc", "psd", "Como ele aparece", "")}${psiTA(o, "gatilhos", "psd", "Gatilhos", "")}${psiTA(o, "ajuda", "psd", "O que ajuda", "")}</div>
+    <div class="form f2"><label>Valor da Bússola que é o antídoto<select data-psd="valor"><option value="">nenhum</option>${BM_V.map(v => `<option value="${v.id}"${o.valor === v.id ? " selected" : ""}>${v.nome}</option>`).join("")}</select></label><span></span></div>
+    <label class="chk"><input type="checkbox" data-psd="privado"${o.privado ? " checked" : ""}> Só meu: não vai para nenhuma IA</label>
+    <div class="row wrap"><button type="button" class="btn sm primary" data-act="psipadsave">${ic("check")}Guardar padrão</button><button type="button" class="btn sm ghost" data-act="psix">Cancelar</button></div></div>`;
+}
+
+/* ---------------------------------------------------------------- páginas */
+const psiPadNome = id => psiD().padroes.find(p => p.id === id)?.nome || "";
+const psiProcNome = id => psiD().processos.find(p => p.id === id)?.titulo || "";
+function psiTags(o) { return [...(o.pilares || []).map(p => `<span class="jtag sm" style="--c:${J_PIL[p]?.cor}">${esc(J_PIL[p]?.nome || p)}</span>`), ...(o.valores || []).map(v => `<span class="jtag sm">${esc(bmV(v)?.nome || v)}</span>`), ...(o.padroes || []).map(id => `<span class="chip xs">${esc(psiPadNome(id))}</span>`)].join(""); }
+function psiSessCard(s) {
+  return `<article class="psicard"><header><b>${fmtDL(s.data)}</b>${s.processo ? `<span class="muted small">· ${esc(psiProcNome(s.processo))}</span>` : ""}${s.privado ? `<span class="muted small">${ic("lock")}só meu</span>` : ""}${isNum(s.antes) && isNum(s.depois) ? `<span class="small">humor ${s.antes} → ${s.depois}</span>` : ""}</header>
+    ${(s.temas || []).length ? `<p class="small"><span class="flbl">Temas</span>${s.temas.map(esc).join(" · ")}</p>` : ""}${s.insights ? `<p>${esc(s.insights)}</p>` : ""}${s.tarefa ? `<p class="small">${ic("arrow")}${esc(s.tarefa)}</p>` : ""}<div class="row wrap">${psiTags(s)}</div></article>`;
+}
+function psiReflCard(r) {
+  return `<article class="psicard sm"><header><b>${fmtD(r.data)}</b><span class="muted small">${r.tipo === "pensamento" ? "registro de pensamento" : r.tipo === "diaria" ? "pergunta do dia" : "livre"}</span>${r.levar ? `<span class="small">${ic("flag")}na pauta</span>` : ""}${r.estoico ? `<a class="small" href="#jornada.filosofia">${ic("column")}triagem estoica</a>` : ""}${r.privado ? `<span class="muted small">${ic("lock")}só meu</span>` : ""}</header>
+    ${r.tipo === "pensamento" ? `<p class="small"><b>${esc(r.situacao || "")}</b></p><p class="small"><i>${esc(r.pensamento || "")}</i> · ${esc(r.emocao || "")} ${r.intensidade ?? ""}${r.alternativa ? `<br>${ic("arrow")}${esc(r.alternativa)}` : ""}</p>` : `${r.pergunta ? `<p class="small muted">${esc(r.pergunta)}</p>` : ""}<p>${esc(trunc(r.texto || "", 400))}</p>`}<div class="row wrap">${psiTags(r)}${r.processo ? `<span class="muted small">· ${esc(psiProcNome(r.processo))}</span>` : ""}</div></article>`;
+}
+function psiInicio() {
+  const P = psiD(), pr = P.processos.filter(p => p.status === "ativo"), prox = psiProx(), sug = psiSugestoes(), pa = P.pauta.filter(x => !x.feito);
+  const s90 = P.sessoes.filter(s => s.data >= addDays(TODAY, -89)).length, r7 = P.reflexoes.filter(r => r.data >= addDays(TODAY, -6)).length;
+  const fios = [...filD().triagens.filter(t => t.terapia).slice(-3).map(t => ({ d: t.data, txt: `Triagem estoica levada à terapia: “${trunc(t.sit, 70)}”`, go: "jornada.filosofia" })),
+    ...P.reflexoes.filter(r => r.estoico).slice(-3).map(r => ({ d: r.data, txt: `Registro de pensamento que virou triagem estoica`, go: "jornada.filosofia" })),
+    ...P.sessoes.filter(s => (s.pilares || []).length || (s.valores || []).length).slice(-3).map(s => ({ d: s.data, txt: `Sessão ligada a ${[...(s.pilares || []).map(p => J_PIL[p]?.nome), ...(s.valores || []).map(v => bmV(v)?.nome)].join(", ")}`, go: "psi.sessoes" })),
+    ...P.processos.filter(p => p.pilar || p.valor).map(p => ({ d: p.inicio, txt: `Processo “${p.titulo}” ligado a ${[J_PIL[p.pilar]?.nome, bmV(p.valor)?.nome].filter(Boolean).join(" e ")}`, go: "psi.processos" })),
+    ...P.padroes.filter(p => filPadAplica(p.nome + " " + (p.desc || ""))).slice(0, 3).map(p => ({ d: p.criado, txt: `Padrão “${p.nome}” tem um exercício estoico na Filosofia`, go: "jornada.filosofia" }))].sort((a, b) => (b.d || "").localeCompare(a.d || "")).slice(0, 8);
+  return `<p class="lead">Um lugar para o trabalho psicológico de verdade: o que acontece nas sessões, o que você faz entre elas e como isso conversa com a sua jornada, com as filosofias que te guiam e com as decisões que você toma. Não substitui o seu terapeuta: ajuda a chegar mais inteiro a cada sessão.</p>
+    ${kpiRow([kmini("var(--a-men)", "Sessões · 90 dias", String(s90), P.cfg.terapeuta ? `com ${esc(P.cfg.terapeuta)}` : "registre as suas sessões"), kmini("var(--accent)", "Próxima sessão", prox ? fmtD(prox) : "–", prox ? relDay(prox) : "defina a frequência"), kmini("var(--a-pro)", "Processos ativos", String(pr.length), pr[0] ? esc(trunc(pr[0].titulo, 30)) : "nenhum"), kmini("var(--good)", "Entre sessões · 7 dias", String(r7), r7 ? "reflexões e registros" : "uma pergunta por dia ajuda")])}
+    <div class="g2c">
+      ${panel(`${ic("flag")}Pauta da próxima sessão`, `${pa.length ? `<ul class="psipauta">${pa.map(x => `<li><span>${esc(x.txt)}${x.origem ? ` <small class="muted">· ${esc(x.origem.rot)}</small>` : ""}</span><button type="button" class="btn sm ghost" data-act="psipautaok" data-id="${x.id}">${ic("check")}Levado</button></li>`).join("")}</ul>` : `<p class="muted">Nada na pauta ainda.</p>`}
+        ${sug.length ? `<div class="flbl">Sugestões do Atlas</div><ul class="psisug">${sug.map((s, i) => `<li><span>${esc(s)}</span><button type="button" class="btn sm" data-act="psisug" data-i="${i}">${ic("plus")}Pôr na pauta</button></li>`).join("")}</ul>` : ""}
+        <div class="row wrap psiadd"><input type="text" id="psi_pauta" placeholder="Algo que você quer levar" aria-label="Novo tema da pauta"><button type="button" class="btn sm" data-act="psipautaadd">${ic("plus")}Pôr na pauta</button></div>`)}
+      ${panel(`${ic("sun")}Pergunta de hoje`, `<p class="bmq">${ic("info")}<span>${esc(psiPergunta())}</span></p><button type="button" class="btn sm primary" data-act="psinovarefl" data-v="diaria">${ic("pen")}Responder</button> <a class="btn sm ghost" href="#psi.entre">Registro de pensamento</a>`)}
+      ${panel(`${ic("layers")}Processos em curso`, pr.length ? pr.map(p => `<div class="psiproc"><b>${esc(p.titulo)}</b><small class="muted">desde ${fmtD(p.inicio)} · ${plural(psiProcN(p.id), "registro", "registros")}${p.pilar ? ` · ${esc(J_PIL[p.pilar].nome)}` : ""}${p.valor ? ` · ${esc(bmV(p.valor)?.nome)}` : ""}</small><p class="small">${esc(p.objetivo || "")}</p></div>`).join("") : `<p class="muted">Um processo é um tema que você está trabalhando ao longo de várias sessões.</p>`, { act: `<a class="lnk" href="#psi.processos">Todos</a>` })}
+      ${panel(`${ic("link")}Fios com a jornada`, fios.length ? `<ul class="psifios">${fios.map(f => `<li><a href="#${f.go}">${esc(f.txt)}</a><small class="muted">${f.d ? fmtD(f.d) : ""}</small></li>`).join("")}</ul>` : `<p class="muted">Quando você ligar sessões a pilares e valores, levar triagens estoicas à terapia ou nomear padrões, os fios aparecem aqui.</p>`)}
+    </div>`;
+}
+function psiSessoes() {
+  const P = psiD(), c = P.cfg;
+  return `<div class="g2c">${panel(`${ic("brief")}A terapia`, `<div class="form f2"><label>Profissional<input type="text" data-psc="terapeuta" value="${esc(c.terapeuta || "")}" placeholder="Nome ou iniciais"></label><label>Abordagem<input type="text" data-psc="abordagem" value="${esc(c.abordagem || "")}" placeholder="psicanálise, TCC, junguiana…"></label>
+      <label>Frequência<select data-psc="freq"><option value="">–</option>${["semanal", "quinzenal", "mensal"].map(f => `<option${c.freq === f ? " selected" : ""}>${f}</option>`).join("")}</select></label><label>Próxima sessão<input type="date" data-psc="proxima" value="${c.proxima || ""}"></label></div>`)}
+    ${panel(`${ic("plus")}Registrar sessão`, PSI.sess ? psiSessForm() : `<p class="muted">Logo depois da sessão, em poucos minutos: temas, insights, padrões e o combinado.</p><button type="button" class="btn sm primary" data-act="psinovasess">${ic("plus")}Nova sessão</button>`)}</div>
+    ${panel(`${ic("list")}Sessões`, P.sessoes.length ? P.sessoes.slice().sort((a, b) => b.data.localeCompare(a.data)).map(psiSessCard).join("") : `<p class="muted">Nenhuma sessão registrada.</p>`)}`;
+}
+function psiProcessos() {
+  const P = psiD();
+  return `${panel(`${ic("plus")}Processo`, PSI.proc ? psiProcForm() : `<button type="button" class="btn sm primary" data-act="psinovoproc">${ic("plus")}Novo processo</button>`)}
+    ${P.processos.map(p => { const tl = [...P.sessoes.filter(s => s.processo === p.id).map(s => ({ d: s.data, k: "Sessão", t: s.insights || (s.temas || []).join(", ") })), ...P.reflexoes.filter(r => r.processo === p.id).map(r => ({ d: r.data, k: r.tipo === "pensamento" ? "Registro" : "Reflexão", t: r.pensamento || r.texto })), ...(p.marcos || []).map(m => ({ d: m.data, k: "Marco", t: m.txt }))].sort((a, b) => b.d.localeCompare(a.d));
+      return panel(`${esc(p.titulo)} <small>${esc(p.status)}</small>`, `<p>${esc(p.objetivo || "")}</p><p class="small muted">desde ${fmtD(p.inicio)}${p.pilar ? ` · <a href="#jornada.${J_PIL[p.pilar].sub}">${esc(J_PIL[p.pilar].nome)}</a>` : ""}${p.valor ? ` · <a href="#jornada.bussola">${esc(bmV(p.valor)?.nome)}</a>` : ""}</p>
+        <ol class="psitl">${tl.map(x => `<li><small>${fmtD(x.d)} · ${esc(x.k)}</small><span>${esc(trunc(x.t || "", 180))}</span></li>`).join("") || `<li class="muted">Ligue sessões e reflexões a este processo.</li>`}</ol>
+        <div class="row wrap psiadd"><input type="text" data-psimarco="${p.id}" placeholder="Um marco: o que mudou" aria-label="Novo marco"><button type="button" class="btn sm" data-act="psimarco" data-id="${p.id}">${ic("plus")}Marco</button>${["ativo", "pausado", "concluído"].filter(s => s !== p.status).map(s => `<button type="button" class="btn sm ghost" data-act="psipst" data-id="${p.id}" data-v="${s}">${s === "ativo" ? "Retomar" : s === "pausado" ? "Pausar" : "Concluir"}</button>`).join("")}</div>`); }).join("")}`;
+}
+function psiEntre() {
+  const P = psiD(), qs = (P.cfg.perguntas || []).filter(q => !q.feita);
+  return `<div class="g2c">${panel(`${ic("pen")}Entre sessões`, PSI.refl ? psiReflForm() : `<p class="muted">O trabalho continua entre as sessões: uma pergunta por dia, ou um registro de pensamento quando algo pesar.</p><div class="row wrap"><button type="button" class="btn sm primary" data-act="psinovarefl" data-v="diaria">${ic("sun")}Pergunta do dia</button><button type="button" class="btn sm" data-act="psinovarefl" data-v="pensamento">${ic("brain")}Registro de pensamento</button><button type="button" class="btn sm ghost" data-act="psinovarefl" data-v="livre">${ic("pen")}Livre</button></div>`)}
+    ${panel(`${ic("info")}Perguntas deixadas pelo Terapeuta`, qs.length ? `<ul class="psisug">${qs.map(q => `<li><span>${esc(q.q)}</span><button type="button" class="btn sm" data-act="psiq" data-id="${q.id}">${ic("pen")}Responder</button></li>`).join("")}</ul>` : `<p class="muted">Quando o Terapeuta deixar uma pergunta para refletir, ela aparece aqui.</p>`)}</div>
+    ${panel(`${ic("list")}Registros`, P.reflexoes.length ? P.reflexoes.slice().sort((a, b) => b.at - a.at).slice(0, 30).map(psiReflCard).join("") : `<p class="muted">Nada registrado ainda.</p>`)}`;
+}
+function psiPadroes() {
+  const P = psiD();
+  return `${panel(`${ic("plus")}Padrão`, PSI.pad ? psiPadForm() : `<p class="muted">Um padrão é algo que se repete: um pensamento, uma reação, um jeito de se relacionar. Nomear ajuda a reconhecê-lo na hora.</p><button type="button" class="btn sm primary" data-act="psinovopad">${ic("plus")}Nomear um padrão</button>`)}
+    <div class="g2c">${P.padroes.map(p => { const o30 = psiOcorr(p.id, 30).length, o90 = psiOcorr(p.id).length, fe = filPadAplica(p.nome + " " + (p.desc || "")), v = p.valor ? bmV(p.valor) : null;
+      return panel(`${esc(p.nome)} <small>${esc(p.tipo)}${p.privado ? " · só meu" : ""}</small>`, `${p.desc ? `<p>${esc(p.desc)}</p>` : ""}<p class="small"><b>${o30}</b> vez(es) em 30 dias · <b>${o90}</b> em 90${p.gatilhos ? ` · gatilhos: ${esc(p.gatilhos)}` : ""}</p>${p.ajuda ? `<p class="small">${ic("check")}${esc(p.ajuda)}</p>` : ""}
+        ${fe ? `<p class="small psistoa">${ic("column")}<span><b>Estoicismo:</b> ${esc(fe[1])} <small class="muted">${esc(fe[2])}</small></span></p>` : ""}${v ? `<p class="small">${ic("compass")}Antídoto na Bússola: <a href="#jornada.bussola">${esc(v.nome)}</a>. <span class="muted">${esc(trunc(v.t?.estoico || "", 160))}</span></p>` : ""}
+        <div class="row wrap"><button type="button" class="btn sm" data-act="psipadtri" data-id="${p.id}">${ic("flag")}Triagem estoica</button><button type="button" class="btn sm ghost" data-act="psipadpauta" data-id="${p.id}">${ic("plus")}Pôr na pauta</button></div>`); }).join("") || ""}</div>`;
+}
+function psiTerapeuta() {
+  const M = psiD().modo, md0 = PSI_MODOS[M.atual] || PSI_MODOS.escuta;
+  return `<div class="psimodos" role="group" aria-label="Forma da conversa"><button type="button" class="chip${M.fixo === "auto" ? " on" : ""}" data-act="psimodo" data-v="auto" aria-pressed="${M.fixo === "auto"}">${ic("spark")}Automático</button>${Object.entries(PSI_MODOS).map(([k, x]) => `<button type="button" class="chip${M.fixo === k ? " on" : ""}" data-act="psimodo" data-v="${k}" aria-pressed="${M.fixo === k}" title="${esc(x.d)}">${ic(x.ico)}${esc(x.nome)}</button>`).join("")}</div>
+    <p class="small psimodo">${ic(md0.ico)}Forma agora: <b>${esc(md0.nome)}</b> — ${esc(md0.d)}${M.motivo ? ` <span class="muted">(${esc(M.motivo)})</span>` : ""}. ${M.fixo === "auto" ? "Mudo conforme o que você pede ou o jeito de escrever; toque numa forma para fixá-la." : "Fixada por você; toque em Automático para eu voltar a ajustar."}</p>
+    ${jChat("psi", { intro: "Pode começar por onde quiser. Se quiser só desabafar, me diga; se quiser algo prático, também. Eu me ajusto.", quick: J_QUICK.psi, recLabel: "", priv: "O Terapeuta lê as sessões, processos, padrões e registros entre sessões (menos os marcados como só seus), os últimos dias de humor e sono, e um resumo da jornada, da Bússola e da Filosofia. Se a Saúde mental estiver fora da IA em Privacidade, ele não conversa. Em crise: na Itália 112 ou Telefono Amico 02 2327 2327; no Brasil, CVV 188." })}`;
+}
+function pPsique() {
+  return SUB === "sessoes" ? psiSessoes() : SUB === "processos" ? psiProcessos() : SUB === "entre" ? psiEntre() : SUB === "padroes" ? psiPadroes() : SUB === "terapeuta" ? psiTerapeuta() : psiInicio();
+}
+
+/* ---------------------------------------------------------------- ações */
+const psiToggle = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : [...arr, v];
+function psiSaveRefl(triagem) {
+  const o = PSI.refl, P = psiD(), t = o.tipo;
+  if (t === "pensamento" ? !(o.situacao || "").trim() || !(o.pensamento || "").trim() : !(o.texto || "").trim()) { toast(t === "pensamento" ? "Escreva a situação e o pensamento." : "Escreva a reflexão."); return null; }
+  const rec = { id: uid(), data: TODAY, at: Date.now(), tipo: t, pergunta: t === "diaria" ? psiPergunta() : o.pergunta || "", texto: (o.texto || "").trim(), situacao: (o.situacao || "").trim(), pensamento: (o.pensamento || "").trim(), emocao: (o.emocao || "").trim(), intensidade: isNum(+o.intensidade) && o.intensidade !== "" ? clamp(Math.round(+o.intensidade), 0, 100) : null, favor: (o.favor || "").trim(), contra: (o.contra || "").trim(), alternativa: (o.alternativa || "").trim(), depende: (o.depende || "").trim(), processo: o.processo || "", padroes: o.padroes || [], levar: !!o.levar, privado: !!o.privado, estoico: !!triagem };
+  P.reflexoes.push(rec); if (o.qid) { const q = (P.cfg.perguntas || []).find(x => x.id === o.qid); if (q) q.feita = true; }
+  if (rec.levar) psiPautaAdd(t === "pensamento" ? `Registro de ${fmtD(rec.data)}: “${trunc(rec.pensamento, 100)}”` : `Reflexão de ${fmtD(rec.data)}: ${trunc(rec.texto, 100)}`, { k: "refl", id: rec.id, rot: "Entre sessões" });
+  PSI.refl = null; return rec;
+}
+function psiClick(t) {
+  const ds = t.dataset, a = ds.act, P = psiD();
+  if (a === "jcheck" && ds.mid === "psi") { askMentor("psi", "Faça um acompanhamento entre sessões: 1) o que você percebe nas minhas últimas sessões, registros e padrões, com datas; 2) como isso conversa com a minha jornada, a Bússola e as triagens estoicas; 3) o que levar para a próxima sessão; 4) uma pergunta para eu refletir nesta semana. Atualize o plano entre sessões.", "check"); return true; }
+  for (const [pre, o] of [["pss", PSI.sess], ["psr", PSI.refl]]) { if (!o) continue;
+    if (ds[pre + "pil"]) { o.pilares = psiToggle(o.pilares || [], ds[pre + "pil"]); render(); return true; }
+    if (ds[pre + "val"]) { o.valores = psiToggle(o.valores || [], ds[pre + "val"]); render(); return true; }
+    if (ds[pre + "pad"]) { o.padroes = psiToggle(o.padroes || [], ds[pre + "pad"]); render(); return true; } }
+  if (!a?.startsWith("psi")) return false;
+  if (a === "psix") { PSI.sess = PSI.refl = PSI.proc = PSI.pad = null; render(); return true; }
+  if (a === "psinovasess") { PSI.sess = { data: TODAY, temasTxt: "", insights: "", tarefa: "", padroes: [], pilares: [], valores: [], processo: P.processos.find(p => p.status === "ativo")?.id || "" }; render(); return true; }
+  if (a === "psisesssave") { const o = PSI.sess; if (!o.insights?.trim() && !o.temasTxt?.trim()) { toast("Escreva ao menos os temas ou um insight."); return true; }
+    const rec = { id: uid(), data: o.data || TODAY, temas: (o.temasTxt || "").split(",").map(s => s.trim()).filter(Boolean), insights: (o.insights || "").trim(), tarefa: (o.tarefa || "").trim(), padroes: o.padroes || [], pilares: o.pilares || [], valores: o.valores || [], processo: o.processo || "", antes: o.antes ? +o.antes : null, depois: o.depois ? +o.depois : null, privado: !!o.privado };
+    P.sessoes.push(rec); P.pauta.filter(x => !x.feito).forEach(x => { x.feito = true; x.em = rec.data; }); if (P.cfg.proxima && P.cfg.proxima <= rec.data) P.cfg.proxima = "";
+    PSI.sess = null; touch("psique", { label: "Sessão registrada" }); undoToast("Sessão registrada; a pauta foi marcada como levada"); return true; }
+  if (a === "psinovarefl") { PSI.refl = { tipo: ds.v || "diaria", padroes: [], processo: P.processos.find(p => p.status === "ativo")?.id || "" }; if (SUB !== "entre") setHash("psi", "entre"); else render(); return true; }
+  if (a === "psiq") { const q = (P.cfg.perguntas || []).find(x => x.id === ds.id); PSI.refl = { tipo: "livre", pergunta: q?.q || "", qid: ds.id, padroes: [] }; render(); return true; }
+  if (a === "psirtipo") { PSI.refl.tipo = ds.v; render(); return true; }
+  if (a === "psireflsave") { if (psiSaveRefl(false)) { touch("psique", { label: "Registro entre sessões" }); undoToast("Guardado"); } return true; }
+  if (a === "psitriagem") { const r = psiSaveRefl(true); if (!r) return true; filTriNova({ k: "psi", id: r.id, rot: `Registro de pensamento de ${fmtD(r.data)}`, go: "psi.entre", txt: `${r.situacao}. Pensamento: ${r.pensamento}` }); if (r.depende) FIL.tri.meu = r.depende; touch("psique", { label: "Registro entre sessões" }); setHash("jornada", "filosofia"); return true; }
+  if (a === "psinovoproc") { PSI.proc = { titulo: "", objetivo: "", inicio: TODAY, status: "ativo", pilar: "", valor: "" }; render(); return true; }
+  if (a === "psiprocsave") { const o = PSI.proc; if (!o.titulo?.trim()) { toast("Dê um título ao processo."); return true; } P.processos.push({ id: uid(), titulo: o.titulo.trim(), objetivo: (o.objetivo || "").trim(), inicio: o.inicio || TODAY, status: o.status || "ativo", pilar: o.pilar || "", valor: o.valor || "", marcos: [] }); PSI.proc = null; touch("psique", { label: "Processo criado" }); return true; }
+  if (a === "psimarco") { const p = P.processos.find(x => x.id === ds.id), el = $(`[data-psimarco="${ds.id}"]`), v = el?.value.trim(); if (!p || !v) return true; (p.marcos ||= []).push({ data: TODAY, txt: v.slice(0, 300) }); touch("psique", { label: "Marco do processo" }); return true; }
+  if (a === "psipst") { const p = P.processos.find(x => x.id === ds.id); if (p) { p.status = ds.v; touch("psique", { label: `Processo ${ds.v}` }); } return true; }
+  if (a === "psinovopad") { PSI.pad = { nome: "", tipo: "pensamento", desc: "", gatilhos: "", ajuda: "", valor: "" }; render(); return true; }
+  if (a === "psipadsave") { const o = PSI.pad; if (!o.nome?.trim()) { toast("Dê um nome ao padrão."); return true; } P.padroes.push({ id: uid(), nome: o.nome.trim().slice(0, 80), tipo: o.tipo || "pensamento", desc: (o.desc || "").trim(), gatilhos: (o.gatilhos || "").trim(), ajuda: (o.ajuda || "").trim(), valor: o.valor || "", privado: !!o.privado, criado: TODAY }); PSI.pad = null; touch("psique", { label: "Padrão nomeado" }); return true; }
+  if (a === "psipadtri") { const p = P.padroes.find(x => x.id === ds.id); if (p) { filTriNova({ k: "pad", id: p.id, rot: `Padrão · ${p.nome}`, go: "psi.padroes", txt: `${p.nome}${p.desc ? `: ${p.desc}` : ""}` }); setHash("jornada", "filosofia"); } return true; }
+  if (a === "psipadpauta") { const p = P.padroes.find(x => x.id === ds.id); if (p && psiPautaAdd(`O padrão “${p.nome}”: ${psiOcorr(p.id, 30).length} vez(es) em 30 dias`, { k: "pad", id: p.id, rot: "Padrões" })) { touch("psique", { label: "Pauta" }); toast("Na pauta da próxima sessão"); } return true; }
+  if (a === "psipautaadd") { const el = $("#psi_pauta"); if (psiPautaAdd(el?.value)) touch("psique", { label: "Pauta" }); return true; }
+  if (a === "psisug") { const s = psiSugestoes()[+ds.i]; if (s && psiPautaAdd(s, { k: "auto", rot: "Atlas" })) touch("psique", { label: "Pauta" }); return true; }
+  if (a === "psipautaok") { const x = P.pauta.find(z => z.id === ds.id); if (x) { x.feito = true; x.em = TODAY; touch("psique", { label: "Pauta" }); } return true; }
+  if (a === "psimodo") { P.modo.fixo = ds.v; if (ds.v !== "auto") { P.modo.atual = ds.v; P.modo.motivo = "forma escolhida por você"; } else P.modo.motivo = ""; touch("psique", { noUndo: true }); return true; }
+  return true;
+}
+function psiInput(t) {
+  for (const [k, o] of [["pss", PSI.sess], ["psr", PSI.refl], ["psp", PSI.proc], ["psd", PSI.pad]]) if (t.dataset[k] && o && t.type !== "checkbox") { o[t.dataset[k]] = t.value; return true; }
+  if (t.dataset.psc) { psiD().cfg[t.dataset.psc] = t.value; touch("psique", { noUndo: true, noRender: true }); return true; }
+  return false;
+}
+function psiChange(t) {
+  for (const [k, o] of [["pss", PSI.sess], ["psr", PSI.refl], ["psp", PSI.proc], ["psd", PSI.pad]]) if (t.dataset[k] && o) { o[t.dataset[k]] = t.type === "checkbox" ? t.checked : t.value; return true; }
+  if (t.dataset.psc) { psiD().cfg[t.dataset.psc] = t.value; touch("psique", { label: "Dados da terapia" }); return true; }
+  return false;
+}
+
+/* ---------------------------------------------------------------- dados de exemplo (fictícios) */
+function psiExemplo() {
+  const d = n => addDays(TODAY, -n);
+  return { cfg: { terapeuta: "Dra. L.", abordagem: "psicodinâmica breve", freq: "semanal", proxima: addDays(TODAY, 2), perguntas: [{ id: "pq1", q: "Quando a autocrítica aparece, de quem é a voz?", data: d(3), feita: false }] },
+    processos: [{ id: "pp1", titulo: "A autocrítica no trabalho", objetivo: "Entender de onde vem a cobrança e trabalhar com menos medo de errar", inicio: d(60), status: "ativo", pilar: "bud", valor: "paciencia", marcos: [{ data: d(20), txt: "Percebi que a voz da cobrança soa como a do meu pai" }] },
+      { id: "pp2", titulo: "Luto pela mudança de país", objetivo: "Dar lugar ao que ficou no Brasil sem me fechar à vida aqui", inicio: d(120), status: "pausado", pilar: "esp", valor: "", marcos: [] }],
+    padroes: [{ id: "pd1", nome: "Ruminação", tipo: "pensamento", desc: "Repasso conversas à noite procurando o que eu deveria ter dito", gatilhos: "conflitos no trabalho, cansaço", ajuda: "escrever e deixar para amanhã", valor: "paciencia", privado: false, criado: d(50) },
+      { id: "pd2", nome: "Perfeccionismo", tipo: "esquema", desc: "Só entrego quando está impecável, e então atraso", gatilhos: "entregas visíveis", ajuda: "definir antes o que é bom o bastante", valor: "humildade", privado: false, criado: d(40) }],
+    sessoes: [{ id: "ps1", data: d(14), temas: ["trabalho", "pai"], insights: "A cobrança que sinto no trabalho repete o tom de casa; percebi isso pela primeira vez sem me defender.", tarefa: "Notar quando a voz da cobrança aparece e de quem ela parece ser", padroes: ["pd2"], pilares: ["bud"], valores: ["paciencia"], processo: "pp1", antes: 2, depois: 3, privado: false },
+      { id: "ps2", data: d(7), temas: ["entrega atrasada", "sono"], insights: "Quando atraso, durmo mal e rumino; o atraso vem do perfeccionismo, não da preguiça.", tarefa: "Definir o 'bom o bastante' antes de começar", padroes: ["pd1", "pd2"], pilares: [], valores: ["equilibrio"], processo: "pp1", antes: 2, depois: 4, privado: false }],
+    reflexoes: [{ id: "pr1", data: d(5), at: Date.now() - 5 * 864e5, tipo: "pensamento", situacao: "O cliente respondeu seco ao novo cronograma", pensamento: "Ele acha que eu sou incompetente", emocao: "vergonha", intensidade: 70, favor: "a mensagem foi curta", contra: "ele aprovou o cronograma; ele escreve curto com todos", alternativa: "Ele estava ocupado; o cronograma foi aceito", depende: "Cumprir o novo prazo e manter a comunicação clara", processo: "pp1", padroes: ["pd1"], levar: false, privado: false, estoico: true, texto: "", pergunta: "" },
+      { id: "pr2", data: d(1), at: Date.now() - 864e5, tipo: "diaria", pergunta: PSI_DIARIAS[1], texto: "Repeti para mim que deveria ter feito melhor a apresentação. Não é verdadeiro: ela foi boa o bastante para o objetivo.", situacao: "", pensamento: "", processo: "pp1", padroes: ["pd1", "pd2"], levar: true, privado: false, estoico: false }],
+    pauta: [{ id: "pa1", txt: "Reflexão de ontem: a cobrança depois da apresentação", origem: { k: "refl", id: "pr2", rot: "Entre sessões" }, data: d(1), feito: false }, { id: "pa2", txt: "Triagem estoica: “Fico remoendo a conversa difícil com o meu irmão”", origem: { k: "tri", id: "ftr2", rot: "Filosofia" }, data: d(2), feito: false }],
+    modo: { fixo: "auto", atual: "escuta", motivo: "" } };
+}
+
 
 /* ================================================================ render */
 let RELAYOUT = false;
@@ -12175,6 +12745,7 @@ function render() {
     rotina: () => ["Rotina", "Planeje e registre o dia em blocos de 30 minutos", pRotina],
     hoje: () => [`${greet()}${nm ? ", " + nm : ""}`, fmtDL(TODAY)[0].toUpperCase() + fmtDL(TODAY).slice(1), pHoje2],
     diario: () => ["Diário", "Escreva, marque pessoas e temas, registre dados e veja o que se repete", pDiario],
+    psi: () => ["Psicologia", { inicio: "O trabalho terapêutico, ligado à sua jornada", sessoes: "O que acontece nas sessões", processos: "Os temas que você trabalha ao longo do tempo", entre: "O trabalho entre as sessões", padroes: "O que se repete, e o que ajuda", terapeuta: "Um apoio entre sessões que muda de forma conforme o que você precisa" }[SUB] || "", pPsique],
     admin: () => ["Administração Pessoal", "O Conselho de Administração da sua vida: os mentores reunidos, conduzidos pelo Intermediador, e você decide", pAdmin],
     mentores: () => ["Mentores", "Um agente para cada área, com memória do que vocês combinaram", pMentores],
     mentor: () => [esc(MENTOR_DEF[SUB].nome), esc(MENTOR_DEF[SUB].papel[0].toUpperCase() + MENTOR_DEF[SUB].papel.slice(1)), pMentor],
@@ -12281,7 +12852,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (secClick(t) || csClick(t) || rtClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -12347,7 +12918,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (secInput(t) || csInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
+  if (secInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -12362,7 +12933,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (secChange(t) || csChange(t) || rtChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

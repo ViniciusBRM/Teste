@@ -5,7 +5,7 @@
 const conselhoConfig = {
   fases: ["REVISAO_ATA", "ABERTURA", "RELATORIOS", "CRUZAMENTO", "DEBATE", "CONTEMPLACAO", "CONFLITOS", "PREVISOES", "DELIBERACOES", "ATA"],
   diretores: ["fis", "men", "fin", "car", "apr", "fam", "amo", "ami", "laz", "pro", "cas", "bm"],
-  convidados: ["esp", "med", "tao", "bud", "lzlei", "lzfil", "lzjog", "lzvia", "lzcaf", "lzavi", "lzest"],
+  convidados: ["sto", "psi", "esp", "med", "tao", "bud", "lzlei", "lzfil", "lzjog", "lzvia", "lzcaf", "lzavi", "lzest"],
   maxTurnos: 40, maxFalasPorFase: 3, palavrasPorFala: 150, resumoACada: 5, palavrasBriefing: 300,
   relatoriosEmSequencia: true,       // na fase de relatórios os diretores falam em ordem, sem uma chamada do Intermediador antes de cada um
   esperaMs: [2000, 4000],            // novas tentativas só para falha passageira do serviço (upstream_error)
@@ -32,7 +32,7 @@ const CS_FASE = {
 const CS_TIPOS = { ordinaria: ["Ordinária", "Revisão geral da semana ou do mês."], trimestral: ["Trimestral", "Balanço profundo e ajuste de metas."], anual: ["Anual", "Visão, valores e direção de longo prazo."], extraordinaria: ["Extraordinária", "Uma crise ou um alerta grave, com foco nele."] };
 const CS_ST = { aberta: "aberta", feita: "feita", nao_feita: "não feita", proposta: "aguardando aprovação", recusada: "recusada" };
 /* abas onde as ações do Conselho aparecem para marcar como feitas */
-const CS_PAGE_AREAS = { ...PAGE_AREAS, carreira: ["Carreira"], idiomas: ["Aprendizado"], lazer: ["Lazer & criatividade"], jornada: ["Propósito & espiritualidade", "Bússola moral"] };
+const CS_PAGE_AREAS = { ...PAGE_AREAS, psi: ["Saúde mental"], carreira: ["Carreira"], idiomas: ["Aprendizado"], lazer: ["Lazer & criatividade"], jornada: ["Propósito & espiritualidade", "Bússola moral"] };
 const CS = { tipo: "ordinaria", foco: "", obs: false, input: "", busy: false, ctl: null, status: "", live: null, ver: null, area: "geral", stick: true };
 
 /* ---------------------------------------------------------------- estado e rótulos */
@@ -71,7 +71,7 @@ function csBrief(mid) {
     const es = aiEntries(S.diario.filter(e => e.data >= addDays(TODAY, -21) && parseEntry(e.texto).areas.includes(a)).sort((x, y) => y.data.localeCompare(x.data)));
     if (es.length) L.push(`DIÁRIO (21 dias): ${plural(es.length, "entrada", "entradas")}; a mais recente, ${fmtD(es[0].data)}: "${trunc(snippet(es[0], 160), 160)}".`);
   } else {
-    const facts = MENTOR_DEF[mid].jor ? (mid === "bm" ? jBmFacts() : jPilarFacts(jMidP(mid), false)) : MENTOR_DEF[mid].lz ? lzFacts(MENTOR_DEF[mid].lz) : [];
+    const facts = MENTOR_DEF[mid].facts ? MENTOR_DEF[mid].facts() : MENTOR_DEF[mid].jor ? (mid === "bm" ? jBmFacts() : jPilarFacts(jMidP(mid), false)) : MENTOR_DEF[mid].lz ? lzFacts(MENTOR_DEF[mid].lz) : [];
     const txt = facts.join(" ").replace(/\s+/g, " ").trim(); sem = txt.length < 60;
     head = trunc(txt, 90) || "sem registros"; L.push("ESTADO: " + (txt || "sem registros nesta área."));
   }

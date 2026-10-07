@@ -1,6 +1,7 @@
 
 /* ================================================================ ícones (traço 1.7, 24×24) */
 const ICONS = {
+  column: '<path d="M4 6h16M5 6l2-3h10l2 3M7 6v12M10.3 6v12M13.7 6v12M17 6v12M5 18h14M4 21h16"/>',
   film: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7.5 5v14M16.5 5v14M3 9.5h4.5M3 14.5h4.5M16.5 9.5H21M16.5 14.5H21"/>',
   gamepad: '<path d="M6.5 8h11a4 4 0 0 1 3.9 4.9l-.8 3.3a2.4 2.4 0 0 1-4.1 1.1L14.4 15H9.6l-2.1 2.3a2.4 2.4 0 0 1-4.1-1.1l-.8-3.3A4 4 0 0 1 6.5 8z"/><path d="M8.5 10.5v3M7 12h3"/><circle cx="15.5" cy="11" r=".9"/><circle cx="17.3" cy="13" r=".9"/>',
   plane: '<path d="M10.6 3.6a1.4 1.4 0 0 1 2.8 0V9l7.6 4.6v2.1l-7.6-2.4v4.6l2.4 1.9v1.6L12 20.4l-3.8 1V19.8l2.4-1.9v-4.6L3 15.7v-2.1L10.6 9z"/>',
@@ -93,7 +94,7 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 
 /* ================================================================ navegação */
 const NAV = [
-  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"], ["cruz", "Cruzamentos", "scatter"]]],
+  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"], ["cruz", "Cruzamentos", "scatter"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["idiomas", "Idiomas", "globe"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["mapa", "Mapa do Atlas", "compass"], ["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
@@ -112,8 +113,9 @@ const SUBS = {
   lazer: [["inicio", "Início"], ["leitura", "Leitura"], ["filmes", "Filmes e séries"], ["jogos", "Jogos"], ["viagens", "Viagens"], ["cafe", "Café"], ["aviacao", "Aviação"], ["estudos", "Estudos"], ["existencial", "Existencial"]],
   carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["caderno", "Caderno técnico"], ["rede", "Rede profissional"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
-  jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
+  jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["filosofia", "Filosofia"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   rotina: [["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]],
+  psi: [["inicio", "Início"], ["sessoes", "Sessões"], ["processos", "Processos"], ["entre", "Entre sessões"], ["padroes", "Padrões"], ["terapeuta", "O Terapeuta"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
 };
 const REPORT_TABS = [["visao", "Visão geral"], ["fin.rel", "Finanças"], ["saude.rel", "Saúde"], ["hab.rel", "Hábitos"], ["pessoas.rel", "Relações"], ["cresc.rel", "Crescimento"], ["metas.rel", "Metas"], ["cruz", "Cruzamentos"]];
@@ -127,6 +129,7 @@ function route() {
   /* a Bússola moral e os mentores da jornada moram na Jornada existencial; links antigos continuam valendo */
   if (p === "cresc" && s === "carreira") { p = "carreira"; s = "panorama"; }
   if (p === "bussola") { p = "jornada"; s = !s || s === "mapa" ? "bussola" : s; }
+  if (p === "mentor" && MENTOR_DEF[s]?.page) { p = MENTOR_DEF[s].page; s = MENTOR_DEF[s].sub; }
   if (p === "mentor" && MENTOR_DEF[s]?.jor) { p = "jornada"; s = jSubOfMid(s); }
   if (p === "mentor" && MENTOR_DEF[s]?.lz) { p = "lazer"; s = MENTOR_DEF[s].lz; }
   if (`${p}${s ? "." + s : ""}` !== location.hash.slice(1) && location.hash) try { history.replaceState(null, "", `#${p}${s ? "." + s : ""}`); } catch {}

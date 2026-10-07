@@ -107,6 +107,7 @@ function councilFacts(Hs) {
 }
 /* cx = { dados }: modo conselho. A identidade, a memória e o plano ficam; os DADOS viram o briefing da reunião */
 function mentorPrompt(mid, fallback, cx) {
+  if (MENTOR_DEF[mid].prompt) return MENTOR_DEF[mid].prompt(fallback, cx);
   if (MENTOR_DEF[mid].jor) return jPrompt(mid, fallback, cx);
   if (MENTOR_DEF[mid].lz) return lzPrompt(mid, fallback, cx);
   const def = MENTOR_DEF[mid], m = mget(mid), Hs = []; for (let k = 5; k >= 0; k--) Hs.push(calcAt(addMonth(mkey(TODAY), -k)));
@@ -169,7 +170,7 @@ function mentorTools(mid, live) {
   if (NOTION_OK && S.cfg.mentorNotion) T.push({ name: "buscar_notion", description: "Busca páginas no Notion da pessoa por palavras-chave e devolve até 5 resultados com título, link e trecho. Use para projetos, anotações e planos que estão lá.",
     inputSchema: { type: "object", properties: { consulta: { type: "string" } }, required: ["consulta"] },
     execute: async (inp, ctx) => { const res = await MCP.callTool("Notion", "notion-search", { query: String(inp.consulta).slice(0, 200), page_size: 5 }, { signal: ctx.signal }); const rs = (res.payload?.results || []).slice(0, 5).map(x => ({ titulo: x.title, link: x.url, trecho: trunc(String(x.highlight || "").replace(/\*\*/g, ""), 300) })); note("buscar_notion", `“${trunc(inp.consulta, 40)}” · ${rs.length} páginas`); return rs; } });
-  const out = def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T;
+  const out = def.tools ? def.tools(live, T) : def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T;
   return TOOLS_MAX && TOOLS_MAX < out.length ? out.slice(0, TOOLS_MAX) : out;
 }
 function mkProposal(inp) {
@@ -183,6 +184,7 @@ async function askMentor(mid, text, mode = "chat") {
   if (!SAMPLE) { toast(AI_OFF || "A IA do Claude não está disponível nesta visualização."); return; }
   if (MST.live) { toast("Espere a resposta atual terminar ou toque em Parar."); return; }
   if (blockedMentor(mid)) { toast(`${ashort(MENTOR_DEF[mid].area || MENTOR_DEF[mid].gate)} está fora da IA em Privacidade. Libere o setor para conversar com este mentor.`); return; }
+  MENTOR_DEF[mid].before?.(text);
   const m = mget(mid), user = { role: "user", content: text, at: Date.now(), mode };
   const live = MST.live = { mid, text: "", uso: [], acoes: [], ctl: new AbortController(), user, mode };
   MST.input[mid] = ""; render(); scrollChat();
@@ -259,11 +261,11 @@ function pMentores(R) {
       ${nud ? `<div class="mnud ${nud.st}">${ic("bolt")}<span>${nud.t}</span></div>` : ""}
       <footer><span class="muted">${m.conversa?.length ? `conversa ${relDay(iso(new Date(m.visto || m.conversa.at(-1).at)))}` : "nunca conversaram"} · ${plural((m.mem || []).length, "memória", "memórias")}${sl.out.length && m.visto ? ` · desde então: ${esc(sl.out.slice(0, 2).join(", "))}` : ""}</span><a class="btn sm${mid === "conselho" ? " primary" : ""}" href="#mentor.${mid}">${ic("spark")}Conversar</a></footer></article>`; };
   return `${aiBanner()}<p class="lead">Um mentor para cada área da vida e um Conselho que olha o todo. Cada um lê os seus números e o seu diário, lembra do que vocês combinaram e propõe melhorias, que só viram tarefa, meta ou hábito quando você aprova.</p>
-    <div class="mgrid">${MIDS.filter(m => !MENTOR_DEF[m].jor && !MENTOR_DEF[m].lz).map(card).join("")}</div>
+    <div class="mgrid">${MIDS.filter(m => !MENTOR_DEF[m].jor && !MENTOR_DEF[m].lz && !MENTOR_DEF[m].page).map(card).join("")}</div>
     <div class="mhead jmh2">${ic("palette")}Mentores do lazer<small>um para cada tema, do básico ao avançado</small></div>
     <div class="jmgrid">${LZ_MIDS.map(mid => { const def = MENTOR_DEF[mid]; return `<a class="jmc" href="#lazer.${def.lz}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${esc(lzDiv(def.lz).nome)}</small><em>${esc(def.arq)}</em></span></a>`; }).join("")}</div>
-    <div class="mhead jmh2">${ic("lotus")}Mentores da jornada existencial<small>um para cada pilar e o Navegante da Bússola moral</small></div>
-    <div class="jmgrid">${J_MIDS.map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>`;
+    <div class="mhead jmh2">${ic("lotus")}Mentores da vida interior<small>um para cada pilar, o Navegante da Bússola, o Mestre do Pórtico e o Terapeuta</small></div>
+    <div class="jmgrid">${[...J_MIDS, "sto", "psi"].map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#${mid === "psi" ? "psi.terapeuta" : "jornada." + jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : mid === "sto" ? "Filosofia · estoicismo" : mid === "psi" ? "Psicologia" : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>`;
 }
 function aiBanner() {
   if (AI_OFF) return `<div class="banner warn">${ic("info")}<span>${esc(AI_OFF)}</span></div>`;

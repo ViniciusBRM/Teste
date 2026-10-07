@@ -220,7 +220,7 @@ Object.assign(MENTOR_DEF, {
 });
 MIDS.push(...["esp", "med", "tao", "bud", "bm"].filter(m => !MIDS.includes(m)));
 const J_MIDS = ["esp", "med", "tao", "bud", "bm"];
-const jSubOfMid = mid => mid === "bm" ? "navegante" : J_PIL[jMidP(mid)]?.sub || "inicio";
+const jSubOfMid = mid => mid === "bm" ? "navegante" : mid === "sto" ? "filosofia" : J_PIL[jMidP(mid)]?.sub || "inicio";
 
 /* ---------------------------------------------------------------- o que cada mentor recebe */
 function jPilarFacts(pid, full) {
@@ -249,6 +249,8 @@ function jCommonFacts(skip) {
   L.push("OS OUTROS PILARES DA PESSOA:\n" + J_ORDER.filter(p => p !== skip).map(p => `## ${J_PIL[p].nome} (mentor: ${MENTOR_DEF[J_PIL[p].mid].nome})\n${jPilarFacts(p, false).join("\n")}`).join("\n"));
   const sc = bmScores(28); L.push(`Bússola moral: valores em foco ${bmFoco().map(id => bmV(id).nome).join(", ") || "nenhum"}; prática dos valores nas últimas 4 semanas ${sc.idx == null ? "sem exames" : pct(sc.idx)} em ${sc.dias} noites com exame.`);
   if (C.vivos.length) L.push("Temas de confluência que a pessoa marcou como vivos na própria vida: " + C.vivos.map(id => { const t = J_CONV.find(x => x.id === id); return t ? t.t + (C.notas[id] ? ` (nota: ${trunc(C.notas[id], 160)})` : "") : ""; }).filter(Boolean).join("; "));
+  const tr = filD().triagens.slice(-2); if (tr.length) L.push("Filosofia (estoicismo) — triagens do controle recentes: " + tr.map(t => `“${trunc(t.sit, 90)}”: depende de mim ${trunc(t.meu || "–", 80)}; não depende ${trunc(t.nao || "–", 80)}`).join(" | "));
+  L.push(...psiFactsBrief());
   const ci = C.circulos.slice(-2); if (ci.length) L.push("Círculos recentes dos mentores:\n" + ci.map(c => `- ${fmtD(iso(new Date(c.at)))}: “${trunc(c.pergunta, 140)}” → ${trunc(jSection(c.texto, "Onde convergem") || c.texto, 260)}`).join("\n"));
   return L;
 }
@@ -407,6 +409,7 @@ function pJornada(R) {
   if (SUB === "jardim") return pJardim();
   if (J_SUB2P[SUB]) return jPilar(J_SUB2P[SUB]);
   if (SUB === "confluencias") return jConf();
+  if (SUB === "filosofia") return jFilosofia();
   if (SUB === "praticas") return jPraticas();
   if (SUB === "navegante") return jBmNav() + jNavegante();
   return jBmNav() + pBussola(R);
@@ -429,8 +432,8 @@ function jInicio() {
         <div class="flbl">Uma reflexão rápida</div><textarea class="jta" rows="3" data-jq="1" placeholder="O que você viveu, percebeu ou aprendeu?">${esc(Q.txt)}</textarea>
         <div class="row wrap jqrow">${J_ORDER.map(p => jChip(p, Q.p.includes(p), `data-act="jqp" data-p="${p}"`)).join("")}</div>
         <div class="row wrap jqrow"><div class="segs">${J_TIPOS.map(t => `<button type="button" class="seg" data-act="jqt" data-v="${t}" aria-pressed="${Q.tipo === t}">${t}</button>`).join("")}</div><button type="button" class="btn sm primary" data-act="jqsave">${ic("check")}Guardar</button></div>`, { cls: "jhoje" })}
-      ${panel(`${ic("council")}Seus mentores`, `<div class="jmgrid">${J_MIDS.map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid), last = m.conversa?.length ? relDay(iso(new Date(m.conversa.at(-1).at))) : "";
-          return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : last ? `conversaram ${last}` : "ainda não conversaram"}</em></span></a>`; }).join("")}</div>`, { cls: "span2" })}
+      ${panel(`${ic("council")}Seus mentores`, `<div class="jmgrid">${[...J_MIDS, "sto"].map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid), last = m.conversa?.length ? relDay(iso(new Date(m.conversa.at(-1).at))) : "";
+          return `<a class="jmc" href="#jornada.${jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : mid === "sto" ? "Filosofia · estoicismo" : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : last ? `conversaram ${last}` : "ainda não conversaram"}</em></span></a>`; }).join("")}</div>`, { cls: "span2" })}
       ${rev ? panel(`${ic("clock")}Para revisitar`, `<p class="muted">${esc(rev.quando)} você escreveu, em ${esc(J_PIL[rev.pid].nome)}:</p><blockquote class="jquote sm" style="--c:${J_PIL[rev.pid].cor}">${esc(trunc(rev.r.texto, 420))}<cite>${fmtDY(rev.r.data)} · ${esc(rev.r.tipo)}</cite></blockquote>
         <label class="flbl" for="jrev">O que mudou desde então?</label><textarea id="jrev" class="jta" rows="2" data-jrev="1" placeholder="Releia com calma. O que você vê agora?">${esc(J.rev)}</textarea><div class="row"><button type="button" class="btn sm" data-act="jrevsave" data-p="${rev.pid}" data-id="${rev.r.id}">${ic("check")}Guardar como reflexão</button></div>`) : ""}
       ${(() => { const at = J_PROG.filter(p => jProgInfo(p) && !jProgInfo(p).fim); return at.length ? panel(`${ic("flag")}Programas em andamento`, `<div class="jprogs">${at.map(p => jProgCard(p)).join("")}</div>`, { act: `<a class="lnk" href="#jornada.praticas">práticas</a>` }) : panel(`${ic("flag")}Programas guiados`, `<p class="muted">Quatro caminhos com começo, meio e fim: 8 semanas de atenção plena, o Tao Te Ching em 81 dias, o Dhammapada em 26 capítulos e O Evangelho segundo o Espiritismo em 28 semanas.</p><a class="btn sm" href="#jornada.praticas">${ic("arrow")}Escolher um</a>`); })()}

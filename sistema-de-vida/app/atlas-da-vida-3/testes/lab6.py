@@ -15,8 +15,8 @@ async def main():
             nav = await pg.evaluate("[...document.querySelectorAll('#nav .nv span')].map(e => e.textContent)")
             chk("Jornada existencial" in nav and "Bússola moral" not in nav, "menu: Jornada existencial entra, Bússola moral sai do Laboratório (mora dentro da jornada)")
             tabs = await pg.evaluate("[...document.querySelectorAll('.subtabs a')].map(e => e.textContent)")
-            chk(tabs == ["Início", "Saúde espiritual", "Espiritismo", "Meditação", "Taoísmo", "Budismo", "Confluências", "Práticas", "Bússola moral"], f"abas da jornada: {tabs}")
-            chk(await pg.locator(".jmandala .jm-p").count() == 20 and await pg.locator(".jmc").count() == 5, "início: mandala com 20 pétalas (5 estações × 4 pilares) e os 5 mentores")
+            chk(tabs == ["Início", "Saúde espiritual", "Espiritismo", "Meditação", "Taoísmo", "Budismo", "Confluências", "Filosofia", "Práticas", "Bússola moral"], f"abas da jornada: {tabs}")
+            chk(await pg.locator(".jmandala .jm-p").count() == 20 and await pg.locator(".jmc").count() == 6, "início: mandala com 20 pétalas (5 estações × 4 pilares) e os 6 mentores (com o Mestre do Pórtico)")
             # mandala reflete a autoavaliação
             await pg.evaluate("S.jornada.p.tao.est.raiz = { v: 3, at: Date.now() }; render()")
             fo = await pg.evaluate("(() => { const g = [...document.querySelectorAll('.jm-p')].find(x => /Taoísmo: Retornar à raiz/.test(x.getAttribute('aria-label'))); return g.querySelector('path').style.fillOpacity; })()")
@@ -112,7 +112,7 @@ async def main():
             chk(len(await pg.evaluate("mget('bm').conversa")) >= 2, "o Navegante responde e guarda a conversa")
             # mentores e hoje
             await pg.evaluate("location.hash='mentores'"); await pg.wait_for_timeout(300)
-            chk(await pg.locator(".mgrid .mcard").count() == 12 and await pg.locator(".jmgrid").last.locator(".jmc").count() == 5, "Mentores: as 12 áreas na grade e os 5 da jornada numa seção própria")
+            chk(await pg.locator(".mgrid .mcard").count() == 12 and await pg.locator(".jmgrid").last.locator(".jmc").count() == 7, "Mentores: as 12 áreas na grade e os 7 da vida interior (pilares, Navegante, Pórtico e Terapeuta) numa seção própria")
             await pg.evaluate("location.hash='hoje'"); await pg.wait_for_timeout(300)
             t = await pg.locator("#main").inner_text()
             chk("Jornada de hoje" in t and await pg.locator(".jhmk [data-act=jmark]").count() >= 1, "Hoje mostra o ensinamento do dia e as práticas da jornada para marcar")
