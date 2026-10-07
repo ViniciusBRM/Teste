@@ -10859,8 +10859,9 @@ const JD_BODHI_L = Array.from({ length: 30 }, (_, i) => { const t = (i * .618) %
 function jdBodhi(T, fx) {
   const s = T.s, op = T.dorm ? .5 : .62 + .38 * T.v, gd = T.dorm ? "#a8a193" : PALE; let g = "";
   const ln = (pts, w, o2 = {}) => jdF(jdBr(pts, w * 1.35, { a: .7, m: .2, b: .3, ...o2 }), gd, op);
-  g += `<g class="jd-seat" stroke="${gd}" stroke-opacity="${jf(op)}" fill="none" stroke-width="1.2"><ellipse cx="500" cy="874" rx="34" ry="8" fill="${INK}" fill-opacity=".3"/><path d="M466 874V890Q500 900 534 890V874"/>${[474, 487, 500, 513, 526].map(x => `<path d="M${x - 5} 893q5-8 10 0"/>`).join("")}${s === 5 && !T.dorm ? `<circle cx="500" cy="883" r="5"/><path d="M500 878v10M495 883h10"/>` : ""}</g>`;
-  if (s === 5 && !T.dorm) g += `<g class="jd-halo" fill="none" stroke="${PALE}">${[18, 27, 36].map((r, i) => `<circle cx="500" cy="846" r="${r}" stroke-opacity="${[.6, .38, .2][i]}" stroke-width="${1.2 - i * .3}"/>`).join("")}</g>`;
+  // o assento vazio fica ao pé do tronco, à frente dele: a figueira cresce por trás do lugar onde se senta
+  const seat = `<g class="jd-seat" stroke="${gd}" stroke-opacity="${jf(op)}" fill="none" stroke-width="1.2"><ellipse cx="663" cy="894" rx="28" ry="7" fill="${INK}" fill-opacity=".55"/><path d="M635 894V905Q663 913 691 905V894"/>${[645, 654, 663, 672, 681].map(x => `<path d="M${x - 4} 909q4-7 8 0"/>`).join("")}${s === 5 && !T.dorm ? `<circle cx="663" cy="900" r="4"/><path d="M663 896v8M659 900h8"/>` : ""}</g>`;
+  const halo = s === 5 && !T.dorm ? `<g class="jd-halo" fill="none" stroke="${PALE}">${[16, 24, 32].map((r, i) => `<circle cx="663" cy="868" r="${r}" stroke-opacity="${[.6, .38, .2][i]}" stroke-width="${1.2 - i * .3}"/>`).join("")}</g>` : "";
   if (s === 0) g += `<ellipse cx="662" cy="878" rx="3.5" ry="5" fill="${gd}" class="jd-seed"/>`;
   else if (s <= 2) { g += ln([[664, 884], [660, 862], [654, 842]], s === 1 ? 2.4 : 3.6); g += (s === 1 ? [[654, 840, -20, 6]] : [[654, 840, -20, 7], [646, 850, 30, 6.5], [668, 852, -40, 6.5], [658, 862, 50, 6]]).map(([x, y, a, z]) => jdBLeaf(x, y, a, z, op)).join(""); }
   else {
@@ -10874,7 +10875,7 @@ function jdBodhi(T, fx) {
     g += [[600, 712], [640, 690], [680, 716], [620, 700], [660, 676], [700, 730], [590, 740], [670, 700]].slice(0, Math.min(8, T.frutos)).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" class="jd-fruit" fill="${QIAN}"/>`).join("");
     if (T.dorm || T.v < .4) g += [[620, 820], [690, 840]].map(([x, y], i) => `<g class="jd-petal" style="animation-delay:${i * 2}s">${jdBLeaf(x, y, 20 + i * 40, 5.5, .7)}</g>`).join("");
   }
-  return `<rect x="560" y="640" width="160" height="260" fill="transparent"/><rect x="460" y="840" width="80" height="60" fill="transparent"/>${g}${jdGrass(T.plantas, [[636, 892], [690, 888], [624, 898], [700, 896], [662, 900]])}${fx ? jdDrops(640, 660) : ""}`;
+  return `<rect x="560" y="640" width="160" height="280" fill="transparent"/>${g}${halo}${seat}${jdGrass(T.plantas, [[626, 896], [700, 890], [614, 902], [708, 898], [622, 888]])}${fx ? jdDrops(640, 660) : ""}`;
 }
 function jdLotusPond() {
   const nl = jdLotus(), pads = [[472, 714, 15], [530, 750, 13], [488, 764, 11], [532, 704, 10], [456, 744, 9]], fl = [[476, 702], [526, 734], [500, 744], [540, 694], [458, 728], [512, 712], [486, 684]];
