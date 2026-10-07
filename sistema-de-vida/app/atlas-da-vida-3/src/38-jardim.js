@@ -57,7 +57,7 @@ const JD_CAM = [
   { id: "margem", nome: "Descida à margem", area: "o rio e o lago de lótus", t: "1 reflexão em qualquer pilar", prog: () => [J_ORDER.reduce((s, p) => s + jP(p).refl.length, 0), 1], d: "M196 804C228 792 248 780 266 772C296 760 326 752 356 748C388 744 410 742 438 740" },
   { id: "ponte", nome: "Ponte sobre o rio", area: "a pedra no olho do yang e a oficina do eremita", t: "3 noites de exame da Bússola", prog: () => [Object.keys(bmEx()).length, 3], d: "M772 318C754 310 742 306 732 304C712 302 690 298 668 294" },
   { id: "escada", nome: "Escadaria do templo", area: "o templo", t: "1 pedra lavrada", prog: () => [jdData().pedras.filter(p => p.lav).length, 1], d: "M452 340C446 370 434 404 426 426C421 442 417 456 415 468" },
-  { id: "mirante", nome: "Subida ao mirante", area: "a mandala e a bússola vistas do alto", t: "as quatro árvores ao menos em broto", prog: () => [J_ORDER.filter(p => jdTree(p).s >= 1).length, 4], d: "M98 646L122 606L104 566L138 528L118 486L148 446L132 404L150 360L150 344" }];
+  { id: "mirante", nome: "Subida ao mirante", area: "a mandala e a bússola vistas do alto", t: "as quatro árvores ao menos em broto", prog: () => [J_ORDER.filter(p => jdTree(p).s >= 1).length, 4], d: "M98 646L122 606L104 566L138 528L118 486L148 446L132 404L150 360L146 334L150 312" }];
 const JD_AREA = { margem: ["rio", "lago"], ponte: ["pedreira", "oficina", "ped"], escada: ["templo"], mirante: ["mirante"] };
 
 /* ---------------------------------------------------------------- o que cresce e por quê */
@@ -218,6 +218,22 @@ function jdMountains() {
   g += jdMoss(148, 306, 7, 16) + jdMoss(118, 382, 5, 12) + jdMoss(190, 360, 4, 10) + jdMoss(98, 452, 4, 10) + jdMoss(256, 462, 5, 10) + jdMoss(212, 440, 3, 8) + jdMoss(296, 380, 3, 9, INK, .5);
   g += `<path d="${jdCurve([[188, 392], [190, 440], [194, 492], [198, 546], [202, 596]])}" fill="none" stroke="${PAPER}" stroke-width="6.5" stroke-linecap="round" stroke-opacity=".97" class="jd-fall"/>` + jdF(jdBr([[183, 394], [184, 444], [188, 496], [192, 548]], 2, { a: .5, m: .3, b: .05, sd: 34 }), INK, .7) + jdF(jdBr([[194, 390], [196, 440], [200, 492], [204, 544]], 1.6, { a: .5, m: .3, b: .05, sd: 35 }), INK, .5) + jdMoss(186, 388, 3, 6) + [0, 1, 2].map(i => `<path d="M${190 + i * 2} ${430 + i * 40}v22" stroke="${INK}" stroke-opacity=".18" stroke-width=".8"/>`).join("");
   return g + `<g filter="url(#jdblur8)"><ellipse cx="170" cy="598" rx="130" ry="16" fill="${PAPER}" fill-opacity=".9"/><ellipse cx="190" cy="430" rx="60" ry="8" fill="${PAPER}" fill-opacity=".75"/><ellipse cx="204" cy="600" rx="40" ry="11" fill="${PAPER}" fill-opacity=".92"/><ellipse cx="296" cy="420" rx="40" ry="7" fill="${PAPER}" fill-opacity=".6"/></g>`;
+}
+/* o mirante: um pavilhão (ting) assentado no cume, com plataforma de pedra, quatro colunas, guarda-corpo e telhado curvo;
+   com a subida aberta, a lanterna acende e o caminho termina nos degraus da plataforma */
+function jdMirante() {
+  const on = jdCamOpen("mirante"), x = 157, y = 308;
+  let g = `<ellipse cx="${x}" cy="${y + 2}" rx="26" ry="4" fill="${INK}" fill-opacity=".35" filter="url(#jdwash)"/>`;
+  g += `<path d="M${x - 21} ${y}H${x + 21}L${x + 18} ${y - 6}H${x - 18}Z" class="jd-stone"/><path d="M${x - 10} ${y}v-6M${x} ${y}v-6M${x + 10} ${y}v-6" class="jd-joint"/>`;
+  g += `<path d="M${x - 10} ${y + 6}h7M${x - 12} ${y + 3}h8" class="jd-cord"/>`;
+  g += [x - 7, x + 7].map(cx => `<rect x="${cx - 1}" y="${y - 25}" width="2" height="19" class="jd-col" opacity=".55"/>`).join("");
+  g += [x - 14, x + 14].map(cx => `<rect x="${cx - 1.4}" y="${y - 26}" width="2.8" height="20" class="jd-col"/>`).join("");
+  g += `<path d="M${x - 14} ${y - 13}H${x + 14}" class="jd-cord"/>${[-9, -4.5, 0, 4.5, 9].map(d => `<path d="M${x + d} ${y - 13}v7" stroke="${INK}" stroke-width=".7"/>`).join("")}`;
+  g += `<path d="M${x - 26} ${y - 26}C${x - 16} ${y - 27} ${x - 7} ${y - 33} ${x - 3} ${y - 43}H${x + 3}C${x + 7} ${y - 33} ${x + 16} ${y - 27} ${x + 26} ${y - 26}C${x + 22} ${y - 23} ${x + 17} ${y - 22} ${x + 13} ${y - 22}Q${x} ${y - 20} ${x - 13} ${y - 22}C${x - 17} ${y - 22} ${x - 22} ${y - 23} ${x - 26} ${y - 26}Z" class="jd-roof"/>`;
+  g += `<path d="M${x - 26} ${y - 26}q-4-2-4-7M${x + 26} ${y - 26}q4-2 4-7" class="jd-cord"/><path d="M${x} ${y - 43}v-4" class="jd-cord"/><circle cx="${x}" cy="${y - 49}" r="2.2" class="jd-finial"/>`;
+  g += `<path d="M${x} ${y - 21}v3" stroke="${INK}" stroke-width=".7"/><rect x="${x - 2}" y="${y - 18}" width="4" height="5" rx="1" fill="${on ? "#f2c46d" : INK}" fill-opacity="${on ? .95 : .4}" stroke="${INK}" stroke-width=".5"/>`;
+  if (on) g += `<circle cx="${x}" cy="${y - 15.5}" r="7" fill="#f2c46d" fill-opacity=".22" filter="url(#jdblur8)" class="jd-mirluz"/>`;
+  return `<rect x="${x - 34}" y="${y - 54}" width="68" height="64" fill="transparent"/><g filter="url(#jdink)">${g}</g>`;
 }
 const jdNeedles = (x, y, r, op, ink) => `<g stroke="${ink}" stroke-opacity="${jf(op)}" stroke-width=".95" stroke-linecap="round">${Array.from({ length: 9 }, (_, k) => { const a = Math.PI + (k + .5) / 9 * Math.PI; return `<line x1="${jf(x)}" y1="${jf(y)}" x2="${jf(x + Math.cos(a) * r)}" y2="${jf(y + Math.sin(a) * r * .8)}"/>`; }).join("")}</g>`;
 function jdPad(x, y, w, op, ink) { const n = Math.max(2, Math.round(w / 9)); let g = `<ellipse cx="${x}" cy="${y + 2}" rx="${w / 2}" ry="${jf(w / 6.5)}" fill="${ink}" fill-opacity="${jf(.24 * op)}" filter="url(#jdwash)"/>`; for (let i = 0; i < n; i++) g += jdNeedles(x - w / 2 + (i + .5) * w / n, y + 1 - Math.sin((i + .5) / n * Math.PI) * w / 9, w / n * .85 + 4, op, ink); return g; }
@@ -423,7 +439,7 @@ function jdScene() {
     g += jdHit("ped:" + p.id, `Pedra bruta: ${p.nome}, ${k} de 3 golpes`, `${p.nome} · ${Math.min(k, 3)} de 3 golpes`, `<path d="${jdCurve([...pts, pts[0], pts[1]])}Z" fill="${INK}" fill-opacity=".62" filter="url(#jdwash)"/>${jdF(jdBr(pts.slice(0, 5), 2.2, { a: .5, m: .3, b: .3, sd: i }), INK, .9)}${jdMoss(x, y - 9, 2, 6)}${k >= 3 ? `<circle cx="${x}" cy="${y}" r="20" class="jd-ready-ring"/>` : ""}${JD.lbl ? `<text x="${x}" y="${y + 24}" text-anchor="middle" class="jd-plabel">${esc(trunc(p.nome, 16))}</text>` : ""}`, `${JD.fx?.id === p.id ? " jd-hit" : ""} jd-raw`); });
   /* oeste: montanha, pinheiro, mirante */
   g += jdMountains();
-  g += jdHit("mirante", "Mirante, no pico", "Mirante · a mandala e a bússola vistas do alto", `<rect x="150" y="280" width="60" height="44" fill="transparent"/><g transform="translate(178 300)"><path d="M-12 0q12-7 24 0" class="jd-eave"/><path d="M-13 0q-3-1-4-4M13 0q3-1 4-4" class="jd-eave"/><path d="M0-6v-4" class="jd-cord"/><path d="M-7 0v9M7 0v9" class="jd-cord"/><path d="M-10 9h20" class="jd-cord"/></g>`, " jd-mir");
+  g += jdHit("mirante", "Mirante, no pico", "Mirante · a mandala e a bússola vistas do alto", jdMirante(), ` jd-mir${jdCamOpen("mirante") ? " on-open" : " jd-lockd"}`);
   g += jdHit("arv:tao", `${JD_ARV.tao.nome} de Taoísmo: ${T.tao.nome}`, `${JD_ARV.tao.nome} · Taoísmo · ${T.tao.nome}${T.tao.dorm ? " (dormindo)" : ""}`, jdSketch(T.tao, jdPine) + `<g>${jdPine(T.tao, JD.fx?.k === "rega" && JD.fx.id === "tao")}${jdQiSway(262, 604, JD_QI.tao, 1.6)}</g>` + jdInsc(122, 684, "tao", false), ` jd-tree${T.tao.dorm ? " jd-dorm" : ""}`);
   /* leste: enso, bambu e a oficina */
   g += jdHit("arv:med", `${JD_ARV.med.nome} de Meditação: ${T.med.nome}`, `${JD_ARV.med.nome} · Meditação · ${T.med.nome}${T.med.dorm ? " (dormindo)" : ""}`, `<g opacity=".22" pointer-events="none">${jdEnso(1)}</g>` + jdEnso(.45 + .5 * Math.min(1, T.med.g / 55)) + jdSketch(T.med, jdBamboo, true) + `<g class="jd-qsway-med">${jdBamboo(T.med, JD.fx?.k === "rega" && JD.fx.id === "med")}${jdQiSway(792, 654, JD_QI.med, 2.4)}</g>` + jdInsc(896, 380, "med", true, "end"), ` jd-tree${T.med.dorm ? " jd-dorm" : ""}`);
