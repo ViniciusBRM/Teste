@@ -88,13 +88,15 @@ const ICONS = {
   star: '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>',
   wave: '<path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/>',
   eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  gauge: '<path d="M3.5 17a9 9 0 1 1 17 0"/><path d="M12 13l4.5-4.5"/><circle cx="12" cy="13" r="1.6"/><path d="M6.5 13h1.5M16 13h1.5M12 7.5V9"/>',
+  kanban: '<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="9.5" y="4" width="5" height="10" rx="1.5"/><rect x="16" y="4" width="5" height="13" rx="1.5"/>',
 };
 const ic = (k, col, cls = "") => `<span class="ico ${cls}"${col ? ` style="--c:${col}"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[k] || ICONS.grid}</svg></span>`;
 const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="mk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--a-men)"/></linearGradient></defs><circle cx="16" cy="16" r="13" fill="none" stroke="url(#mk)" stroke-width="2.2"/><ellipse cx="16" cy="16" rx="5.5" ry="13" fill="none" stroke="url(#mk)" stroke-width="1.6"/><path d="M3.5 12h25M3.5 20h25" stroke="url(#mk)" stroke-width="1.4"/><circle cx="21.5" cy="9.5" r="2.4" fill="var(--a-fis)"/></svg>`;
 
 /* ================================================================ navegação */
 const NAV = [
-  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"], ["cruz", "Cruzamentos", "scatter"]]],
+  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["trabalho", "Cockpit de Trabalho", "gauge"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"], ["cruz", "Cruzamentos", "scatter"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["idiomas", "Idiomas", "globe"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["mapa", "Mapa do Atlas", "compass"], ["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
@@ -115,6 +117,7 @@ const SUBS = {
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
   jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["filosofia", "Filosofia"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   rotina: [["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]],
+  trabalho: [["hoje", "Hoje"], ["semana", "Semana"], ["mes", "Mês"], ["kanban", "Kanban"], ["lista", "Lista"], ["gantt", "Gantt"], ["riscos", "Riscos"], ["problemas", "Problemas"], ["equipe", "Equipe"], ["log", "Diário de bordo"], ["decisoes", "Decisões"], ["bim", "Tracker BIM"], ["entregas", "Entregas"], ["reunioes", "Reuniões"], ["relatorios", "Relatórios"], ["licoes", "Lições"], ["metricas", "Métricas"], ["contexto", "Contexto"], ["pessoa", "Pessoa", "equipe"]],
   psi: [["inicio", "Início"], ["sessoes", "Sessões"], ["processos", "Processos"], ["entre", "Entre sessões"], ["padroes", "Padrões"], ["terapeuta", "O Terapeuta"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
 };
@@ -143,8 +146,8 @@ function route() {
   render(); $("#main")?.focus({ preventScroll: true }); window.scrollTo({ top: 0 });
 }
 function navHTML(R) {
-  const pend = Object.values(S.mentores || {}).reduce((n, m) => n + (m.conversa || []).reduce((k, msg) => k + (msg.acoes || []).filter(a => a.status === "pendente").length, 0), 0);
-  const badge = { metas: R.tarAtras + R.metasAtras, casa: R.casaAlertas, mentores: pend, pessoas: R.relAtras, radar: LOADED ? radarAlerts().filter(a => a.st === "crit" && (a.tipo === "orcamento" || a.tipo === "humor")).length : 0, semana: LOADED && parse(TODAY).getDay() <= 2 && S.fechamentos?.[fsTarget()]?.status !== "fechado" ? 1 : 0 };
+  const pend = Object.entries(S.mentores || {}).filter(([k]) => !MENTOR_DEF[k]?.page).map(([, m]) => m).reduce((n, m) => n + (m.conversa || []).reduce((k, msg) => k + (msg.acoes || []).filter(a => a.status === "pendente").length, 0), 0);
+  const badge = { metas: R.tarAtras + R.metasAtras, casa: R.casaAlertas, mentores: pend, trabalho: LOADED ? ckPendentes().length + ckAlertas().filter(a => a.st === "crit").length : 0, pessoas: R.relAtras, radar: LOADED ? radarAlerts().filter(a => a.st === "crit" && (a.tipo === "orcamento" || a.tipo === "humor")).length : 0, semana: LOADED && parse(TODAY).getDay() <= 2 && S.fechamentos?.[fsTarget()]?.status !== "fechado" ? 1 : 0 };
   return `<div class="brand"><span class="mark">${MARK}</span><div><b>Atlas da Vida <i class="v2">3</i></b><small>${esc(S.cfg.nome || "seu sistema pessoal")}</small></div><button type="button" class="iconbtn navx" data-act="menu" aria-label="Fechar menu">${ic("x")}</button></div>
   <button type="button" class="navsearch" data-act="pal">${ic("search")}<span>Buscar ou executar…</span><kbd>Ctrl K</kbd></button>
   ${NAV.map(([g, items]) => (g ? `<div class="navg">${g}</div>` : "") + items.map(([k, l, i]) => { const on = PAGE === k || (k === "mentores" && PAGE === "mentor");
@@ -322,6 +325,8 @@ function palItems(q) {
   const out = [], R = calcAt(REF), add = (g, l, s, ico, run, kw = "") => { const sc = fuzzy(l + " " + kw, q); if (sc >= 0) out.push({ g, l, s, ico, run, sc }); };
   if (q.trim().startsWith("/")) { const r = previewCommand(q.trim()); out.push({ g: "Executar", l: r.ok ? r.txt : r.err || "Comando incompleto", s: r.ok ? "Enter registra agora" : "Ex.: /gasto 12,50 Café · /tarefa Ligar para o banco até 15/10 · /humor 4", ico: "bolt", run: r.ok ? () => runQuickCommand(q.trim()) : null, sc: 999 }); return out; }
   add("Ações", "Capturar", "Escreva ou dite: gastos, sono, treino, contatos, tarefas", "bolt", () => openCapture(), "capturar ditar voz rapido registrar");
+  add("Ações", "Registrar no Cockpit de Trabalho", "Tarefa, risco, problema, decisão ou evento em poucos segundos (Alt+Shift+N)", "gauge", () => ckQuickOpen(), "tarefa risco problema decisao diario");
+  add("Ações", "Conversar com o PMO", "O agente do Cockpit de Trabalho: prioridades, riscos, delegação", "gauge", () => { CK.chat = true; CK_LS("chat", "1"); setHash("trabalho", SUB && PAGE === "trabalho" ? SUB : "hoje"); setTimeout(() => $("#m_in")?.focus(), 60); }, "pmo agente trabalho projeto prioridades delegar");
   add("Ações", EX_MODE ? "Desligar o modo exemplo" : "Ligar o modo exemplo", "Dados fictícios em todas as abas, sem tocar nos seus", "eye", () => exToggle(), "exemplo demonstracao demo ficticio tutorial");
   add("Ações", "Painel do dia", "Humor, sono, treino, gastos e hábitos em um minuto, por texto ou voz", "mic", () => setHash("painel"), "painel dia rapido voz falar ditar registrar check-in");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");

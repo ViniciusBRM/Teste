@@ -181,6 +181,7 @@ function mkProposal(inp) {
 /* ---------------------------------------------------------------- conversa */
 async function askMentor(mid, text, mode = "chat") {
   text = String(text || "").trim(); if (!text) return;
+  if (!MST.live && MENTOR_DEF[mid]?.intercept?.(text)) return;
   if (!SAMPLE) { toast(AI_OFF || "A IA do Claude não está disponível nesta visualização."); return; }
   if (MST.live) { toast("Espere a resposta atual terminar ou toque em Parar."); return; }
   if (blockedMentor(mid)) { toast(`${ashort(MENTOR_DEF[mid].area || MENTOR_DEF[mid].gate)} está fora da IA em Privacidade. Libere o setor para conversar com este mentor.`); return; }
@@ -204,7 +205,7 @@ async function askMentor(mid, text, mode = "chat") {
 function finishMentor(text, cut) {
   const live = MST.live; if (!live) return;
   let content = String(text || ""); const mm = content.match(/```atlas\s*([\s\S]*?)```/);
-  if (mm) { try { const b = JSON.parse(mm[1]); for (const x of b.memorias || []) { const r = addMemory(live.mid, { tipo: x.tipo, texto: x.texto }); if (r) live.uso.push({ t: "salvar_memoria", d: `${r.tipo}: ${trunc(r.texto, 90)}` }); } if (b.plano?.foco) { setPlan(live.mid, b.plano); live.uso.push({ t: "atualizar_plano", d: trunc(b.plano.foco, 70) }); } for (const p of b.propostas || []) live.acoes.push(mkProposal(p)); const pid = jMidP(live.mid); if (pid) for (const x of b.praticas || []) { const r = jRecommend(pid, x); if (r) live.uso.push({ t: "recomendar", d: `${r.tipo}: ${trunc(r.titulo, 80)}` }); }
+  if (mm) { try { const b = JSON.parse(mm[1]); for (const x of b.memorias || []) { const r = addMemory(live.mid, { tipo: x.tipo, texto: x.texto }); if (r) live.uso.push({ t: "salvar_memoria", d: `${r.tipo}: ${trunc(r.texto, 90)}` }); } if (b.plano?.foco) { setPlan(live.mid, b.plano); live.uso.push({ t: "atualizar_plano", d: trunc(b.plano.foco, 70) }); } if (MENTOR_DEF[live.mid]?.parseBlock) MENTOR_DEF[live.mid].parseBlock(b, live); else for (const p of b.propostas || []) live.acoes.push(mkProposal(p)); const pid = jMidP(live.mid); if (pid) for (const x of b.praticas || []) { const r = jRecommend(pid, x); if (r) live.uso.push({ t: "recomendar", d: `${r.tipo}: ${trunc(r.titulo, 80)}` }); }
     const lzd = MENTOR_DEF[live.mid]?.lz; if (lzd) { for (const x of b.sugestoes || []) { const r = lzSugAdd(lzd, x); if (r) live.uso.push({ t: "recomendar", d: trunc(r.titulo, 80) }); } if (b.nivel?.nivel) { const n = clamp(Math.round(+b.nivel.nivel), 1, 4); lzData().nivel[lzd] = n; live.uso.push({ t: "ajustar_nivel", d: `${LZ_NIV[n]}: ${trunc(String(b.nivel.motivo || ""), 60)}` }); } } } catch {} content = content.replace(mm[0], "").trim(); }
   content = content.replace(/```atlas[\s\S]*$/, "").trim();
   if (live.uso.some(u => u.t === "recomendar")) dirty.add(MENTOR_DEF[live.mid]?.lz ? "lazerHub" : "jornada");
@@ -233,12 +234,14 @@ function scrollChat(soft) { const c = $("#mchat"); if (c && (!soft || c.scrollHe
 const USO_TXT = { ver_aba: ["eye", "Olhou a aba"], consultar_mentor: ["council", "Consultou o mentor"], levantar_conflito: ["flag", "Levou para você decidir"], salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"], ajustar_nivel: ["sprout", "Ajustou o nível"] };
 const usoHTML = us => (us || []).map(u => `<span class="uso">${ic(USO_TXT[u.t]?.[0] || "bolt")}<b>${USO_TXT[u.t]?.[1] || u.t}</b> ${esc(u.d)}</span>`).join("");
 function propHTML(mid, mi, p) {
+  if (p.ck) return ckPropHTML(mid, mi, p);
   const lab = { tarefa: "Tarefa", meta: "Meta", habito: "Hábito", lembrete: "Lembrete" }[p.tipo];
   return `<div class="prop ${p.status}"><div class="prop-t">${ic({ tarefa: "checksq", meta: "target", habito: "repeat", lembrete: "clock" }[p.tipo] || "plus")}<div><span class="prop-k">${lab} proposta</span><b>${esc(p.titulo)}</b><small>${[p.prazo && "até " + fmtD(p.prazo), p.tipo !== "habito" && p.prio, p.vezes && p.vezes + "×/semana", isNum(p.alvo) && `alvo ${p.alvo} ${p.un || ""}`, p.meta && "meta: " + p.meta].filter(Boolean).map(esc).join(" · ")}</small>${p.detalhes ? `<p>${esc(p.detalhes)}</p>` : ""}</div></div>
     <div class="prop-a">${p.status === "pendente" ? (mi >= 0 ? `<button type="button" class="btn sm primary" data-prop="${mid}|${mi}|${p.id}|ok">${ic("check")}Criar</button><button type="button" class="btn sm ghost" data-prop="${mid}|${mi}|${p.id}|no">Descartar</button>` : `<span class="muted">aguarde a resposta terminar</span>`) : p.status === "aceita" ? `<span class="pill good">Criada</span>` : `<span class="pill none">Descartada</span>`}</div></div>`;
 }
 function decideProposal(mid, mi, pid, ok) {
   const msg = mstate(mid).conversa[mi], p = msg?.acoes?.find(x => x.id === pid); if (!p || p.status !== "pendente") return;
+  if (p.ck) { ckDecide(mid, p, ok); return; }
   const area = MENTOR_DEF[mid].area || MENTOR_DEF[mid].gate || "", keys = ["mentores"];
   if (!ok) { p.status = "descartada"; touch("mentores", { label: "Proposta descartada" }); return; }
   if (p.tipo === "tarefa" || p.tipo === "lembrete") { const meta = S.metas.find(m => norm(m.meta) === norm(p.meta))?.meta || ""; S.tarefas.push({ id: p.ref = uid(), tarefa: p.titulo, projeto: "", area: area || (meta ? S.metas.find(m => m.meta === meta).area : ""), prio: p.prio, prazo: p.prazo, status: "A fazer", concluida: "", meta, notas: p.detalhes, origem: MENTOR_DEF[mid].nome }); keys.push("tarefas"); }
