@@ -105,21 +105,30 @@ function expDetail(x) {
     ${x.status === "ativo" ? `<div class="flbl">Marcar dias anteriores</div><div class="expmark">${an.rows.filter(r => r.past && r.d >= addDays(TODAY, -14) && (x.desenho !== "antes" || r.c === "B")).slice(-14).map(r => `<div class="emr"><span>${fmtD(r.d)} · ${r.c === "B" ? "COM" : "SEM"}</span><button type="button" class="seg" data-expad="${x.id}|1|${r.d}" aria-pressed="${r.ad === 1}">fez</button><button type="button" class="seg" data-expad="${x.id}|0|${r.d}" aria-pressed="${r.ad === 0}">não fez</button></div>`).join("")}</div>
       <div class="row wrap"><label class="chk"><input type="checkbox" id="exp_dia" checked> Registrar o resultado no diário e na memória do mentor</label><button type="button" class="btn primary" data-expend="${x.id}">${ic("check")}Encerrar e guardar o aprendizado</button><button type="button" class="btn ghost" data-expcancel="${x.id}">Cancelar experimento</button></div>` : ""}`, { cls: "span2 expdet" });
 }
+/* a mudança testável por trás de uma pista (o fator k acompanha a métrica alvo); null quando o fator não é algo que você faz */
+function expIdeaFor(k, target) {
+  const D = DAILY(), p66 = () => { const v = (D.C[k] || []).filter(isNum).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length * .66)] : null; };
+  if (k.startsWith("h:")) { const h = S.habitos.find(z => "h:" + z.id === k); return h ? { titulo: `${h.nome} × ${expMetricL(target).toLowerCase()}`, intervencao: h.nome, metrica: target } : null; }
+  if (k === "sono") { const v = p66(); return v ? { titulo: "Dormir mais", intervencao: `Dormir pelo menos ${num(Math.round(v * 2) / 2)} h`, metrica: target, defasagem: 1 } : null; }
+  if (k === "passos") { const v = p66(); return v ? { titulo: "Andar mais", intervencao: `Andar pelo menos ${num(Math.round(v / 500) * 500, 0)} passos`, metrica: target } : null; }
+  if (k === "treino" || k === "min") return { titulo: "Treinar", intervencao: "Treinar (qualquer treino)", metrica: target };
+  if (k === "estudo") return { titulo: "Estudar todo dia", intervencao: "Estudar pelo menos 30 min", metrica: target };
+  if (k === "idi") return { titulo: "Idioma todo dia", intervencao: "15 minutos de idioma", metrica: target };
+  if (k === "lazer") return { titulo: "Lazer no dia", intervencao: "Reservar 1 h de lazer", metrica: target };
+  if (k === "contatos" || k.startsWith("p:")) return { titulo: k.startsWith("p:") ? `Ver ${k.slice(2)}` : "Falar com alguém", intervencao: k.startsWith("p:") ? `Encontrar ou falar com ${k.slice(2)}` : "Falar com alguém querido (ligação ou encontro)", metrica: target };
+  if (k === "diario") return { titulo: "Escrever no diário", intervencao: "Escrever no diário antes de dormir", metrica: target, defasagem: 1 };
+  if (k === "jmin" || k === "jdia") return { titulo: "Praticar todo dia", intervencao: "10 minutos de prática da jornada (meditação, leitura ou oração)", metrica: target };
+  if (k === "ro:pct") return { titulo: "Cumprir o plano do dia", intervencao: "Planejar só 3 blocos importantes na Rotina e marcar cada um", metrica: target };
+  if (k === "psir") return { titulo: "Registro entre sessões", intervencao: "Fazer um registro na Psicologia (pergunta do dia ou pensamento)", metrica: target, defasagem: 1 };
+  return null;
+}
 function expIdeas() {
   return memo("expideas", () => {
     const out = [], seen = new Set();
     for (const target of ["bem", "energia"]) for (const i of influencers(target, { days: 180, min: 20 }).slice(0, 12)) {
-      if (Math.abs(i.r) < .15 || seen.has(i.k)) continue; let it = null; const k = i.k, D = DAILY();
-      const p66 = () => { const v = D.C[k].filter(isNum).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length * .66)] : null; };
-      if (k.startsWith("h:")) { const h = S.habitos.find(z => "h:" + z.id === k); if (h) it = { titulo: `${h.nome} × ${expMetricL(target).toLowerCase()}`, intervencao: h.nome, metrica: target }; }
-      else if (k === "sono") { const v = p66(); if (v) it = { titulo: "Dormir mais", intervencao: `Dormir pelo menos ${num(Math.round(v * 2) / 2)} h`, metrica: target, defasagem: 1 }; }
-      else if (k === "passos") { const v = p66(); if (v) it = { titulo: "Andar mais", intervencao: `Andar pelo menos ${num(Math.round(v / 500) * 500, 0)} passos`, metrica: target }; }
-      else if (k === "treino") it = { titulo: "Treinar", intervencao: "Treinar (qualquer treino)", metrica: target };
-      else if (k === "estudo") it = { titulo: "Estudar todo dia", intervencao: "Estudar pelo menos 30 min", metrica: target };
-      else if (k === "lazer") it = { titulo: "Lazer no dia", intervencao: "Reservar 1 h de lazer", metrica: target };
-      else if (k === "contatos" || k.startsWith("p:")) it = { titulo: k.startsWith("p:") ? `Ver ${k.slice(2)}` : "Falar com alguém", intervencao: k.startsWith("p:") ? `Encontrar ou falar com ${k.slice(2)}` : "Falar com alguém querido (ligação ou encontro)", metrica: target };
-      else if (k === "diario") it = { titulo: "Escrever no diário", intervencao: "Escrever no diário antes de dormir", metrica: target, defasagem: 1 };
-      if (!it) continue; seen.add(k);
+      /* só pistas cujo intervalo de 95% não passa pelo zero: experimento testa uma suspeita, não ruído */
+      if (Math.abs(i.r) < .15 || !czConsist(i) || seen.has(i.k)) continue; const it = expIdeaFor(i.k, target);
+      if (!it) continue; seen.add(i.k);
       out.push({ ...it, r: i.r, n: i.n, direcao: i.r >= 0 ? "aumentar" : "diminuir", hipotese: `Nos seus dados, ${i.l.toLowerCase()} anda junto com ${expMetricL(target).toLowerCase()} (r = ${num(i.r, 2)}, ${i.n} dias). Correlação não prova causa: o experimento testa.` });
       if (out.length >= 4) break;
     }

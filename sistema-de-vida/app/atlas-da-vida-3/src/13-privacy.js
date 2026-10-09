@@ -57,7 +57,9 @@ function metricArea(k) {
   if (["sono", "qual", "passos", "treino", "min", "peso"].includes(k)) return "Saúde física";
   if (["humor", "bem", "energia", "estresse", "dhumor"].includes(k)) return "Saúde mental";
   if (k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:")) return "Finanças";
-  if (k === "estudo") return "Aprendizado";
+  if (k === "estudo" || k === "idi") return "Aprendizado";
+  if (k === "ckh" || k === "ckc") return "Carreira";
+  if (k === "psis" || k === "psir") return "Saúde mental";
   if (k === "lazer" || k === "lazsat") return "Lazer & criatividade";
   if (k === "jmin" || k === "jdia" || k === "bmidx") return "Propósito & espiritualidade";
   if (k.startsWith("h:")) return S.habitos.find(h => "h:" + h.id === k)?.area || null;

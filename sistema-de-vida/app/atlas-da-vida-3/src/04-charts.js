@@ -308,9 +308,10 @@ function corrHeat(keys, o = {}) {
   const n = keys.length, M = keys.map(a => keys.map(b => a === b ? 1 : crossData(a, b, { days: o.days || 180 })));
   const c = r => r == null ? "var(--cell)" : r >= 0 ? `color-mix(in srgb, var(--accent) ${Math.round(Math.min(1, r) * 90)}%, var(--cell-mid))` : `color-mix(in srgb, var(--crit) ${Math.round(Math.min(1, -r) * 90)}%, var(--cell-mid))`;
   const lab = k => metric(k)?.l || k;
+  /* célula fraca (o intervalo de 95% passa pelo zero) fica apagada; par em que uma métrica é parte da outra não é cruzado */
   return `<div class="hscroll"><div class="corr" style="grid-template-columns:minmax(118px,170px) repeat(${n},minmax(30px,1fr));min-width:${118 + n * 33}px"><div></div>${keys.map(k => `<div class="ch" title="${esc(lab(k))}">${esc(trunc(lab(k), 11))}</div>`).join("")}
-    ${keys.map((a, i) => `<div class="crl">${esc(lab(a))}</div>${keys.map((b, j) => { const x = M[i][j], r = i === j ? 1 : x && x.n >= 15 ? x.r : null;
-      return `<button type="button" class="cc${i === j ? " diag" : ""}" style="background:${i === j ? "var(--cell)" : c(r)}"${i !== j ? ` data-cx="${a}|${b}"` : ""} ${tip(i === j ? lab(a) : `${lab(a)} × ${lab(b)}\nr = ${r == null ? "dados insuficientes" : num(r, 2)}${x?.n ? ` · ${x.n} dias` : ""}`)}>${i === j ? "" : r == null ? "" : num(r, 1)}</button>`; }).join("")}`).join("")}</div></div>`;
+    ${keys.map((a, i) => `<div class="crl">${esc(lab(a))}</div>${keys.map((b, j) => { const x = M[i][j], rel = i !== j && x?.rel, r = i === j ? 1 : !rel && x && x.n >= 15 ? x.r : null, fraca = r != null && i !== j && !czConsist(x);
+      return `<button type="button" class="cc${i === j ? " diag" : ""}${fraca ? " weak" : ""}${rel ? " rel" : ""}" style="background:${i === j || rel ? "var(--cell)" : c(r)}"${i !== j && !rel ? ` data-cx="${a}|${b}"` : ""} ${tip(i === j ? lab(a) : `${lab(a)} × ${lab(b)}\n${rel ? "uma é parte da outra: não se cruza" : `r = ${r == null ? "dados insuficientes" : num(r, 2)}${fraca ? " · pode ser acaso" : ""}${x?.n ? ` · ${x.n} dias` : ""}`}`)}>${i === j || rel ? "" : r == null ? "" : num(r, 1)}</button>`; }).join("")}`).join("")}</div></div>`;
 }
 function ring(p, color, size = 64, stroke = 7) {
   const r = (size - stroke) / 2, c = 2 * Math.PI * r, v = clamp(p ?? 0);

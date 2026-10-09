@@ -421,6 +421,22 @@ svg .ax.pl{font-size:10.5px;fill:var(--ink-2)}
 .czr p{margin:0;font-size:13px;color:var(--ink-2)}
 .inl{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-weight:600;flex:1}
 .pvc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-bottom:10px}.pvc .flbl{margin:0 4px 0 6px}
+.czlead{margin:0 0 4px;max-width:780px}.czbase{margin:0 0 6px}
+.czsec{margin:22px 0 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;border-bottom:1px solid var(--line);padding-bottom:6px}
+.czq{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:12px}.czq .flbl{margin:0}.czq .segs{flex-wrap:wrap}
+.czqo{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.czqo select{width:auto;max-width:220px}
+.czps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.czp{border:1px solid var(--line);border-left:3px solid var(--muted);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.czp.good{border-left-color:var(--good)}.czp.crit{border-left-color:var(--crit)}.czp p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.czph{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.czph b{flex:1;min-width:120px}
+.czn{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:99px;background:var(--surface-3);font:600 11px var(--f-mono);flex:none}
+.czacaso{margin-top:14px}.czacaso summary{cursor:pointer;font-size:13px;color:var(--ink-2);padding:4px 0}.czacaso .dv{margin-top:8px;opacity:.8}
+.czwarn{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:10px;background:color-mix(in srgb,var(--warn) 14%,var(--surface-2))}.czwarn p{margin:4px 0 0}
+.czpron h3{display:flex;align-items:center;gap:8px;margin:0 0 6px}.czpron p{max-width:760px}
+.czar{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:6px 0 10px}
+.czai{display:flex;flex-direction:column;gap:2px;padding:9px 11px;border:1px dashed var(--line-2);border-radius:10px;color:var(--ink);text-decoration:none}.czai small{color:var(--muted)}
+.czai.on{border-style:solid;border-color:var(--good);background:color-mix(in srgb,var(--good) 8%,var(--surface))}.czai:hover{border-color:var(--accent)}
+.cc.weak{opacity:.38}.cc.rel{cursor:default;background-image:repeating-linear-gradient(45deg,transparent 0 4px,var(--line) 4px 5px)!important}
 .pvc select{width:auto}
 .dt.pv td{white-space:nowrap}
 .terms{display:flex;flex-wrap:wrap;gap:6px}
@@ -2712,45 +2728,64 @@ const CMP_TXT = { ant: "vs mês anterior", m3: "vs média de 3 meses", ano: "vs 
 /* ================================================================ tabela diária: base de todos os cruzamentos */
 const DAILY = () => memo("daily", buildDaily);
 function buildDaily() {
-  const minOf = a => a.length ? a.reduce((x, y) => x < y ? x : y) : null;
-  const dates0 = [Object.keys(S.saude), S.lanc.map(l => l.data), Object.keys(S.marks).map(k => k.split("|")[1]), S.estudo.map(e => e.data), S.lazer.map(e => e.data), S.contatos.map(c => c.data), S.diario.map(e => e.data), S.tarefas.map(t => t.concluida)].map(a => minOf(a.filter(Boolean)));
-  let start = minOf(dates0.filter(Boolean)) || addDays(TODAY, -90); if (start < addDays(TODAY, -730)) start = addDays(TODAY, -730);
+  const minOf = a => a.length ? a.reduce((x, y) => x < y ? x : y) : null, maxOf = a => a.length ? a.reduce((x, y) => x > y ? x : y) : null;
+  const src = [Object.keys(S.saude), S.lanc.map(l => l.data), Object.keys(S.marks).map(k => k.split("|")[1]), S.estudo.map(e => e.data), S.lazer.map(e => e.data), S.contatos.map(c => c.data), S.diario.map(e => e.data), S.tarefas.map(t => t.concluida)].map(a => a.filter(Boolean));
+  const dates0 = src.map(minOf), last0 = src.map(maxOf);
+  /* fontes das abas mais novas: Cockpit (o que você entregou), Psicologia (fora o que é só seu) e Rotina (dias com blocos marcados) */
+  const euCk = (S.ck?.membros || []).find(m => m.eu)?.id || "eu", ckDone = (S.ckTar || []).filter(t => t.concluida && t.resp === euCk).map(t => t.concluida);
+  const psS = (S.psique?.sessoes || []).filter(x => x.data && !x.privado).map(x => x.data), psR = (S.psique?.reflexoes || []).filter(x => x.data && !x.privado).map(x => x.data);
+  const roDias = new Set(); for (const b of S.rotina || []) for (const d of [...Object.keys(b.st || {}), ...Object.keys(b.feitos || {})]) if (d <= TODAY) roDias.add(d);
+  let start = minOf([...dates0, minOf(ckDone), minOf(psS), minOf(psR), minOf([...roDias])].filter(Boolean)) || addDays(TODAY, -90); if (start < addDays(TODAY, -730)) start = addDays(TODAY, -730);
   const dates = []; for (let d = start; d <= TODAY; d = addDays(d, 1)) dates.push(d);
   const N = dates.length, idx = {}; dates.forEach((d, i) => idx[d] = i);
-  const C = {}, col = () => new Array(N).fill(null);
-  const zero = (k, from) => { C[k] = col(); if (!from) return; const s = Math.max(0, from < start ? 0 : idx[from] ?? 0); for (let i = s; i < N; i++) C[k][i] = 0; };
-  const [fS, fL, fM, fE, fZ, fC, fD, fT] = dates0;
+  const C = {}, E = {}, col = () => new Array(N).fill(null);
+  /* dia sem registro vira zero enquanto a pessoa usa aquela fonte. Depois do último registro (+ folga), o zero continua valendo
+     para os alertas, mas os cruzamentos param de contar: E guarda o último dia observado de cada série (ver czCol) */
+  const zero = (k, from, last, folga = 14) => { C[k] = col(); if (!from) return; const s = Math.max(0, from < start ? 0 : idx[from] ?? 0); for (let i = s; i < N; i++) C[k][i] = 0;
+    if (last) { const fim = addDays(last, folga); if (fim < TODAY) E[k] = fim < start ? -1 : idx[fim]; } };
+  const [fS, fL, fM, fE, fZ, fC, fD, fT] = dates0, [, lL, lM, lE, lZ, lC, lD, lT] = last0;
   for (const k of ["sono", "humor", "energia", "estresse", "qual", "passos", "peso", "treino", "min"]) C[k] = col();
   for (const [d, e] of Object.entries(S.saude)) { const i = idx[d]; if (i == null) continue;
     for (const k of ["sono", "humor", "energia", "estresse", "qual", "passos", "peso"]) if (isNum(e[k])) C[k][i] = +e[k];
     if (Object.keys(e).some(k => k !== "peso")) { C.treino[i] = e.treino ? 1 : 0; C.min[i] = e.treino ? (+e.min || 0) : 0; } }
-  zero("hab", fM); for (const h of S.habitos) zero("h:" + h.id, fM);
+  zero("hab", fM, lM); for (const h of S.habitos) zero("h:" + h.id, fM, lM);
   if (fM && S.habitos.length) for (let i = idx[fM] ?? 0; i < N; i++) { let n = 0; for (const h of S.habitos) if (S.marks[h.id + "|" + dates[i]]) { n++; C["h:" + h.id][i] = 1; } C.hab[i] = n / S.habitos.length; }
-  zero("gasto", fL); zero("receita", fL); for (const g of GRUPOS) zero("g:" + g, fL);
+  zero("gasto", fL, lL); zero("receita", fL, lL); for (const g of GRUPOS) zero("g:" + g, fL, lL);
   for (const l of S.lanc) { const i = idx[l.data]; if (i == null) continue; const v = +l.valor || 0;
-    if (l.tipo === "Despesa") { C.gasto[i] += v; const g = CAT_DESP[l.cat] || "Estilo de vida"; C["g:" + g][i] += v; const ck = "c:" + l.cat; if (!C[ck]) zero(ck, fL); C[ck][i] += v; }
+    if (l.tipo === "Despesa") { C.gasto[i] += v; const g = CAT_DESP[l.cat] || "Estilo de vida"; C["g:" + g][i] += v; const ck = "c:" + l.cat; if (!C[ck]) zero(ck, fL, lL); C[ck][i] += v; }
     else if (l.tipo === "Receita") C.receita[i] += v; }
-  zero("estudo", fE); for (const e of S.estudo) { const i = idx[e.data]; if (i != null) C.estudo[i] += +e.horas || 0; }
-  zero("lazer", fZ); C.lazsat = col(); const ls = {};
+  zero("estudo", fE, lE); for (const e of S.estudo) { const i = idx[e.data]; if (i != null) C.estudo[i] += +e.horas || 0; }
+  const idE = S.estudo.filter(e => e.lang && e.data); zero("idi", minOf(idE.map(e => e.data)), maxOf(idE.map(e => e.data))); for (const e of idE) { const i = idx[e.data]; if (i != null) C.idi[i] += +e.horas || 0; }
+  zero("lazer", fZ, lZ); C.lazsat = col(); const ls = {};
   for (const e of S.lazer) { const i = idx[e.data]; if (i == null) continue; C.lazer[i] += +e.horas || 0; if (isNum(e.sat)) (ls[i] = ls[i] || []).push(+e.sat); }
   for (const i in ls) C.lazsat[i] = avg(ls[i]);
-  zero("contatos", fC); C.contq = col(); const cq = {};
-  const fP = minOf([fC, fD].filter(Boolean));
-  const pk = n => "p:" + n; for (const p of S.pessoas) zero(pk(p.nome), fP);
+  zero("contatos", fC, lC); C.contq = col(); const cq = {};
+  const fP = minOf([fC, fD].filter(Boolean)), lP = maxOf([lC, lD].filter(Boolean));
+  const pk = n => "p:" + n; for (const p of S.pessoas) zero(pk(p.nome), fP, lP);
   for (const c of S.contatos) { const i = idx[c.data]; if (i == null) continue; C.contatos[i]++; if (isNum(c.qual)) (cq[i] = cq[i] || []).push(+c.qual); if (C[pk(c.pessoa)]) C[pk(c.pessoa)][i] = 1; }
   for (const i in cq) C.contq[i] = avg(cq[i]);
-  zero("diario", fD); zero("palavras", fD); zero("mencoes", fD); C.dhumor = col(); const dh = {};
+  zero("diario", fD, lD); zero("palavras", fD, lD); zero("mencoes", fD, lD); C.dhumor = col(); const dh = {};
   for (const e of S.diario) { const i = idx[e.data]; if (i == null) continue; const p = parseEntry(e.texto);
     C.diario[i] = 1; C.palavras[i] += words(e.texto); C.mencoes[i] += p.people.length; if (isNum(e.humor)) (dh[i] = dh[i] || []).push(+e.humor);
-    for (const t of p.tags) { const k = "t:" + t; if (!C[k]) zero(k, fD); C[k][i] = 1; }
+    for (const t of p.tags) { const k = "t:" + t; if (!C[k]) zero(k, fD, lD); C[k][i] = 1; }
     for (const n of p.people) if (C[pk(n)]) C[pk(n)][i] = 1; }
   for (const i in dh) C.dhumor[i] = avg(dh[i]);
-  zero("tarefas", fT); for (const t of S.tarefas) { const i = idx[t.concluida]; if (i != null && t.status === "Concluída") C.tarefas[i]++; }
-  const fV = minOf((S.eventos || []).map(e => e.data).filter(Boolean)); if (fV) { zero("eventos", fV); for (const e of S.eventos) { const i = idx[e.data]; if (i != null) C.eventos[i]++; } }
+  zero("tarefas", fT, lT); for (const t of S.tarefas) { const i = idx[t.concluida]; if (i != null && t.status === "Concluída") C.tarefas[i]++; }
+  const evD = (S.eventos || []).map(e => e.data).filter(Boolean), fV = minOf(evD); if (fV) { zero("eventos", fV, maxOf(evD)); for (const e of S.eventos) { const i = idx[e.data]; if (i != null) C.eventos[i]++; } }
+  /* Rotina: fração do plano do dia cumprida (feito conta inteiro, parcial meio), só nos dias em que algum bloco foi marcado */
+  C["ro:pct"] = col(); if (typeof rtOcc === "function") for (const d of roDias) { const i = idx[d]; if (i == null) continue; const bs = rtOcc(d); if (!bs.some(b => b.st)) continue; const plan = sum(bs.map(b => b.z - b.a)); if (plan) C["ro:pct"][i] = sum(bs.map(b => b.st === "feito" ? b.z - b.a : b.st === "parcial" ? (b.z - b.a) / 2 : 0)) / plan; }
+  /* Cockpit de Trabalho: tarefas suas concluídas no dia e as horas delas */
+  zero("ckc", minOf(ckDone), maxOf(ckDone)); zero("ckh", minOf(ckDone), maxOf(ckDone));
+  for (const t of (S.ckTar || []).filter(t => t.concluida && t.resp === euCk)) { const i = idx[t.concluida]; if (i != null) { C.ckc[i]++; C.ckh[i] += +t.esforco || 0; } }
+  /* Psicologia: dia de sessão e dia com registro entre sessões */
+  zero("psis", minOf(psS), maxOf(psS), 21); for (const d of psS) { const i = idx[d]; if (i != null) C.psis[i] = 1; }
+  zero("psir", minOf(psR), maxOf(psR)); for (const d of psR) { const i = idx[d]; if (i != null) C.psir[i] = 1; }
   C.bem = C.humor.map((v, i) => v ?? C.dhumor[i]);   // humor do dia: check-in ou, na falta, o humor do diário
   if (typeof jDaily === "function") jDaily(C, idx, zero);   /* métricas da Jornada existencial (24-jornada.js) */
-  return { dates, idx, C, N };
+  return { dates, idx, C, N, E };
 }
+/* a série como os cruzamentos a enxergam: sem os zeros depois que a pessoa parou de registrar aquela fonte */
+function czCol(k) { const D = DAILY(), c = D.C[k]; if (!c || D.E?.[k] == null) return c; D.MC ||= {}; return D.MC[k] ||= c.map((v, i) => i > D.E[k] ? null : v); }
 /* catálogo de métricas diárias para o explorador e para os mentores */
 function metricList() {
   return memo("metrics", () => {
@@ -2773,6 +2808,7 @@ function metricList() {
     for (const g of GRUPOS) add("g:" + g, "Gasto · " + g, "Dinheiro", "sum", fe);
     Object.keys(D.C).filter(k => k.startsWith("c:")).map(k => [k, sum(D.C[k])]).sort((a, b) => b[1] - a[1]).slice(0, 10).forEach(([k]) => add(k, "Gasto · " + k.slice(2), "Dinheiro", "sum", fe));
     add("estudo", "Horas de estudo", "Crescimento", "sum", f1);
+    add("idi", "Horas de idioma", "Crescimento", "sum", f1);
     add("lazer", "Horas de lazer", "Crescimento", "sum", f1);
     add("lazsat", "Satisfação no lazer", "Crescimento", "avg", f1, { lo: 1, hi: 5 });
     add("jmin", "Minutos de prática (jornada)", "Jornada", "sum", f0);
@@ -2781,6 +2817,11 @@ function metricList() {
     add("contatos", "Contatos com pessoas", "Relações", "sum", f0);
     add("contq", "Qualidade dos contatos", "Relações", "avg", f1, { lo: 1, hi: 5 });
     Object.keys(D.C).filter(k => k.startsWith("p:")).map(k => [k, sum(D.C[k])]).filter(x => x[1] >= 3).sort((a, b) => b[1] - a[1]).slice(0, 12).forEach(([k]) => add(k, "Com " + k.slice(2), "Relações", "avg", fp, { bin: true }));
+    add("ro:pct", "Plano da Rotina cumprido", "Rotina", "avg", fp, { lo: 0, hi: 1 });
+    add("ckh", "Horas de trabalho entregues", "Trabalho", "sum", f1);
+    add("ckc", "Tarefas de trabalho concluídas", "Trabalho", "sum", f0);
+    add("psis", "Dia de sessão de terapia", "Psicologia", "avg", fp, { bin: true });
+    add("psir", "Registro entre sessões", "Psicologia", "avg", fp, { bin: true });
     add("tarefas", "Tarefas concluídas", "Metas", "sum", f0);
     add("eventos", "Compromissos na agenda", "Metas", "sum", f0);
     add("diario", "Escreveu no diário", "Diário", "avg", fp, { bin: true });
@@ -2793,9 +2834,13 @@ function metricList() {
 }
 const metric = k => metricList().find(m => m.k === k);
 const mfmt = (k, v) => (metric(k)?.fmt || (x => num(x)))(v);
-const family = k => k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:") ? "gasto" : k === "hab" || k.startsWith("h:") ? "hab" : ["diario", "palavras", "mencoes"].includes(k) ? "diario" : ["treino", "min"].includes(k) ? "treino" : ["humor", "dhumor", "bem"].includes(k) ? "humor" : k;
-function aggSeries(k, gran = "m", n = 6, end = TODAY) {
-  const D = DAILY(), m = metric(k) || { agg: "avg" }, c = D.C[k];
+/* famílias: métricas que são a mesma medida, ou uma parte da outra (o gasto do grupo está dentro do gasto do dia, a tag só
+   existe no dia em que você escreveu). Cruzar dentro da família dá correlação pela conta, não pela vida. */
+const family = k => k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:") ? "gasto" : k === "hab" || k.startsWith("h:") ? "hab" : ["diario", "palavras", "mencoes"].includes(k) || k.startsWith("t:") ? "diario" : ["treino", "min"].includes(k) ? "treino" : ["humor", "dhumor", "bem"].includes(k) ? "humor" : ["jmin", "jdia"].includes(k) ? "jornada" : k === "contatos" || k.startsWith("p:") ? "contatos" : ["estudo", "idi"].includes(k) ? "estudo" : ["ckh", "ckc"].includes(k) ? "ck" : ["psis", "psir"].includes(k) ? "psi" : k;
+/* “com fulano” também vem das menções no diário: é parte do diário */
+const czRel = (a, b) => a === b || family(a) === family(b) || (a.startsWith("p:") && family(b) === "diario") || (b.startsWith("p:") && family(a) === "diario");
+function aggSeries(k, gran = "m", n = 6, end = TODAY, colOver = null) {
+  const D = DAILY(), m = metric(k) || { agg: "avg" }, c = colOver || D.C[k];
   if (!c) return { keys: [], labels: [], vals: [] };
   const endI = D.idx[end] ?? D.N - 1;
   if (gran === "d") { const s = Math.max(0, endI - n + 1); const keys = D.dates.slice(s, endI + 1); return { keys, labels: keys.map(fmtD), vals: c.slice(s, endI + 1) }; }
@@ -2807,28 +2852,72 @@ function aggSeries(k, gran = "m", n = 6, end = TODAY) {
 function crossData(kx, ky, { lag = 0, days = 180, gran = "d" } = {}) {
   const D = DAILY(), pts = [];
   if (!D.C[kx] || !D.C[ky]) return null;
-  if (gran === "d") { const X = D.C[kx], Y = D.C[ky], s = Math.max(0, D.N - days); for (let i = s; i < D.N - lag; i++) { const x = X[i], y = Y[i + lag]; if (x != null && y != null) pts.push({ x, y, d: D.dates[i] }); } }
-  else { const n = gran === "w" ? Math.ceil(days / 7) : Math.max(3, Math.ceil(days / 30)); const A = aggSeries(kx, gran, n), B = aggSeries(ky, gran, n); for (let i = 0; i < A.vals.length - lag; i++) { const x = A.vals[i], y = B.vals[i + lag]; if (x != null && y != null) pts.push({ x, y, d: A.keys[i] }); } }
+  if (gran === "d") { const X = czCol(kx), Y = czCol(ky), s = Math.max(0, D.N - days); for (let i = s; i < D.N - lag; i++) { const x = X[i], y = Y[i + lag]; if (x != null && y != null) pts.push({ x, y, d: D.dates[i] }); } }
+  else { const n = gran === "w" ? Math.ceil(days / 7) : Math.max(3, Math.ceil(days / 30)); const A = aggSeries(kx, gran, n, TODAY, czCol(kx)), B = aggSeries(ky, gran, n, TODAY, czCol(ky)); for (let i = 0; i < A.vals.length - lag; i++) { const x = A.vals[i], y = B.vals[i + lag]; if (x != null && y != null) pts.push({ x, y, d: A.keys[i] }); } }
   const r = pearson(pts.map(p => p.x), pts.map(p => p.y)), fit = regress(pts);
   let groups = null; const bin = metric(kx)?.bin || (pts.length && pts.every(p => p.x === 0 || p.x === 1));
   if (bin) { const A = pts.filter(p => p.x >= .5).map(p => p.y), B = pts.filter(p => p.x < .5).map(p => p.y); if (A.length >= 3 && B.length >= 3) groups = { a: avg(A), b: avg(B), na: A.length, nb: B.length, bin: true }; }
   else if (pts.length >= 12) { const so = [...pts].sort((a, b) => a.x - b.x), q = Math.floor(so.length / 3); groups = { a: avg(so.slice(-q).map(p => p.y)), b: avg(so.slice(0, q).map(p => p.y)), na: q, nb: q, bin: false }; }
-  return { pts, r, n: pts.length, fit, groups };
+  return { pts, r, n: pts.length, fit, groups, gran, rel: czRel(kx, ky), ...rStats(pts, r) };
+}
+/* quanto confiar numa correlação. Dias seguidos se parecem (o humor de hoje puxa o de amanhã), então n dias valem menos que n
+   observações independentes: n efetivo pela autocorrelação de 1ª ordem das duas séries (Bartlett). Com ele, o intervalo de 95%
+   de Fisher e o p bilateral. */
+const normCdf = z => { const t = 1 / (1 + .2316419 * Math.abs(z)), d = .3989422804 * Math.exp(-z * z / 2), p = d * t * (.31938153 + t * (-.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); return z > 0 ? 1 - p : p; };
+const lag1 = a => a.length < 4 ? 0 : pearson(a.slice(0, -1), a.slice(1)) ?? 0;
+function rStats(pts, r) {
+  const n = pts.length; if (r == null || n < 4) return { neff: n, lo: null, hi: null, p: null };
+  const ph = clamp(lag1(pts.map(p => p.x)) * lag1(pts.map(p => p.y)), 0, .9), neff = Math.min(n, n * (1 - ph) / (1 + ph));
+  if (neff < 5) return { neff, lo: null, hi: null, p: null };
+  const z = Math.atanh(clamp(r, -.9999, .9999)), se = 1 / Math.sqrt(neff - 3);
+  return { neff, lo: Math.tanh(z - 1.96 * se), hi: Math.tanh(z + 1.96 * se), p: 2 * (1 - normCdf(Math.abs(z) / se)) };
+}
+/* o intervalo de 95% não passa pelo zero */
+const czConsist = c => c?.lo != null && (c.lo > 0 || c.hi < 0);
+const CZ_MINN = { d: 20, w: 12, m: 8 };
+function czForca(c) {
+  if (!c || c.r == null) return { k: "sem", t: "sem dados em comum" };
+  if (c.rel) return { k: "rel", t: "uma é parte da outra" };
+  if (c.n < (CZ_MINN[c.gran] || 20) || c.lo == null) return { k: "poucos", t: "poucos dados" };
+  if (!czConsist(c)) return { k: "acaso", t: "pode ser acaso" };
+  const a = Math.abs(c.r); return a >= .5 ? { k: "forte", t: "forte" } : a >= .3 ? { k: "moderada", t: "moderada" } : { k: "fraca", t: "fraca, mas consistente" };
 }
 const rWord = r => { const a = Math.abs(r ?? 0); return a >= .5 ? "forte" : a >= .3 ? "moderada" : a >= .15 ? "fraca" : "desprezível"; };
 function influencers(target = "bem", { days = 180, lag = 0, min = 20 } = {}) {
   return memo(`infl:${target}:${days}:${lag}:${min}`, () => {
     const out = [];
     for (const m of metricList()) {
-      if (family(m.k) === family(target)) continue;
+      if (czRel(m.k, target)) continue;
       const c = crossData(m.k, target, { lag, days }); if (!c || c.n < min || c.r == null) continue;
       if (c.groups?.bin && (c.groups.na < 5 || c.groups.nb < 5)) continue;
-      out.push({ k: m.k, l: m.l, r: c.r, n: c.n, groups: c.groups, grp: m.grp, fit: c.fit });
+      out.push({ k: m.k, l: m.l, r: c.r, n: c.n, neff: c.neff, lo: c.lo, hi: c.hi, p: c.p, groups: c.groups, grp: m.grp, fit: c.fit });
     }
+    /* muitas comparações de uma vez: só é pista o que passa por Benjamini–Hochberg a 10% (o resto pode ser acaso) */
+    const ps = out.filter(i => i.p != null).sort((a, b) => a.p - b.p), M = ps.length; let lim = -1;
+    ps.forEach((i, j) => { if (i.p <= (j + 1) / M * .1) lim = j; }); ps.forEach((i, j) => { i.sig = j <= lim; }); out.forEach(i => { i.sig ||= false; });
     return out.sort((a, b) => Math.abs(b.r) - Math.abs(a.r));
   });
 }
-const CORE_KEYS = ["sono", "qual", "bem", "energia", "estresse", "passos", "treino", "hab", "gasto", "estudo", "lazer", "contatos", "diario", "tarefas"];
+/* o par que a aba abre: o primeiro destes que tiver 20 dias em comum; senão, o par de famílias diferentes com mais dias juntos */
+const CZ_PARES = [["sono", "bem"], ["sono", "energia"], ["treino", "bem"], ["hab", "estresse"], ["hab", "bem"], ["passos", "energia"], ["ro:pct", "energia"], ["ckh", "estresse"], ["gasto", "estresse"], ["gasto", "bem"], ["estudo", "bem"], ["contatos", "bem"], ["jmin", "estresse"], ["diario", "bem"], ["qual", "energia"]];
+function czBusca(days = 180) {
+  return memo(`czbusca:${days}`, () => {
+    for (const [a, b] of CZ_PARES) if (metric(a) && metric(b)) { const c = crossData(a, b, { days }); if (c && c.n >= 20 && c.r != null) return { par: [a, b], n: c.n }; }
+    const ms = metricList(); let best = null;
+    for (let i = 0; i < ms.length; i++) for (let j = i + 1; j < ms.length; j++) { if (czRel(ms[i].k, ms[j].k)) continue; const c = crossData(ms[i].k, ms[j].k, { days }); if (c && c.r != null && (!best || c.n > best.n)) best = { par: [ms[i].k, ms[j].k], n: c.n }; }
+    return best && best.n >= 20 ? best : { par: null, n: best?.n || 0 };
+  });
+}
+/* prontidão: quantos dias cada grupo tem na janela e se já dá para cruzar duas coisas diferentes */
+function czProntidao(days = 180) {
+  return memo(`czpront:${days}`, () => {
+    const D = DAILY(), s = Math.max(0, D.N - days), G = {};
+    for (const m of metricList()) { const c = czCol(m.k), g = (G[m.grp] ||= new Set()); for (let i = s; i < D.N; i++) if (c[i] != null) g.add(i); }
+    const B = czBusca(days);
+    return { grupos: Object.entries(G).map(([g, set]) => ({ g, dias: set.size })).sort((a, b) => b.dias - a.dias), pronto: !!B.par, n: B.n, par: B.par };
+  });
+}
+const CORE_KEYS = ["sono", "qual", "bem", "energia", "estresse", "passos", "treino", "hab", "gasto", "estudo", "lazer", "contatos", "diario", "tarefas", "ro:pct", "ckh"];
 
 /* ================================================================ insights automáticos (sem IA) */
 function insights(R, H) {
@@ -2856,7 +2945,7 @@ function insights(R, H) {
   const risk = R.metas.filter(m => m.st === "crit" && m.ativa);
   if (risk.length) out.push({ w: 1.5 + risk.length * .2, st: "crit", area: risk[0].area, k: "Metas em risco", t: `${risk.length} meta(s) atrasada(s) ou vencida(s): ${risk.slice(0, 2).map(m => `<b>${esc(m.meta)}</b>`).join(", ")}${risk.length > 2 ? "…" : ""}.`, a: "Replaneje o prazo ou quebre a meta em uma tarefa para esta semana." });
   // cruzamentos com o diário e com hábitos
-  const inf = influencers("bem", { days: PER * 30, min: 20 });
+  const inf = influencers("bem", { days: PER * 30, min: 20 }).filter(czConsist);   /* só o que não pode ser acaso */
   const hb = inf.filter(i => i.k.startsWith("h:") && i.groups?.bin).sort((a, b) => (b.groups.a - b.groups.b) - (a.groups.a - a.groups.b))[0];
   if (hb && hb.groups.a - hb.groups.b >= .25) { const h = S.habitos.find(z => "h:" + z.id === hb.k); out.push({ w: (hb.groups.a - hb.groups.b) * 1.2, st: "good", area: h?.area || "Saúde mental", k: "Hábito que mais ajuda", t: `Nos dias em que você faz <b>${esc(h?.nome || hb.l)}</b> o humor médio é <b>${num(hb.groups.a)}</b>, contra ${num(hb.groups.b)} sem ele.`, a: "Se tiver que escolher um hábito numa semana difícil, escolha este." }); }
   const pp = inf.filter(i => i.k.startsWith("p:") && i.groups?.bin).sort((a, b) => (b.groups.a - b.groups.b) - (a.groups.a - a.groups.b))[0];
@@ -3193,9 +3282,10 @@ function corrHeat(keys, o = {}) {
   const n = keys.length, M = keys.map(a => keys.map(b => a === b ? 1 : crossData(a, b, { days: o.days || 180 })));
   const c = r => r == null ? "var(--cell)" : r >= 0 ? `color-mix(in srgb, var(--accent) ${Math.round(Math.min(1, r) * 90)}%, var(--cell-mid))` : `color-mix(in srgb, var(--crit) ${Math.round(Math.min(1, -r) * 90)}%, var(--cell-mid))`;
   const lab = k => metric(k)?.l || k;
+  /* célula fraca (o intervalo de 95% passa pelo zero) fica apagada; par em que uma métrica é parte da outra não é cruzado */
   return `<div class="hscroll"><div class="corr" style="grid-template-columns:minmax(118px,170px) repeat(${n},minmax(30px,1fr));min-width:${118 + n * 33}px"><div></div>${keys.map(k => `<div class="ch" title="${esc(lab(k))}">${esc(trunc(lab(k), 11))}</div>`).join("")}
-    ${keys.map((a, i) => `<div class="crl">${esc(lab(a))}</div>${keys.map((b, j) => { const x = M[i][j], r = i === j ? 1 : x && x.n >= 15 ? x.r : null;
-      return `<button type="button" class="cc${i === j ? " diag" : ""}" style="background:${i === j ? "var(--cell)" : c(r)}"${i !== j ? ` data-cx="${a}|${b}"` : ""} ${tip(i === j ? lab(a) : `${lab(a)} × ${lab(b)}\nr = ${r == null ? "dados insuficientes" : num(r, 2)}${x?.n ? ` · ${x.n} dias` : ""}`)}>${i === j ? "" : r == null ? "" : num(r, 1)}</button>`; }).join("")}`).join("")}</div></div>`;
+    ${keys.map((a, i) => `<div class="crl">${esc(lab(a))}</div>${keys.map((b, j) => { const x = M[i][j], rel = i !== j && x?.rel, r = i === j ? 1 : !rel && x && x.n >= 15 ? x.r : null, fraca = r != null && i !== j && !czConsist(x);
+      return `<button type="button" class="cc${i === j ? " diag" : ""}${fraca ? " weak" : ""}${rel ? " rel" : ""}" style="background:${i === j || rel ? "var(--cell)" : c(r)}"${i !== j && !rel ? ` data-cx="${a}|${b}"` : ""} ${tip(i === j ? lab(a) : `${lab(a)} × ${lab(b)}\n${rel ? "uma é parte da outra: não se cruza" : `r = ${r == null ? "dados insuficientes" : num(r, 2)}${fraca ? " · pode ser acaso" : ""}${x?.n ? ` · ${x.n} dias` : ""}`}`)}>${i === j || rel ? "" : r == null ? "" : num(r, 1)}</button>`; }).join("")}`).join("")}</div></div>`;
 }
 function ring(p, color, size = 64, stroke = 7) {
   const r = (size - stroke) / 2, c = 2 * Math.PI * r, v = clamp(p ?? 0);
@@ -3307,9 +3397,9 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 
 /* ================================================================ navegação */
 const NAV = [
-  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["trabalho", "Cockpit de Trabalho", "gauge"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"], ["cruz", "Cruzamentos", "scatter"]]],
+  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["trabalho", "Cockpit de Trabalho", "gauge"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["idiomas", "Idiomas", "globe"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
-  ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
+  ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["cruz", "Cruzamentos", "scatter"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["mapa", "Mapa do Atlas", "compass"], ["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
 ];
 const SUBS = {
@@ -3652,7 +3742,7 @@ function rOverview(R) {
   const rows = R.areas.map((a, i) => ({ ...a, pv: P.areas[i].dados, ser: H.map(h => h.areas[i].dados) }));
   const tbl = `<div class="hscroll"><table class="dt sc"><thead><tr><th>Área</th><th class="num">Dados</th><th class="num">vs ant.</th><th class="num opt">Sente</th><th class="num opt">Alvo</th><th class="opt2">Tendência</th><th class="num opt">Peso</th><th><span class="sr">Mentor</span></th></tr></thead><tbody>${rows.map(a => `<tr class="click${f.area === a.a ? " sel" : ""}${f.area && f.area !== a.a ? " dim" : ""}" data-xf="area|${esc(a.a)}" tabindex="0"><td>${areaDot(a.a)}${esc(ashort(a.a))}</td><td class="num"><span class="sbar st-${a.st}" style="--v:${(a.dados ?? 0) * 10}%;--c:${acol(a.a)}">${a.dados == null ? "–" : num(a.dados)}</span></td><td class="num">${isNum(a.dados) && isNum(a.pv) ? `<span class="${a.dados >= a.pv ? "st-good" : "st-crit"}">${sgn(a.dados - a.pv)}</span>` : "–"}</td><td class="num opt">${a.perc ?? "–"}</td><td class="num opt">${a.alvo ?? "–"}</td><td class="opt2 sparkc">${spark(a.ser, acol(a.a), { min: 0, max: 10, w: 90, h: 24 })}</td><td class="num opt">${apeso(a.a)}×</td><td><a class="iconbtn sm" href="#mentor.${AREA_INFO[a.a].id}" title="Mentor de ${esc(ashort(a.a))}" aria-label="Mentor de ${esc(ashort(a.a))}">${ic("spark")}</a></td></tr>`).join("")}</tbody></table></div>`;
   const mAnd = R.metas.filter(m => m.ativa && m.rt !== "Concluída" && (!f.area || m.area === f.area)).sort((a, b) => (a.prazo || "9").localeCompare(b.prazo || "9")).slice(0, 8);
-  const inf = influencers("bem", { days: PER * 30, min: 20 }).filter(i => !i.k.startsWith("t:") || i.n >= 20).slice(0, 8);
+  const inf0 = influencers("bem", { days: PER * 30, min: 20 }).filter(i => !i.k.startsWith("t:") || i.n >= 20), infS = inf0.filter(i => i.sig), inf = (infS.length ? infS : inf0).slice(0, 8);
   const body = `${vis("ov-idx", "Índice de vida e áreas", lineChart(L, series, { w: vw(8), h: 270, min: 0, max: 100, proj: 2, projLabels: projLabels(2), keys: K, click: "ref", hi: K.indexOf(REF), fmt: v => num(v, 0) }), { cls: "s8", sub: f.area ? `destaque: ${ashort(f.area)} (placar × 10)` : `${PER} meses + tendência · toque num mês para analisá-lo`, info: "Índice = média ponderada dos placares de dados das áreas × 10. As linhas finas são as áreas; filtre uma área para destacá-la.", table: () => ({ cols: [{ l: "Mês" }, ...series.map(s => ({ l: s.name, num: true, f: v => v == null ? "" : num(v) }))], rows: K.map((k, i) => [mlabel(k), ...series.map(s => s.data[i])]) }) })}
     ${vis("ov-wf", "O que mudou no índice", wf, { cls: "s4", sub: `pontos que cada área somou ou tirou · toque para filtrar`, info: "Quanto cada área somou ou tirou do índice em relação ao mês de comparação, já considerando o peso da área.", table: () => ({ cols: [{ l: "Área" }, { l: "Variação (pts)", num: true, f: v => num(v, 2) }, { l: "Placar antes", num: true }, { l: "Placar agora", num: true }], rows: dl.map(x => [x.a, x.v, x.d0, x.d1]) }) })}
     ${vis("ov-mat", "Matriz das áreas", heat(AREAS.map(a => ({ l: ashort(a), key: a, color: acol(a) })), L, (i, j) => H[j].areas[i].dados, { xf: "area", sel: f.area }), { cls: "s7", sub: "placar de dados por mês · toque numa área para filtrar o relatório", table: () => ({ cols: [{ l: "Área" }, ...L.map(l => ({ l, num: true, f: v => v == null ? "" : num(v) }))], rows: AREAS.map((a, i) => [a, ...H.map(h => h.areas[i].dados)]) }) })}
@@ -3660,7 +3750,7 @@ function rOverview(R) {
     ${vis("ov-sc", "Placar por área", tbl, { cls: "s7", sub: "condicional por cor · toque numa linha para filtrar", table: () => ({ cols: [{ l: "Área" }, { l: "Dados", num: true }, { l: "Mês anterior", num: true }, { l: "Percepção", num: true }, { l: "Alvo", num: true }, { l: "Peso", num: true }], rows: rows.map(a => [a.a, a.dados, a.pv, a.perc, a.alvo, apeso(a.a)]) }) })}
     ${vis("ov-metas", "Metas · progresso × tempo", mAnd.length ? `<div class="bud">${mAnd.map(m => `<div class="br click" data-ent="meta|${m.id}" role="button" tabindex="0" ${tip(`${m.meta}\nProgresso ${pct(m.prog)} · esperado ${pct(m.esp)}\n${m.rt}`)}><span>${areaDot(m.area)}${esc(m.meta)}</span><div class="bt"><i class="${m.st}" style="width:${m.prog * 100}%"></i>${m.esp != null ? `<b style="left:${m.esp * 100}%"></b>` : ""}</div><em class="${m.st}">${esc(m.rt)}</em></div>`).join("")}</div>` : emptyChart("Sem metas em andamento."), { cls: "s5", sub: f.area ? ashort(f.area) : "a marca é onde deveria estar hoje" })}
     ${vis("ov-ag", "Próximos 14 dias", agenda(R, 14, 12), { cls: "s6", sub: "tarefas, aniversários, documentos, rotinas e passos dos mentores" })}
-    ${vis("ov-inf", "O que acompanha o seu humor", diverge(inf.map(i => ({ l: i.l, v: i.r, sub: i.groups ? `${i.groups.bin ? "com" : "alto"} ${num(i.groups.a)} × ${i.groups.bin ? "sem" : "baixo"} ${num(i.groups.b)} · ${i.n} dias` : `${i.n} dias`, go: `data-cx="${i.k}|bem"` })), { fmt: v => "r " + num(v, 2), max: 1 }), { cls: "s6", sub: `correlação com o humor do dia · ${PER * 30} dias · toque para cruzar`, info: "r vai de −1 a 1. Valores perto de zero indicam pouca relação. Correlação não prova causa.", table: () => ({ cols: [{ l: "Métrica" }, { l: "r", num: true, f: v => num(v, 2) }, { l: "Dias", num: true }], rows: inf.map(i => [i.l, i.r, i.n]) }) })}
+    ${vis("ov-inf", "O que acompanha o seu humor", diverge(inf.map(i => ({ l: i.l, v: i.r, sub: `${i.groups ? `${i.groups.bin ? "com" : "alto"} ${num(i.groups.a)} × ${i.groups.bin ? "sem" : "baixo"} ${num(i.groups.b)} · ` : ""}${i.n} dias${i.sig ? "" : " · pode ser acaso"}`, go: `data-cx="${i.k}|bem"` })), { fmt: v => "r " + num(v, 2), max: 1 }), { cls: "s6", sub: `correlação com o humor do dia · ${PER * 30} dias · ${infS.length ? "só o que passa no teste de acaso" : "nada passou no teste de acaso ainda"} · toque para cruzar`, info: "r vai de −1 a 1. Valores perto de zero indicam pouca relação. Correlação não prova causa.", table: () => ({ cols: [{ l: "Métrica" }, { l: "r", num: true, f: v => num(v, 2) }, { l: "Dias", num: true }], rows: inf.map(i => [i.l, i.r, i.n]) }) })}
     ${vis("ov-28", "Últimos 28 dias", `<div class="mt">Humor</div>${strip(R.days28, "humor", "div")}<div class="mt" style="margin-top:12px">Hábitos cumpridos</div>${strip(R.days28, "hab", "seq")}<div class="minis">${kmini(acol("Saúde física"), "Sono", R.sono == null ? "–" : num(R.sono) + " h", delta(R.sono, cmpBase(h => h.sono), { unit: " h", txt: false }))}${kmini(acol("Saúde física"), "Treinos", R.treinos, delta(R.treinos, cmpBase(h => h.treinos), { fmt: v => num(v, 0), txt: false }))}${kmini(acol("Aprendizado"), "Estudo", num(R.horasEst) + " h", delta(R.horasEst, cmpBase(h => h.horasEst), { unit: " h", txt: false }))}${kmini("var(--accent)", "Diário", plural(R.diaN, "entrada", "entradas"), R.diaHumor ? `humor ${num(R.diaHumor)}` : "")}</div>`, { cls: "s12", sub: "faixas diárias · cada quadrado é um dia" })}`;
   return reportPage(R, H, kp, body, null);
 }
@@ -3870,38 +3960,85 @@ function rMetas(R) {
 }
 
 /* ---------------------------------------------------------------- Cruzamentos (explorador) */
-const CZ = { x: "sono", y: "bem", lag: 0, days: 180, gran: "d", target: "bem", rows: "m", cols: ["bem", "sono", "hab", "gasto", "estudo"] };
+/* ================================================================ Cruzamentos: pistas sobre o que anda junto, para virar experimento
+   Ordem da página: (1) se ainda não há duas áreas registradas nos mesmos dias, o que falta (sem números que enganam);
+   (2) perguntas: “o que acompanha os dias de humor bom?” e as pistas que passam no teste de acaso; (3) explorar dois dados;
+   (4) visão geral (matriz e tabela dinâmica). A estatística mora em 03-calc.js (crossData, rStats, influencers, czBusca). */
+const CZ = { x: null, y: null, lag: 0, days: 180, gran: "d", target: null, qlag: 0, rows: "m", cols: ["bem", "sono", "hab", "gasto", "estudo"] };
+/* as perguntas (só aparecem as que têm dados); o terceiro valor diz o que é melhor: 1 mais, −1 menos, 0 neutro */
+const CZ_Q = [["bem", "o humor bom", 1], ["energia", "mais energia", 1], ["estresse", "menos estresse", -1], ["sono", "dormir mais", 1], ["qual", "sono melhor", 1], ["hab", "cumprir os hábitos", 1], ["ro:pct", "cumprir o plano", 1], ["ckh", "entregar mais trabalho", 1], ["gasto", "gastar mais", 0]];
+const CZ_AREAS = [["Bem-estar", "check-in de humor, energia e estresse", "saude.checkin"], ["Corpo", "check-in de sono, passos e treino", "saude.checkin"], ["Hábitos", "marcar os hábitos", "hab.marcar"], ["Rotina", "marcar os blocos do dia", "rotina"], ["Diário", "escrever no diário", "diario"], ["Relações", "registrar contatos", "pessoas.contatos"], ["Crescimento", "estudo, idioma e lazer", "cresc.aprend"], ["Trabalho", "concluir tarefas no Cockpit", "trabalho.hoje"], ["Psicologia", "sessões e registros", "psi.sessoes"], ["Jornada", "práticas da Jornada", "jornada.praticas"], ["Metas", "concluir tarefas", "metas.tarefas"], ["Dinheiro", "lançamentos", "fin.lanc"]];
 function metricSelect(id, val) { const ms = metricList(), gs = [...new Set(ms.map(m => m.grp))]; return `<select id="${id}" aria-label="Métrica">${gs.map(g => `<optgroup label="${esc(g)}">${ms.filter(m => m.grp === g).map(m => `<option value="${esc(m.k)}"${m.k === val ? " selected" : ""}>${esc(m.l)}</option>`).join("")}</optgroup>`).join("")}</select>`; }
+const czLow = s => s ? s[0].toLowerCase() + s.slice(1) : s;
+/* nome para frases: sem a unidade entre parênteses (“sono (h)” → “sono”) */
+const czNome = l => czLow(String(l || "").replace(/\s*\([^)]*\)/g, ""));
+function czProntoHTML(P) {
+  const tem = new Map(P.grupos.map(g => [g.g, g.dias])), so = P.grupos.length === 1 ? P.grupos[0].g : null;
+  return `<div class="pn czpron s12"><h3>${ic("scatter")}Ainda não dá para cruzar</h3>
+    <p>Os Cruzamentos procuram o que anda junto entre <b>duas áreas diferentes</b> da sua vida: sono e humor, treino e energia, gastos e estresse. Para isso precisam das duas registradas nos mesmos dias, em pelo menos 20 dias. ${P.grupos.length ? `Hoje há ${P.grupos.map(g => `<b>${esc(g.g)}</b> (${g.dias} dias)`).join(", ")}${P.grupos.length > 1 ? `, mas no máximo ${P.n} dias em comum entre áreas diferentes` : ""}.` : "Ainda não há registros."}</p>
+    ${so === "Dinheiro" ? `<p class="note">${ic("info")}<span>Só com gastos, o único cruzamento possível seria uma parte do gasto contra o gasto total, e os dois sobem juntos pela conta, não por algum motivo da vida. Os gastos por categoria, mês e tendência estão em <a href="#fin.rel">Finanças → Relatório</a>.</span></p>` : ""}
+    <div class="flbl">O que registrar para destravar (o mais rápido primeiro)</div>
+    <div class="czar">${CZ_AREAS.map(([g, l, h]) => `<a class="czai${tem.has(g) ? " on" : ""}" href="#${h}"><b>${esc(g)}</b><small>${tem.has(g) ? `${tem.get(g)} dias registrados` : esc(l)}</small></a>`).join("")}</div>
+    <p class="muted small">O check-in da Saúde (humor, energia e sono, em 30 segundos) já basta: em 20 dias aparecem as primeiras pistas sobre o que acompanha ${so === "Dinheiro" ? "os dias em que você gasta mais" : "o seu humor"}.</p>
+    ${EX_MODE ? "" : `<button type="button" class="btn sm ghost" data-act="extog">${ic("eye")}Ver como fica com o Exemplo</button>`}</div>`;
+}
+/* uma pista: a frase com as médias nos dois grupos, a força e o que fazer com ela */
+function czPista(i, alvo, bom, n) {
+  const g = i.groups, mt = metric(alvo), d = g ? g.a - g.b : null, melhor = bom === 0 || d == null ? null : bom > 0 ? d > 0 : d < 0, fz = czForca({ ...i, gran: "d" }), qd = CZ.qlag ? "no dia seguinte, " : "";
+  const fr = g ? g.bin ? `Nos dias com <b>${esc(czNome(i.l))}</b>, ${qd}${esc(czNome(mt.l))} fica em <b>${mfmt(alvo, g.a)}</b>, contra <b>${mfmt(alvo, g.b)}</b> nos dias sem (${g.na} e ${g.nb} dias).`
+    : `No terço de dias com mais <b>${esc(czNome(i.l))}</b>, ${qd}${esc(czNome(mt.l))} fica em <b>${mfmt(alvo, g.a)}</b>, contra <b>${mfmt(alvo, g.b)}</b> no terço com menos.` : `${esc(i.l)} e ${esc(czNome(mt.l))} ${i.r > 0 ? "sobem juntos" : "andam em sentidos opostos"}.`;
+  const it = typeof expIdeaFor === "function" ? expIdeaFor(i.k, alvo) : null;
+  return `<li class="czp${melhor == null ? "" : melhor ? " good" : " crit"}"><div class="czph"><span class="czn">${n}</span><b>${esc(i.l)}</b><span class="pill ${fz.k === "forte" ? "good" : fz.k === "moderada" ? "warn" : "none"}">${esc(fz.t)}</span></div><p>${fr}</p>
+    <small class="muted">r = ${num(i.r, 2)} · 95%: ${num(i.lo, 2)} a ${num(i.hi, 2)} · ${i.n} dias, que valem por ${Math.round(i.neff)} independentes</small>
+    <div class="row wrap"><button type="button" class="btn sm ghost" data-czver="${esc(i.k)}">${ic("scatter")}Ver no gráfico</button>${it ? `<button type="button" class="btn sm" data-cztest="${esc(i.k)}">${ic("flask")}Testar como experimento</button>` : ""}</div></li>`;
+}
+function czPerguntas() {
+  const qs = CZ_Q.filter(([k]) => metric(k)); if (!metric(CZ.target)) CZ.target = qs[0]?.[0] || czBusca(CZ.days).par?.[1] || metricList()[0]?.k;
+  const alvo = CZ.target, q = CZ_Q.find(x => x[0] === alvo), bom = q ? q[2] : metric(alvo)?.inv ? -1 : 1;
+  const inf = influencers(alvo, { days: CZ.days, lag: CZ.qlag, min: 20 }), sig = inf.filter(i => i.sig), resto = inf.filter(i => !i.sig);
+  const chips = `<div class="czq"><span class="flbl">O que acompanha…</span><div class="segs" role="group" aria-label="Pergunta">${qs.map(([k, t]) => `<button type="button" class="seg" data-cztq="${k}" aria-pressed="${k === alvo}">${esc(t)}</button>`).join("")}</div>
+    <label class="czqo">outra métrica ${metricSelect("cztg", alvo)}</label><div class="segs" role="group" aria-label="Quando">${[[0, "no mesmo dia"], [1, "no dia seguinte"]].map(([v, l]) => `<button type="button" class="seg" data-czqlag="${v}" aria-pressed="${CZ.qlag === v}">${l}</button>`).join("")}</div></div>`;
+  const lista = sig.length ? `<ol class="czps">${sig.slice(0, 8).map((i, n) => czPista(i, alvo, bom, n + 1)).join("")}</ol>` : `<div class="empty">Nenhuma pista firme sobre ${esc(czLow(metric(alvo).l))} ainda: dos ${inf.length} fatores testados, nenhum passou no teste de acaso. Com mais dias registrados elas aparecem.</div>`;
+  const acaso = resto.length ? `<details class="czacaso"><summary>${plural(resto.length, "associação que pode ser acaso", "associações que podem ser acaso")}</summary>${diverge(resto.slice(0, 14).map(i => ({ l: i.l, v: i.r, sub: `95%: ${i.lo == null ? "–" : `${num(i.lo, 2)} a ${num(i.hi, 2)}`} · ${i.n} dias`, go: `data-czver="${esc(i.k)}" role="button" tabindex="0"` })), { fmt: v => num(v, 2), max: 1 })}<p class="muted small">Aparecem para você explorar, mas o intervalo passa pelo zero ou não sobrevive à correção por muitas comparações.</p></details>` : "";
+  return { chips, body: `${lista}${acaso}`, info: `${inf.length} fatores testados com ${czLow(metric(alvo).l)}${CZ.qlag ? " do dia seguinte" : ""} nos últimos ${CZ.days} dias; ${plural(sig.length, "passou", "passaram")} no teste de acaso (Benjamini–Hochberg a 10%).` };
+}
+function czLeitura(mx, my, c) {
+  if (c?.rel) return `<div class="czr"><div class="czwarn">${ic("info")}<div><b>Uma é parte da outra.</b><p>${esc(mx.l)} e ${esc(czNome(my.l))} são a mesma medida, ou uma está dentro da outra: sobem juntas pela conta, não por algum motivo da vida. Escolha métricas de áreas diferentes.</p></div></div></div>`;
+  if (!c || c.n < 5) return `<div class="empty">Poucos pontos em comum (${c?.n || 0}). Aumente a janela ou escolha outras métricas.</div>`;
+  const fz = czForca(c), it = typeof expIdeaFor === "function" ? expIdeaFor(CZ.x, CZ.y) : null;
+  return `<div class="czr"><div class="czbig"><b>${c.r == null ? "–" : num(c.r, 2)}</b><span>${c.r == null ? "sem variação para medir" : `${c.r > 0 ? "sobem juntas" : "andam em sentidos opostos"} · ${esc(fz.t)}`}</span><small>${c.n} ${CZ.gran === "d" ? "dias" : CZ.gran === "w" ? "semanas" : "meses"} em comum${c.lo != null ? ` · 95%: ${num(c.lo, 2)} a ${num(c.hi, 2)} · valem por ${Math.round(c.neff)} independentes` : ""}</small></div>
+    ${c.groups ? `<div class="czg"><div><span>${c.groups.bin ? "Com" : "X alto"}</span><b>${mfmt(CZ.y, c.groups.a)}</b><div class="mbar"><i style="width:${clamp(c.groups.a / Math.max(c.groups.a, c.groups.b, 1e-9)) * 100}%"></i></div></div><div><span>${c.groups.bin ? "Sem" : "X baixo"}</span><b>${mfmt(CZ.y, c.groups.b)}</b><div class="mbar"><i style="width:${clamp(c.groups.b / Math.max(c.groups.a, c.groups.b, 1e-9)) * 100}%"></i></div></div></div>
+    <p>${c.groups.bin ? `Nos ${CZ.gran === "d" ? "dias" : "períodos"} com <b>${esc(czNome(mx.l))}</b>` : `No terço com <b>${esc(czNome(mx.l))}</b> mais alto`}, <b>${esc(czNome(my.l))}</b>${CZ.lag ? ` ${CZ.lag === 1 ? "do período seguinte" : `${CZ.lag} períodos depois`}` : ""} fica em ${mfmt(CZ.y, c.groups.a)}, contra ${mfmt(CZ.y, c.groups.b)} ${c.groups.bin ? "sem" : "no terço mais baixo"}.</p>` : ""}
+    <p class="note">${fz.k === "acaso" || fz.k === "poucos" ? "Com esses dados, a diferença cabe no acaso: não tire conclusão ainda." : "Correlação mostra que as coisas andam juntas, não que uma causa a outra. Use como hipótese e teste."}</p>
+    <div class="row wrap">${it && fz.k !== "acaso" && fz.k !== "poucos" ? `<button type="button" class="btn sm" data-cztest="${esc(CZ.x)}" data-czalvo="${esc(CZ.y)}">${ic("flask")}Testar como experimento</button>` : ""}<button type="button" class="btn sm ghost" data-czask="1">${ic("spark")}Pedir leitura ao Conselho</button></div></div>`;
+}
 function rCruz(R) {
-  const H = history(PER), ms = metricList();
-  if (!metric(CZ.x)) CZ.x = ms[0]?.k; if (!metric(CZ.y)) CZ.y = ms[1]?.k;
-  const mx = metric(CZ.x), my = metric(CZ.y);
-  if (!mx || !my) return `<div class="emptyb">${ic("scatter")}<b>Ainda não há dados para cruzar.</b><span>Faça check-ins, marque hábitos, registre gastos e escreva no diário por algumas semanas.</span></div>`;
-  const c = crossData(CZ.x, CZ.y, { lag: CZ.lag, days: CZ.days, gran: CZ.gran }), jit = m => m.bin ? .15 : m.hi === 5 ? .35 : 0;
+  const H = history(PER), P = czProntidao(CZ.days);
+  if (!P.pronto) return `${xfBar()}<div class="rep"><div class="repmain"><div class="vg">${czProntoHTML(P)}</div></div>${rail(R, H, null)}</div>`;
+  if (!metric(CZ.x) || !metric(CZ.y)) [CZ.x, CZ.y] = P.par;
+  const mx = metric(CZ.x), my = metric(CZ.y), c = crossData(CZ.x, CZ.y, { lag: CZ.lag, days: CZ.days, gran: CZ.gran }), jit = m => m.bin ? .15 : m.hi === 5 ? .35 : 0;
+  const Q = czPerguntas();
   const ctrl = `<div class="czc"><label>X ${metricSelect("czx", CZ.x)}</label><button type="button" class="iconbtn" data-act="czswap" title="Inverter X e Y" aria-label="Inverter X e Y">${ic("repeat")}</button><label>Y ${metricSelect("czy", CZ.y)}</label>
     <label>Defasagem <select id="czlag">${[[0, "mesmo período"], [1, "Y no período seguinte"], [2, "2 períodos depois"], [7, "7 períodos depois"]].map(([v, l]) => `<option value="${v}"${CZ.lag === v ? " selected" : ""}>${l}</option>`).join("")}</select></label>
     <label>Janela <select id="czdays">${[[90, "90 dias"], [180, "6 meses"], [365, "1 ano"], [730, "2 anos"]].map(([v, l]) => `<option value="${v}"${CZ.days === v ? " selected" : ""}>${l}</option>`).join("")}</select></label>
     <div class="segs">${[["d", "Dia"], ["w", "Semana"], ["m", "Mês"]].map(([k, l]) => `<button type="button" class="seg" data-czgran="${k}" aria-pressed="${CZ.gran === k}">${l}</button>`).join("")}</div></div>`;
-  const read = !c || c.n < 5 ? `<div class="empty">Poucos pontos em comum (${c?.n || 0}). Aumente a janela ou escolha outras métricas.</div>` : `<div class="czr"><div class="czbig"><b>${c.r == null ? "–" : num(c.r, 2)}</b><span>correlação ${c.r == null ? "" : rWord(c.r)}${c.r != null && Math.abs(c.r) >= .15 ? (c.r > 0 ? " positiva" : " negativa") : ""}</span><small>${plural(c.n, CZ.gran === "d" ? "dia" : CZ.gran === "w" ? "semana" : "mês", CZ.gran === "d" ? "dias" : CZ.gran === "w" ? "semanas" : "meses")} com os dois registros</small></div>
-    ${c.groups ? `<div class="czg"><div><span>${c.groups.bin ? "Com" : "X alto"}</span><b>${mfmt(CZ.y, c.groups.a)}</b><div class="mbar"><i style="width:${clamp(c.groups.a / Math.max(c.groups.a, c.groups.b, 1e-9)) * 100}%"></i></div></div><div><span>${c.groups.bin ? "Sem" : "X baixo"}</span><b>${mfmt(CZ.y, c.groups.b)}</b><div class="mbar"><i style="width:${clamp(c.groups.b / Math.max(c.groups.a, c.groups.b, 1e-9)) * 100}%"></i></div></div></div>` : ""}
-    <p>${c.groups ? `${c.groups.bin ? `Nos ${CZ.gran === "d" ? "dias" : "períodos"} com <b>${esc(mx.l.toLowerCase())}</b>` : `No terço com <b>${esc(mx.l.toLowerCase())}</b> mais alto`}, <b>${esc(my.l.toLowerCase())}</b> fica em ${mfmt(CZ.y, c.groups.a)}, contra ${mfmt(CZ.y, c.groups.b)} ${c.groups.bin ? "sem" : "no terço mais baixo"}${CZ.lag ? ` (${CZ.lag} período(s) depois)` : ""}.` : ""}${c.fit && !mx.bin ? ` Cada unidade a mais em X acompanha ${sgn(c.fit.b, v => num(v, 3))} em Y.` : ""}</p>
-    <p class="note">Correlação mostra que as coisas andam juntas, não que uma causa a outra. Use como hipótese para testar.</p>
-    <div class="row wrap"><button type="button" class="btn sm" data-czask="1">${ic("spark")}Pedir leitura ao Conselho</button></div></div>`;
-  const D = DAILY(), s0 = Math.max(0, D.N - CZ.days);
-  const ts = CZ.gran === "d" ? { labels: D.dates.slice(s0).map(fmtD), a: movAvg(D.C[CZ.x].slice(s0), 7), b: movAvg(D.C[CZ.y].slice(s0), 7) } : (() => { const n = CZ.gran === "w" ? Math.ceil(CZ.days / 7) : Math.max(3, Math.ceil(CZ.days / 30)), A = aggSeries(CZ.x, CZ.gran, n), B = aggSeries(CZ.y, CZ.gran, n); return { labels: A.labels, a: A.vals, b: B.vals }; })();
+  const D = DAILY(), s0 = Math.max(0, D.N - CZ.days), cx = czCol(CZ.x), cy = czCol(CZ.y);
+  const ts = CZ.gran === "d" ? { labels: D.dates.slice(s0).map(fmtD), a: movAvg(cx.slice(s0), 7), b: movAvg(cy.slice(s0), 7) } : (() => { const n = CZ.gran === "w" ? Math.ceil(CZ.days / 7) : Math.max(3, Math.ceil(CZ.days / 30)), A = aggSeries(CZ.x, CZ.gran, n, TODAY, cx), B = aggSeries(CZ.y, CZ.gran, n, TODAY, cy); return { labels: A.labels, a: A.vals, b: B.vals }; })();
   const bv = ts.b.filter(isNum), rlo = Math.min(...bv), rhi = Math.max(...bv), rsc = niceScale(isFinite(rlo) ? rlo : 0, isFinite(rhi) ? rhi : 1, 4);
   const tl = lineChart(ts.labels, [{ name: mx.l, color: "var(--accent)", data: ts.a, fmt: v => mx.fmt(v) }, { name: my.l, color: "var(--a-fis)", data: ts.b, right: true, fill: false }], { w: vw(12), h: 250, zero: false, right: { min: rsc.lo, max: rsc.hi, fmt: v => my.fmt(v) }, fmt: v => mx.fmt(v), maxLabels: 12, dots: false });
-  const core = CORE_KEYS.filter(k => metric(k));
-  const inf = influencers(CZ.target, { days: CZ.days, min: 20 }).slice(0, 10);
-  const pv = pivot();
-  const body = `<div class="s12">${ctrl}</div>
-    ${vis("cz-sc", `${esc(mx.l)} × ${esc(my.l)}`, scatter(c?.pts || [], { w: vw(7), h: 320, xl: mx.l, yl: my.l, jitter: [jit(mx), jit(my)], fit: true, fmtX: v => mx.fmt(v), fmtY: v => my.fmt(v), op: CZ.gran === "d" ? .4 : .75 }), { cls: "s7", sub: `cada ponto = ${CZ.gran === "d" ? "um dia" : CZ.gran === "w" ? "uma semana" : "um mês"}${CZ.lag ? ` · Y deslocado ${CZ.lag}` : ""}`, table: () => ({ cols: [{ l: "Período" }, { l: mx.l, num: true }, { l: my.l, num: true }], rows: (c?.pts || []).map(p => [p.d, p.x, p.y]) }) })}
-    ${vis("cz-rd", "Leitura", read, { cls: "s5", nofocus: true })}
-    ${vis("cz-tl", "Lado a lado no tempo", tl, { cls: "s12", sub: CZ.gran === "d" ? "média móvel de 7 dias · Y no eixo da direita" : "Y no eixo da direita" })}
-    ${vis("cz-mx", "Matriz de correlação", corrHeat(core, { days: CZ.days }), { cls: "s7", sub: `${CZ.days} dias · azul = andam juntos · vermelho = em sentidos opostos · toque numa célula para cruzar` })}
-    ${vis("cz-in", "O que mais acompanha…", `<div class="row wrap"><label class="inl">Alvo ${metricSelect("cztg", CZ.target)}</label></div>${diverge(inf.map(i => ({ l: i.l, v: i.r, sub: i.groups ? `${i.groups.bin ? "com" : "alto"} ${mfmt(CZ.target, i.groups.a)} × ${i.groups.bin ? "sem" : "baixo"} ${mfmt(CZ.target, i.groups.b)} · ${i.n} dias` : `${i.n} dias`, go: `data-cx="${i.k}|${CZ.target}"` })), { fmt: v => "r " + num(v, 2), max: 1, empty: "Poucos dados." })}`, { cls: "s5", sub: "as métricas mais correlacionadas com o alvo · toque para cruzar" })}
-    ${vis("cz-pv", "Tabela dinâmica", pv.html, { cls: "s12", sub: "linhas por período · colunas são métricas · cor = intensidade na coluna", table: () => pv.table })}`;
-  return `${xfBar()}<div class="rep"><div class="repmain"><div class="vg">${body}</div></div>${rail(R, H, null)}</div>`;
+  const core = CORE_KEYS.filter(k => metric(k)), pv = pivot();
+  const base = `<p class="muted small czbase">Base: ${P.grupos.map(g => `${esc(g.g)} ${g.dias} d`).join(" · ")} nos últimos ${CZ.days} dias. Dias depois do último registro de uma área não contam como zero.</p>`;
+  return `${xfBar()}<div class="rep"><div class="repmain">
+    <p class="lead czlead">Pistas, não provas: o que anda junto nos seus dados, com o quanto dá para confiar. A pista boa vira experimento, e o experimento diz se mudar uma coisa muda a outra.</p>${base}
+    <h3 class="czsec">Perguntas</h3><div class="vg">${vis("cz-q", "Pistas", `${Q.chips}${Q.body}`, { cls: "s12", sub: Q.info, nofocus: true })}</div>
+    <h3 class="czsec">Explorar dois dados</h3><div class="vg"><div class="s12">${ctrl}</div>
+      ${vis("cz-sc", `${esc(mx.l)} × ${esc(my.l)}`, scatter(c?.rel ? [] : c?.pts || [], { w: vw(7), h: 320, xl: mx.l, yl: my.l, jitter: [jit(mx), jit(my)], fit: true, fmtX: v => mx.fmt(v), fmtY: v => my.fmt(v), op: CZ.gran === "d" ? .4 : .75, empty: c?.rel ? "Uma métrica é parte da outra: não há o que cruzar." : undefined }), { cls: "s7", sub: `cada ponto = ${CZ.gran === "d" ? "um dia" : CZ.gran === "w" ? "uma semana" : "um mês"} · linha = tendência`, table: () => ({ cols: [{ l: "Data" }, { l: mx.l, num: true }, { l: my.l, num: true }], rows: (c?.pts || []).map(p => [p.d, p.x, p.y]) }) })}
+      ${vis("cz-rd", "Leitura", czLeitura(mx, my, c), { cls: "s5", nofocus: true })}
+      ${vis("cz-tl", "Lado a lado no tempo", tl, { cls: "s12", sub: CZ.gran === "d" ? "média móvel de 7 dias · Y no eixo da direita" : "Y no eixo da direita" })}</div>
+    <h3 class="czsec">Visão geral</h3><div class="vg">
+      ${vis("cz-mx", "Matriz de correlação", corrHeat(core, { days: CZ.days }), { cls: "s12", sub: `${CZ.days} dias · azul = andam juntos · vermelho = em sentidos opostos · apagada = pode ser acaso · toque numa célula para explorar` })}
+      ${vis("cz-pv", "Tabela dinâmica", pv.html, { cls: "s12", sub: "linhas por período · colunas são métricas · cor = intensidade na coluna", table: () => pv.table })}</div>
+  </div>${rail(R, H, null)}</div>`;
 }
 function pivot() {
   const cols = CZ.cols.filter(k => metric(k)), dimL = { m: "Mês", w: "Semana", dow: "Dia da semana" }[CZ.rows];
@@ -3920,9 +4057,14 @@ function reportClick(t) {
   if (ds.cx) { const [a, b] = ds.cx.split("|"); CZ.x = a; CZ.y = b; DRAWER = null; if (PAGE !== "cruz") setHash("cruz"); else { render(); window.scrollTo({ top: 0, behavior: "smooth" }); } return true; }
   if (ds.act === "czswap") { [CZ.x, CZ.y] = [CZ.y, CZ.x]; render(); return true; }
   if (ds.czgran) { CZ.gran = ds.czgran; render(); return true; }
+  if (ds.cztq) { CZ.target = ds.cztq; render(); return true; }
+  if (ds.czqlag != null) { CZ.qlag = +ds.czqlag; render(); return true; }
+  if (ds.czver) { CZ.x = ds.czver; CZ.y = CZ.target; CZ.lag = CZ.qlag; CZ.gran = "d"; render(); setTimeout(() => $('[data-vid="cz-rd"]')?.scrollIntoView({ behavior: "smooth", block: "center" }), 40); return true; }
+  if (ds.cztest) { const k = ds.cztest, alvo = ds.czalvo || CZ.target, it = expIdeaFor(k, alvo); if (!it) return true; const c = crossData(k, alvo, { lag: ds.czalvo ? CZ.lag : CZ.qlag, days: CZ.days }), l = metric(k)?.l || k;
+    openExpForm(null, { titulo: it.titulo, intervencao: it.intervencao, metrica: it.metrica, defasagem: it.defasagem || 0, direcao: (c?.r ?? 1) >= 0 ? "aumentar" : "diminuir", hipotese: `Nos meus dados, ${czLow(l)} anda junto com ${czLow(metric(alvo)?.l || alvo)} (r = ${num(c?.r, 2)}, 95%: ${num(c?.lo, 2)} a ${num(c?.hi, 2)}, ${c?.n || 0} dias). O experimento testa se mudar um muda o outro.` }); return true; }
   if (ds.pvrows) { CZ.rows = ds.pvrows; render(); return true; }
   if (ds.pvdel) { CZ.cols = CZ.cols.filter(k => k !== ds.pvdel); render(); return true; }
-  if (ds.czask) { const mx = metric(CZ.x), my = metric(CZ.y), c = crossData(CZ.x, CZ.y, { lag: CZ.lag, days: CZ.days, gran: CZ.gran }); MST.input.conselho = `Cruzei ${mx.l} × ${my.l} nos últimos ${CZ.days} dias (${CZ.gran === "d" ? "por dia" : CZ.gran === "w" ? "por semana" : "por mês"}${CZ.lag ? `, Y ${CZ.lag} período(s) depois` : ""}): r = ${c?.r == null ? "?" : num(c.r, 2)} em ${c?.n || 0} pontos${c?.groups ? `; Y com X alto/sim ${mfmt(CZ.y, c.groups.a)} × baixo/não ${mfmt(CZ.y, c.groups.b)}` : ""}. Como você interpreta isso no meu caso e que experimento de 2 semanas eu poderia fazer para testar?`; setHash("mentor", "conselho"); return true; }
+  if (ds.czask) { const mx = metric(CZ.x), my = metric(CZ.y), c = crossData(CZ.x, CZ.y, { lag: CZ.lag, days: CZ.days, gran: CZ.gran }); MST.input.conselho = `Cruzei ${mx.l} × ${my.l} nos últimos ${CZ.days} dias (${CZ.gran === "d" ? "por dia" : CZ.gran === "w" ? "por semana" : "por mês"}${CZ.lag ? `, Y ${CZ.lag} período(s) depois` : ""}): r = ${c?.r == null ? "?" : num(c.r, 2)} em ${c?.n || 0} pontos (${czForca(c).t}${c?.lo != null ? `, intervalo de 95% de ${num(c.lo, 2)} a ${num(c.hi, 2)}` : ""})${c?.groups ? `; Y com X alto/sim ${mfmt(CZ.y, c.groups.a)} × baixo/não ${mfmt(CZ.y, c.groups.b)}` : ""}. Como você interpreta isso no meu caso e que experimento de 2 semanas eu poderia fazer para testar?`; setHash("mentor", "conselho"); return true; }
   if (ds.mquick) { const v = ($("#mq_" + ds.mquick)?.value || "").trim(); if (!v) { setHash("mentor", ds.mquick); return true; } setHash("mentor", ds.mquick); setTimeout(() => askMentor(ds.mquick, v), 80); return true; }
   return false;
 }
@@ -4538,7 +4680,7 @@ function relFacts(rel) {
 function specFacts(mid, Hs) {
   const cur = Hs.at(-1), L = [], m6 = Hs.map(h => mabbr(h.mk));
   const serie = (l, f) => `${l}: ${Hs.map((h, i) => `${m6[i]} ${f(h)}`).join(", ")}`;
-  const infl = (target, n = 6) => !aiMetricOk(target) ? "(métrica de setor privado)" : influencers(target, { days: 180, min: 20 }).filter(i => aiMetricOk(i.k)).slice(0, n).map(i => `${i.l} (r=${num(i.r, 2)}${i.groups ? `; ${i.groups.bin ? "com" : "alto"}: ${num(i.groups.a)} × ${i.groups.bin ? "sem" : "baixo"}: ${num(i.groups.b)}` : ""})`).join("; ");
+  const infl = (target, n = 6) => !aiMetricOk(target) ? "(métrica de setor privado)" : influencers(target, { days: 180, min: 20 }).filter(i => aiMetricOk(i.k)).slice(0, n).map(i => `${i.l} (r=${num(i.r, 2)}, ${i.sig ? "consistente" : "pode ser acaso"}${i.groups ? `; ${i.groups.bin ? "com" : "alto"}: ${num(i.groups.a)} × ${i.groups.bin ? "sem" : "baixo"}: ${num(i.groups.b)}` : ""})`).join("; ");
   if (mid === "fis") { L.push(serie("Sono médio (h)", h => num(h.sono)), serie("Treinos no mês", h => h.treinos), serie("Passos/dia", h => num(h.passos, 0)), `Peso mais recente: ${cur.peso ?? "–"} kg. Metas da pessoa: sono ${S.cfg.metaSono} h, ${S.cfg.metaTreinos} treinos/semana, ${S.cfg.metaPassos} passos.`, `O que mais se associa à energia: ${infl("energia")}.`); }
   if (mid === "men") { L.push(serie("Humor médio (1–5)", h => num(h.humor)), serie("Estresse médio", h => num(h.estresse)), serie("Energia média", h => num(h.energia)), `O que mais se associa ao humor do dia: ${infl("bem", 8)}.`); const ins = insights(cur, Hs).filter(i => ["Saúde mental", "Saúde física"].includes(i.area) && aiAreaOk(i.area)).slice(0, 4); if (ins.length) L.push("Achados automáticos: " + ins.map(i => i.t.replace(/<[^>]+>/g, "")).join(" ")); }
   if (mid === "fin") { L.push(...pjFacts()); L.push(serie("Receitas", h => eur(h.fin.rec)), serie("Despesas", h => eur(h.fin.desp)), serie("Taxa de poupança", h => pct(h.fin.taxa)), `Meta de poupança ${pct(S.cfg.metaPoup)}. Reserva cobre ${cur.reserva == null ? "?" : num(cur.reserva)} meses (meta ${S.cfg.metaReserva}). Patrimônio líquido ${eur(cur.pl)}. Projeção de despesas do mês: ${cur.proj == null ? "–" : eur(cur.proj)} para orçamento de ${eur(cur.orcTot)}.`, "Orçamento do mês por categoria (real/plano): " + cur.orcCats.map(c => `${c.cat} ${eur(c.real)}/${c.plan ? eur(c.plan) : "sem plano"}${c.st === "crit" ? " ESTOUROU" : c.st === "warn" ? " acima do ritmo" : ""}`).join("; "), `Assinaturas: ${eur(cur.assMes, 2)}/mês; uso baixo: ${cur.ass.filter(a => a.uso === "Baixo").map(a => `${a.servico} (${eur(a.mensal, 2)})`).join(", ") || "nenhuma"}.`, "Maiores despesas do mês: " + cur.lm.filter(l => l.tipo === "Despesa").sort((a, b) => b.valor - a.valor).slice(0, 6).map(l => `${l.desc} ${eur(l.valor)} (${l.cat})`).join("; ")); }
@@ -4620,7 +4762,9 @@ function mentorTools(mid, live) {
       execute: inp => { const m = metric(String(inp.metrica)) || metricList().find(x => norm(x.l) === norm(inp.metrica)); if (!m) throw new Error("Métrica desconhecida. Use uma das chaves da lista."); if (!aiMetricOk(m.k)) throw new Error("Essa métrica é de um setor que a pessoa marcou como privado. Não use."); aiNote("met", m.k, live.ctx); const s = aggSeries(m.k, "m", clamp(+inp.meses || 6, 2, 24)); note("consultar", `${m.l} · ${s.keys.length} meses`); return { metrica: m.l, agregacao: m.agg === "sum" ? "soma no mês" : "média no mês", meses: s.keys.map((k, i) => ({ mes: k, valor: s.vals[i] == null ? null : Math.round(s.vals[i] * 100) / 100 })) }; } },
     { name: "cruzar", description: "Cruza duas métricas diárias (chaves de consultar) e devolve correlação r, número de dias e a média de Y quando X está alto × baixo (ou com × sem, se X for sim/não). defasagem=1 compara X de um dia com Y do dia seguinte.",
       inputSchema: { type: "object", properties: { x: { type: "string" }, y: { type: "string" }, dias: { type: "number" }, defasagem: { type: "number" } }, required: ["x", "y"] },
-      execute: inp => { const a = metric(String(inp.x)), b = metric(String(inp.y)); if (!a || !b) throw new Error("Métrica desconhecida."); if (!aiMetricOk(a.k) || !aiMetricOk(b.k)) throw new Error("Uma das métricas é de um setor privado. Não use."); aiNote("met", a.k, live.ctx); aiNote("met", b.k, live.ctx); const c = crossData(a.k, b.k, { days: clamp(+inp.dias || 180, 30, 730), lag: clamp(+inp.defasagem || 0, 0, 7) }); note("cruzar", `${a.l} × ${b.l}${c?.r != null ? ` · r ${num(c.r, 2)}` : ""}`); return c ? { x: a.l, y: b.l, r: c.r == null ? null : Math.round(c.r * 100) / 100, dias: c.n, leitura: c.r == null ? "dados insuficientes" : `correlação ${rWord(c.r)} ${c.r >= 0 ? "positiva" : "negativa"}`, y_quando_x_alto_ou_sim: c.groups ? Math.round(c.groups.a * 100) / 100 : null, y_quando_x_baixo_ou_nao: c.groups ? Math.round(c.groups.b * 100) / 100 : null } : { erro: "sem dados" }; } },
+      execute: inp => { const a = metric(String(inp.x)), b = metric(String(inp.y)); if (!a || !b) throw new Error("Métrica desconhecida."); if (!aiMetricOk(a.k) || !aiMetricOk(b.k)) throw new Error("Uma das métricas é de um setor privado. Não use."); aiNote("met", a.k, live.ctx); aiNote("met", b.k, live.ctx); const c = crossData(a.k, b.k, { days: clamp(+inp.dias || 180, 30, 730), lag: clamp(+inp.defasagem || 0, 0, 7) }); note("cruzar", `${a.l} × ${b.l}${c?.r != null ? ` · r ${num(c.r, 2)}` : ""}`); if (c?.rel) return { x: a.l, y: b.l, aviso: "Uma métrica é parte da outra (ou a mesma medida): a correlação vem da conta, não da vida. Não interprete." };
+        const fz = czForca(c), r2 = v => v == null ? null : Math.round(v * 100) / 100;
+        return c ? { x: a.l, y: b.l, r: r2(c.r), dias: c.n, dias_efetivos: c.neff == null ? null : Math.round(c.neff), intervalo_95: c.lo == null ? null : [r2(c.lo), r2(c.hi)], confianca: fz.t, leitura: c.r == null ? "dados insuficientes" : `correlação ${rWord(c.r)} ${c.r >= 0 ? "positiva" : "negativa"} (${fz.t})`, y_quando_x_alto_ou_sim: c.groups ? Math.round(c.groups.a * 100) / 100 : null, y_quando_x_baixo_ou_nao: c.groups ? Math.round(c.groups.b * 100) / 100 : null } : { erro: "sem dados" }; } },
     { name: "buscar_diario", description: "Busca entradas do diário por termo, tema (tag sem #) e/ou pessoa nos últimos N dias. Retorna até 8 trechos com data e humor.",
       inputSchema: { type: "object", properties: { termo: { type: "string" }, tema: { type: "string" }, pessoa: { type: "string" }, dias: { type: "number" } } },
       execute: inp => { const from = addDays(TODAY, -clamp(+inp.dias || 120, 7, 730)), q = norm(inp.termo || ""), tg = slug(inp.tema || ""), pe = inp.pessoa ? resolvePerson(String(inp.pessoa).replace(/^@/, "")) : null;
@@ -5445,7 +5589,9 @@ function metricArea(k) {
   if (["sono", "qual", "passos", "treino", "min", "peso"].includes(k)) return "Saúde física";
   if (["humor", "bem", "energia", "estresse", "dhumor"].includes(k)) return "Saúde mental";
   if (k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:")) return "Finanças";
-  if (k === "estudo") return "Aprendizado";
+  if (k === "estudo" || k === "idi") return "Aprendizado";
+  if (k === "ckh" || k === "ckc") return "Carreira";
+  if (k === "psis" || k === "psir") return "Saúde mental";
   if (k === "lazer" || k === "lazsat") return "Lazer & criatividade";
   if (k === "jmin" || k === "jdia" || k === "bmidx") return "Propósito & espiritualidade";
   if (k.startsWith("h:")) return S.habitos.find(h => "h:" + h.id === k)?.area || null;
@@ -5858,21 +6004,30 @@ function expDetail(x) {
     ${x.status === "ativo" ? `<div class="flbl">Marcar dias anteriores</div><div class="expmark">${an.rows.filter(r => r.past && r.d >= addDays(TODAY, -14) && (x.desenho !== "antes" || r.c === "B")).slice(-14).map(r => `<div class="emr"><span>${fmtD(r.d)} · ${r.c === "B" ? "COM" : "SEM"}</span><button type="button" class="seg" data-expad="${x.id}|1|${r.d}" aria-pressed="${r.ad === 1}">fez</button><button type="button" class="seg" data-expad="${x.id}|0|${r.d}" aria-pressed="${r.ad === 0}">não fez</button></div>`).join("")}</div>
       <div class="row wrap"><label class="chk"><input type="checkbox" id="exp_dia" checked> Registrar o resultado no diário e na memória do mentor</label><button type="button" class="btn primary" data-expend="${x.id}">${ic("check")}Encerrar e guardar o aprendizado</button><button type="button" class="btn ghost" data-expcancel="${x.id}">Cancelar experimento</button></div>` : ""}`, { cls: "span2 expdet" });
 }
+/* a mudança testável por trás de uma pista (o fator k acompanha a métrica alvo); null quando o fator não é algo que você faz */
+function expIdeaFor(k, target) {
+  const D = DAILY(), p66 = () => { const v = (D.C[k] || []).filter(isNum).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length * .66)] : null; };
+  if (k.startsWith("h:")) { const h = S.habitos.find(z => "h:" + z.id === k); return h ? { titulo: `${h.nome} × ${expMetricL(target).toLowerCase()}`, intervencao: h.nome, metrica: target } : null; }
+  if (k === "sono") { const v = p66(); return v ? { titulo: "Dormir mais", intervencao: `Dormir pelo menos ${num(Math.round(v * 2) / 2)} h`, metrica: target, defasagem: 1 } : null; }
+  if (k === "passos") { const v = p66(); return v ? { titulo: "Andar mais", intervencao: `Andar pelo menos ${num(Math.round(v / 500) * 500, 0)} passos`, metrica: target } : null; }
+  if (k === "treino" || k === "min") return { titulo: "Treinar", intervencao: "Treinar (qualquer treino)", metrica: target };
+  if (k === "estudo") return { titulo: "Estudar todo dia", intervencao: "Estudar pelo menos 30 min", metrica: target };
+  if (k === "idi") return { titulo: "Idioma todo dia", intervencao: "15 minutos de idioma", metrica: target };
+  if (k === "lazer") return { titulo: "Lazer no dia", intervencao: "Reservar 1 h de lazer", metrica: target };
+  if (k === "contatos" || k.startsWith("p:")) return { titulo: k.startsWith("p:") ? `Ver ${k.slice(2)}` : "Falar com alguém", intervencao: k.startsWith("p:") ? `Encontrar ou falar com ${k.slice(2)}` : "Falar com alguém querido (ligação ou encontro)", metrica: target };
+  if (k === "diario") return { titulo: "Escrever no diário", intervencao: "Escrever no diário antes de dormir", metrica: target, defasagem: 1 };
+  if (k === "jmin" || k === "jdia") return { titulo: "Praticar todo dia", intervencao: "10 minutos de prática da jornada (meditação, leitura ou oração)", metrica: target };
+  if (k === "ro:pct") return { titulo: "Cumprir o plano do dia", intervencao: "Planejar só 3 blocos importantes na Rotina e marcar cada um", metrica: target };
+  if (k === "psir") return { titulo: "Registro entre sessões", intervencao: "Fazer um registro na Psicologia (pergunta do dia ou pensamento)", metrica: target, defasagem: 1 };
+  return null;
+}
 function expIdeas() {
   return memo("expideas", () => {
     const out = [], seen = new Set();
     for (const target of ["bem", "energia"]) for (const i of influencers(target, { days: 180, min: 20 }).slice(0, 12)) {
-      if (Math.abs(i.r) < .15 || seen.has(i.k)) continue; let it = null; const k = i.k, D = DAILY();
-      const p66 = () => { const v = D.C[k].filter(isNum).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length * .66)] : null; };
-      if (k.startsWith("h:")) { const h = S.habitos.find(z => "h:" + z.id === k); if (h) it = { titulo: `${h.nome} × ${expMetricL(target).toLowerCase()}`, intervencao: h.nome, metrica: target }; }
-      else if (k === "sono") { const v = p66(); if (v) it = { titulo: "Dormir mais", intervencao: `Dormir pelo menos ${num(Math.round(v * 2) / 2)} h`, metrica: target, defasagem: 1 }; }
-      else if (k === "passos") { const v = p66(); if (v) it = { titulo: "Andar mais", intervencao: `Andar pelo menos ${num(Math.round(v / 500) * 500, 0)} passos`, metrica: target }; }
-      else if (k === "treino") it = { titulo: "Treinar", intervencao: "Treinar (qualquer treino)", metrica: target };
-      else if (k === "estudo") it = { titulo: "Estudar todo dia", intervencao: "Estudar pelo menos 30 min", metrica: target };
-      else if (k === "lazer") it = { titulo: "Lazer no dia", intervencao: "Reservar 1 h de lazer", metrica: target };
-      else if (k === "contatos" || k.startsWith("p:")) it = { titulo: k.startsWith("p:") ? `Ver ${k.slice(2)}` : "Falar com alguém", intervencao: k.startsWith("p:") ? `Encontrar ou falar com ${k.slice(2)}` : "Falar com alguém querido (ligação ou encontro)", metrica: target };
-      else if (k === "diario") it = { titulo: "Escrever no diário", intervencao: "Escrever no diário antes de dormir", metrica: target, defasagem: 1 };
-      if (!it) continue; seen.add(k);
+      /* só pistas cujo intervalo de 95% não passa pelo zero: experimento testa uma suspeita, não ruído */
+      if (Math.abs(i.r) < .15 || !czConsist(i) || seen.has(i.k)) continue; const it = expIdeaFor(i.k, target);
+      if (!it) continue; seen.add(i.k);
       out.push({ ...it, r: i.r, n: i.n, direcao: i.r >= 0 ? "aumentar" : "diminuir", hipotese: `Nos seus dados, ${i.l.toLowerCase()} anda junto com ${expMetricL(target).toLowerCase()} (r = ${num(i.r, 2)}, ${i.n} dias). Correlação não prova causa: o experimento testa.` });
       if (out.length >= 4) break;
     }
@@ -8214,9 +8369,9 @@ const jConcPct = pid => { const cs = J_CONC[pid], P = jP(pid); return sum(cs.map
 /* métricas diárias para os Cruzamentos */
 function jDaily(C, idx, zero) {
   const ss = jData().sess, f = ss.map(x => x.data).sort()[0];
-  if (f) { zero("jmin", f); for (const x of ss) { const i = idx[x.data]; if (i != null) C.jmin[i] += +x.min || 0; } }
+  if (f) { zero("jmin", f, ss.map(x => x.data).sort().at(-1)); for (const x of ss) { const i = idx[x.data]; if (i != null) C.jmin[i] += +x.min || 0; } }
   const all = new Set(); J_ORDER.forEach(p => jActDays(p, "0000-01-01", TODAY).forEach(d => all.add(d))); Object.keys(bmEx()).forEach(d => all.add(d));
-  const f2 = [...all].sort()[0]; if (f2) { zero("jdia", f2); for (const d of all) { const i = idx[d]; if (i != null) C.jdia[i] = 1; } }
+  const ad = [...all].filter(d => d <= TODAY).sort(), f2 = ad[0]; if (f2) { zero("jdia", f2, ad.at(-1)); for (const d of all) { const i = idx[d]; if (i != null) C.jdia[i] = 1; } }
   zero("bmidx"); for (const [d, e] of Object.entries(bmEx())) { const i = idx[d], ns = Object.values(e.n || {}).filter(isNum); if (i != null && ns.length) C.bmidx[i] = avg(ns) / 2; }
 }
 function jProgCard(pr, full = false) {
@@ -9608,7 +9763,7 @@ const TAB_INFO = {
   psi: { cor: "var(--a-men)", cena: "notebook", foto: "Duas poltronas frente a frente numa sala com luz de janela", missao: "Acompanhar o trabalho psicológico de verdade: as sessões, os processos ao longo do tempo, o que se repete e o que você faz entre uma sessão e outra, ligado à sua jornada.", resolve: "Insights da terapia que se perdem até a sessão seguinte, e um trabalho interior separado do resto da vida.", entra: "Sessões, registros entre sessões, padrões, e a jornada, a Bússola e a Filosofia.", sai: "A pauta da próxima sessão, triagens estoicas, padrões na Filosofia, e o resumo que os mentores e o Conselho leem.", manual: ["Logo depois da sessão, registre os temas, um insight e o combinado.", "Entre sessões, responda a pergunta do dia ou faça um registro de pensamento quando algo pesar; dali dá para ir à triagem estoica.", "Nomeie os padrões que se repetem: a Filosofia mostra o exercício estoico que conversa com cada um.", "O Terapeuta muda de forma conforme o que você pede; toque numa forma para fixá-la. Ele não substitui o seu terapeuta."] },
   "jornada.filosofia": { cena: "chapters", missao: "O estoicismo tecido na jornada: a dicotomia do controle aplicada às suas decisões, padrões e tarefas, as quatro virtudes lidas nos seus exames e o mesmo dilema visto por todas as tradições." },
   admin: { cor: "var(--accent)", cena: "constel", foto: "Mesa redonda de reunião vista de cima, com cadeiras de cores diferentes", missao: "O Conselho de Administração da sua vida: os mentores de todas as áreas reunidos como diretores, conduzidos pelo Intermediador, para ver o todo e decidir o que importa.", resolve: "Cada área otimizada sozinha, sem ver o que uma custa à outra.", entra: "Os briefings de cada área, a memória de cada mentor e a ata anterior.", sai: "A ata, com decisões e ações que aparecem nas abas das áreas e na memória dos mentores.", manual: ["Escolha o tipo de sessão e, se quiser, um foco; toque em Iniciar sessão.", "Quando o Intermediador falar com você, a sessão pausa e espera a sua resposta.", "Intervenha a qualquer momento pelo campo de baixo; Pular fase e Encerrar e gerar ata estão sempre à mão.", "Marque as ações como feitas aqui ou na aba da área. Uma sessão interrompida continua de onde parou."] },
-  cruz: { cor: "var(--a-apr)", cena: "scatter", foto: "Fios coloridos se cruzando num tear", missao: "Descobrir o que anda junto na sua vida: sono e humor, gastos e estresse, prática e foco.", resolve: "Intuições sobre si que nunca são conferidas.", entra: "As séries diárias de todas as abas.", sai: "Ideias para Experimentos.", manual: ["Escolha duas métricas ou deixe o Atlas procurar as relações mais fortes.", "Correlação não é causa: teste em Experimentos antes de mudar a rotina."] },
+  cruz: { cor: "var(--a-apr)", cena: "scatter", foto: "Fios coloridos se cruzando num tear", missao: "Achar pistas sobre o que anda junto entre áreas diferentes da sua vida (sono e humor, treino e energia, gastos e estresse), com o quanto dá para confiar em cada uma, para virar experimento.", resolve: "Intuições sobre si que nunca são conferidas, e coincidências tomadas por padrão.", entra: "As séries diárias de Saúde, Hábitos, Finanças, Diário, Relações, Estudo e Lazer, Rotina, Cockpit de Trabalho, Psicologia e Jornada.", sai: "Hipóteses prontas para Experimentos, e leituras para o Conselho e os mentores.", manual: ["Precisa de duas áreas registradas nos mesmos dias, em pelo menos 20 dias; o check-in da Saúde já basta. Sem isso, a aba mostra o que falta em vez de números.", "Em Perguntas, escolha o que importa (humor, energia, estresse, sono, cumprir o plano, gastos). As pistas vêm da mais forte para a mais fraca, e só entram as que dificilmente são coincidência.", "Ver no gráfico abre o cruzamento; Testar como experimento cria o teste com dias COM e SEM sorteados.", "Correlação não é causa. Uma métrica nunca é cruzada com uma parte dela (o gasto do mercado está dentro do gasto do dia), e dias depois do último registro de uma área não contam como zero."] },
   fin: { cor: "var(--a-fin)", cena: "growth", foto: "Mesa com caderno de contas, calculadora e moedas de euro e real", missao: "Saber para onde vai o dinheiro, quanto sobra e se o futuro está sendo construído, em euro e em real.", resolve: "Fim de mês sem saber o que aconteceu e decisões grandes sem número.", entra: "Lançamentos, orçamento, patrimônio, salário (Carreira), contas da casa.", sai: "Futuro financeiro, Visão geral, mentor de Finanças.", manual: ["Lançamentos: registre ou importe extratos; categorias aprendem com você.", "Orçamento & patrimônio: teto por categoria, assinaturas e o patrimônio do fim do mês.", "Futuro financeiro: reserva, TFR e previdência com as contas feitas.", "Itália & Brasil: contas dos dois países e o total em euro na cotação do dia."] },
   "fin.futuro": { missao: "Três camadas de segurança: a reserva para imprevistos, o TFR que se acumula com o seu contrato e a previdência para a aposentadoria. Cada uma com conta feita e um próximo passo." },
   "fin.vida": { missao: "Viver na Itália com vínculos no Brasil: prazos de documentos dos dois países e o custo mensal de cada lado, somado em euro com a cotação do dia." },
@@ -15035,7 +15190,7 @@ function render() {
     admin: () => ["Administração Pessoal", "O Conselho de Administração da sua vida: os mentores reunidos, conduzidos pelo Intermediador, e você decide", pAdmin],
     mentores: () => ["Mentores", "Um agente para cada área, com memória do que vocês combinaram", pMentores],
     mentor: () => [esc(MENTOR_DEF[SUB].nome), esc(MENTOR_DEF[SUB].papel[0].toUpperCase() + MENTOR_DEF[SUB].papel.slice(1)), pMentor],
-    cruz: () => ["Cruzamentos", "Descubra o que anda junto na sua vida: escolha duas métricas ou deixe o Atlas procurar", rCruz],
+    cruz: () => ["Cruzamentos", "Pistas sobre o que anda junto entre as áreas da sua vida, com o grau de confiança, para virar experimento", rCruz],
     fin: () => ["Finanças", SUB === "futuro" ? "Reserva, TFR e previdência" : SUB === "vida" ? "Contas dos dois países, somadas em euro" : mlabel(REF), { rel: rFin, lanc: pLanc, orc: pOrc, futuro: pFuturo, vida: pVida, projetos: pFinProjetos, diario: pSetorDiario }[SUB]],
     saude: () => ["Saúde", mlabel(REF), { rel: rSaude, checkin: pCheckin, diario: pSetorDiario }[SUB]],
     hab: () => ["Hábitos", mlabel(REF), { rel: rHab, marcar: pHabMarcar, diario: pSetorDiario }[SUB]],
@@ -15133,7 +15288,7 @@ function pack() {
 }
 
 /* ================================================================ eventos */
-const CLICK_SEL = "[data-rtb],button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv],[data-cktask],[data-ckmemb],[data-ckproj],[data-ckmarco],[data-ckpessoa],[data-ckrisk],[data-ckiss],[data-ckdec],[data-cklic],[data-ckbim],[data-ckel],[data-ckmeetv],[data-ckrel],[data-ckdrill],[data-ckdper],[data-ckdnav],[data-ckdsec],[data-ckwmv],[data-ckwhide]";
+const CLICK_SEL = "[data-rtb],button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv],[data-cktask],[data-ckmemb],[data-ckproj],[data-ckmarco],[data-ckpessoa],[data-ckrisk],[data-ckiss],[data-ckdec],[data-cklic],[data-ckbim],[data-ckel],[data-ckmeetv],[data-ckrel],[data-ckdrill],[data-ckdper],[data-ckdnav],[data-ckdsec],[data-ckwmv],[data-ckwhide],[data-czver]";
 document.addEventListener("click", e => {
   const t = e.target.closest(CLICK_SEL); if (!t || t.disabled) return;
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }

@@ -686,9 +686,9 @@ const jConcPct = pid => { const cs = J_CONC[pid], P = jP(pid); return sum(cs.map
 /* métricas diárias para os Cruzamentos */
 function jDaily(C, idx, zero) {
   const ss = jData().sess, f = ss.map(x => x.data).sort()[0];
-  if (f) { zero("jmin", f); for (const x of ss) { const i = idx[x.data]; if (i != null) C.jmin[i] += +x.min || 0; } }
+  if (f) { zero("jmin", f, ss.map(x => x.data).sort().at(-1)); for (const x of ss) { const i = idx[x.data]; if (i != null) C.jmin[i] += +x.min || 0; } }
   const all = new Set(); J_ORDER.forEach(p => jActDays(p, "0000-01-01", TODAY).forEach(d => all.add(d))); Object.keys(bmEx()).forEach(d => all.add(d));
-  const f2 = [...all].sort()[0]; if (f2) { zero("jdia", f2); for (const d of all) { const i = idx[d]; if (i != null) C.jdia[i] = 1; } }
+  const ad = [...all].filter(d => d <= TODAY).sort(), f2 = ad[0]; if (f2) { zero("jdia", f2, ad.at(-1)); for (const d of all) { const i = idx[d]; if (i != null) C.jdia[i] = 1; } }
   zero("bmidx"); for (const [d, e] of Object.entries(bmEx())) { const i = idx[d], ns = Object.values(e.n || {}).filter(isNum); if (i != null && ns.length) C.bmidx[i] = avg(ns) / 2; }
 }
 function jProgCard(pr, full = false) {

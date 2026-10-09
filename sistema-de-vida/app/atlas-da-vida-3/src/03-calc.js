@@ -163,45 +163,64 @@ const CMP_TXT = { ant: "vs mês anterior", m3: "vs média de 3 meses", ano: "vs 
 /* ================================================================ tabela diária: base de todos os cruzamentos */
 const DAILY = () => memo("daily", buildDaily);
 function buildDaily() {
-  const minOf = a => a.length ? a.reduce((x, y) => x < y ? x : y) : null;
-  const dates0 = [Object.keys(S.saude), S.lanc.map(l => l.data), Object.keys(S.marks).map(k => k.split("|")[1]), S.estudo.map(e => e.data), S.lazer.map(e => e.data), S.contatos.map(c => c.data), S.diario.map(e => e.data), S.tarefas.map(t => t.concluida)].map(a => minOf(a.filter(Boolean)));
-  let start = minOf(dates0.filter(Boolean)) || addDays(TODAY, -90); if (start < addDays(TODAY, -730)) start = addDays(TODAY, -730);
+  const minOf = a => a.length ? a.reduce((x, y) => x < y ? x : y) : null, maxOf = a => a.length ? a.reduce((x, y) => x > y ? x : y) : null;
+  const src = [Object.keys(S.saude), S.lanc.map(l => l.data), Object.keys(S.marks).map(k => k.split("|")[1]), S.estudo.map(e => e.data), S.lazer.map(e => e.data), S.contatos.map(c => c.data), S.diario.map(e => e.data), S.tarefas.map(t => t.concluida)].map(a => a.filter(Boolean));
+  const dates0 = src.map(minOf), last0 = src.map(maxOf);
+  /* fontes das abas mais novas: Cockpit (o que você entregou), Psicologia (fora o que é só seu) e Rotina (dias com blocos marcados) */
+  const euCk = (S.ck?.membros || []).find(m => m.eu)?.id || "eu", ckDone = (S.ckTar || []).filter(t => t.concluida && t.resp === euCk).map(t => t.concluida);
+  const psS = (S.psique?.sessoes || []).filter(x => x.data && !x.privado).map(x => x.data), psR = (S.psique?.reflexoes || []).filter(x => x.data && !x.privado).map(x => x.data);
+  const roDias = new Set(); for (const b of S.rotina || []) for (const d of [...Object.keys(b.st || {}), ...Object.keys(b.feitos || {})]) if (d <= TODAY) roDias.add(d);
+  let start = minOf([...dates0, minOf(ckDone), minOf(psS), minOf(psR), minOf([...roDias])].filter(Boolean)) || addDays(TODAY, -90); if (start < addDays(TODAY, -730)) start = addDays(TODAY, -730);
   const dates = []; for (let d = start; d <= TODAY; d = addDays(d, 1)) dates.push(d);
   const N = dates.length, idx = {}; dates.forEach((d, i) => idx[d] = i);
-  const C = {}, col = () => new Array(N).fill(null);
-  const zero = (k, from) => { C[k] = col(); if (!from) return; const s = Math.max(0, from < start ? 0 : idx[from] ?? 0); for (let i = s; i < N; i++) C[k][i] = 0; };
-  const [fS, fL, fM, fE, fZ, fC, fD, fT] = dates0;
+  const C = {}, E = {}, col = () => new Array(N).fill(null);
+  /* dia sem registro vira zero enquanto a pessoa usa aquela fonte. Depois do último registro (+ folga), o zero continua valendo
+     para os alertas, mas os cruzamentos param de contar: E guarda o último dia observado de cada série (ver czCol) */
+  const zero = (k, from, last, folga = 14) => { C[k] = col(); if (!from) return; const s = Math.max(0, from < start ? 0 : idx[from] ?? 0); for (let i = s; i < N; i++) C[k][i] = 0;
+    if (last) { const fim = addDays(last, folga); if (fim < TODAY) E[k] = fim < start ? -1 : idx[fim]; } };
+  const [fS, fL, fM, fE, fZ, fC, fD, fT] = dates0, [, lL, lM, lE, lZ, lC, lD, lT] = last0;
   for (const k of ["sono", "humor", "energia", "estresse", "qual", "passos", "peso", "treino", "min"]) C[k] = col();
   for (const [d, e] of Object.entries(S.saude)) { const i = idx[d]; if (i == null) continue;
     for (const k of ["sono", "humor", "energia", "estresse", "qual", "passos", "peso"]) if (isNum(e[k])) C[k][i] = +e[k];
     if (Object.keys(e).some(k => k !== "peso")) { C.treino[i] = e.treino ? 1 : 0; C.min[i] = e.treino ? (+e.min || 0) : 0; } }
-  zero("hab", fM); for (const h of S.habitos) zero("h:" + h.id, fM);
+  zero("hab", fM, lM); for (const h of S.habitos) zero("h:" + h.id, fM, lM);
   if (fM && S.habitos.length) for (let i = idx[fM] ?? 0; i < N; i++) { let n = 0; for (const h of S.habitos) if (S.marks[h.id + "|" + dates[i]]) { n++; C["h:" + h.id][i] = 1; } C.hab[i] = n / S.habitos.length; }
-  zero("gasto", fL); zero("receita", fL); for (const g of GRUPOS) zero("g:" + g, fL);
+  zero("gasto", fL, lL); zero("receita", fL, lL); for (const g of GRUPOS) zero("g:" + g, fL, lL);
   for (const l of S.lanc) { const i = idx[l.data]; if (i == null) continue; const v = +l.valor || 0;
-    if (l.tipo === "Despesa") { C.gasto[i] += v; const g = CAT_DESP[l.cat] || "Estilo de vida"; C["g:" + g][i] += v; const ck = "c:" + l.cat; if (!C[ck]) zero(ck, fL); C[ck][i] += v; }
+    if (l.tipo === "Despesa") { C.gasto[i] += v; const g = CAT_DESP[l.cat] || "Estilo de vida"; C["g:" + g][i] += v; const ck = "c:" + l.cat; if (!C[ck]) zero(ck, fL, lL); C[ck][i] += v; }
     else if (l.tipo === "Receita") C.receita[i] += v; }
-  zero("estudo", fE); for (const e of S.estudo) { const i = idx[e.data]; if (i != null) C.estudo[i] += +e.horas || 0; }
-  zero("lazer", fZ); C.lazsat = col(); const ls = {};
+  zero("estudo", fE, lE); for (const e of S.estudo) { const i = idx[e.data]; if (i != null) C.estudo[i] += +e.horas || 0; }
+  const idE = S.estudo.filter(e => e.lang && e.data); zero("idi", minOf(idE.map(e => e.data)), maxOf(idE.map(e => e.data))); for (const e of idE) { const i = idx[e.data]; if (i != null) C.idi[i] += +e.horas || 0; }
+  zero("lazer", fZ, lZ); C.lazsat = col(); const ls = {};
   for (const e of S.lazer) { const i = idx[e.data]; if (i == null) continue; C.lazer[i] += +e.horas || 0; if (isNum(e.sat)) (ls[i] = ls[i] || []).push(+e.sat); }
   for (const i in ls) C.lazsat[i] = avg(ls[i]);
-  zero("contatos", fC); C.contq = col(); const cq = {};
-  const fP = minOf([fC, fD].filter(Boolean));
-  const pk = n => "p:" + n; for (const p of S.pessoas) zero(pk(p.nome), fP);
+  zero("contatos", fC, lC); C.contq = col(); const cq = {};
+  const fP = minOf([fC, fD].filter(Boolean)), lP = maxOf([lC, lD].filter(Boolean));
+  const pk = n => "p:" + n; for (const p of S.pessoas) zero(pk(p.nome), fP, lP);
   for (const c of S.contatos) { const i = idx[c.data]; if (i == null) continue; C.contatos[i]++; if (isNum(c.qual)) (cq[i] = cq[i] || []).push(+c.qual); if (C[pk(c.pessoa)]) C[pk(c.pessoa)][i] = 1; }
   for (const i in cq) C.contq[i] = avg(cq[i]);
-  zero("diario", fD); zero("palavras", fD); zero("mencoes", fD); C.dhumor = col(); const dh = {};
+  zero("diario", fD, lD); zero("palavras", fD, lD); zero("mencoes", fD, lD); C.dhumor = col(); const dh = {};
   for (const e of S.diario) { const i = idx[e.data]; if (i == null) continue; const p = parseEntry(e.texto);
     C.diario[i] = 1; C.palavras[i] += words(e.texto); C.mencoes[i] += p.people.length; if (isNum(e.humor)) (dh[i] = dh[i] || []).push(+e.humor);
-    for (const t of p.tags) { const k = "t:" + t; if (!C[k]) zero(k, fD); C[k][i] = 1; }
+    for (const t of p.tags) { const k = "t:" + t; if (!C[k]) zero(k, fD, lD); C[k][i] = 1; }
     for (const n of p.people) if (C[pk(n)]) C[pk(n)][i] = 1; }
   for (const i in dh) C.dhumor[i] = avg(dh[i]);
-  zero("tarefas", fT); for (const t of S.tarefas) { const i = idx[t.concluida]; if (i != null && t.status === "Concluída") C.tarefas[i]++; }
-  const fV = minOf((S.eventos || []).map(e => e.data).filter(Boolean)); if (fV) { zero("eventos", fV); for (const e of S.eventos) { const i = idx[e.data]; if (i != null) C.eventos[i]++; } }
+  zero("tarefas", fT, lT); for (const t of S.tarefas) { const i = idx[t.concluida]; if (i != null && t.status === "Concluída") C.tarefas[i]++; }
+  const evD = (S.eventos || []).map(e => e.data).filter(Boolean), fV = minOf(evD); if (fV) { zero("eventos", fV, maxOf(evD)); for (const e of S.eventos) { const i = idx[e.data]; if (i != null) C.eventos[i]++; } }
+  /* Rotina: fração do plano do dia cumprida (feito conta inteiro, parcial meio), só nos dias em que algum bloco foi marcado */
+  C["ro:pct"] = col(); if (typeof rtOcc === "function") for (const d of roDias) { const i = idx[d]; if (i == null) continue; const bs = rtOcc(d); if (!bs.some(b => b.st)) continue; const plan = sum(bs.map(b => b.z - b.a)); if (plan) C["ro:pct"][i] = sum(bs.map(b => b.st === "feito" ? b.z - b.a : b.st === "parcial" ? (b.z - b.a) / 2 : 0)) / plan; }
+  /* Cockpit de Trabalho: tarefas suas concluídas no dia e as horas delas */
+  zero("ckc", minOf(ckDone), maxOf(ckDone)); zero("ckh", minOf(ckDone), maxOf(ckDone));
+  for (const t of (S.ckTar || []).filter(t => t.concluida && t.resp === euCk)) { const i = idx[t.concluida]; if (i != null) { C.ckc[i]++; C.ckh[i] += +t.esforco || 0; } }
+  /* Psicologia: dia de sessão e dia com registro entre sessões */
+  zero("psis", minOf(psS), maxOf(psS), 21); for (const d of psS) { const i = idx[d]; if (i != null) C.psis[i] = 1; }
+  zero("psir", minOf(psR), maxOf(psR)); for (const d of psR) { const i = idx[d]; if (i != null) C.psir[i] = 1; }
   C.bem = C.humor.map((v, i) => v ?? C.dhumor[i]);   // humor do dia: check-in ou, na falta, o humor do diário
   if (typeof jDaily === "function") jDaily(C, idx, zero);   /* métricas da Jornada existencial (24-jornada.js) */
-  return { dates, idx, C, N };
+  return { dates, idx, C, N, E };
 }
+/* a série como os cruzamentos a enxergam: sem os zeros depois que a pessoa parou de registrar aquela fonte */
+function czCol(k) { const D = DAILY(), c = D.C[k]; if (!c || D.E?.[k] == null) return c; D.MC ||= {}; return D.MC[k] ||= c.map((v, i) => i > D.E[k] ? null : v); }
 /* catálogo de métricas diárias para o explorador e para os mentores */
 function metricList() {
   return memo("metrics", () => {
@@ -224,6 +243,7 @@ function metricList() {
     for (const g of GRUPOS) add("g:" + g, "Gasto · " + g, "Dinheiro", "sum", fe);
     Object.keys(D.C).filter(k => k.startsWith("c:")).map(k => [k, sum(D.C[k])]).sort((a, b) => b[1] - a[1]).slice(0, 10).forEach(([k]) => add(k, "Gasto · " + k.slice(2), "Dinheiro", "sum", fe));
     add("estudo", "Horas de estudo", "Crescimento", "sum", f1);
+    add("idi", "Horas de idioma", "Crescimento", "sum", f1);
     add("lazer", "Horas de lazer", "Crescimento", "sum", f1);
     add("lazsat", "Satisfação no lazer", "Crescimento", "avg", f1, { lo: 1, hi: 5 });
     add("jmin", "Minutos de prática (jornada)", "Jornada", "sum", f0);
@@ -232,6 +252,11 @@ function metricList() {
     add("contatos", "Contatos com pessoas", "Relações", "sum", f0);
     add("contq", "Qualidade dos contatos", "Relações", "avg", f1, { lo: 1, hi: 5 });
     Object.keys(D.C).filter(k => k.startsWith("p:")).map(k => [k, sum(D.C[k])]).filter(x => x[1] >= 3).sort((a, b) => b[1] - a[1]).slice(0, 12).forEach(([k]) => add(k, "Com " + k.slice(2), "Relações", "avg", fp, { bin: true }));
+    add("ro:pct", "Plano da Rotina cumprido", "Rotina", "avg", fp, { lo: 0, hi: 1 });
+    add("ckh", "Horas de trabalho entregues", "Trabalho", "sum", f1);
+    add("ckc", "Tarefas de trabalho concluídas", "Trabalho", "sum", f0);
+    add("psis", "Dia de sessão de terapia", "Psicologia", "avg", fp, { bin: true });
+    add("psir", "Registro entre sessões", "Psicologia", "avg", fp, { bin: true });
     add("tarefas", "Tarefas concluídas", "Metas", "sum", f0);
     add("eventos", "Compromissos na agenda", "Metas", "sum", f0);
     add("diario", "Escreveu no diário", "Diário", "avg", fp, { bin: true });
@@ -244,9 +269,13 @@ function metricList() {
 }
 const metric = k => metricList().find(m => m.k === k);
 const mfmt = (k, v) => (metric(k)?.fmt || (x => num(x)))(v);
-const family = k => k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:") ? "gasto" : k === "hab" || k.startsWith("h:") ? "hab" : ["diario", "palavras", "mencoes"].includes(k) ? "diario" : ["treino", "min"].includes(k) ? "treino" : ["humor", "dhumor", "bem"].includes(k) ? "humor" : k;
-function aggSeries(k, gran = "m", n = 6, end = TODAY) {
-  const D = DAILY(), m = metric(k) || { agg: "avg" }, c = D.C[k];
+/* famílias: métricas que são a mesma medida, ou uma parte da outra (o gasto do grupo está dentro do gasto do dia, a tag só
+   existe no dia em que você escreveu). Cruzar dentro da família dá correlação pela conta, não pela vida. */
+const family = k => k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:") ? "gasto" : k === "hab" || k.startsWith("h:") ? "hab" : ["diario", "palavras", "mencoes"].includes(k) || k.startsWith("t:") ? "diario" : ["treino", "min"].includes(k) ? "treino" : ["humor", "dhumor", "bem"].includes(k) ? "humor" : ["jmin", "jdia"].includes(k) ? "jornada" : k === "contatos" || k.startsWith("p:") ? "contatos" : ["estudo", "idi"].includes(k) ? "estudo" : ["ckh", "ckc"].includes(k) ? "ck" : ["psis", "psir"].includes(k) ? "psi" : k;
+/* “com fulano” também vem das menções no diário: é parte do diário */
+const czRel = (a, b) => a === b || family(a) === family(b) || (a.startsWith("p:") && family(b) === "diario") || (b.startsWith("p:") && family(a) === "diario");
+function aggSeries(k, gran = "m", n = 6, end = TODAY, colOver = null) {
+  const D = DAILY(), m = metric(k) || { agg: "avg" }, c = colOver || D.C[k];
   if (!c) return { keys: [], labels: [], vals: [] };
   const endI = D.idx[end] ?? D.N - 1;
   if (gran === "d") { const s = Math.max(0, endI - n + 1); const keys = D.dates.slice(s, endI + 1); return { keys, labels: keys.map(fmtD), vals: c.slice(s, endI + 1) }; }
@@ -258,28 +287,72 @@ function aggSeries(k, gran = "m", n = 6, end = TODAY) {
 function crossData(kx, ky, { lag = 0, days = 180, gran = "d" } = {}) {
   const D = DAILY(), pts = [];
   if (!D.C[kx] || !D.C[ky]) return null;
-  if (gran === "d") { const X = D.C[kx], Y = D.C[ky], s = Math.max(0, D.N - days); for (let i = s; i < D.N - lag; i++) { const x = X[i], y = Y[i + lag]; if (x != null && y != null) pts.push({ x, y, d: D.dates[i] }); } }
-  else { const n = gran === "w" ? Math.ceil(days / 7) : Math.max(3, Math.ceil(days / 30)); const A = aggSeries(kx, gran, n), B = aggSeries(ky, gran, n); for (let i = 0; i < A.vals.length - lag; i++) { const x = A.vals[i], y = B.vals[i + lag]; if (x != null && y != null) pts.push({ x, y, d: A.keys[i] }); } }
+  if (gran === "d") { const X = czCol(kx), Y = czCol(ky), s = Math.max(0, D.N - days); for (let i = s; i < D.N - lag; i++) { const x = X[i], y = Y[i + lag]; if (x != null && y != null) pts.push({ x, y, d: D.dates[i] }); } }
+  else { const n = gran === "w" ? Math.ceil(days / 7) : Math.max(3, Math.ceil(days / 30)); const A = aggSeries(kx, gran, n, TODAY, czCol(kx)), B = aggSeries(ky, gran, n, TODAY, czCol(ky)); for (let i = 0; i < A.vals.length - lag; i++) { const x = A.vals[i], y = B.vals[i + lag]; if (x != null && y != null) pts.push({ x, y, d: A.keys[i] }); } }
   const r = pearson(pts.map(p => p.x), pts.map(p => p.y)), fit = regress(pts);
   let groups = null; const bin = metric(kx)?.bin || (pts.length && pts.every(p => p.x === 0 || p.x === 1));
   if (bin) { const A = pts.filter(p => p.x >= .5).map(p => p.y), B = pts.filter(p => p.x < .5).map(p => p.y); if (A.length >= 3 && B.length >= 3) groups = { a: avg(A), b: avg(B), na: A.length, nb: B.length, bin: true }; }
   else if (pts.length >= 12) { const so = [...pts].sort((a, b) => a.x - b.x), q = Math.floor(so.length / 3); groups = { a: avg(so.slice(-q).map(p => p.y)), b: avg(so.slice(0, q).map(p => p.y)), na: q, nb: q, bin: false }; }
-  return { pts, r, n: pts.length, fit, groups };
+  return { pts, r, n: pts.length, fit, groups, gran, rel: czRel(kx, ky), ...rStats(pts, r) };
+}
+/* quanto confiar numa correlação. Dias seguidos se parecem (o humor de hoje puxa o de amanhã), então n dias valem menos que n
+   observações independentes: n efetivo pela autocorrelação de 1ª ordem das duas séries (Bartlett). Com ele, o intervalo de 95%
+   de Fisher e o p bilateral. */
+const normCdf = z => { const t = 1 / (1 + .2316419 * Math.abs(z)), d = .3989422804 * Math.exp(-z * z / 2), p = d * t * (.31938153 + t * (-.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); return z > 0 ? 1 - p : p; };
+const lag1 = a => a.length < 4 ? 0 : pearson(a.slice(0, -1), a.slice(1)) ?? 0;
+function rStats(pts, r) {
+  const n = pts.length; if (r == null || n < 4) return { neff: n, lo: null, hi: null, p: null };
+  const ph = clamp(lag1(pts.map(p => p.x)) * lag1(pts.map(p => p.y)), 0, .9), neff = Math.min(n, n * (1 - ph) / (1 + ph));
+  if (neff < 5) return { neff, lo: null, hi: null, p: null };
+  const z = Math.atanh(clamp(r, -.9999, .9999)), se = 1 / Math.sqrt(neff - 3);
+  return { neff, lo: Math.tanh(z - 1.96 * se), hi: Math.tanh(z + 1.96 * se), p: 2 * (1 - normCdf(Math.abs(z) / se)) };
+}
+/* o intervalo de 95% não passa pelo zero */
+const czConsist = c => c?.lo != null && (c.lo > 0 || c.hi < 0);
+const CZ_MINN = { d: 20, w: 12, m: 8 };
+function czForca(c) {
+  if (!c || c.r == null) return { k: "sem", t: "sem dados em comum" };
+  if (c.rel) return { k: "rel", t: "uma é parte da outra" };
+  if (c.n < (CZ_MINN[c.gran] || 20) || c.lo == null) return { k: "poucos", t: "poucos dados" };
+  if (!czConsist(c)) return { k: "acaso", t: "pode ser acaso" };
+  const a = Math.abs(c.r); return a >= .5 ? { k: "forte", t: "forte" } : a >= .3 ? { k: "moderada", t: "moderada" } : { k: "fraca", t: "fraca, mas consistente" };
 }
 const rWord = r => { const a = Math.abs(r ?? 0); return a >= .5 ? "forte" : a >= .3 ? "moderada" : a >= .15 ? "fraca" : "desprezível"; };
 function influencers(target = "bem", { days = 180, lag = 0, min = 20 } = {}) {
   return memo(`infl:${target}:${days}:${lag}:${min}`, () => {
     const out = [];
     for (const m of metricList()) {
-      if (family(m.k) === family(target)) continue;
+      if (czRel(m.k, target)) continue;
       const c = crossData(m.k, target, { lag, days }); if (!c || c.n < min || c.r == null) continue;
       if (c.groups?.bin && (c.groups.na < 5 || c.groups.nb < 5)) continue;
-      out.push({ k: m.k, l: m.l, r: c.r, n: c.n, groups: c.groups, grp: m.grp, fit: c.fit });
+      out.push({ k: m.k, l: m.l, r: c.r, n: c.n, neff: c.neff, lo: c.lo, hi: c.hi, p: c.p, groups: c.groups, grp: m.grp, fit: c.fit });
     }
+    /* muitas comparações de uma vez: só é pista o que passa por Benjamini–Hochberg a 10% (o resto pode ser acaso) */
+    const ps = out.filter(i => i.p != null).sort((a, b) => a.p - b.p), M = ps.length; let lim = -1;
+    ps.forEach((i, j) => { if (i.p <= (j + 1) / M * .1) lim = j; }); ps.forEach((i, j) => { i.sig = j <= lim; }); out.forEach(i => { i.sig ||= false; });
     return out.sort((a, b) => Math.abs(b.r) - Math.abs(a.r));
   });
 }
-const CORE_KEYS = ["sono", "qual", "bem", "energia", "estresse", "passos", "treino", "hab", "gasto", "estudo", "lazer", "contatos", "diario", "tarefas"];
+/* o par que a aba abre: o primeiro destes que tiver 20 dias em comum; senão, o par de famílias diferentes com mais dias juntos */
+const CZ_PARES = [["sono", "bem"], ["sono", "energia"], ["treino", "bem"], ["hab", "estresse"], ["hab", "bem"], ["passos", "energia"], ["ro:pct", "energia"], ["ckh", "estresse"], ["gasto", "estresse"], ["gasto", "bem"], ["estudo", "bem"], ["contatos", "bem"], ["jmin", "estresse"], ["diario", "bem"], ["qual", "energia"]];
+function czBusca(days = 180) {
+  return memo(`czbusca:${days}`, () => {
+    for (const [a, b] of CZ_PARES) if (metric(a) && metric(b)) { const c = crossData(a, b, { days }); if (c && c.n >= 20 && c.r != null) return { par: [a, b], n: c.n }; }
+    const ms = metricList(); let best = null;
+    for (let i = 0; i < ms.length; i++) for (let j = i + 1; j < ms.length; j++) { if (czRel(ms[i].k, ms[j].k)) continue; const c = crossData(ms[i].k, ms[j].k, { days }); if (c && c.r != null && (!best || c.n > best.n)) best = { par: [ms[i].k, ms[j].k], n: c.n }; }
+    return best && best.n >= 20 ? best : { par: null, n: best?.n || 0 };
+  });
+}
+/* prontidão: quantos dias cada grupo tem na janela e se já dá para cruzar duas coisas diferentes */
+function czProntidao(days = 180) {
+  return memo(`czpront:${days}`, () => {
+    const D = DAILY(), s = Math.max(0, D.N - days), G = {};
+    for (const m of metricList()) { const c = czCol(m.k), g = (G[m.grp] ||= new Set()); for (let i = s; i < D.N; i++) if (c[i] != null) g.add(i); }
+    const B = czBusca(days);
+    return { grupos: Object.entries(G).map(([g, set]) => ({ g, dias: set.size })).sort((a, b) => b.dias - a.dias), pronto: !!B.par, n: B.n, par: B.par };
+  });
+}
+const CORE_KEYS = ["sono", "qual", "bem", "energia", "estresse", "passos", "treino", "hab", "gasto", "estudo", "lazer", "contatos", "diario", "tarefas", "ro:pct", "ckh"];
 
 /* ================================================================ insights automáticos (sem IA) */
 function insights(R, H) {
@@ -307,7 +380,7 @@ function insights(R, H) {
   const risk = R.metas.filter(m => m.st === "crit" && m.ativa);
   if (risk.length) out.push({ w: 1.5 + risk.length * .2, st: "crit", area: risk[0].area, k: "Metas em risco", t: `${risk.length} meta(s) atrasada(s) ou vencida(s): ${risk.slice(0, 2).map(m => `<b>${esc(m.meta)}</b>`).join(", ")}${risk.length > 2 ? "…" : ""}.`, a: "Replaneje o prazo ou quebre a meta em uma tarefa para esta semana." });
   // cruzamentos com o diário e com hábitos
-  const inf = influencers("bem", { days: PER * 30, min: 20 });
+  const inf = influencers("bem", { days: PER * 30, min: 20 }).filter(czConsist);   /* só o que não pode ser acaso */
   const hb = inf.filter(i => i.k.startsWith("h:") && i.groups?.bin).sort((a, b) => (b.groups.a - b.groups.b) - (a.groups.a - a.groups.b))[0];
   if (hb && hb.groups.a - hb.groups.b >= .25) { const h = S.habitos.find(z => "h:" + z.id === hb.k); out.push({ w: (hb.groups.a - hb.groups.b) * 1.2, st: "good", area: h?.area || "Saúde mental", k: "Hábito que mais ajuda", t: `Nos dias em que você faz <b>${esc(h?.nome || hb.l)}</b> o humor médio é <b>${num(hb.groups.a)}</b>, contra ${num(hb.groups.b)} sem ele.`, a: "Se tiver que escolher um hábito numa semana difícil, escolha este." }); }
   const pp = inf.filter(i => i.k.startsWith("p:") && i.groups?.bin).sort((a, b) => (b.groups.a - b.groups.b) - (a.groups.a - a.groups.b))[0];
