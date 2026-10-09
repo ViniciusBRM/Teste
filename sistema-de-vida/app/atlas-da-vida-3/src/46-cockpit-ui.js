@@ -17,7 +17,7 @@ function ckCard(t, o = {}) {
     ${o.why && p.r.length ? `<small class="ckwhy">${esc(p.r.slice(0, 3).join(" · "))}</small>` : ""}
     ${o.acts !== false && ckOpen(t) ? `<div class="ckacts"><button type="button" class="vb" data-ckdone="${t.id}" title="Concluir" aria-label="Concluir ${esc(t.cod)}">${ic("check")}</button>${o.mv ? `${CK_STATUS.indexOf(t.status) > 0 ? `<button type="button" class="vb" data-ckmv="${t.id}|-1" aria-label="Voltar status">${ic("back")}</button>` : ""}<button type="button" class="vb" data-ckmv="${t.id}|1" aria-label="Avançar status">${ic("arrow")}</button>` : ""}</div>` : ""}</article>`;
 }
-function ckFiltra(list) { const f = CK.f, q = norm(f.q); return list.filter(t => (!f.proj || t.projeto === f.proj) && (!f.resp || t.resp === f.resp) && (!f.tag || (t.tags || []).includes(f.tag)) && (!f.st || t.status === f.st) && (!q || norm(`${t.cod} ${t.titulo} ${t.notas}`).includes(q))); }
+function ckFiltra(list) { const f = CK.f, q = norm(f.q); return list.filter(t => ckDrillHas("tar", t.id) && (!f.proj || t.projeto === f.proj) && (!f.resp || t.resp === f.resp) && (!f.tag || (t.tags || []).includes(f.tag)) && (!f.st || t.status === f.st) && (!q || norm(`${t.cod} ${t.titulo} ${t.notas}`).includes(q))); }
 function ckFiltros(o = {}) {
   const f = CK.f, tags = [...new Set([...CK_AGENTE.tags, ...ckT().flatMap(t => t.tags || [])])];
   return `<div class="ckfil">${o.q !== false ? `<input type="search" id="ck_q" placeholder="Buscar tarefa ou código" value="${esc(f.q)}" aria-label="Buscar tarefa">` : ""}
@@ -36,8 +36,12 @@ function ckOnboard() {
 
 /* ---------------------------------------------------------------- moldura: barra, visões e o painel do PMO */
 function pTrabalho() {
-  ckD(); if (CK.f.proj && !ckP(CK.f.proj)) CK.f.proj = ""; if (CK.f.resp && !ckM(CK.f.resp)) CK.f.resp = ""; if (CK.gproj && !ckP(CK.gproj)) CK.gproj = "";
-  const V = { hoje: ckHoje, semana: ckSemana, mes: ckMesV, kanban: ckKanban, lista: ckLista, gantt: ckGanttV, riscos: ckRiscosV, problemas: ckProblemasV, equipe: ckEquipeV, pessoa: ckPessoaV, log: ckLogV, decisoes: ckDecisoesV, bim: ckBimV, entregas: ckEntregasV, reunioes: ckReunioesV, relatorios: ckRelatoriosV, licoes: ckLicoesV, metricas: ckMetricasV, contexto: ckContextoV };
+  ckD(); if (CK.drill && CK.drill.view !== SUB) { CK.drill = null; CK.drillSet = null; }
+  if (CK.dash?.reuniao && SUB !== "dashboard") CK.dash.reuniao = false;
+  if (SUB === "dashboard" && LOADED && CK.snapV !== VER) { CK.snapV = VER; setTimeout(() => { try { ckSnapTake(); } catch (e) { console.warn("ckSnap", e); } }, 0); }
+  document.body.classList.toggle("ckdmeet-on", !!CK.dash?.reuniao);
+  if (CK.f.proj && !ckP(CK.f.proj)) CK.f.proj = ""; if (CK.f.resp && !ckM(CK.f.resp)) CK.f.resp = ""; if (CK.gproj && !ckP(CK.gproj)) CK.gproj = "";
+  const V = { dashboard: ckDashV, hoje: ckHoje, semana: ckSemana, mes: ckMesV, kanban: ckKanban, lista: ckLista, gantt: ckGanttV, riscos: ckRiscosV, problemas: ckProblemasV, equipe: ckEquipeV, pessoa: ckPessoaV, log: ckLogV, decisoes: ckDecisoesV, bim: ckBimV, entregas: ckEntregasV, reunioes: ckReunioesV, relatorios: ckRelatoriosV, licoes: ckLicoesV, contexto: ckContextoV };
   const al = ckAlertas(), cr = al.filter(a => a.st === "crit").length, pend = ckPendentes().length;
   const bar = `<div class="ckbar"><button type="button" class="ckqbtn" data-act="ckquick">${ic("bolt")}<span>Registrar tarefa, risco, problema, decisão ou evento…</span><kbd>Alt Shift N</kbd></button>
     <button type="button" class="btn sm" data-act="cknova">${ic("plus")}Nova tarefa</button>
@@ -74,13 +78,14 @@ function ckAsk(txt) { CK.chat = true; CK_LS("chat", "1"); render(); askMentor("c
 /* ---------------------------------------------------------------- Hoje */
 function ckHoje() {
   if (ckVazio()) return ckOnboard();
-  const T = ckT(), eu = ckEquipe().find(m => m.eu)?.id || "eu", meu = ckSorted(T.filter(t => ckOpen(t) && t.resp === eu)), al = ckAlertas(), venc = T.filter(t => ckOpen(t) && t.prazo && t.prazo < TODAY);
-  const ate5 = ckAddU(ckToday(), 4), prox = T.filter(t => ckOpen(t) && t.prazo && t.prazo >= TODAY && t.prazo <= ate5), blq = T.filter(t => t.status === "bloqueada"), cg = ckCarga(eu), cgs = ckEquipe().map(m => [m, ckCarga(m.id)]);
+  /* os números dos cartões vêm da camada de agregação (49-cockpit-agg.js), a mesma do Dashboard */
+  const T = ckT(), K = ckKpisHoje(ckDados(), ckCtx()), eu = K.eu, meu = ckSorted(K.meu), al = ckAlertas(), venc = K.venc;
+  const ate5 = K.ate5, prox = K.prox, blq = K.blq, cg = ckCarga(eu), cgs = ckEquipe().map(m => [m, ckCarga(m.id)]);
   const B = ckBriefData();
   return `${kpiRow([kmini("var(--a-car)", "Minhas tarefas abertas", String(meu.length), meu.filter(t => ckPrio(t).q === 1).length ? `${meu.filter(t => ckPrio(t).q === 1).length} para fazer já` : "nenhuma urgente e importante"),
       kmini("var(--crit)", "Vencidas", String(venc.length), venc.length ? venc.slice(0, 3).map(t => t.cod).join(", ") : "nenhuma", venc.length ? "crit" : "good"),
       kmini("var(--warn)", "Prazos em 5 dias úteis", String(prox.length), `até ${fmtD(ate5)}`),
-      kmini("var(--a-apr)", "Minha carga · 10 d.u.", pct(cg.load), `${num(cg.dem, 0)} h para ${num(cg.cap, 0)} h${cg.ag ? ` · ${num(cg.ag, 0)} h de agenda` : ""}`, cg.st === "crit" ? "crit" : cg.st === "warn" ? "warn" : "good"),
+      kmini("var(--a-apr)", `Minha carga · ${cg.n} d.u.`, pct(cg.load), `${num(cg.dem, 0)} h para ${num(cg.cap, 0)} h${cg.ag ? ` · ${num(cg.ag, 0)} h de agenda` : ""}`, cg.st === "crit" ? "crit" : cg.st === "warn" ? "warn" : "good"),
       kmini("var(--muted)", "Bloqueios", String(blq.length), blq.length ? blq.map(t => t.cod).join(", ") : "nenhum")])}
     <div class="g2c">
       ${panel(`${ic("sun")}Briefing de ${fmtDL(TODAY)}`, ckBriefHTML(B), { act: `<button type="button" class="btn sm ghost" data-act="ckask" data-v="briefing">${ic("spark")}Com o PMO</button>` })}
@@ -90,7 +95,7 @@ function ckHoje() {
       ${panel(`${ic("users")}Equipe agora`, `<div class="ckteam">${cgs.map(([m, c]) => `<button type="button" class="cktm" data-ckpessoa="${m.id}">${ckAv(m.id)}<span><b>${esc(ckMN(m.id))}</b><small>${esc(T.filter(t => t.resp === m.id && t.status === "em andamento").map(t => t.cod).join(", ") || "nada em andamento")}</small></span>${ckLoadBar(c)}</button>`).join("")}</div>`, { act: `<a class="lnk" href="#trabalho.equipe">Equipe</a>` })}
     </div>`;
 }
-function ckLoadBar(c) { const st = c.st === "idle" ? "none" : c.st; return `<span class="ckload" data-tip="${esc(`${pct(c.load)} da capacidade nos próximos 10 dias úteis (${num(c.dem, 0)} h de ${num(c.cap, 0)} h)`)}"><i class="st-bg-${st}" style="width:${Math.min(100, Math.round(c.load * 100))}%"></i></span><em class="ckloadt st-${st === "none" ? "none" : st}">${pct(c.load)} · ${CK_CST[c.st]}</em>`; }
+function ckLoadBar(c) { const st = c.st === "idle" ? "none" : c.st; return `<span class="ckload" data-tip="${esc(`${pct(c.load)} da capacidade nos próximos ${c.n} dias úteis (${num(c.dem, 0)} h de ${num(c.cap, 0)} h)`)}"><i class="st-bg-${st}" style="width:${Math.min(100, Math.round(c.load * 100))}%"></i></span><em class="ckloadt st-${st === "none" ? "none" : st}">${pct(c.load)} · ${CK_CST[c.st]}</em>`; }
 
 /* ---------------------------------------------------------------- Semana */
 function ckSemana() {
@@ -116,31 +121,33 @@ function ckMesV() {
 /* ---------------------------------------------------------------- Kanban */
 function ckKanban() {
   const T = ckFiltra(ckT());
-  return `${ckFiltros()}<div class="ckkan">${CK_STATUS.map(s => { const ts = ckSorted(T.filter(t => t.status === s && (s !== "concluída" || t.concluida >= addDays(TODAY, -14)))); return `<section class="ckcol" data-ckcol="${s}" aria-label="${s}"><header><b>${s[0].toUpperCase() + s.slice(1)}</b><small>${ts.length}${s !== "concluída" ? ` · ${num(sum(ts.map(t => ckRem(t))), 0)} h` : " · 14 dias"}</small></header><div class="ckcolb">${ts.map(t => ckCard(t, { drag: true, mv: true })).join("") || `<p class="muted small">Arraste uma tarefa para cá.</p>`}</div></section>`; }).join("")}</div>`;
+  const cap = CK.kanAll ? Infinity : 40;
+  return `${ckDrillChip("kanban")}${ckFiltros()}<div class="ckkan">${CK_STATUS.map(s => { const ts = ckSorted(T.filter(t => t.status === s && (s !== "concluída" || ckDrillOn("tar") || t.concluida >= addDays(TODAY, -14)))); return `<section class="ckcol" data-ckcol="${s}" aria-label="${s}"><header><b>${s[0].toUpperCase() + s.slice(1)}</b><small>${ts.length}${s !== "concluída" ? ` · ${num(sum(ts.map(t => ckRem(t))), 0)} h` : " · 14 dias"}</small></header><div class="ckcolb">${ts.slice(0, cap).map(t => ckCard(t, { drag: true, mv: true })).join("") || `<p class="muted small">Arraste uma tarefa para cá.</p>`}${ts.length > cap ? `<button type="button" class="btn sm ghost ckkanmais" data-act="ckkanall">mais ${ts.length - cap}</button>` : ""}</div></section>`; }).join("")}</div>`;
 }
 
 /* ---------------------------------------------------------------- Lista e matriz de Eisenhower */
 function ckLista() {
-  const T = ckFiltra(ckT().filter(t => CK.done || ckOpen(t))), C = ckCPM().R;
+  const T = ckFiltra(ckT().filter(t => CK.done || ckOpen(t) || ckDrillOn("tar"))), C = ckCPM().R;
   const ord = { score: (a, b) => (ckPrio(a).q || 9) - (ckPrio(b).q || 9) || ckPrio(b).s - ckPrio(a).s, prazo: (a, b) => (a.prazo || "9").localeCompare(b.prazo || "9"), projeto: (a, b) => ckPN(a.projeto).localeCompare(ckPN(b.projeto)), resp: (a, b) => ckMN(a.resp).localeCompare(ckMN(b.resp)), cod: (a, b) => (+a.cod.slice(1)) - (+b.cod.slice(1)) }[CK.sort] || (() => 0);
   const rows = [...T].sort(ord);
   const tools = `<div class="segs" role="group" aria-label="Ordenar"><span class="flbl" style="margin:0 6px">Ordem</span>${[["score", "Prioridade"], ["prazo", "Prazo"], ["projeto", "Projeto"], ["resp", "Pessoa"], ["cod", "Código"]].map(([k, l]) => `<button type="button" class="seg" data-cksort="${k}" aria-pressed="${CK.sort === k}">${l}</button>`).join("")}</div><button type="button" class="btn sm${CK.eis ? " primary" : ""}" data-act="ckeis" aria-pressed="${CK.eis}">${ic("grid")}Matriz de Eisenhower</button><label class="chk"><input type="checkbox" data-ckdonefil${CK.done ? " checked" : ""}> concluídas</label>`;
   if (CK.eis) { const Q = [1, 2, 3, 4].map(q => rows.filter(t => ckOpen(t) && ckPrio(t).q === q));
     return `${ckFiltros({ st: true, extra: tools })}<div class="ckeis">${[1, 2, 3, 4].map(q => `<section class="ckq${q}"><header><b>${CK_Q[q][0]}</b><small>${["urgente e importante", "importante, não urgente", "urgente, pouco importante", "nem urgente nem importante"][q - 1]} · ${Q[q - 1].length}</small></header>${Q[q - 1].map(t => ckCard(t, { q: false, why: true })).join("") || `<p class="muted small">—</p>`}${q === 3 && Q[2].length ? `<button type="button" class="btn sm" data-act="ckask" data-v="delegar">${ic("users")}Delegar com o PMO</button>` : ""}</section>`).join("")}</div>`; }
-  return `${ckFiltros({ st: true, extra: tools })}${rows.length ? `<div class="hscroll"><table class="dt cktab"><thead><tr><th></th><th>Cód.</th><th>Tarefa</th><th>Projeto</th><th>Resp.</th><th>Prazo</th><th class="num">Esforço</th><th>Status</th><th>Prioridade</th><th class="num">Folga</th></tr></thead><tbody>${rows.map(t => { const c = C[t.id], p = ckPrio(t);
-      return `<tr class="click" data-cktask="${t.id}" tabindex="0"><td><input type="checkbox" data-ckdone="${t.id}"${!ckOpen(t) ? " checked" : ""} aria-label="Concluir ${esc(t.cod)}"></td><td class="mono">${esc(t.cod)}</td><td><span class="ckdot" style="--pc:${ckCor(t.projeto)}"></span>${esc(t.titulo)}${(t.tags || []).map(x => ` <span class="chip xs">${esc(x)}</span>`).join("")}</td><td>${esc(trunc(ckPN(t.projeto), 22))}</td><td>${esc(ckMN(t.resp))}</td><td>${ckPrazo(t, false)}</td><td class="num">${t.esforco ? num(+t.esforco, 0) + " h" : "–"}</td><td>${esc(t.status)}</td><td>${ckOpen(t) ? `${ckQpill(t)} <small class="muted">${p.s}</small>` : ""}</td><td class="num${c?.crit ? " st-warn" : ""}${c?.atraso ? " st-crit" : ""}">${c ? c.folga : "–"}</td></tr>`; }).join("")}</tbody></table></div>` : `<div class="empty">Nenhuma tarefa com esses filtros.</div>`}`;
+  const nMax = CK.listaN || 200, shown = rows.slice(0, nMax), mais = rows.length > nMax ? `<div class="more">Mostrando ${nMax} de ${rows.length} · <button type="button" class="lnk" data-act="cklistamais">mostrar mais ${Math.min(200, rows.length - nMax)}</button></div>` : "";
+  return `${ckDrillChip("lista")}${ckFiltros({ st: true, extra: tools })}${rows.length ? `<div class="hscroll"><table class="dt cktab"><thead><tr><th></th><th>Cód.</th><th>Tarefa</th><th>Projeto</th><th>Resp.</th><th>Prazo</th><th class="num">Esforço</th><th>Status</th><th>Prioridade</th><th class="num">Folga</th></tr></thead><tbody>${shown.map(t => { const c = C[t.id], p = ckPrio(t);
+      return `<tr class="click" data-cktask="${t.id}" tabindex="0"><td><input type="checkbox" data-ckdone="${t.id}"${!ckOpen(t) ? " checked" : ""} aria-label="Concluir ${esc(t.cod)}"></td><td class="mono">${esc(t.cod)}</td><td><span class="ckdot" style="--pc:${ckCor(t.projeto)}"></span>${esc(t.titulo)}${(t.tags || []).map(x => ` <span class="chip xs">${esc(x)}</span>`).join("")}</td><td>${esc(trunc(ckPN(t.projeto), 22))}</td><td>${esc(ckMN(t.resp))}</td><td>${ckPrazo(t, false)}</td><td class="num">${t.esforco ? num(+t.esforco, 0) + " h" : "–"}</td><td>${esc(t.status)}</td><td>${ckOpen(t) ? `${ckQpill(t)} <small class="muted">${p.s}</small>` : ""}</td><td class="num${c?.crit ? " st-warn" : ""}${c?.atraso ? " st-crit" : ""}">${c ? c.folga : "–"}</td></tr>`; }).join("")}</tbody></table></div>${mais}` : `<div class="empty">Nenhuma tarefa com esses filtros.</div>`}`;
 }
 
 /* ---------------------------------------------------------------- Equipe e a página de cada pessoa */
 function ckEquipeV() {
   const T = ckT(), CKD = CK.deleg ? ckTarRef(CK.deleg) : null, cand = ckSorted(T.filter(t => ckOpen(t) && (t.resp === "eu" || !t.resp || ckM(t.resp)?.eu)));
   const del = CKD ? ckDeleg({ tags: CKD.tags, esforco: CKD.esforco, prazo: CKD.prazo, prio: CKD.prio, folga: ckC(CKD.id)?.folga }) : [];
-  return `<div class="ckpeople">${ckEquipe().map(m => { const c = ckCarga(m.id), p = ckPdi(m.id), em = T.filter(t => t.resp === m.id && t.status === "em andamento"), nx = ckSorted(T.filter(t => t.resp === m.id && ckOpen(t) && t.status !== "em andamento")).slice(0, 3), u = ckA("ckMeet").filter(x => x.tipo === "1a1" && x.membro === m.id).map(x => x.data).sort().at(-1), pdi = p.comps.length ? avg(p.comps.map(x => clamp((+x.nivel || 0) / (+x.alvo || 3)))) : null;
+  return `<div class="ckpeople">${ckEquipe().map(m => { const c = ckCarga(m.id), p = ckPdi(m.id), em = T.filter(t => t.resp === m.id && t.status === "em andamento"), nx = ckSorted(T.filter(t => t.resp === m.id && ckOpen(t) && t.status !== "em andamento")).slice(0, 3), u = ckA("ckMeet").filter(x => x.tipo === "1a1" && x.membro === m.id).map(x => x.data).sort().at(-1), pdi = ckPdiPct(p);
       return `<article class="pn ckperson"><header>${ckAv(m.id)}<div><h3>${esc(m.eu ? `${ckD().perfil.nome || "Eu"} (você)` : m.nome)}</h3><small>${esc([m.papel, m.nivel].filter(Boolean).join(" · "))}</small></div><button type="button" class="btn sm ghost" data-ckpessoa="${m.id}">Abrir</button></header>
         ${ckLoadBar(c)}${m.foco ? `<p class="small"><b>Foco:</b> ${esc(m.foco)}</p>` : ""}
         <div class="flbl">Em andamento</div>${em.map(t => ckCard(t, { q: false })).join("") || `<p class="muted small">Nada em andamento.</p>`}
         ${nx.length ? `<div class="flbl">Próximas</div><ul class="ckmini">${nx.map(t => `<li><button type="button" class="lnk" data-cktask="${t.id}">${esc(t.cod)}</button> ${esc(trunc(t.titulo, 46))} · ${ckPrazo(t, false)}</li>`).join("")}</ul>` : ""}
-        <footer>${pdi != null ? `<span class="small">PDI ${pct(pdi)} do alvo</span>` : m.eu ? "" : `<span class="small muted">sem PDI</span>`}${!m.eu ? `<span class="small ${u && diff(TODAY, u) <= (+ckD().cfg.ciclo1a1 || 14) ? "muted" : "st-warn"}">1:1 ${u ? relDay(u) : "nunca"}</span>` : ""}</footer></article>`; }).join("")}</div>
+        <footer>${pdi != null ? `<span class="small">PDI ${pct(pdi)} do alvo</span>` : m.eu ? "" : `<span class="small muted">sem PDI</span>`}${!m.eu ? `<span class="small ${u && diff(TODAY, u) <= ckLim("ciclo1a1") ? "muted" : "st-warn"}">1:1 ${u ? relDay(u) : "nunca"}</span>` : ""}</footer></article>`; }).join("")}</div>
     ${panel(`${ic("users")}Sugestão de delegação`, `<p class="muted small">Escolha uma tarefa sua ou sem responsável: o motor pesa nível, carga, prazo e o objetivo de aprendizado do PDI, e mostra o trade-off.</p>
       <select id="ck_deleg" aria-label="Tarefa para delegar"><option value="">Escolha uma tarefa…</option>${cand.map(t => `<option value="${t.id}"${CK.deleg === t.id ? " selected" : ""}>${esc(`${t.cod} ${trunc(t.titulo, 60)} (${t.esforco || "?"} h, ${t.prazo ? fmtD(t.prazo) : "sem prazo"})`)}</option>`).join("")}</select>
       ${CKD ? `<div class="hscroll"><table class="dt"><thead><tr><th>Pessoa</th><th class="num">Pontos</th><th>Por quê</th><th>Trade-off</th><th></th></tr></thead><tbody>${del.map((x, i) => `<tr><td><b>${esc(x.nome)}</b>${i === 0 ? ` <span class="pill good">sugerida</span>` : ""}</td><td class="num">${x.s}</td><td class="small">${esc(x.r.join("; "))}</td><td class="small">${esc(x.tradeoff || "—")}${x.revisor ? `<br>revisor: ${esc(ckMN(x.revisor))}` : ""}</td><td><button type="button" class="btn sm" data-ckatrib="${CKD.id}|${x.id}|${x.revisor}">Atribuir</button></td></tr>`).join("")}</tbody></table></div>` : ""}`)}`;
@@ -151,7 +158,7 @@ function ckPessoaV() {
   const done30 = T.filter(t => t.resp === m.id && !ckOpen(t) && t.concluida >= addDays(TODAY, -30)), noPrazo = done30.filter(t => t.prazo && t.concluida <= t.prazo).length;
   const pauta = ckPauta1a1(m.id);
   return `<div class="ckwnav"><a class="btn sm ghost" href="#trabalho.equipe">${ic("back")}Equipe</a><b>${esc(m.eu ? "Você" : m.nome)}</b><span class="muted small">${esc([m.papel, m.nivel, m.horas ? m.horas + " h/semana" : ""].filter(Boolean).join(" · "))}</span><select id="ck_pes" aria-label="Pessoa">${ckEquipe().map(x => `<option value="${x.id}"${x.id === m.id ? " selected" : ""}>${esc(ckMN(x.id))}</option>`).join("")}</select></div>
-    ${kpiRow([kmini("var(--a-car)", "Carga · 10 dias úteis", pct(c.load), CK_CST[c.st], c.st === "crit" ? "crit" : c.st === "warn" ? "warn" : ""), kmini("var(--a-apr)", "Abertas", String(open.length), `${num(sum(open.map(ckRem)), 0)} h restantes`), kmini("var(--good)", "Concluídas · 30 dias", String(done30.length), done30.length ? `${pct(noPrazo / done30.length)} no prazo` : "–"), kmini("var(--a-men)", "PDI", p.comps.length ? pct(avg(p.comps.map(x => clamp((+x.nivel || 0) / (+x.alvo || 3))))) : "–", tr ? tr.nome : "sem trilha")])}
+    ${kpiRow([kmini("var(--a-car)", `Carga · ${c.n} dias úteis`, pct(c.load), CK_CST[c.st], c.st === "crit" ? "crit" : c.st === "warn" ? "warn" : ""), kmini("var(--a-apr)", "Abertas", String(open.length), `${num(sum(open.map(ckRem)), 0)} h restantes`), kmini("var(--good)", "Concluídas · 30 dias", String(done30.length), done30.length ? `${pct(noPrazo / done30.length)} no prazo` : "–"), kmini("var(--a-men)", "PDI", p.comps.length ? pct(ckPdiPct(p)) : "–", tr ? tr.nome : "sem trilha")])}
     <div class="g2c">
       ${panel(`${ic("list")}Tarefas`, open.map(t => ckCard(t, { why: true })).join("") || `<p class="muted">Nada aberto.</p>`)}
       ${m.eu ? "" : panel(`${ic("sprout")}Plano de desenvolvimento (PDI)`, `<div class="row wrap"><label class="lbl">Trilha<select data-ckpdi="trilha" data-m="${m.id}"><option value="">nenhuma</option>${Object.entries(CK_TRILHAS).map(([k, x]) => `<option value="${k}"${p.trilha === k ? " selected" : ""}>${esc(x.nome)}</option>`).join("")}</select></label>${p.trilha && !p.comps.length ? `<button type="button" class="btn sm" data-ckpditr="${m.id}">${ic("plus")}Carregar as competências da trilha</button>` : ""}</div>
@@ -183,6 +190,7 @@ function ckContextoV() {
     ${panel(`${ic("user")}Seu perfil`, `<p class="muted small">Vai para o prompt do PMO (seção 2) e fica só no seu banco privado, nunca no código do app.</p><div class="form f2">${f("nome", "Nome")}${f("profissao", "Profissão", "Engenheiro civil")}${f("cidade", "Cidade")}${f("area", "Área", "projetos de infraestrutura viária")}</div><div class="form f1">${f("funcoes", "Funções", "BIM Specialist, BIM Coordinator, Coordenador do setor")}<label>Notas para o PMO<textarea data-ckperf="extra" rows="2">${esc(p.extra || "")}</textarea></label></div>`)}
     ${panel(`${ic("sliders")}Calendário e ritmo`, `<div class="form f2"><label>Jornada de trabalho<input type="text" data-ckcfg="jornada" value="${esc(c.cfg.jornada || "08:30-17:30")}" placeholder="08:30-17:30"></label><label>Padroeiro local (MM-DD)<input type="text" data-ckcfg="patrono" value="${esc(c.cfg.patrono ?? "06-24")}" placeholder="06-24 (Torino)"></label><label>Ciclo de 1:1 (dias)<input type="number" data-ckcfg="ciclo1a1" value="${esc(c.cfg.ciclo1a1 || 14)}"></label><label>Férias e folgas (AAAA-MM-DD, vírgula)<input type="text" data-ckcfg="ferias" value="${esc((c.cfg.ferias || []).join(", "))}"></label></div><p class="muted small">Dias úteis: segunda a sexta, sem os feriados nacionais italianos, a Pasquetta, o padroeiro e as suas folgas. É a base do caminho crítico, das folgas e da carga.</p>`)}
   </div>
+  ${panel(`${ic("gauge")}Limites dos alertas e do Dashboard`, `<div class="form f3">${Object.entries(CK_LIMITES_TXT).map(([k, l]) => `<label>${esc(l)}<input type="number" step="any" data-cklim="${k}" value="${esc(c.cfg.lim?.[k] ?? "")}" placeholder="${CK_LIMITES[k]}"></label>`).join("")}</div><p class="muted small">Vazio = o valor padrão da configuração (src/44-cockpit-config.js), que aparece em cinza. Valem para o Hoje, os alertas, a delegação e o Dashboard.</p>`)}
   ${panel(`${ic("users")}Equipe`, `${ckMembrosTab()}<div class="row wrap"><button type="button" class="btn sm" data-ckmemb="">${ic("plus")}Pessoa</button></div>`)}
   <div class="g2c">${panel(`${ic("brief")}Projetos`, `${c.projetos.length ? `<table class="dt"><thead><tr><th>Projeto</th><th>Cliente</th><th>Fase</th><th class="num">Abertas</th><th></th></tr></thead><tbody>${c.projetos.map(p => `<tr class="click" data-ckproj="${p.id}" tabindex="0"><td><span class="ckdot" style="--pc:${p.cor}"></span>${esc(p.nome)}${p.ativo === false ? ` <span class="pill none">encerrado</span>` : ""}</td><td>${esc(p.cliente || "")}</td><td>${esc(p.fase || "")}</td><td class="num">${ckT().filter(t => t.projeto === p.id && ckOpen(t)).length}</td><td>${ic("edit")}</td></tr>`).join("")}</tbody></table>` : `<p class="muted">Nenhum projeto.</p>`}<button type="button" class="btn sm" data-ckproj="">${ic("plus")}Projeto</button>`)}
     ${panel(`${ic("flag")}Marcos: consegne, revisioni, approvazioni`, `${c.marcos.length ? `<table class="dt"><thead><tr><th>Data</th><th>Marco</th><th>Tipo</th><th>Projeto</th><th></th></tr></thead><tbody>${[...c.marcos].sort((a, b) => a.data.localeCompare(b.data)).map(m => `<tr class="click${m.feito ? " muted" : ""}" data-ckmarco="${m.id}" tabindex="0"><td>${fmtDY(m.data)}</td><td>${esc(m.nome)}${m.feito ? " ✓" : ""}</td><td>${esc(m.tipo || "")}</td><td>${esc(ckPN(m.projeto))}</td><td>${ic("edit")}</td></tr>`).join("")}</tbody></table>` : `<p class="muted">Nenhum marco.</p>`}<button type="button" class="btn sm" data-ckmarco="">${ic("plus")}Marco</button>`)}</div>
@@ -298,6 +306,7 @@ function ckSetStatus(id, st) {
 
 /* ---------------------------------------------------------------- ações */
 function ckClick(t) {
+  if (ckDashClick(t)) return true;
   const ds = t.dataset, a = ds.act;
   if (ds.cktask && !t.closest(".ckacts") && !ds.ckdone) { ckTarForm(ds.cktask); return true; }
   if (ds.ckdone) { const x = ckT().find(z => z.id === ds.ckdone); if (x) ckSetStatus(x.id, ckOpen(x) ? "concluída" : "a fazer"); return true; }
@@ -323,6 +332,8 @@ function ckClick(t) {
   if (a === "cknova") { ckTarForm(null); return true; }
   if (a === "ckfclear") { CK.f = { proj: "", resp: "", tag: "", q: "", st: "" }; render(); return true; }
   if (a === "ckeis") { CK.eis = !CK.eis; render(); return true; }
+  if (a === "cklistamais") { CK.listaN = (CK.listaN || 200) + 200; render(); return true; }
+  if (a === "ckkanall") { CK.kanAll = true; render(); return true; }
   if (a === "ckask") { if (CK_ASK[ds.v]) ckAsk(CK_ASK[ds.v]); return true; }
   if (a === "ckapall" || a === "cknoall") { const ps = ckPendentes().map(x => x.p), r = ckDecideMany(ps, a === "ckapall"); toast(a === "ckapall" ? `Aprovadas: ${r.refs.join(", ") || "nenhuma"}${r.falhas.length ? ` · ${r.falhas.length} não aplicadas` : ""}` : "Propostas descartadas"); return true; }
   return ckClick2(t);
@@ -333,12 +344,14 @@ function ckInput(t) {
   return ckInput2(t);
 }
 function ckChange(t) {
+  if (ckDashChange(t)) return true;
   const ds = t.dataset;
   if (ds.ckf) { CK.f[ds.ckf] = t.value; render(); return true; }
   if (t.id === "ck_deleg") { CK.deleg = t.value; render(); return true; }
   if (t.id === "ck_pes") { CK.pessoa = t.value; render(); return true; }
   if (ds.ckdonefil != null) { CK.done = t.checked; render(); return true; }
   if (ds.ckperf) { ckD().perfil[ds.ckperf] = t.value; touch("ck", { label: "Perfil" }); return true; }
+  if (ds.cklim) { const c = ckD().cfg, v = t.value.trim(); c.lim = { ...(c.lim || {}) }; if (v === "" || !isNum(+v)) delete c.lim[ds.cklim]; else c.lim[ds.cklim] = +v; touch("ck", { label: "Limite do Cockpit" }); return true; }
   if (ds.ckcfg) { const c = ckD().cfg; c[ds.ckcfg] = ds.ckcfg === "ferias" ? t.value.split(/[,\s]+/).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x)) : ds.ckcfg === "ciclo1a1" ? (+t.value || 14) : t.value.trim(); touch("ck", { label: "Calendário do Cockpit" }); return true; }
   if (ds.ckpdi === "trilha") { ckPdi(ds.m).trilha = t.value; touch("ck", { label: "Trilha do PDI" }); return true; }
   if (ds.ckcomp) { const [m, id, k] = ds.ckcomp.split("|"), x = ckPdi(m).comps.find(z => z.id === id); if (x) { x[k] = +t.value; if (k === "nivel") (x.hist ||= []).push({ data: TODAY, nivel: +t.value }); touch("ck", { label: "PDI" }); } return true; }

@@ -31,96 +31,131 @@ const ckP = id => ckD().projetos.find(p => p.id === id);
 const ckPN = id => ckP(id)?.nome || (id ? "?" : "sem projeto");
 const ckEquipe = () => ckD().membros.filter(m => m.ativo !== false);
 const ckMult = m => (CK_AGENTE.niveis.find(([n]) => norm(n) === norm(m?.nivel)) || [0, 1])[1];
-const ckHpd = m => (+m?.horas || +ckD().cfg.foco * 5 || 30) / 5;
 /* códigos legíveis (T12, R3…): o maior entre o contador e o que já existe, para nunca repetir */
 function ckCod(pre) { const c = ckD(), k = CK_KEYS[pre], mx = Math.max(0, ...ckA(k).map(x => +String(x.cod || "").slice(pre.length) || 0)); c.seq[pre] = Math.max(c.seq[pre] || 0, mx) + 1; return pre + c.seq[pre]; }
 const ckFind = (k, ref) => { const r = norm(String(ref ?? "").replace(/^#/, "")); return r ? ckA(k).find(x => x.id === ref || norm(x.cod) === r) : null; };
 const ckTarRef = ref => ckFind("ckTar", ref);
 
-/* ---------------------------------------------------------------- calendário de dias úteis (Itália, com o padroeiro local) */
+/* ---------------------------------------------------------------- calendário de dias úteis (Itália, com o padroeiro local)
+   Índice de 2000 a 2060: para cada dia, quantos dias úteis houve até ele (inclusive). Contar dias úteis entre duas datas vira
+   uma subtração, e somar N dias úteis vira um acesso à lista dos dias úteis. Fora desse intervalo, o cálculo dia a dia. */
 function ckEaster(y) { const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451), mo = Math.floor((h + l - 7 * m + 114) / 31), da = ((h + l - 7 * m + 114) % 31) + 1; return `${y}-${pad(mo)}-${pad(da)}`; }
 const CK_FEST = [["01-01", "Capodanno"], ["01-06", "Epifania"], ["04-25", "Festa della Liberazione"], ["05-01", "Festa del Lavoro"], ["06-02", "Festa della Repubblica"], ["08-15", "Ferragosto"], ["11-01", "Ognissanti"], ["12-08", "Immacolata"], ["12-25", "Natale"], ["12-26", "Santo Stefano"]];
-function ckFeriados(y) { return memo("ckfer" + y, () => { const pt = ckD().cfg.patrono ?? "06-24", m = new Map(CK_FEST.map(([md, n]) => [`${y}-${md}`, n])); m.set(addDays(ckEaster(y), 1), "Lunedì dell'Angelo"); if (pt) m.set(`${y}-${pt}`, m.get(`${y}-${pt}`) || "Patrono"); for (const f of ckD().cfg.ferias || []) if (f.startsWith(String(y))) m.set(f, "Férias / folga"); return m; }); }
-const ckFer = d => ckFeriados(+d.slice(0, 4)).get(d) || "";
-const ckUtil = d => { const w = parse(d).getDay(); return w > 0 && w < 6 && !ckFer(d); };
-const ckNextU = d => { let x = d; for (let i = 0; i < 30 && !ckUtil(x); i++) x = addDays(x, 1); return x; };
-const ckPrevU = d => { let x = d; for (let i = 0; i < 30 && !ckUtil(x); i++) x = addDays(x, -1); return x; };
-function ckAddU(d, n) { let x = n >= 0 ? ckNextU(d) : ckPrevU(d), k = Math.abs(n); const s = n >= 0 ? 1 : -1; while (k > 0) { x = addDays(x, s); if (ckUtil(x)) k--; } return x; }
+function ckFeriadosAno(y, cfg = {}) { const pt = cfg.patrono ?? "06-24", m = new Map(CK_FEST.map(([md, n]) => [`${y}-${md}`, n])); m.set(addDays(ckEaster(y), 1), "Lunedì dell'Angelo"); if (pt) m.set(`${y}-${pt}`, m.get(`${y}-${pt}`) || "Patrono"); for (const f of cfg.ferias || []) if (f.startsWith(String(y))) m.set(f, "Férias / folga"); return m; }
+/* versão dia a dia (referência dos testes e fallback fora do índice) */
+function ckCalLoop(cfg = {}) {
+  const fy = {}, fer = d => (fy[d.slice(0, 4)] ||= ckFeriadosAno(+d.slice(0, 4), cfg)).get(d) || "", util = d => { const w = parse(d).getDay(); return w > 0 && w < 6 && !fer(d); };
+  const next = d => { let x = d; for (let i = 0; i < 30 && !util(x); i++) x = addDays(x, 1); return x; }, prev = d => { let x = d; for (let i = 0; i < 30 && !util(x); i++) x = addDays(x, -1); return x; };
+  const add = (d, n) => { let x = n >= 0 ? next(d) : prev(d), k = Math.abs(n); const s = n >= 0 ? 1 : -1; while (k > 0) { x = addDays(x, s); if (util(x)) k--; } return x; };
+  const dif = (a, b) => { if (!a || !b) return null; if (a === b) return 0; const s = b > a ? 1 : -1; let x = a, n = 0; for (let i = 0; i < 40000 && x !== b; i++) { x = addDays(x, s); if (util(x)) n += s; } return n; };
+  return { fer, util, next, prev, add, diff: dif };
+}
+const CK_CALS = new Map();
+function ckCalOf(cfg = {}) {
+  const sig = `${cfg.patrono ?? "06-24"}|${(cfg.ferias || []).join(",")}`; if (CK_CALS.has(sig)) return CK_CALS.get(sig);
+  const Y0 = 2000, Y1 = 2060, B = Date.UTC(Y0, 0, 1), dn = d => Math.round((Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)) - B) / 864e5), ds = i => new Date(B + i * 864e5).toISOString().slice(0, 10);
+  const N = dn(`${Y1}-12-31`) + 1, U = new Uint8Array(N), CUM = new Int32Array(N), W = [], F = new Map(), L = ckCalLoop(cfg);
+  for (let y = Y0; y <= Y1; y++) for (const [k, v] of ckFeriadosAno(y, cfg)) F.set(k, v);
+  for (let i = 0, c = 0; i < N; i++) { const w = new Date(B + i * 864e5).getUTCDay(); if (w > 0 && w < 6 && !F.has(ds(i))) { U[i] = 1; W.push(i); c++; } CUM[i] = c; }
+  const inR = d => !!d && d >= `${Y0}-01-15` && d <= `${Y1}-12-15`, cum = i => i < 0 ? 0 : CUM[i];
+  const util = d => inR(d) ? U[dn(d)] === 1 : L.util(d), fer = d => inR(d) ? F.get(d) || "" : L.fer(d);
+  const next = d => { if (!inR(d)) return L.next(d); const i = dn(d); return U[i] ? d : ds(W[CUM[i]]); };
+  const prev = d => { if (!inR(d)) return L.prev(d); const i = dn(d); return U[i] ? d : ds(W[CUM[i] - 1]); };
+  const add = (d, n) => { if (!inR(d)) return L.add(d, n); const x = n >= 0 ? next(d) : prev(d), k = CUM[dn(x)] - 1 + n; return k >= 0 && k < W.length ? ds(W[k]) : L.add(d, n); };
+  const dif = (a, b) => { if (!a || !b) return null; if (a === b) return 0; if (!inR(a) || !inR(b)) return L.diff(a, b); const ia = dn(a), ib = dn(b); return ib > ia ? CUM[ib] - CUM[ia] : -(cum(ia - 1) - cum(ib - 1)); };
+  const cal = { fer, util, next, prev, add, diff: dif, sig }; CK_CALS.set(sig, cal); return cal;
+}
+const ckCal = () => ckCalOf(ckD().cfg);
+const ckFeriados = y => ckFeriadosAno(y, ckD().cfg);
+const ckFer = d => ckCal().fer(d);
+const ckUtil = d => ckCal().util(d);
+const ckNextU = d => ckCal().next(d);
+const ckPrevU = d => ckCal().prev(d);
+const ckAddU = (d, n) => ckCal().add(d, n);
 /* dias úteis de a até b: positivo se b vem depois; 0 no mesmo dia */
-function ckDiffU(a, b) { if (!a || !b) return null; if (a === b) return 0; const s = b > a ? 1 : -1; let x = a, n = 0; for (let i = 0; i < 1500 && x !== b; i++) { x = addDays(x, s); if (ckUtil(x)) n += s; } return n; }
+const ckDiffU = (a, b) => ckCal().diff(a, b);
 const ckToday = () => ckNextU(TODAY);
 
 /* ---------------------------------------------------------------- caminho crítico (CPM em dias úteis)
    Duração = horas restantes ÷ horas por dia do responsável (h/semana ÷ 5). Ida: início mais cedo (ES) = depois da última
    dependência aberta, nunca antes de hoje. Volta: término mais tarde (LF) = o prazo da tarefa ou o início mais tarde das
-   sucessoras (o que vier antes); sem nenhum dos dois, o fim previsto do projeto. Folga = dias úteis entre ES e LS. */
+   sucessoras (o que vier antes); sem nenhum dos dois, o fim previsto do projeto. Folga = dias úteis entre ES e LS.
+   ckCPMcalc é pura (recebe tarefas, equipe, configuração e o dia de hoje); ckCPM é a versão com o estado do app, em cache. */
 const ckRem = t => Math.max(.5, (+t.esforco || 4) * (1 - clamp((+t.feito || 0) / 100)));
-const ckDur = t => Math.max(1, Math.ceil(ckRem(t) / ckHpd(ckM(t.resp))));
-function ckCPM() {
-  return memo("ckcpm", () => {
-    const open = ckT().filter(ckOpen), by = new Map(open.map(t => [t.id, t])), today = ckToday(), R = {};
-    const preds = id => [...new Set(by.get(id).deps || [])].filter(d => by.has(d) && d !== id);
-    const succ = new Map(open.map(t => [t.id, []])); open.forEach(t => preds(t.id).forEach(p => succ.get(p).push(t.id)));
-    const indeg = new Map(open.map(t => [t.id, preds(t.id).length])), q = open.filter(t => !indeg.get(t.id)).map(t => t.id), order = [];
-    while (q.length) { const id = q.shift(); order.push(id); for (const s of succ.get(id)) { indeg.set(s, indeg.get(s) - 1); if (!indeg.get(s)) q.push(s); } }
-    const ciclo = open.filter(t => !order.includes(t.id)).map(t => t.id); order.push(...ciclo);
-    for (const id of order) { const t = by.get(id), dur = ckDur(t), base = t.status === "em andamento" || !t.inicio || t.inicio <= today ? today : ckNextU(t.inicio); let es = base, drv = null;
-      for (const p of preds(id)) if (R[p]) { const n = ckAddU(R[p].ef, 1); if (n > es) { es = n; drv = p; } }
-      R[id] = { es, ef: ckAddU(es, dur - 1), dur, drv, base, efBase: ckAddU(base, dur - 1) }; }
-    const fim = {}; for (const t of open) { const k = t.projeto || "_"; if (!fim[k] || R[t.id].ef > fim[k]) fim[k] = R[t.id].ef; }
-    for (const id of [...order].reverse()) { const t = by.get(id), r = R[id]; let lf = t.prazo ? ckPrevU(t.prazo) : null;
-      for (const s of succ.get(id)) if (R[s]?.ls) { const v = ckAddU(R[s].ls, -1); if (!lf || v < lf) lf = v; }
-      if (!lf) lf = fim[t.projeto || "_"] > r.ef ? fim[t.projeto || "_"] : r.ef;
-      r.lf = lf; r.ls = ckAddU(lf, -(r.dur - 1)); r.folga = ckDiffU(r.es, r.ls); r.atraso = !!t.prazo && r.ef > t.prazo; r.crit = r.folga <= 0; r.succ = succ.get(id); }
-    /* atraso em cascata: a tarefa atrasa só porque uma predecessora a empurrou */
-    const cascata = []; for (const t of open) { const r = R[t.id]; if (!r.atraso || !r.drv || !t.prazo || r.efBase > t.prazo) continue; let o = r.drv, guard = 0; while (R[o]?.drv && R[R[o].drv] && guard++ < 40) { if (R[o].atraso && (!R[o].drv || R[o].efBase > (by.get(o).prazo || "9999"))) break; o = R[o].drv; } cascata.push({ id: t.id, origem: o }); }
-    /* caminho que define o fim de cada projeto: da tarefa que termina por último, seguindo a predecessora que a empurra */
-    const caminho = {}; for (const k of Object.keys(fim)) { const last = open.filter(t => (t.projeto || "_") === k).sort((a, b) => R[b.id].ef.localeCompare(R[a.id].ef) || R[a.id].folga - R[b.id].folga)[0]; const ch = []; let x = last?.id, g = 0; while (x && g++ < 60) { ch.unshift(x); x = R[x].drv; } caminho[k] = ch; }
-    return { R, ciclo, cascata, caminho, fim };
-  });
+const ckHpdOf = (m, cfg = {}) => (+m?.horas || +cfg.foco * 5 || 30) / 5;
+function ckCPMcalc(tasks, membros, cfg, hoje) {
+  const cal = ckCalOf(cfg), mb = new Map((membros || []).map(m => [m.id, m])), dur = t => Math.max(1, Math.ceil(ckRem(t) / ckHpdOf(mb.get(t.resp), cfg)));
+  const open = tasks.filter(ckOpen), by = new Map(open.map(t => [t.id, t])), today = cal.next(hoje), R = {};
+  const preds = id => [...new Set(by.get(id).deps || [])].filter(d => by.has(d) && d !== id);
+  const succ = new Map(open.map(t => [t.id, []])); open.forEach(t => preds(t.id).forEach(p => succ.get(p).push(t.id)));
+  const indeg = new Map(open.map(t => [t.id, preds(t.id).length])), q = open.filter(t => !indeg.get(t.id)).map(t => t.id), order = [];
+  for (let qi = 0; qi < q.length; qi++) { const id = q[qi]; order.push(id); for (const s of succ.get(id)) { indeg.set(s, indeg.get(s) - 1); if (!indeg.get(s)) q.push(s); } }
+  const inOrder = new Set(order), ciclo = open.filter(t => !inOrder.has(t.id)).map(t => t.id); order.push(...ciclo);
+  for (const id of order) { const t = by.get(id), d = dur(t), base = t.status === "em andamento" || !t.inicio || t.inicio <= today ? today : cal.next(t.inicio); let es = base, drv = null;
+    for (const p of preds(id)) if (R[p]) { const n = cal.add(R[p].ef, 1); if (n > es) { es = n; drv = p; } }
+    R[id] = { es, ef: cal.add(es, d - 1), dur: d, drv, base, efBase: cal.add(base, d - 1) }; }
+  const fim = {}; for (const t of open) { const k = t.projeto || "_"; if (!fim[k] || R[t.id].ef > fim[k]) fim[k] = R[t.id].ef; }
+  for (const id of [...order].reverse()) { const t = by.get(id), r = R[id]; let lf = t.prazo ? cal.prev(t.prazo) : null;
+    for (const s of succ.get(id)) if (R[s]?.ls) { const v = cal.add(R[s].ls, -1); if (!lf || v < lf) lf = v; }
+    if (!lf) lf = fim[t.projeto || "_"] > r.ef ? fim[t.projeto || "_"] : r.ef;
+    r.lf = lf; r.ls = cal.add(lf, -(r.dur - 1)); r.folga = cal.diff(r.es, r.ls); r.atraso = !!t.prazo && r.ef > t.prazo; r.crit = r.folga <= 0; r.succ = succ.get(id); }
+  /* atraso em cascata: a tarefa atrasa só porque uma predecessora a empurrou */
+  const cascata = []; for (const t of open) { const r = R[t.id]; if (!r.atraso || !r.drv || !t.prazo || r.efBase > t.prazo) continue; let o = r.drv, guard = 0; while (R[o]?.drv && R[R[o].drv] && guard++ < 40) { if (R[o].atraso && (!R[o].drv || R[o].efBase > (by.get(o).prazo || "9999"))) break; o = R[o].drv; } cascata.push({ id: t.id, origem: o }); }
+  /* caminho que define o fim de cada projeto: da tarefa que termina por último, seguindo a predecessora que a empurra */
+  const porProj = {}; for (const t of open) (porProj[t.projeto || "_"] ||= []).push(t);
+  const caminho = {}; for (const k of Object.keys(fim)) { const last = porProj[k].sort((a, b) => R[b.id].ef.localeCompare(R[a.id].ef) || R[a.id].folga - R[b.id].folga)[0]; const ch = []; let x = last?.id, g = 0; while (x && g++ < 60) { ch.unshift(x); x = R[x].drv; } caminho[k] = ch; }
+  return { R, ciclo, cascata, caminho, fim };
 }
+function ckCPM() { return memo("ckcpm", () => ckCPMcalc(ckT(), ckD().membros, ckD().cfg, TODAY)); }
 const ckC = id => ckCPM().R[id] || null;
+const ckHpd = m => ckHpdOf(m, ckD().cfg);
+const ckDur = t => ckCPM().R[t.id]?.dur ?? Math.max(1, Math.ceil(ckRem(t) / ckHpd(ckM(t.resp))));
 
-/* ---------------------------------------------------------------- prioridade: Eisenhower + prazo + caminho crítico */
-function ckPrio(t) {
-  return memo("ckprio" + t.id, () => {
-    const C = ckC(t.id), r = [], dias = t.prazo ? ckDiffU(TODAY, t.prazo) : null, mk = t.marco ? ckD().marcos.find(m => m.id === t.marco) : null, nSucc = C?.succ?.length || 0;
-    let s = 0;
-    if (!ckOpen(t)) return { s: -1, q: 0, r: [], urg: false, imp: false };
-    if (dias != null && dias < 0) { s += 45; r.push(`vencida há ${plural(-dias, "dia útil", "dias úteis")}`); }
-    else if (dias != null && dias <= 2) { s += 25; r.push(dias === 0 ? "vence hoje" : `vence em ${plural(dias, "dia útil", "dias úteis")}`); }
-    else if (dias != null && dias <= 5) { s += 10; r.push(`vence em ${dias} dias úteis`); }
-    if (C?.crit) { s += 20; r.push(C.folga < 0 ? `caminho crítico com folga negativa (${C.folga})` : "no caminho crítico (folga 0)"); }
-    else if (C && C.folga <= 2) { s += 8; r.push(`folga de ${plural(C.folga, "dia útil", "dias úteis")}`); }
-    if (C?.atraso) { s += 15; r.push(`término previsto ${fmtD(C.ef)}, depois do prazo`); }
-    if (nSucc) { s += 6 * nSucc; r.push(`libera ${plural(nSucc, "tarefa", "tarefas")}`); }
-    if (t.prio === "alta") s += 15; else if (t.prio === "média") s += 6;
-    if (t.impacto === "alto") { s += 12; r.push("impacto alto"); } else if (t.impacto === "médio") s += 5;
-    if ((t.tags || []).includes("Cliente")) { s += 6; r.push("cliente"); }
-    const mkd = mk && !mk.feito ? ckDiffU(TODAY, mk.data) : null; if (mkd != null && mkd <= 10) { s += 8; r.push(`marco “${mk.nome}” em ${mkd} dias úteis`); }
-    if (t.status === "bloqueada") r.push("bloqueada");
-    const urg = (dias != null && dias <= 3) || (C && C.folga <= 1), imp = t.prio === "alta" || t.impacto === "alto" || !!C?.crit || nSucc >= 2 || (t.tags || []).includes("Cliente") || (mkd != null && mkd <= 10);
-    return { s, q: urg && imp ? 1 : imp ? 2 : urg ? 3 : 4, r, urg, imp, dias };
-  });
+/* ---------------------------------------------------------------- prioridade: Eisenhower + prazo + caminho crítico (numa passada só) */
+function ckPrioCalc(t, R, marcos, hoje, cal) {
+  if (!ckOpen(t)) return { s: -1, q: 0, r: [], urg: false, imp: false };
+  const C = R[t.id] || null, r = [], dias = t.prazo ? cal.diff(hoje, t.prazo) : null, mk = t.marco ? marcos.find(m => m.id === t.marco) : null, nSucc = C?.succ?.length || 0;
+  let s = 0;
+  if (dias != null && dias < 0) { s += 45; r.push(`vencida há ${plural(-dias, "dia útil", "dias úteis")}`); }
+  else if (dias != null && dias <= 2) { s += 25; r.push(dias === 0 ? "vence hoje" : `vence em ${plural(dias, "dia útil", "dias úteis")}`); }
+  else if (dias != null && dias <= 5) { s += 10; r.push(`vence em ${dias} dias úteis`); }
+  if (C?.crit) { s += 20; r.push(C.folga < 0 ? `caminho crítico com folga negativa (${C.folga})` : "no caminho crítico (folga 0)"); }
+  else if (C && C.folga <= 2) { s += 8; r.push(`folga de ${plural(C.folga, "dia útil", "dias úteis")}`); }
+  if (C?.atraso) { s += 15; r.push(`término previsto ${fmtD(C.ef)}, depois do prazo`); }
+  if (nSucc) { s += 6 * nSucc; r.push(`libera ${plural(nSucc, "tarefa", "tarefas")}`); }
+  if (t.prio === "alta") s += 15; else if (t.prio === "média") s += 6;
+  if (t.impacto === "alto") { s += 12; r.push("impacto alto"); } else if (t.impacto === "médio") s += 5;
+  if ((t.tags || []).includes("Cliente")) { s += 6; r.push("cliente"); }
+  const mkd = mk && !mk.feito ? cal.diff(hoje, mk.data) : null; if (mkd != null && mkd <= 10) { s += 8; r.push(`marco “${mk.nome}” em ${mkd} dias úteis`); }
+  if (t.status === "bloqueada") r.push("bloqueada");
+  const urg = (dias != null && dias <= 3) || (C && C.folga <= 1), imp = t.prio === "alta" || t.impacto === "alto" || !!C?.crit || nSucc >= 2 || (t.tags || []).includes("Cliente") || (mkd != null && mkd <= 10);
+  return { s, q: urg && imp ? 1 : imp ? 2 : urg ? 3 : 4, r, urg, imp, dias };
 }
+const CK_PRIO_FECHADA = { s: -1, q: 0, r: [], urg: false, imp: false };
+function ckPrioAll() { return memo("ckprioall", () => { const R = ckCPM().R, mk = ckD().marcos, cal = ckCal(), m = new Map(); for (const t of ckT()) if (ckOpen(t)) m.set(t.id, ckPrioCalc(t, R, mk, TODAY, cal)); return m; }); }
+const ckPrio = t => ckPrioAll().get(t.id) || (ckOpen(t) ? ckPrioCalc(t, ckCPM().R, ckD().marcos, TODAY, ckCal()) : CK_PRIO_FECHADA);
 const CK_Q = { 1: ["Fazer já", "crit"], 2: ["Agendar", "good"], 3: ["Delegar", "warn"], 4: ["Adiar ou eliminar", "none"] };
 /* ordem sugerida: primeiro o quadrante (fazer já, agendar, delegar, adiar), dentro dele o score */
-const ckSorted = list => [...list].sort((a, b) => (ckPrio(a).q || 9) - (ckPrio(b).q || 9) || ckPrio(b).s - ckPrio(a).s || (a.prazo || "9").localeCompare(b.prazo || "9"));
+const ckSorted = list => { const P = ckPrioAll(), g = t => P.get(t.id) || ckPrio(t); return [...list].sort((a, b) => (g(a).q || 9) - (g(b).q || 9) || g(b).s - g(a).s || (a.prazo || "9").localeCompare(b.prazo || "9")); };
 
-/* ---------------------------------------------------------------- carga da equipe (próximos N dias úteis) */
-function ckAgendaH(d0, d1) {
-  const [j0, j1] = (ckD().cfg.jornada || "08:30-17:30").split("-").map(hm2min); let h = 0;
-  for (const e of S.eventos || []) { if (e.data < d0 || e.data > d1 || !ckUtil(e.data)) continue; const a = hm2min(e.hora), z = hm2min(e.fim) ?? (a != null ? a + 60 : null); if (a == null) continue; h += Math.max(0, Math.min(z, j1) - Math.max(a, j0)) / 60; }
+/* ---------------------------------------------------------------- carga da equipe (janela de dias úteis; padrão: os próximos 10)
+   ckCargaCalc é pura: horas de cada tarefa aberta distribuídas pelos dias úteis do CPM que caem na janela, contra a capacidade
+   (h/semana ÷ 5 × dias úteis), descontando as reuniões da agenda no caso da própria pessoa. */
+function ckAgendaHOf(eventos, cfg, d0, d1, cal) {
+  const [j0, j1] = (cfg.jornada || "08:30-17:30").split("-").map(hm2min); let h = 0;
+  for (const e of eventos || []) { if (e.data < d0 || e.data > d1 || !cal.util(e.data)) continue; const a = hm2min(e.hora), z = hm2min(e.fim) ?? (a != null ? a + 60 : null); if (a == null) continue; h += Math.max(0, Math.min(z, j1) - Math.max(a, j0)) / 60; }
   return h;
 }
-function ckCarga(mid, n = 10, extra = 0) {
-  return memo(`ckcarga${mid}|${n}|${extra}`, () => {
-    const m = ckM(mid), d0 = ckToday(), d1 = ckAddU(d0, n - 1), C = ckCPM().R; let dem = 0; const ts = [];
-    for (const t of ckT()) { if (!ckOpen(t) || t.resp !== mid || !C[t.id]) continue; const r = C[t.id]; if (r.es > d1) continue; const a = r.es < d0 ? d0 : r.es, z = r.ef > d1 ? d1 : r.ef, k = Math.max(1, ckDiffU(a, z) + 1); const h = ckRem(t) * k / r.dur; dem += h; ts.push(t.id); }
-    const ag = m?.eu ? ckAgendaH(d0, d1) : 0, cap = Math.max(1, ckHpd(m) * n - ag), load = (dem + extra) / cap;
-    const st = load > 1.1 ? "crit" : load > .9 ? "warn" : !m?.eu && load < .35 ? "idle" : "good";
-    return { dem, cap, ag, load, st, ts, d1 };
-  });
+const ckAgendaH = (d0, d1) => ckAgendaHOf(S.eventos, ckD().cfg, d0, d1, ckCal());
+function ckCargaCalc({ tasks, R, membro, d0, d1, extra = 0, eventos, cfg, lim }) {
+  const cal = ckCalOf(cfg), n = Math.max(1, cal.diff(d0, d1) + (cal.util(d0) ? 1 : 0)), mid = membro?.id; let dem = 0; const ts = [];
+  for (const t of tasks) { if (!ckOpen(t) || t.resp !== mid || !R[t.id]) continue; const r = R[t.id]; if (r.es > d1 || r.ef < d0) continue; const a = r.es < d0 ? d0 : r.es, z = r.ef > d1 ? d1 : r.ef, k = Math.max(1, cal.diff(a, z) + 1); dem += ckRem(t) * k / r.dur; ts.push(t.id); }
+  const ag = membro?.eu ? ckAgendaHOf(eventos, cfg, d0, d1, cal) : 0, cap = Math.max(1, ckHpdOf(membro, cfg) * n - ag), load = (dem + extra) / cap;
+  const st = load > lim.cargaCritica ? "crit" : load > lim.cargaAtencao ? "warn" : !membro?.eu && load < lim.ociosa ? "idle" : "good";
+  return { dem, cap, ag, load, st, ts, d0, d1, n };
+}
+function ckCarga(mid, n = ckLim("janelaCarga"), extra = 0) {
+  return memo(`ckcarga${mid}|${n}|${extra}`, () => { const d0 = ckToday(); return ckCargaCalc({ tasks: ckT(), R: ckCPM().R, membro: ckM(mid), d0, d1: ckAddU(d0, n - 1), extra, eventos: S.eventos, cfg: ckD().cfg, lim: ckLims() }); });
 }
 const CK_CST = { crit: "sobrecarga", warn: "no limite", idle: "com folga", good: "equilibrada" };
 
@@ -129,7 +164,7 @@ function ckPdi(mid) { const p = (ckD().pdi[mid] ||= { trilha: "", comps: [], met
 function ckDeleg(spec) {
   const tags = spec.tags || [], esf = +spec.esforco || 8, complexa = tags.some(x => ["Coordenação", "Cliente"].includes(x)) || esf >= 24 || (spec.prio === "alta" && spec.folga != null && spec.folga <= 2);
   return ckEquipe().filter(m => !(spec.excl || []).includes(m.id)).map(m => {
-    const mult = ckMult(m), h = esf * mult, cg = ckCarga(m.id, 10, h), pdi = ckPdi(m.id), r = [];
+    const mult = ckMult(m), h = esf * mult, cg = ckCarga(m.id, ckLim("janelaCarga"), h), pdi = ckPdi(m.id), r = [];
     const forte = tags.filter(x => (m.tags || []).includes(x) || pdi.comps.some(c => (c.tags || []).includes(x) && c.nivel >= 3));
     const aprende = pdi.comps.filter(c => (c.tags || []).some(x => tags.includes(x)) && c.nivel < (c.alvo ?? 3));
     const junior = mult >= 1.5;
@@ -137,7 +172,7 @@ function ckDeleg(spec) {
     let s = 0;
     if (forte.length) { s += 35; r.push(`domina ${forte.join(", ")}`); }
     if (aprende.length) { s += 25; r.push(`aprendizado do PDI: ${aprende.map(c => c.nome).slice(0, 2).join(", ")}`); }
-    s += 25 * (1 - Math.min(1.2, cg.load)); r.push(`carga em 10 dias úteis: ${pct(cg.load)}`);
+    s += 25 * (1 - Math.min(1.2, cg.load)); r.push(`carga em ${cg.n} dias úteis: ${pct(cg.load)}`);
     if (!cabe) s -= 30;
     if (junior && complexa) { s -= 25; r.push("tarefa complexa para o nível: precisa de revisão"); }
     if (m.eu) { s -= 12; r.push("você coordena: delegue se outra pessoa couber"); }
@@ -150,20 +185,22 @@ function ckDeleg(spec) {
 
 /* ---------------------------------------------------------------- alertas proativos (sem IA) */
 const ckRiscoScore = r => (+r.prob || 0) * (+r.imp || 0);
+/* previsão de um marco pelo caminho crítico: o maior término previsto das tarefas abertas ligadas a ele (a mesma regra do alerta) */
+function ckMarcoPrev(mk, tasks, R) { const ts = tasks.filter(t => ckOpen(t) && t.marco === mk.id && R[t.id]), prev = ts.reduce((m, t) => R[t.id].ef > m ? R[t.id].ef : m, ""), late = ts.filter(t => R[t.id].ef > mk.data); return { mk, ts, late, prev: prev || null }; }
 function ckAlertas() {
   return memo("ckalert", () => {
     const out = [], C = ckCPM(), add = (st, k, txt, cite = [], go = "") => out.push({ st, k, txt, cite, go }), T = ckT(), by = id => T.find(t => t.id === id);
     const venc = T.filter(t => ckOpen(t) && t.prazo && t.prazo < TODAY); if (venc.length) add("crit", "vencidas", `${plural(venc.length, "tarefa vencida", "tarefas vencidas")}: ${venc.slice(0, 4).map(t => `${t.cod} ${trunc(t.titulo, 40)} (${ckMN(t.resp)}, ${fmtD(t.prazo)})`).join("; ")}`, venc.map(t => t.cod), "trabalho.lista");
     const prev = T.filter(t => ckOpen(t) && C.R[t.id]?.atraso && t.prazo >= TODAY); if (prev.length) add("warn", "previsao", `${plural(prev.length, "tarefa termina", "tarefas terminam")} depois do prazo pelo caminho crítico: ${prev.slice(0, 4).map(t => `${t.cod} (previsto ${fmtD(C.R[t.id].ef)}, prazo ${fmtD(t.prazo)})`).join("; ")}`, prev.map(t => t.cod), "trabalho.gantt");
     const cas = {}; for (const c of C.cascata) (cas[c.origem] ||= []).push(c.id); for (const [o, ids] of Object.entries(cas)) { const ot = by(o); if (ot) add("crit", "cascata", `Atraso em cascata a partir de ${ot.cod} “${trunc(ot.titulo, 40)}”: empurra ${ids.map(i => by(i)?.cod).join(", ")} para depois do prazo`, [ot.cod, ...ids.map(i => by(i)?.cod)], "trabalho.gantt"); }
-    for (const mk of ckD().marcos.filter(m => !m.feito && m.data >= TODAY)) { const ts = T.filter(t => ckOpen(t) && t.marco === mk.id), late = ts.filter(t => C.R[t.id]?.ef > mk.data); if (late.length) add("crit", "marco", `Marco “${mk.nome}” (${fmtD(mk.data)}, ${ckPN(mk.projeto)}) em risco: ${late.map(t => `${t.cod} termina ${fmtD(C.R[t.id].ef)}`).join("; ")}`, late.map(t => t.cod), "trabalho.gantt"); }
+    for (const mk of ckD().marcos.filter(m => !m.feito && m.data >= TODAY)) { const late = ckMarcoPrev(mk, T, C.R).late; if (late.length) add("crit", "marco", `Marco “${mk.nome}” (${fmtD(mk.data)}, ${ckPN(mk.projeto)}) em risco: ${late.map(t => `${t.cod} termina ${fmtD(C.R[t.id].ef)}`).join("; ")}`, late.map(t => t.cod), "trabalho.gantt"); }
     if (C.ciclo.length) add("crit", "ciclo", `Dependência circular entre ${C.ciclo.map(id => by(id)?.cod).join(", ")}: corrija as dependências`, C.ciclo.map(id => by(id)?.cod), "trabalho.lista");
-    for (const m of ckEquipe()) { const cg = ckCarga(m.id); if (cg.st === "crit") add("crit", "carga", `${m.eu ? "Você está" : m.nome + " está"} com ${pct(cg.load)} da capacidade nos próximos 10 dias úteis (${num(cg.dem, 0)} h para ${num(cg.cap, 0)} h${cg.ag ? `, já descontadas ${num(cg.ag, 0)} h de agenda` : ""})`, [], "trabalho.equipe"); else if (cg.st === "idle") add("info", "ociosa", `${m.nome} está com ${pct(cg.load)} da capacidade nos próximos 10 dias úteis: dá para delegar`, [], "trabalho.equipe"); }
+    for (const m of ckEquipe()) { const cg = ckCarga(m.id); if (cg.st === "crit") add("crit", "carga", `${m.eu ? "Você está" : m.nome + " está"} com ${pct(cg.load)} da capacidade nos próximos ${cg.n} dias úteis (${num(cg.dem, 0)} h para ${num(cg.cap, 0)} h${cg.ag ? `, já descontadas ${num(cg.ag, 0)} h de agenda` : ""})`, [], "trabalho.equipe"); else if (cg.st === "idle") add("info", "ociosa", `${m.nome} está com ${pct(cg.load)} da capacidade nos próximos ${cg.n} dias úteis: dá para delegar`, [], "trabalho.equipe"); }
     const blq = T.filter(t => t.status === "bloqueada"); if (blq.length) add("warn", "bloqueada", `${plural(blq.length, "tarefa bloqueada", "tarefas bloqueadas")}: ${blq.slice(0, 4).map(t => `${t.cod} ${trunc(t.titulo, 36)}`).join("; ")}`, blq.map(t => t.cod), "trabalho.kanban");
     const sem = T.filter(t => ckOpen(t) && (!t.resp || !t.prazo)); if (sem.length) add("info", "incompleta", `${plural(sem.length, "tarefa", "tarefas")} sem responsável ou prazo: ${sem.slice(0, 5).map(t => t.cod).join(", ")}`, sem.map(t => t.cod), "trabalho.lista");
-    for (const r of ckA("ckRisk").filter(r => ["aberto", "monitorando"].includes(r.status) && ckRiscoScore(r) >= 15 && !(r.tarefas || []).some(id => by(id) && ckOpen(by(id))) && !(r.mitig || "").trim())) add("crit", "risco", `Risco ${r.cod} com score ${ckRiscoScore(r)} sem plano de mitigação: ${trunc(r.desc, 70)}`, [r.cod], "trabalho.riscos");
-    for (const p of ckA("ckIss").filter(p => ["aberto", "em análise"].includes(p.status) && diff(TODAY, p.criado || TODAY) >= 3 && !(p.solucoes || []).length)) add("warn", "problema", `Problema ${p.cod} aberto há ${diff(TODAY, p.criado)} dias sem soluções propostas: ${trunc(p.titulo, 60)}`, [p.cod], "trabalho.problemas");
-    for (const m of ckEquipe().filter(m => !m.eu)) { const u = ckA("ckMeet").filter(x => x.tipo === "1a1" && x.membro === m.id).map(x => x.data).sort().at(-1), d = u ? diff(TODAY, u) : null; if (d == null || d > (+ckD().cfg.ciclo1a1 || 14)) add("info", "1a1", `${m.nome}: ${u ? `último 1:1 há ${d} dias` : "nenhum 1:1 registrado"}`, [], "trabalho.equipe"); }
+    for (const r of ckA("ckRisk").filter(r => ["aberto", "monitorando"].includes(r.status) && ckRiscoScore(r) >= ckLim("riscoAlto") && !(r.tarefas || []).some(id => by(id) && ckOpen(by(id))) && !(r.mitig || "").trim())) add("crit", "risco", `Risco ${r.cod} com score ${ckRiscoScore(r)} sem plano de mitigação: ${trunc(r.desc, 70)}`, [r.cod], "trabalho.riscos");
+    for (const p of ckA("ckIss").filter(p => ["aberto", "em análise"].includes(p.status) && diff(TODAY, p.criado || TODAY) >= ckLim("problemaParado") && !(p.solucoes || []).length)) add("warn", "problema", `Problema ${p.cod} aberto há ${diff(TODAY, p.criado)} dias sem soluções propostas: ${trunc(p.titulo, 60)}`, [p.cod], "trabalho.problemas");
+    for (const m of ckEquipe().filter(m => !m.eu)) { const u = ckA("ckMeet").filter(x => x.tipo === "1a1" && x.membro === m.id).map(x => x.data).sort().at(-1), d = u ? diff(TODAY, u) : null; if (d == null || d > ckLim("ciclo1a1")) add("info", "1a1", `${m.nome}: ${u ? `último 1:1 há ${d} dias` : "nenhum 1:1 registrado"}`, [], "trabalho.equipe"); }
     const elAtr = ckA("ckEl").filter(e => e.prevista && e.prevista < TODAY && !["emesso", "approvato"].includes(e.stato)); if (elAtr.length) add("warn", "elaborati", `${plural(elAtr.length, "elaborato atrasado", "elaborati atrasados")}: ${elAtr.slice(0, 4).map(e => `${e.cod} ${e.codigo || trunc(e.titulo, 30)}`).join("; ")}`, elAtr.map(e => e.cod), "trabalho.entregas");
     const clash = ckA("ckBim").filter(b => b.tipo === "clash" && (b.snaps || []).length >= 2).filter(b => { const s = b.snaps.slice(-2); return s[1].abertos > s[0].abertos; }); if (clash.length) add("warn", "clash", `Clash em alta: ${clash.map(b => `${b.disc || "?"} (${b.snaps.at(-2).abertos} → ${b.snaps.at(-1).abertos} abertos)`).join("; ")}`, clash.map(b => b.cod), "trabalho.bim");
     const ord = { crit: 0, warn: 1, info: 2 }; return out.sort((a, b) => ord[a.st] - ord[b.st]);
@@ -227,7 +264,7 @@ function ckFacts() {
   const mks = c.marcos.filter(m => !m.feito); if (mks.length) L.push("MARCOS (consegne, revisioni, approvazioni):\n" + mks.sort((a, b) => a.data.localeCompare(b.data)).map(m => `- ${fmtDY(m.data)} ${m.tipo || "marco"} “${m.nome}” | ${ckPN(m.projeto)} | ${ckDiffU(TODAY, m.data)} dias úteis`).join("\n"));
   L.push(`TAREFAS ABERTAS (${open.length}, em ordem de prioridade sugerida):\n` + (open.map(lin).join("\n") || "- nenhuma"));
   const done = T.filter(t => !ckOpen(t) && t.concluida >= addDays(TODAY, -21)); if (done.length) L.push("CONCLUÍDAS NAS ÚLTIMAS 3 SEMANAS: " + done.map(t => `${t.cod} ${trunc(t.titulo, 40)} (${ckMN(t.resp)}, ${fmtD(t.concluida)}${t.prazo ? t.concluida <= t.prazo ? ", no prazo" : `, ${ckDiffU(t.prazo, t.concluida)} d.u. de atraso` : ""})`).join("; "));
-  L.push("EQUIPE E CARGA (próximos 10 dias úteis):\n" + ckEquipe().map(m => { const cg = ckCarga(m.id), p = ckPdi(m.id), u = ckA("ckMeet").filter(x => x.tipo === "1a1" && x.membro === m.id).sort((a, b) => b.data.localeCompare(a.data))[0];
+  L.push(`EQUIPE E CARGA (próximos ${ckLim("janelaCarga")} dias úteis):\n` + ckEquipe().map(m => { const cg = ckCarga(m.id), p = ckPdi(m.id), u = ckA("ckMeet").filter(x => x.tipo === "1a1" && x.membro === m.id).sort((a, b) => b.data.localeCompare(a.data))[0];
     return `- ${ckMNa(m.id)} | ${m.papel || "–"} | nível ${m.nivel || "–"} (fator ${ckMult(m)}×) | ${m.horas || 0} h/sem | carga ${pct(cg.load)} (${num(cg.dem, 0)}/${num(cg.cap, 0)} h, ${CK_CST[cg.st]})${cg.ag ? ` | agenda ${num(cg.ag, 0)} h` : ""} | em andamento: ${T.filter(t => t.resp === m.id && t.status === "em andamento").map(t => t.cod).join(", ") || "nada"}${m.foco ? ` | foco: ${m.foco}` : ""}${p.comps.length ? ` | PDI${p.trilha ? ` (${CK_TRILHAS[p.trilha]?.nome || p.trilha})` : ""}: ${p.comps.map(x => `${x.nome} ${x.nivel}/${x.alvo ?? 3}`).join("; ")}` : ""}${p.metas.filter(x => !x.feito).length ? ` | metas: ${p.metas.filter(x => !x.feito).map(x => `${trunc(x.txt, 60)}${x.prazo ? ` até ${fmtD(x.prazo)}` : ""}`).join("; ")}` : ""}${!m.eu ? ` | último 1:1 ${u ? fmtD(u.data) : "nunca"}` : ""}`; }).join("\n"));
   const rk = ckA("ckRisk").filter(r => r.status !== "fechado"); if (rk.length) L.push("RISCOS (Risk Register):\n" + rk.sort((a, b) => ckRiscoScore(b) - ckRiscoScore(a)).map(r => `- ${r.cod} ${r.desc} | ${ckPN(r.projeto)} | P${r.prob}×I${r.imp}=${ckRiscoScore(r)} | gatilho: ${r.gatilho || "–"} | dono ${ckMNa(r.dono)} | mitigação: ${r.mitig || "nenhuma"} | ${r.status}${(r.tarefas || []).length ? ` | tarefas ${r.tarefas.map(id => T.find(t => t.id === id)?.cod).filter(Boolean).join(", ")}` : ""}`).join("\n"));
   const sg = ckRiscosSug(); if (sg.length) L.push("RISCOS QUE O MOTOR DETECTOU (ainda não registrados): " + sg.map(r => `${r.desc} [fonte ${r.fonte}]`).join("; "));

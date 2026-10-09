@@ -88,6 +88,7 @@ const ICONS = {
   star: '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/>',
   wave: '<path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/>',
   eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  filter: '<path d="M4 5h16l-6.2 7.4V19l-3.6-1.8v-4.8z"/>',
   gauge: '<path d="M3.5 17a9 9 0 1 1 17 0"/><path d="M12 13l4.5-4.5"/><circle cx="12" cy="13" r="1.6"/><path d="M6.5 13h1.5M16 13h1.5M12 7.5V9"/>',
   kanban: '<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="9.5" y="4" width="5" height="10" rx="1.5"/><rect x="16" y="4" width="5" height="13" rx="1.5"/>',
 };
@@ -117,7 +118,7 @@ const SUBS = {
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
   jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["filosofia", "Filosofia"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   rotina: [["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]],
-  trabalho: [["hoje", "Hoje"], ["semana", "Semana"], ["mes", "Mês"], ["kanban", "Kanban"], ["lista", "Lista"], ["gantt", "Gantt"], ["riscos", "Riscos"], ["problemas", "Problemas"], ["equipe", "Equipe"], ["log", "Diário de bordo"], ["decisoes", "Decisões"], ["bim", "Tracker BIM"], ["entregas", "Entregas"], ["reunioes", "Reuniões"], ["relatorios", "Relatórios"], ["licoes", "Lições"], ["metricas", "Métricas"], ["contexto", "Contexto"], ["pessoa", "Pessoa", "equipe"]],
+  trabalho: [["dashboard", "Dashboard"], ["hoje", "Hoje"], ["semana", "Semana"], ["mes", "Mês"], ["kanban", "Kanban"], ["lista", "Lista"], ["gantt", "Gantt"], ["riscos", "Riscos"], ["problemas", "Problemas"], ["equipe", "Equipe"], ["log", "Diário de bordo"], ["decisoes", "Decisões"], ["bim", "Tracker BIM"], ["entregas", "Entregas"], ["reunioes", "Reuniões"], ["relatorios", "Relatórios"], ["licoes", "Lições"], ["contexto", "Contexto"], ["pessoa", "Pessoa", "equipe"]],
   psi: [["inicio", "Início"], ["sessoes", "Sessões"], ["processos", "Processos"], ["entre", "Entre sessões"], ["padroes", "Padrões"], ["terapeuta", "O Terapeuta"]],
   dupla: [["diario", "Diário a dois"], ["orcamento", "Orçamento comum"], ["metas", "Metas a dois"]],
 };
@@ -135,9 +136,11 @@ function route() {
   if (p === "mentor" && MENTOR_DEF[s]?.page) { p = MENTOR_DEF[s].page; s = MENTOR_DEF[s].sub; }
   if (p === "mentor" && MENTOR_DEF[s]?.jor) { p = "jornada"; s = jSubOfMid(s); }
   if (p === "mentor" && MENTOR_DEF[s]?.lz) { p = "lazer"; s = MENTOR_DEF[s].lz; }
+  if (p === "trabalho" && s === "metricas") s = "dashboard";
   if (`${p}${s ? "." + s : ""}` !== location.hash.slice(1) && location.hash) try { history.replaceState(null, "", `#${p}${s ? "." + s : ""}`); } catch {}
   const ok = p === "mentor" || NAV.some(g => g[1].some(x => x[0] === p));
   PAGE = ok ? p : "visao"; SUB = ok ? s || null : null;
+  if (PAGE === "trabalho" && !SUB) SUB = "hoje"; /* o Dashboard é a primeira aba, mas o Cockpit abre no Hoje */
   if (SUBS[PAGE] && !SUBS[PAGE].some(x => x[0] === SUB)) SUB = SUBS[PAGE][0][0];
   if (PAGE === "mentor" && !(SUB in MENTOR_DEF)) SUB = "conselho";
   NAVOPEN = false; DRAWER = null; if (PAGE !== "painel" && VOZ.sr) stopVoice(); if (PAGE !== "hoje") HJ.skip.clear();

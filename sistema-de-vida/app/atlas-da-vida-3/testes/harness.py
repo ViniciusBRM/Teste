@@ -82,7 +82,7 @@ MOCK = r"""
       await T.propor_solucao.execute({ problema: "P2", solucoes: [{ titulo: "Rinnovare la licenza (teste)", pros: "rapido", contras: "costo", esforco_h: 1 }, { titulo: "Licenza flottante (teste)", pros: "condivisa", contras: "attese", esforco_h: 2 }] }, ctx);
       await emit("**Alertas:** T10 vencida e atraso em cascata a partir de T2.\n\n1. Nova tarefa para Luca\n2. Delegar T13 a Elena\n3. Registrar o risco da variante\n4. Soluções para P2\n\n**Próximos passos:** aprove as propostas (teste).");
       return { text, truncated: false }; }
-    if (/TAREFA: (BRIEFING DO DIA|WEEKLY REVIEW|RAPPORTO MENSILE|VERBALE DI RIUNIONE|E-MAIL AO CLIENTE|AGGIORNAMENTO|RICHIESTA)/.test(P)) { window.__ckGerPrompt = P; await emit(/RAPPORTO/.test(P) ? "# Rapporto mensile (test)\n\n| Progetto | Stato |\n|---|---|\n| Variante | in corso |\n\nProssimi passi: test." : /VERBALE/.test(P) ? "# Verbale di riunione (test)\n\nPartecipanti: test." : "Testo di prova in italiano (test)."); return { text, truncated: false }; }
+    if (/TAREFA: (BRIEFING DO DIA|WEEKLY REVIEW|RAPPORTO MENSILE|RAPPORTO DI PERIODO|VERBALE DI RIUNIONE|E-MAIL AO CLIENTE|AGGIORNAMENTO|RICHIESTA)/.test(P)) { window.__ckGerPrompt = P; await emit(/RAPPORTO/.test(P) ? "# Rapporto " + (/DI PERIODO/.test(P) ? "di periodo" : "mensile") + " (test)\n\n| Progetto | Stato |\n|---|---|\n| Variante | in corso |\n\nProssimi passi: test." : /VERBALE/.test(P) ? "# Verbale di riunione (test)\n\nPartecipanti: test." : "Testo di prova in italiano (test)."); return { text, truncated: false }; }
     if (T.consultar) { try { const r = await T.consultar.execute({ metrica: "sono", meses: 6 }, ctx); window.__calls.push({ kind: "tool", name: "consultar", r }); } catch (e) { window.__calls.push({ kind: "toolerr", name: "consultar", m: String(e.message || e) }); } }
     if (T.cruzar) { try { const r = await T.cruzar.execute({ x: "sono", y: "bem" }, ctx); window.__calls.push({ kind: "tool", name: "cruzar", r }); } catch (e) { window.__calls.push({ kind: "toolerr", name: "cruzar", m: String(e.message || e) }); } }
     if (T.buscar_diario) { const r = await T.buscar_diario.execute({ tema: "financas" }, ctx); window.__calls.push({ kind: "tool", name: "buscar_diario", n: r.length }); }
@@ -100,6 +100,11 @@ MOCK = r"""
     window.__calls.push({ kind: "json", input, tier: opts.modelTier });
     if (cfg.sampleError) throw { code: cfg.sampleError, message: "mock" };
     const P = promptOf(input); await sleep(10);
+    if (/TAREFA: INSIGHTS DO DASHBOARD/.test(P)) { window.__ckInsPrompt = P; return { insights: [
+      { titulo: "No prazo da Giulia em queda (test)", texto: "O % no prazo caiu nas últimas 3 semanas (test).", fontes: ["Comparativo por pessoa"], acao: { tipo: "registrar_risco", dados: { descricao: "Sobrecarga da Giulia no PFTE (test)", probabilidade: 3, impacto: 4, gatilho: "novo atraso", dono: "Andrea", mitigacao: "passar uma tarefa para o Luca" } } },
+      { titulo: "Escopo subindo (test)", texto: "Mais eventos de escopo que no período anterior (test).", fontes: ["Diário de bordo"], acao: { tipo: "registrar_evento", dados: { texto: "Tendência de aumento de escopo (test)", tipo: "escopo" } } },
+      { titulo: "Ação inválida (test)", texto: "A ação desta não passa na validação (test).", fontes: [], acao: { tipo: "criar_tarefa", dados: { titulo: "" } } },
+      { titulo: "Sem ação (test)", texto: "Só a leitura (test).", fontes: ["KPIs"], acao: null }] }; }
     if (/Conselho|CONSELHO|Intermediador/.test(P)) {
       if (window.__csFail > 0) { window.__csFail--; throw { code: window.__csFailCode || "upstream_error", message: "mock" }; }
       if (window.__csBad > 0) { window.__csBad--; if (window.__csBadThrow) throw { code: "invalid_json", message: "mock", text: "não é json" }; return { fase: "XYZ" }; }

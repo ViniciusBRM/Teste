@@ -10,13 +10,14 @@ def chk(c, msg):
     global ok, bad
     if c: ok += 1; print("PASS", msg)
     else: bad += 1; print("FAIL", msg)
-SUBS = ["hoje", "semana", "mes", "kanban", "lista", "gantt", "riscos", "problemas", "equipe", "pessoa", "log", "decisoes", "bim", "entregas", "reunioes", "relatorios", "licoes", "metricas", "contexto"]
+SUBS = ["dashboard", "hoje", "semana", "mes", "kanban", "lista", "gantt", "riscos", "problemas", "equipe", "pessoa", "log", "decisoes", "bim", "entregas", "reunioes", "relatorios", "licoes", "contexto"]
 
 async def main():
     async with async_playwright() as p:
         b, pg, errs = await open_page(p, w=1440, h=1000, hash_="trabalho.hoje")
         try:
             await pg.wait_for_timeout(900)
+            SQ = await pg.evaluate("({ ...ckD().seq })")
             chk(await pg.evaluate("[...document.querySelectorAll('#nav .nv')].some(a => a.getAttribute('href') === '#trabalho' && /Cockpit de Trabalho/.test(a.textContent))"), "a aba Cockpit de Trabalho está no menu")
             falhas = []
             for s in SUBS:
@@ -45,9 +46,9 @@ async def main():
             chk("Giulia" in prev and "Idraulica" in prev and "6 h" in prev and "Variante" in prev, f"a prévia mostra pessoa, tag, esforço e projeto ({prev[:160]})")
             await pg.press("#ckq_in", "Enter"); await pg.wait_for_timeout(200)
             t = await pg.evaluate("(() => { const t = ckT().at(-1); return { cod: t.cod, tit: t.titulo, resp: t.resp, tags: t.tags, esf: t.esforco, prio: t.prio, proj: t.projeto, dow: parse(t.prazo).getDay(), fut: t.prazo > TODAY }; })()")
-            chk(t["cod"] == "T18" and t["tit"] == "Verificare il drenaggio al km 2" and t["resp"] == "m2" and t["tags"] == ["Idraulica"] and t["esf"] == 6 and t["prio"] == "alta" and t["proj"] == "p1" and t["dow"] == 5 and t["fut"], f"a tarefa nasce com código, pessoa, tag, esforço, prioridade, projeto e a próxima sexta ({t})")
+            chk(t["cod"] == f"T{SQ['T'] + 1}" and t["tit"] == "Verificare il drenaggio al km 2" and t["resp"] == "m2" and t["tags"] == ["Idraulica"] and t["esf"] == 6 and t["prio"] == "alta" and t["proj"] == "p1" and t["dow"] == 5 and t["fut"], f"a tarefa nasce com código, pessoa, tag, esforço, prioridade, projeto e a próxima sexta ({t})")
             await pg.keyboard.press("Alt+Shift+N"); await pg.fill("#ckq_in", "Il RUP chiede una variante del tracciato al km 3"); await pg.press("#ckq_in", "Enter"); await pg.wait_for_timeout(150)
-            chk(await pg.evaluate("ckA('ckLog').at(-1).tipo === 'escopo' && ckA('ckLog').at(-1).cod === 'E6'"), "sem prefixo vira evento do diário de bordo, classificado como escopo")
+            chk(await pg.evaluate("ckA('ckLog').at(-1).tipo === 'escopo' && ckA('ckLog').at(-1).cod === 'E" + str(SQ['E'] + 1) + "'"), "sem prefixo vira evento do diário de bordo, classificado como escopo")
             # kanban: arrastar
             await pg.evaluate("location.hash='trabalho.kanban'"); await pg.wait_for_timeout(200)
             await pg.drag_and_drop('.ckcard[data-cktask="t7"]', '.ckcol[data-ckcol="em andamento"]'); await pg.wait_for_timeout(200)
@@ -82,7 +83,7 @@ async def main():
             await pg.click('[data-act="ckmaadd"]'); await pg.fill('[data-ckma="0|txt"]', "Rever o método racional com o Luca"); await pg.fill('[data-ckma="0|prazo"]', "2030-01-10"); await pg.dispatch_event('[data-ckma="0|prazo"]', "change")
             await pg.click('[data-act="ckmfadd"]'); await pg.fill('[data-ckmf="0|txt"]', "Boa organização da planilha"); await pg.click('[data-act="ckmeetsave"]'); await pg.wait_for_timeout(200)
             m = await pg.evaluate("(() => { const x = ckA('ckMeet').at(-1); return { tipo: x.tipo, cod: x.cod, fb: x.feedback.length, tar: x.acoes[0]?.tarefa ? ckT().find(t => t.id === x.acoes[0].tarefa)?.resp : null }; })()")
-            chk(m == {"tipo": "1a1", "cod": "M4", "fb": 1, "tar": "m2"}, f"o 1:1 guarda feedback e o compromisso vira tarefa da pessoa ({m})")
+            chk(m == {"tipo": "1a1", "cod": f"M{SQ['M'] + 1}", "fb": 1, "tar": "m2"}, f"o 1:1 guarda feedback e o compromisso vira tarefa da pessoa ({m})")
             # o PMO
             base = await pg.evaluate("({ t13: ckTarRef('T13').resp, r: ckA('ckRisk').length, n: ckT().length, p2: ckFind('ckIss', 'P2').solucoes.length })")
             await pg.evaluate("location.hash='trabalho.hoje'"); await pg.wait_for_timeout(150)

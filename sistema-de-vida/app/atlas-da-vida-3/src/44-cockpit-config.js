@@ -57,6 +57,26 @@ const CK_AGENTE = {
   niveis: [["Sem experiência", 1.8], ["Júnior", 1.5], ["Médio", 1.2], ["Médio-avançado", 1.0], ["Sênior", 1.0], ["Coordenador", 1.0]],
   tags: ["BIM", "Idraulica", "Tracciato", "Coordenação", "Admin", "Cliente"]
 };
+/* limites do Cockpit e do Dashboard (os valores de hoje; a aba Contexto pode sobrescrever cada um em ck.cfg.lim) */
+const CK_LIMITES = {
+  janelaCarga: 10,        // dias úteis da carga “agora” (card Minha carga, alertas, delegação)
+  cargaCritica: 1.1,      // acima disto: sobrecarga
+  cargaAtencao: 0.9,      // acima disto: no limite
+  ociosa: 0.35,           // abaixo disto (quem não é você): com folga
+  riscoAlto: 15,          // probabilidade × impacto a partir do qual o risco é alto
+  problemaParado: 3,      // dias de um problema aberto sem soluções até virar alerta
+  ciclo1a1: 14,           // dias entre 1:1 (a aba Contexto já ajustava este)
+  agendaTecnicaMax: 0.6,  // Minha agenda: execução técnica acima desta fração…
+  agendaCoordMin: 0.25,   // …com coordenação abaixo desta → alerta
+  horas1a1: 0.75,         // horas atribuídas a cada 1:1 na Minha agenda
+  horasReuniao: 1,        // horas de cada reunião registrada no Cockpit (quando não vem da agenda)
+  revisaoFrac: 0.15       // fração do esforço de uma tarefa que conta como revisão para o revisor
+};
+const CK_LIMITES_TXT = { janelaCarga: "Janela da carga (dias úteis)", cargaCritica: "Sobrecarga acima de (× capacidade)", cargaAtencao: "No limite acima de (× capacidade)", ociosa: "Com folga abaixo de (× capacidade)", riscoAlto: "Risco alto a partir do score (P × I)", problemaParado: "Problema sem solução vira alerta após (dias)", agendaTecnicaMax: "Minha agenda: execução técnica máxima (0–1)", agendaCoordMin: "Minha agenda: coordenação mínima (0–1)", horas1a1: "Horas de cada 1:1", horasReuniao: "Horas de cada reunião do Cockpit", revisaoFrac: "Revisão: fração do esforço da tarefa (0–1)" };
+/* Minha agenda: como as horas viram categorias (a primeira categoria cujo conjunto de tags casar; sem tag = técnica) */
+const CK_AGENDA = [["coordenacao", "Coordenação", ["Coordenação", "Cliente"]], ["admin", "Admin", ["Admin"]], ["tecnica", "Execução técnica", ["BIM", "Idraulica", "Tracciato"]], ["equipe", "Equipe", []]];
+const ckLims = () => { const o = ckD().cfg.lim || {}, r = { ...CK_LIMITES }; for (const k in o) if (isNum(o[k])) r[k] = +o[k]; if (isNum(ckD().cfg.ciclo1a1) && !isNum(o.ciclo1a1)) r.ciclo1a1 = +ckD().cfg.ciclo1a1; return r; };
+const ckLim = k => ckLims()[k];
 /* trilhas de desenvolvimento de referência (o PDI de cada pessoa parte de uma delas e é editável) */
 const CK_TRILHAS = {
   idraulica: { nome: "Idraulica stradale", tags: ["Idraulica"], comps: [

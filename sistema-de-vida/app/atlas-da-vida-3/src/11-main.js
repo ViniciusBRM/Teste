@@ -14,7 +14,7 @@ function render() {
     hoje: () => [`${greet()}${nm ? ", " + nm : ""}`, fmtDL(TODAY)[0].toUpperCase() + fmtDL(TODAY).slice(1), pHoje2],
     diario: () => ["Diário", "Escreva, marque pessoas e temas, registre dados e veja o que se repete", pDiario],
     psi: () => ["Psicologia", { inicio: "O trabalho terapêutico, ligado à sua jornada", sessoes: "O que acontece nas sessões", processos: "Os temas que você trabalha ao longo do tempo", entre: "O trabalho entre as sessões", padroes: "O que se repete, e o que ajuda", terapeuta: "Um apoio entre sessões que muda de forma conforme o que você precisa" }[SUB] || "", pPsique],
-    trabalho: () => ["Cockpit de Trabalho", { hoje: "Prioridades, alertas e o briefing do dia", semana: "Prazos da semana, capacidade e a weekly review", mes: "Prazos, marcos e feriados do mês", kanban: "Arraste entre as colunas para mudar o status", lista: "Todas as tarefas, em ordem de prioridade sugerida", gantt: "Caminho crítico, folgas e atrasos em cascata, em dias úteis", riscos: "Risk Register: probabilidade × impacto, gatilho, dono e mitigação", problemas: "Issue Log: soluções com prós, contras, esforço e impacto", equipe: "Carga, desenvolvimento e delegação", pessoa: "Tarefas, PDI, 1:1 e feedback", log: "O que aconteceu, em ordem: eventos, demandas, escopo, cliente, conversas", decisoes: "Decision Log: o que foi decidido e por quê", bim: "Modelos federados, clash, consegne IFC, pGI/BEP e LOIN", entregas: "Elenco elaborati: revisões e aprovação", reunioes: "Pauta, ata e ações que viram tarefas", relatorios: "Briefing, weekly review, relatório mensal e comunicações em italiano", licoes: "Lições aprendidas para reusar entre projetos", metricas: "Lead time, % no prazo, carga e a evolução das juniores", contexto: "Seu perfil, a equipe, os projetos e o agente" }[SUB] || "", pTrabalho],
+    trabalho: () => ["Cockpit de Trabalho", { dashboard: "Tendências, comparações e a visão por pessoa e por projeto no período", hoje: "Prioridades, alertas e o briefing do dia", semana: "Prazos da semana, capacidade e a weekly review", mes: "Prazos, marcos e feriados do mês", kanban: "Arraste entre as colunas para mudar o status", lista: "Todas as tarefas, em ordem de prioridade sugerida", gantt: "Caminho crítico, folgas e atrasos em cascata, em dias úteis", riscos: "Risk Register: probabilidade × impacto, gatilho, dono e mitigação", problemas: "Issue Log: soluções com prós, contras, esforço e impacto", equipe: "Carga, desenvolvimento e delegação", pessoa: "Tarefas, PDI, 1:1 e feedback", log: "O que aconteceu, em ordem: eventos, demandas, escopo, cliente, conversas", decisoes: "Decision Log: o que foi decidido e por quê", bim: "Modelos federados, clash, consegne IFC, pGI/BEP e LOIN", entregas: "Elenco elaborati: revisões e aprovação", reunioes: "Pauta, ata e ações que viram tarefas", relatorios: "Briefing, weekly review, relatório mensal e comunicações em italiano", licoes: "Lições aprendidas para reusar entre projetos", contexto: "Seu perfil, a equipe, os projetos e o agente" }[SUB] || "", pTrabalho],
     admin: () => ["Administração Pessoal", "O Conselho de Administração da sua vida: os mentores reunidos, conduzidos pelo Intermediador, e você decide", pAdmin],
     mentores: () => ["Mentores", "Um agente para cada área, com memória do que vocês combinaram", pMentores],
     mentor: () => [esc(MENTOR_DEF[SUB].nome), esc(MENTOR_DEF[SUB].papel[0].toUpperCase() + MENTOR_DEF[SUB].papel.slice(1)), pMentor],
@@ -49,7 +49,7 @@ function render() {
   $("#nav").innerHTML = navHTML(R);
   $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}${csStrip()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
   $("#drawerwrap").innerHTML = drawerHTML(R);
-  if (PAGE !== "trabalho") document.body.classList.remove("ckside-on");
+  if (PAGE !== "trabalho") { document.body.classList.remove("ckside-on", "ckdmeet-on"); if (CK.dash) CK.dash.reuniao = false; }
   document.body.classList.toggle("navopen", NAVOPEN); document.body.classList.toggle("drawer-on", !!DRAWER);
   saveStatus();
   if (focusId) { const el = document.getElementById(focusId); if (el && el !== document.activeElement) { el.focus({ preventScroll: true }); try { if (selS != null) el.setSelectionRange(selS, selE ?? selS); } catch {} if (scT) el.scrollTop = scT; } }
@@ -116,7 +116,7 @@ function pack() {
 }
 
 /* ================================================================ eventos */
-const CLICK_SEL = "[data-rtb],button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv],[data-cktask],[data-ckmemb],[data-ckproj],[data-ckmarco],[data-ckpessoa],[data-ckrisk],[data-ckiss],[data-ckdec],[data-cklic],[data-ckbim],[data-ckel],[data-ckmeetv],[data-ckrel]";
+const CLICK_SEL = "[data-rtb],button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv],[data-cktask],[data-ckmemb],[data-ckproj],[data-ckmarco],[data-ckpessoa],[data-ckrisk],[data-ckiss],[data-ckdec],[data-cklic],[data-ckbim],[data-ckel],[data-ckmeetv],[data-ckrel],[data-ckdrill],[data-ckdper],[data-ckdnav],[data-ckdsec],[data-ckwmv],[data-ckwhide]";
 document.addEventListener("click", e => {
   const t = e.target.closest(CLICK_SEL); if (!t || t.disabled) return;
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
@@ -245,6 +245,7 @@ window.addEventListener("resize", debounce(() => { const old = REPW; measureGrid
   if (Object.keys(loaded).length) { const E = EMPTY(); S = { ...E, ...loaded, priv: { ...E.priv, ...(loaded.priv || {}) }, radar: { ...E.radar, ...(loaded.radar || {}) }, cfg: { ...E.cfg, ...(loaded.cfg || {}) }, integ: { ...E.integ, ...(loaded.integ || {}), notion: { ...E.integ.notion, ...(loaded.integ?.notion || {}) } }, listas: { ...E.listas, ...(loaded.listas || {}) } }; IS_EXAMPLE = false; }
   applyLists(); VER++; LOADED = true; snapAll(); UNDO.length = 0; REDO.length = 0;
   try { radarSync(); } catch (e) { console.warn("radar", e); }
+  try { ckSnapTake(); } catch (e) { console.warn("ckSnap", e); }
   render();
   secBoot();
 })();

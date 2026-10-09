@@ -16,11 +16,12 @@ async def main():
         b, pg, errs = await open_page(p, w=1440, h=1000, hash_="trabalho.log")
         try:
             await pg.wait_for_timeout(900)
+            SQ = await pg.evaluate("({ ...ckD().seq })"); E6 = f"E{SQ['E'] + 1}"; L2 = f"L{SQ['L'] + 1}"
             # diário de bordo
             await pg.fill("#ck_logtxt", "Il RUP chiede una variante al km 3. Preciso revisar o drenaggio até sexta @Giulia #Idraulica. Decidimos usar il DTM regionale.")
             await pg.select_option("#ck_logproj", "p1"); await pg.click('[data-act="cklogadd"]'); await pg.wait_for_timeout(200)
             e = await pg.evaluate("(() => { const e = ckA('ckLog').at(-1); return { cod: e.cod, tipo: e.tipo, proj: e.projeto, xtr: (CK.xtr?.itens || []).map(i => i.k) }; })()")
-            chk(e["cod"] == "E6" and e["tipo"] == "escopo" and e["proj"] == "p1", f"o registro entra no diário com código, tipo automático e projeto ({e})")
+            chk(e["cod"] == E6 and e["tipo"] == "escopo" and e["proj"] == "p1", f"o registro entra no diário com código, tipo automático e projeto ({e})")
             chk("t" in e["xtr"] and "d" in e["xtr"], f"o motor local já sugere a tarefa e a decisão do texto ({e['xtr']})")
             await pg.click("[data-ckxia]"); await pg.wait_for_timeout(500)
             it = await pg.evaluate("CK.xtr.itens.map(i => [i.k, i.titulo || i.desc, i.resp || ''])")
@@ -29,8 +30,8 @@ async def main():
             await pg.click('[data-ckxsel="1"]'); await pg.wait_for_timeout(100)
             n0 = await pg.evaluate("({ t: ckT().length, r: ckA('ckRisk').length, d: ckA('ckDec').length })")
             await pg.click('[data-act="ckxcriar"]'); await pg.wait_for_timeout(200)
-            n1 = await pg.evaluate("({ t: ckT().length, r: ckA('ckRisk').length, d: ckA('ckDec').length, lig: ckA('ckLog').find(x => x.cod === 'E6').ligados, orig: ckT().at(-1).origem?.rot })")
-            chk(n1["t"] == n0["t"] + 1 and n1["r"] == n0["r"] + 1 and n1["d"] == n0["d"] + 1 and len(n1["lig"]) == 3 and n1["orig"] == "diário E6", f"cria só os selecionados e o registro guarda o que gerou ({n0} → {n1})")
+            n1 = await pg.evaluate("({ t: ckT().length, r: ckA('ckRisk').length, d: ckA('ckDec').length, lig: ckA('ckLog').find(x => x.cod === '" + E6 + "').ligados, orig: ckT().at(-1).origem?.rot })")
+            chk(n1["t"] == n0["t"] + 1 and n1["r"] == n0["r"] + 1 and n1["d"] == n0["d"] + 1 and len(n1["lig"]) == 3 and n1["orig"] == "diário " + E6, f"cria só os selecionados e o registro guarda o que gerou ({n0} → {n1})")
             # riscos
             await pg.evaluate("location.hash='trabalho.riscos'"); await pg.wait_for_timeout(200)
             chk(await pg.evaluate("document.querySelectorAll('.ckhc').length === 25 && [...document.querySelectorAll('.ckhc')].reduce((s, c) => s + (+c.textContent || 0), 0) === ckA('ckRisk').filter(r => r.status !== 'fechado').length"), "o mapa de calor 5×5 soma os riscos abertos")
@@ -56,7 +57,7 @@ async def main():
             await pg.click('[data-ckissok="i1"]'); await pg.wait_for_timeout(150)
             chk(await pg.evaluate("ckFind('ckIss', 'P1').status === 'resolvido' && ckFind('ckIss', 'P1').resolvido === TODAY"), "Resolvido fecha o problema com data")
             chk(await pg.evaluate("/Registrar lição/.test($('#toast').textContent)"), "ao resolver, o aviso oferece registrar a lição"); await pg.click('#toastAct'); await pg.wait_for_timeout(150); await pg.fill("#dlg textarea[name=licao]", "Verificar a georreferência no início"); await pg.click("#dlg button[value=ok]"); await pg.wait_for_timeout(150)
-            chk(await pg.evaluate("ckA('ckLic').at(-1).cod === 'L2' && /P1/.test(ckA('ckLic').at(-1).titulo)"), "a lição nasce do problema resolvido")
+            chk(await pg.evaluate("ckA('ckLic').at(-1).cod === '" + L2 + "' && /P1/.test(ckA('ckLic').at(-1).titulo)"), "a lição nasce do problema resolvido")
             # decisões
             await pg.evaluate("location.hash='trabalho.decisoes'"); await pg.wait_for_timeout(150)
             await pg.fill("#ck_dq", "Direttiva"); await pg.wait_for_timeout(350)
