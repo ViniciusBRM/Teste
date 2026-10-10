@@ -53,7 +53,6 @@ const lzKey = div => div === "leitura" ? "aprend" : "lazerHub";
 const lzT = x => x.titulo ?? x.t ?? "";
 const lzNiv = div => lzData().nivel[div] || 0;
 const lzSec = s => { s = String(s ?? "").trim(); if (!s) return null; if (s.includes(":")) { const [m, x] = s.split(":"); return (+m || 0) * 60 + (+x || 0); } return isNum(+s) ? +s : null; };
-const lzMMSS = n => n == null ? "–" : `${Math.floor(n / 60)}:${String(Math.round(n % 60)).padStart(2, "0")}`;
 /* café: proporção = água (ou rendimento) ÷ dose; perda = (verde − torrado) ÷ verde; DTR = (total − 1º crack) ÷ total */
 function lzCafeCalc(e) {
   if (e.tipo === "torra") { const v = +e.verde, t = +e.torrado, T = lzSec(e.total), fc = lzSec(e.fc); return { perda: v > 0 && t > 0 ? (v - t) / v : null, dtr: T > 0 && fc != null && fc < T ? (T - fc) / T : null, dev: T > 0 && fc != null && fc < T ? T - fc : null }; }

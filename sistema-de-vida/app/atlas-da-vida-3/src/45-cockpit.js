@@ -81,11 +81,9 @@ function ckCalOf(cfg = {}) {
   const cal = { fer, util, next, prev, add, diff: dif, sig }; CK_CALS.set(sig, cal); return cal;
 }
 const ckCal = () => ckCalOf(ckD().cfg);
-const ckFeriados = y => ckFeriadosAno(y, ckD().cfg);
 const ckFer = d => ckCal().fer(d);
 const ckUtil = d => ckCal().util(d);
 const ckNextU = d => ckCal().next(d);
-const ckPrevU = d => ckCal().prev(d);
 const ckAddU = (d, n) => ckCal().add(d, n);
 /* dias úteis de a até b: positivo se b vem depois; 0 no mesmo dia */
 const ckDiffU = (a, b) => ckCal().diff(a, b);
@@ -124,7 +122,6 @@ function ckCPMcalc(tasks, membros, cfg, hoje) {
 function ckCPM() { return memo("ckcpm", () => ckCPMcalc(ckT(), ckD().membros, ckD().cfg, TODAY)); }
 const ckC = id => ckCPM().R[id] || null;
 const ckHpd = m => ckHpdOf(m, ckD().cfg);
-const ckDur = t => ckCPM().R[t.id]?.dur ?? Math.max(1, Math.ceil(ckRem(t) / ckHpd(ckM(t.resp))));
 
 /* ---------------------------------------------------------------- prioridade: Eisenhower + prazo + caminho crítico (numa passada só) */
 function ckPrioCalc(t, R, marcos, hoje, cal) {
@@ -161,7 +158,6 @@ function ckAgendaHOf(eventos, cfg, d0, d1, cal) {
   for (const e of eventos || []) { if (e.data < d0 || e.data > d1 || !cal.util(e.data)) continue; const a = hm2min(e.hora), z = hm2min(e.fim) ?? (a != null ? a + 60 : null); if (a == null) continue; h += Math.max(0, Math.min(z, j1) - Math.max(a, j0)) / 60; }
   return h;
 }
-const ckAgendaH = (d0, d1) => ckAgendaHOf(S.eventos, ckD().cfg, d0, d1, ckCal());
 function ckCargaCalc({ tasks, R, membro, d0, d1, extra = 0, eventos, cfg, lim }) {
   const cal = ckCalOf(cfg), n = Math.max(1, cal.diff(d0, d1) + (cal.util(d0) ? 1 : 0)), mid = membro?.id; let dem = 0; const ts = [];
   for (const t of tasks) { if (!ckOpen(t) || t.resp !== mid || !R[t.id]) continue; const r = R[t.id]; if (r.es > d1 || r.ef < d0) continue; const a = r.es < d0 ? d0 : r.es, z = r.ef > d1 ? d1 : r.ef, k = Math.max(1, cal.diff(a, z) + 1); dem += ckRem(t) * k / r.dur; ts.push(t.id); }

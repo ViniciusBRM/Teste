@@ -12,7 +12,6 @@ function pdHit(F, title) { const ws = pdKw(title); if (!ws.length) return false;
 const PDX_TASK = /\b(conclui|terminei|finalizei|entreguei|resolvi|fiz|enviei|mandei|marquei|agendei|liguei|paguei|comprei|consegui|fechei|cumpri)\b/;
 const PDX_CASA = /\b(limpei|lavei|arrumei|passei|aspirei|tirei|troquei|fiz|organizei|varri|esfreguei|guardei|reguei|dobrei|recolhi)\b/;
 const PDX_CONTA = /\b(paguei|quitei|transferi)\b/;
-const PDX_BLK = [[/\b(pulei|faltei|nao fiz|perdi|deixei de)\b/, "pulado"], [/\b(metade|em parte|parcial|pela metade)\b/, "parcial"], [/\b(fiz|cumpri|completei|segui|consegui)\b/, "feito"]];
 const PDX_BM = [[/^(nao pratiquei|esqueci(?: de)?|falhei(?: em| na| no)?)$/, 0], [/^tentei$/, 1], [/^(pratiquei|vivi|exercitei)$/, 2]];
 const pdR3 = () => { PD.bm ||= {}; PD.rt ||= {}; PD.chkT ||= {}; pdL(); return PD; };
 function pdReset3() {

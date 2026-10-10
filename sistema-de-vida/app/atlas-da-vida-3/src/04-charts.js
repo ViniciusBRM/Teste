@@ -2,7 +2,6 @@
 /* ================================================================ gráficos SVG (tokens do tema; nada de cor literal) */
 let GID = 0;
 const tip = t => `data-tip="${esc(t)}"`;
-function niceMax(v) { if (v <= 0) return 1; const e = Math.pow(10, Math.floor(Math.log10(v))); return [1, 2, 2.5, 5, 10].map(m => m * e).find(m => m >= v); }
 function niceScale(min, max, n = 4, minStep = 0) {
   if (!isFinite(min)) min = 0; if (!isFinite(max)) max = 1; if (max - min < 1e-9) { max = min + (Math.abs(min) || 1); }
   const raw = (max - min) / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), r = raw / mag;
@@ -125,25 +124,6 @@ function bullet(rows, o = {}) {
   if (!rows.length) return emptyChart(o.empty || "Defina orçamentos em Finanças › Orçamento.");
   return `<div class="bul">${rows.map(r => { const mx = Math.max(r.real, r.plan || 0) * 1.08 || 1, key = r.key ?? r.l, sel = o.sel != null && o.sel !== key;
     return `<div class="bur${o.xf ? " click" : ""}${sel ? " dim" : ""}"${o.xf ? ` data-xf="${o.xf}|${esc(key)}" role="button" tabindex="0"` : ""} ${tip(`${r.l}\nReal: ${eur(r.real)}${r.plan ? `\nOrçamento: ${eur(r.plan)}\nUso: ${pct(r.real / r.plan)}` : ""}`)}><span class="hbl">${esc(r.l)}</span><div class="but"><i class="${r.st || "none"}" style="width:${(clamp(r.real / mx) * 100).toFixed(1)}%"></i>${r.plan ? `<b style="left:${(clamp(r.plan / mx) * 100).toFixed(1)}%"></b>` : ""}${r.pace != null && r.plan ? `<u style="left:${(clamp(r.plan * r.pace / mx) * 100).toFixed(1)}%"></u>` : ""}</div><em class="st-${r.st || "none"}">${r.plan ? pct(r.real / r.plan) : eur(r.real)}</em></div>`; }).join("")}</div>`;
-}
-function waterfall(steps, o = {}) {
-  const W = o.w || 640, H = o.h || 250, L = 54, Rr = 10, B = 42, T = 18, iw = W - L - Rr, ih = H - B - T, n = steps.length;
-  if (!n) return emptyChart();
-  let run = 0; const bars = steps.map(s => { if (s.total) { run = s.v; return { ...s, y0: 0, y1: s.v }; } const b = { ...s, y0: run, y1: run + s.v }; run += s.v; return b; });
-  const vs = bars.flatMap(b => [b.y0, b.y1]), sc = niceScale(Math.min(0, ...vs), Math.max(...vs, 1), 4);
-  const Y = v => T + ih - (v - sc.lo) / (sc.hi - sc.lo) * ih, gw = iw / n, bw = Math.min(48, gw * .64), fmt = o.fmt || eurK;
-  let g = "";
-  for (const t of sc.ticks) g += `<line x1="${L}" x2="${W - Rr}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" class="gl${t === 0 ? " zero" : ""}"/><text x="${L - 8}" y="${(Y(t) + 3.5).toFixed(1)}" class="ax" text-anchor="end">${esc(fmt(t))}</text>`;
-  bars.forEach((b, i) => {
-    const x = L + i * gw + (gw - bw) / 2, top = Y(Math.max(b.y0, b.y1)), h = Math.max(1, Math.abs(Y(b.y0) - Y(b.y1)));
-    const col = b.color || (b.total ? "var(--accent)" : b.v >= 0 ? "var(--good)" : "var(--crit)");
-    g += `<rect x="${x.toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${col}" ${tip(`${b.l}: ${b.total ? "" : b.v >= 0 ? "+" : "−"}${eur(Math.abs(b.v))}`)}/>`;
-    g += `<text x="${(x + bw / 2).toFixed(1)}" y="${(top - 5).toFixed(1)}" class="ax val" text-anchor="middle">${esc((b.total ? "" : b.v >= 0 ? "+" : "−") + fmt(Math.abs(b.v)))}</text>`;
-    if (i < n - 1) { const yE = Y(b.y1); g += `<line x1="${(x + bw).toFixed(1)}" x2="${(x + gw).toFixed(1)}" y1="${yE.toFixed(1)}" y2="${yE.toFixed(1)}" class="conn"/>`; }
-    const words_ = b.l.split(" "), half = Math.ceil(words_.length / 2), l1 = words_.length > 1 && b.l.length > 11 ? words_.slice(0, half).join(" ") : b.l, l2 = l1 === b.l ? "" : words_.slice(half).join(" ");
-    g += `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 24}" class="ax" text-anchor="middle">${esc(l1)}</text>${l2 ? `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 11}" class="ax" text-anchor="middle">${esc(l2)}</text>` : ""}`;
-  });
-  return svgWrap(W, H, g, o.label || "Cascata");
 }
 function waterfallH(steps, o = {}) {
   if (!steps.length) return emptyChart();

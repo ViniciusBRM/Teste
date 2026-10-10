@@ -4,38 +4,6 @@ let CHECKIN = null;
 const TF = { q: "", status: "abertas", area: "", proj: "" }, LF = { q: "", tipo: "", cat: "" };
 function quickBox(id, ph, act, hint) { return `<div class="quick"><span class="qi">${ic("bolt")}</span><input id="${id}" type="text" placeholder="${esc(ph)}" aria-label="${esc(ph)}" autocomplete="off"><button type="button" class="btn sm primary" data-act="${act}">Adicionar</button></div><div class="qhint" id="${id}_h">${hint}</div>`; }
 
-/* ---------------------------------------------------------------- Hoje */
-function pHoje(R) {
-  const e = S.saude[TODAY] || {}, H = history(3);
-  const scale = (k, lbl) => `<div class="sc1"><span class="flbl">${lbl}</span><div class="mchips">${[1, 2, 3, 4, 5].map(v => `<button type="button" class="mchip m${k === "estresse" ? 6 - v : v}" data-sd="${k}" data-v="${v}" data-day="${TODAY}" aria-pressed="${e[k] == v}">${v}</button>`).join("")}</div></div>`;
-  const habs = R.hab.map(h => { const on = !!S.marks[`${h.id}|${TODAY}`]; return `<button type="button" class="hbtn${on ? " on" : ""}" data-mark="${h.id}|${TODAY}" aria-pressed="${on}" style="--c:${acol(h.area)}"><span class="hck">${ic("check")}</span><span class="hn">${esc(h.nome)}<small>${h.streak ? `${plural(h.streak, "dia", "dias")} seguidos` : ashort(h.area)}</small></span></button>`; }).join("");
-  const tasks = R.tar.filter(t => t.open && t.prazo && t.prazo <= TODAY).sort((a, b) => a.prazo.localeCompare(b.prazo));
-  const doneToday = R.tar.filter(t => t.status === "Concluída" && t.concluida === TODAY);
-  const ents = S.diario.filter(x => x.data === TODAY);
-  const urgent = R.areas.filter(a => a.dados != null && aativa(a.a)).sort((a, b) => a.dados - b.dados)[0], umid = urgent ? AREA_INFO[urgent.a].id : "conselho";
-  const ins = insights(R, H)[0], exps = (S.experimentos || []).filter(x => x.status === "ativo" && expSchedule(x)[TODAY] && !(x.desenho === "antes" && expSchedule(x)[TODAY] === "A")), al = radarAlerts().slice(0, 2);
-  const fwk = fsTarget(), fpend = parse(TODAY).getDay() <= 1 && S.fechamentos?.[fwk]?.status !== "fechado";
-  return `<div class="g2c hj">
-      ${panel(`${ic("bolt")}Capturar <small>escreva ou dite o dia; o Atlas separa os registros</small>`, captureFormHTML("h"), { cls: "span2 capcard", act: `<a class="lnk" href="#painel">${ic("mic")}Painel do dia</a>` })}
-      ${fpend ? `<div class="pn fscta span2"><div>${ic("week")}<b>Hora de fechar a semana de ${wkLabel(fwk)}</b><small>Números, destaques do diário, o que você cumpriu e as prioridades da próxima. Uns 15 minutos.</small></div><a class="btn primary" href="#semana">Fechar a semana</a></div>` : ""}
-      ${bmHoje()}
-      ${jHoje()}
-      ${exps.length ? panel(`${ic("flask")}Experimento de hoje`, exps.map(x => `<div class="hjexp"><b>${esc(x.titulo)}</b>${expToday(x, expAnalyze(x))}</div>`).join(""), { act: `<a class="lnk" href="#exp">ver análise</a>` }) : ""}
-      ${al.length ? panel(`${ic("radar")}No radar`, al.map(a => alertCard(a, true)).join(""), { act: `<a class="lnk" href="#radar">ver tudo</a>` }) : ""}
-      ${panel(`${ic("pulse")}Check-in de hoje <small>salva sozinho</small>`, `<div class="ck3">${scale("humor", "Humor")}${scale("energia", "Energia")}${scale("estresse", "Estresse")}</div>
-        <div class="form f4"><label>Sono (h)<input id="hj_sono" type="number" step="0.5" data-sdi="sono" data-day="${TODAY}" value="${e.sono ?? ""}"></label><label>Treino<select id="hj_treino" data-sdi="treino" data-day="${TODAY}"><option></option>${TREINOS.map(t => `<option${e.treino === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select></label><label>Minutos<input id="hj_min" type="number" data-sdi="min" data-day="${TODAY}" value="${e.min ?? ""}"></label><label>Passos<input id="hj_passos" type="number" data-sdi="passos" data-day="${TODAY}" value="${e.passos ?? ""}"></label></div>`)}
-      ${mentorMini(umid)}
-      ${panel(`${ic("repeat")}Hábitos de hoje <small>${R.hab.filter(h => S.marks[`${h.id}|${TODAY}`]).length} de ${R.hab.length}</small>`, habs ? `<div class="hgrid2">${habs}</div>` : `<div class="empty">Crie hábitos em Hábitos › Marcar hábitos.</div>`, { act: `<a class="lnk" href="#hab.marcar">ver semana</a>` })}
-      ${ins ? `<div class="pn"><div class="insight ${ins.st}"><div class="ik">${esc(ins.k)}</div><p>${ins.t}</p><p class="ia">${esc(ins.a)}</p></div></div>` : ""}
-      <div class="span2 hjd"><div class="dhead">${composerHTML()}</div>
-      ${ents.length ? `<div class="mhead">Hoje no diário<small>${plural(ents.length, "entrada", "entradas")}</small></div>${ents.map(x => entryCard(x)).join("")}` : ""}
-      </div>
-      ${panel(`${ic("flag")}Prioridades da semana`, `<div class="prio">${[0, 1, 2].map(i => `<label><span>${i + 1}</span><input id="prio${i}" type="text" data-prio="${i}" value="${esc(S.prio[i] || "")}" placeholder="O que mais importa"></label>`).join("")}</div>`)}
-      ${panel(`${ic("checksq")}Para hoje <small>${tasks.length ? tasks.length + " pendente(s)" : "em dia"}</small>`, `${tasks.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}"><span>${esc(t.tarefa)}<small class="st-${t.st}">${t.prazo < TODAY ? `atrasada ${relDay(t.prazo)}` : "vence hoje"}</small></span></label></div>`).join("")}${doneToday.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}" checked><span class="done">${esc(t.tarefa)}</span></label></div>`).join("")}${!tasks.length && !doneToday.length ? `<div class="empty">Nada vencendo hoje.</div>` : ""}${quickBox("hj_tar", "Nova tarefa: Ligar para o banco até sexta !alta", "qtar", "Prazo (até 15/10, amanhã, sexta), prioridade (!alta) e #área são opcionais.")}`)}
-      ${panel(`${ic("cal")}Próximos 7 dias`, agenda(R, 7))}
-    </div>`;
-}
-
 /* ---------------------------------------------------------------- Roda da Vida e revisão */
 function pRoda(R) {
   const mk = R.mk, cur = S.roda[mk] || {}, rv = S.revisao[mk] || {};
@@ -104,12 +72,7 @@ function pHabMarcar(R) {
     ${panel("Cumprimento por dia · 28 dias", strip(R.days28, "hab", "seq"))}`;
 }
 
-/* ---------------------------------------------------------------- Crescimento: carreira, aprendizado, lazer */
-function pCarreira(R) {
-  return `<div class="banner">${ic("brief")}<span>O plano completo (avaliação por grupo, trilhas, objetivos, geotecnia e biblioteca) fica no hub de <b>Carreira</b>; as competências são as mesmas daqui.</span><a class="btn sm primary" href="#carreira">Abrir o hub</a></div>${kpiRow([kmini(acol("Carreira"), "Candidaturas ativas", R.candAtivas, "aplicado, entrevista, teste ou proposta"), kmini(acol("Aprendizado"), "Competências", pct(R.compPct), "média do nível atual ÷ alvo"), kmini("var(--crit)", "Ações atrasadas", S.cand.filter(c => c.dataAcao && c.dataAcao < TODAY && !["Aceito", "Recusado", "Desisti"].includes(c.etapa)).length, "próximas ações das candidaturas")])}
-    <div class="g2c">${panel("Competências <small>1 iniciante · 5 referência</small>", table("comp", S.comp, [["Competência", c => `<b>${esc(c.nome)}</b>`], ["Nível", c => `<span class="lvl">${"●".repeat(+c.atual || 0)}<s>${"○".repeat(Math.max(0, (+c.alvo || 0) - (+c.atual || 0)))}</s></span>`], ["Falta", c => (+c.alvo - +c.atual) || "", "num"]]), { act: addBtn("comp", "Nova") })}
-    ${panel("Candidaturas", table("cand", [...S.cand].sort((a, b) => (b.data || "").localeCompare(a.data || "")), [["Empresa", c => `<b>${esc(c.empresa)}</b><div class="muted small">${esc(c.cargo)}</div>`], ["Etapa", c => esc(c.etapa)], ["Próxima ação", c => { const late = c.dataAcao && c.dataAcao < TODAY && !["Aceito", "Recusado", "Desisti"].includes(c.etapa); return `${esc(c.acao || "")}${c.dataAcao ? ` ${pill(late ? "crit" : diff(c.dataAcao, TODAY) <= 3 ? "warn" : "none", fmtD(c.dataAcao))}` : ""}`; }]]), { act: addBtn("cand", "Nova") })}</div>`;
-}
+/* ---------------------------------------------------------------- Crescimento: aprendizado, lazer */
 function pAprend(R) {
   const est = [...S.estudo].sort((a, b) => b.data.localeCompare(a.data)), horas = t => sum(S.estudo.filter(e => e.item === t).map(e => e.horas)), and = S.aprend.filter(a => a.status === "Em andamento").length;
   return `${kpiRow([kmini(acol("Aprendizado"), "Estudo no mês", num(R.horasEst) + " h", `meta ${S.cfg.metaEstudo} h/mês`), kmini(acol("Propósito & espiritualidade"), "Livros no ano", R.livros, `meta ${S.cfg.metaLivros}`), kmini(acol("Carreira"), "Em andamento", and, and > 3 ? "muitos ao mesmo tempo dispersam" : "foco saudável", and > 3 ? "warn" : "good"), kmini(acol("Saúde mental"), "Sessões no mês", S.estudo.filter(e => mkey(e.data) === R.mk).length, mlabel(R.mk))])}
@@ -131,13 +94,6 @@ function pContatos(R) {
   return `${panel("Contatos registrados", table("contatos", [...S.contatos].sort((a, b) => b.data.localeCompare(a.data)), [["Dia", c => fmtD(c.data), "num"], ["Pessoa", c => `<button type="button" class="lnk" data-ent="p|${esc(c.pessoa)}">${esc(c.pessoa)}</button>`], ["Tipo", c => esc(c.tipo)], ["Qualidade", c => c.qual ? `${c.qual}/5` : "", "num"], ["Minutos", c => c.min || "", "num opt"]], { limit: 40 }), { act: addBtn("contatos", "Registrar contato") })}`;
 }
 
-/* ---------------------------------------------------------------- Casa e documentos */
-function pCasa(R) {
-  return `${kpiRow([kmini(acol("Casa & organização"), "Documentos a renovar", R.docs.filter(d => d.st === "warn" || d.st === "crit").length, `aviso com ${S.cfg.alertaDocs} dias`, R.docs.some(d => d.st === "crit") ? "crit" : ""), kmini("var(--crit)", "Rotinas atrasadas", R.rot.filter(r => r.st === "crit").length, `${R.rot.filter(r => r.st === "warn").length} nos próximos 7 dias`, R.rot.some(r => r.st === "crit") ? "crit" : "good"), kmini(acol("Finanças"), "Assinaturas por mês", eur(R.assMes, 2), `${eur(R.assMes * 12)} por ano`), kmini("var(--warn)", "Economia possível", eur(R.economia, 2), "por mês, em serviços de pouco uso", R.economia ? "warn" : "good")])}
-    <div class="g3c">${panel("Documentos", table("docs", [...R.docs].sort((a, b) => (a.dias ?? 1e9) - (b.dias ?? 1e9)), [["Documento", d => `<b>${esc(d.doc)}</b><div class="muted small">${esc(d.acao || "")}</div>`], ["Validade", d => d.validade ? fmtDY(d.validade) : "", "num"], ["", d => pill(d.st, d.txt)]]), { act: addBtn("docs", "Novo") })}
-    ${panel("Rotinas", `<div class="list">${[...R.rot].sort((a, b) => (a.dias ?? 1e9) - (b.dias ?? 1e9)).map(r => `<div class="li"><button type="button" class="t lnkb" data-edit="rotinas" data-id="${r.id}">${esc(r.rotina)}<div class="m">a cada ${r.freq} d · próxima ${fmtD(r.prox)}</div></button><div class="row">${pill(r.st, r.txt)}<button type="button" class="btn sm" data-done="${r.id}" title="Marcar como feita hoje">Feito</button></div></div>`).join("") || `<div class="empty">Cadastre limpezas, backups e revisões.</div>`}</div>`, { act: addBtn("rotinas", "Nova") })}
-    ${panel("Assinaturas", table("assin", R.ass, [["Serviço", a => `<b>${esc(a.servico)}</b>`], ["Por mês", a => eur(a.mensal, 2), "num"], ["Uso", a => a.uso === "Baixo" ? pill("crit", "cancelar?") : esc(a.uso)]]), { act: addBtn("assin", "Nova") })}</div>`;
-}
 
 /* ---------------------------------------------------------------- lançamento e tarefa rápidos */
 function quickLanc(v) {

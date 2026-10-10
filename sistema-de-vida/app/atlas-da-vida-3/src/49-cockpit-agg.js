@@ -45,7 +45,6 @@ const ckFD = F => d => (!F.pes || d.quem === F.pes) && (!F.proj || d.projeto ===
 const ckFL = F => e => !F.proj || e.projeto === F.proj;
 const ckFE = F => e => (!F.pes || e.resp === F.pes) && (!F.proj || e.projeto === F.proj);
 const ckFB = F => b => (!F.proj || b.projeto === F.proj) && (!F.pes || b.tipo !== "modelo" || b.resp === F.pes);
-const ckFM = F => x => (!F.pes || x.membro === F.pes) && (!F.proj || !x.projeto || x.projeto === F.proj);
 const ckFLic = F => l => (!F.proj || l.projeto === F.proj) && (!F.tag || (l.tags || []).includes(F.tag));
 const ids = a => a.map(x => x.id);
 

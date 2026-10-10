@@ -10,7 +10,6 @@ async function deriveKey(pass, salt, iter) {
 }
 async function sealWith(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)), ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, ENC.encode(JSON.stringify(obj))); return { iv: b64(iv), ct: b64(ct) }; }
 async function openWith(key, box) { const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(box.iv) }, key, unb64(box.ct)); return JSON.parse(new TextDecoder().decode(pt)); }
-const isLocked = e => !!e?.cifra;
 /* entrada como deve aparecer na tela: trancada e fechada = null; trancada e aberta nesta sessão = com o texto em memória */
 const viewEntry = e => !e?.cifra ? e : COFRE.plain.has(e.id) ? { ...e, ...COFRE.plain.get(e.id), _aberta: true } : null;
 async function cofreCreate(pass) {

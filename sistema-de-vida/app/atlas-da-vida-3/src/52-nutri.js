@@ -95,7 +95,6 @@ function nuFoods() {
   return memo("nufoods", () => [...NU_BASE.map(([id, nome, kcal, p, c, f, porcao, pnome, al]) => ({ id, nome, kcal, p, c, f, porcao, pnome, al: al.split("|").map(norm) })),
     ...(S.nutri?.favs || []).map(x => ({ id: "fav:" + x.id, nome: x.nome, kcal: +x.kcal || 0, p: +x.p || 0, c: +x.c || 0, f: +x.f || 0, porcao: +x.porcao || 100, pnome: x.pnome || `${+x.porcao || 100} g`, al: [norm(x.nome)], fav: true }))]);
 }
-const nuFood = id => nuFoods().find(f => f.id === id);
 const nuTxt = s => ` ${norm(s).replace(/[^a-z0-9' -]+/g, " ").replace(/-/g, " ").replace(/\s+/g, " ").trim()} `;
 function nuMatch(txt) {
   const t = nuTxt(txt); let best = null;

@@ -314,10 +314,6 @@ async function saveFile(filename, data) {
   try { const r = await DL.save({ filename, data }); if (r?.status !== "delivered") toast("Arquivo salvo: " + filename); return true; }
   catch (e) { const c = e?.code; toast(c === "declined" ? "Download cancelado." : c === "rate_limited" ? "Já existe um download esperando sua confirmação." : c === "rejected_extension" || c === "extension_not_enabled" ? "Este formato não está liberado aqui." : c === "too_large" ? "Arquivo grande demais para este destino." : "Não foi possível baixar agora."); return false; }
 }
-async function copyText(t, el) {
-  try { await navigator.clipboard.writeText(t); toast("Copiado"); }
-  catch { if (el) { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Texto selecionado: use Ctrl+C para copiar"); } else toast("Não foi possível copiar aqui."); }
-}
 function readFile(input) { return new Promise((res, rej) => { const f = input.files?.[0]; if (!f) return rej(new Error("Nenhum arquivo")); const r = new FileReader(); r.onload = () => res({ name: f.name, text: String(r.result) }); r.onerror = () => rej(r.error); r.readAsText(f); }); }
 
 /* ================================================================ paleta de comandos (Ctrl K) */

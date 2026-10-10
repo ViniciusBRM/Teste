@@ -48,7 +48,6 @@ function regress(p) { if (p.length < 6) return null; const mx = avg(p.map(q => q
   if (!sxx) return null; const b = sxy / sxx; return { a: my - b * mx, b, r: syy ? sxy / Math.sqrt(sxx * syy) : 0 }; }
 const movAvg = (a, k) => a.map((_, i) => avg(a.slice(Math.max(0, i - k + 1), i + 1)));
 const pill = (st, txt) => `<span class="pill ${st || "none"}">${esc(txt)}</span>`;
-const stTxt = st => ({ good: "bom", warn: "atenção", crit: "crítico", none: "sem dados" }[st] || "");
 
 /* números e datas vindos de arquivos (extratos, planilhas) */
 function parseNum(s) {
@@ -137,7 +136,6 @@ const AREA_INFO = {
   "Propósito & espiritualidade": { id: "pro", tag: "proposito", curto: "Propósito", ico: "compass" },
   "Casa & organização": { id: "cas", tag: "casa", curto: "Casa", ico: "house" },
 };
-const AID = Object.fromEntries(AREAS.map(a => [AREA_INFO[a].id, a]));
 const acol = a => AREA_INFO[a] ? `var(--a-${AREA_INFO[a].id})` : "var(--muted)";
 const alabel = a => S.areasCfg?.[a]?.rotulo || a;
 const ashort = a => S.areasCfg?.[a]?.rotulo || AREA_INFO[a]?.curto || a;

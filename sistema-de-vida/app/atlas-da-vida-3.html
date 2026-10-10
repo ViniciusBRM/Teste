@@ -1986,7 +1986,6 @@ function regress(p) { if (p.length < 6) return null; const mx = avg(p.map(q => q
   if (!sxx) return null; const b = sxy / sxx; return { a: my - b * mx, b, r: syy ? sxy / Math.sqrt(sxx * syy) : 0 }; }
 const movAvg = (a, k) => a.map((_, i) => avg(a.slice(Math.max(0, i - k + 1), i + 1)));
 const pill = (st, txt) => `<span class="pill ${st || "none"}">${esc(txt)}</span>`;
-const stTxt = st => ({ good: "bom", warn: "atenção", crit: "crítico", none: "sem dados" }[st] || "");
 
 /* números e datas vindos de arquivos (extratos, planilhas) */
 function parseNum(s) {
@@ -2075,7 +2074,6 @@ const AREA_INFO = {
   "Propósito & espiritualidade": { id: "pro", tag: "proposito", curto: "Propósito", ico: "compass" },
   "Casa & organização": { id: "cas", tag: "casa", curto: "Casa", ico: "house" },
 };
-const AID = Object.fromEntries(AREAS.map(a => [AREA_INFO[a].id, a]));
 const acol = a => AREA_INFO[a] ? `var(--a-${AREA_INFO[a].id})` : "var(--muted)";
 const alabel = a => S.areasCfg?.[a]?.rotulo || a;
 const ashort = a => S.areasCfg?.[a]?.rotulo || AREA_INFO[a]?.curto || a;
@@ -3150,7 +3148,6 @@ function insights(R, H) {
 /* ================================================================ gráficos SVG (tokens do tema; nada de cor literal) */
 let GID = 0;
 const tip = t => `data-tip="${esc(t)}"`;
-function niceMax(v) { if (v <= 0) return 1; const e = Math.pow(10, Math.floor(Math.log10(v))); return [1, 2, 2.5, 5, 10].map(m => m * e).find(m => m >= v); }
 function niceScale(min, max, n = 4, minStep = 0) {
   if (!isFinite(min)) min = 0; if (!isFinite(max)) max = 1; if (max - min < 1e-9) { max = min + (Math.abs(min) || 1); }
   const raw = (max - min) / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), r = raw / mag;
@@ -3273,25 +3270,6 @@ function bullet(rows, o = {}) {
   if (!rows.length) return emptyChart(o.empty || "Defina orçamentos em Finanças › Orçamento.");
   return `<div class="bul">${rows.map(r => { const mx = Math.max(r.real, r.plan || 0) * 1.08 || 1, key = r.key ?? r.l, sel = o.sel != null && o.sel !== key;
     return `<div class="bur${o.xf ? " click" : ""}${sel ? " dim" : ""}"${o.xf ? ` data-xf="${o.xf}|${esc(key)}" role="button" tabindex="0"` : ""} ${tip(`${r.l}\nReal: ${eur(r.real)}${r.plan ? `\nOrçamento: ${eur(r.plan)}\nUso: ${pct(r.real / r.plan)}` : ""}`)}><span class="hbl">${esc(r.l)}</span><div class="but"><i class="${r.st || "none"}" style="width:${(clamp(r.real / mx) * 100).toFixed(1)}%"></i>${r.plan ? `<b style="left:${(clamp(r.plan / mx) * 100).toFixed(1)}%"></b>` : ""}${r.pace != null && r.plan ? `<u style="left:${(clamp(r.plan * r.pace / mx) * 100).toFixed(1)}%"></u>` : ""}</div><em class="st-${r.st || "none"}">${r.plan ? pct(r.real / r.plan) : eur(r.real)}</em></div>`; }).join("")}</div>`;
-}
-function waterfall(steps, o = {}) {
-  const W = o.w || 640, H = o.h || 250, L = 54, Rr = 10, B = 42, T = 18, iw = W - L - Rr, ih = H - B - T, n = steps.length;
-  if (!n) return emptyChart();
-  let run = 0; const bars = steps.map(s => { if (s.total) { run = s.v; return { ...s, y0: 0, y1: s.v }; } const b = { ...s, y0: run, y1: run + s.v }; run += s.v; return b; });
-  const vs = bars.flatMap(b => [b.y0, b.y1]), sc = niceScale(Math.min(0, ...vs), Math.max(...vs, 1), 4);
-  const Y = v => T + ih - (v - sc.lo) / (sc.hi - sc.lo) * ih, gw = iw / n, bw = Math.min(48, gw * .64), fmt = o.fmt || eurK;
-  let g = "";
-  for (const t of sc.ticks) g += `<line x1="${L}" x2="${W - Rr}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}" class="gl${t === 0 ? " zero" : ""}"/><text x="${L - 8}" y="${(Y(t) + 3.5).toFixed(1)}" class="ax" text-anchor="end">${esc(fmt(t))}</text>`;
-  bars.forEach((b, i) => {
-    const x = L + i * gw + (gw - bw) / 2, top = Y(Math.max(b.y0, b.y1)), h = Math.max(1, Math.abs(Y(b.y0) - Y(b.y1)));
-    const col = b.color || (b.total ? "var(--accent)" : b.v >= 0 ? "var(--good)" : "var(--crit)");
-    g += `<rect x="${x.toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${col}" ${tip(`${b.l}: ${b.total ? "" : b.v >= 0 ? "+" : "−"}${eur(Math.abs(b.v))}`)}/>`;
-    g += `<text x="${(x + bw / 2).toFixed(1)}" y="${(top - 5).toFixed(1)}" class="ax val" text-anchor="middle">${esc((b.total ? "" : b.v >= 0 ? "+" : "−") + fmt(Math.abs(b.v)))}</text>`;
-    if (i < n - 1) { const yE = Y(b.y1); g += `<line x1="${(x + bw).toFixed(1)}" x2="${(x + gw).toFixed(1)}" y1="${yE.toFixed(1)}" y2="${yE.toFixed(1)}" class="conn"/>`; }
-    const words_ = b.l.split(" "), half = Math.ceil(words_.length / 2), l1 = words_.length > 1 && b.l.length > 11 ? words_.slice(0, half).join(" ") : b.l, l2 = l1 === b.l ? "" : words_.slice(half).join(" ");
-    g += `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 24}" class="ax" text-anchor="middle">${esc(l1)}</text>${l2 ? `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 11}" class="ax" text-anchor="middle">${esc(l2)}</text>` : ""}`;
-  });
-  return svgWrap(W, H, g, o.label || "Cascata");
 }
 function waterfallH(steps, o = {}) {
   if (!steps.length) return emptyChart();
@@ -3789,10 +3767,6 @@ async function saveFile(filename, data) {
   if (!DL) { toast("Baixar arquivos não está disponível nesta visualização."); return false; }
   try { const r = await DL.save({ filename, data }); if (r?.status !== "delivered") toast("Arquivo salvo: " + filename); return true; }
   catch (e) { const c = e?.code; toast(c === "declined" ? "Download cancelado." : c === "rate_limited" ? "Já existe um download esperando sua confirmação." : c === "rejected_extension" || c === "extension_not_enabled" ? "Este formato não está liberado aqui." : c === "too_large" ? "Arquivo grande demais para este destino." : "Não foi possível baixar agora."); return false; }
-}
-async function copyText(t, el) {
-  try { await navigator.clipboard.writeText(t); toast("Copiado"); }
-  catch { if (el) { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Texto selecionado: use Ctrl+C para copiar"); } else toast("Não foi possível copiar aqui."); }
 }
 function readFile(input) { return new Promise((res, rej) => { const f = input.files?.[0]; if (!f) return rej(new Error("Nenhum arquivo")); const r = new FileReader(); r.onload = () => res({ name: f.name, text: String(r.result) }); r.onerror = () => rej(r.error); r.readAsText(f); }); }
 
@@ -5129,38 +5103,6 @@ let CHECKIN = null;
 const TF = { q: "", status: "abertas", area: "", proj: "" }, LF = { q: "", tipo: "", cat: "" };
 function quickBox(id, ph, act, hint) { return `<div class="quick"><span class="qi">${ic("bolt")}</span><input id="${id}" type="text" placeholder="${esc(ph)}" aria-label="${esc(ph)}" autocomplete="off"><button type="button" class="btn sm primary" data-act="${act}">Adicionar</button></div><div class="qhint" id="${id}_h">${hint}</div>`; }
 
-/* ---------------------------------------------------------------- Hoje */
-function pHoje(R) {
-  const e = S.saude[TODAY] || {}, H = history(3);
-  const scale = (k, lbl) => `<div class="sc1"><span class="flbl">${lbl}</span><div class="mchips">${[1, 2, 3, 4, 5].map(v => `<button type="button" class="mchip m${k === "estresse" ? 6 - v : v}" data-sd="${k}" data-v="${v}" data-day="${TODAY}" aria-pressed="${e[k] == v}">${v}</button>`).join("")}</div></div>`;
-  const habs = R.hab.map(h => { const on = !!S.marks[`${h.id}|${TODAY}`]; return `<button type="button" class="hbtn${on ? " on" : ""}" data-mark="${h.id}|${TODAY}" aria-pressed="${on}" style="--c:${acol(h.area)}"><span class="hck">${ic("check")}</span><span class="hn">${esc(h.nome)}<small>${h.streak ? `${plural(h.streak, "dia", "dias")} seguidos` : ashort(h.area)}</small></span></button>`; }).join("");
-  const tasks = R.tar.filter(t => t.open && t.prazo && t.prazo <= TODAY).sort((a, b) => a.prazo.localeCompare(b.prazo));
-  const doneToday = R.tar.filter(t => t.status === "Concluída" && t.concluida === TODAY);
-  const ents = S.diario.filter(x => x.data === TODAY);
-  const urgent = R.areas.filter(a => a.dados != null && aativa(a.a)).sort((a, b) => a.dados - b.dados)[0], umid = urgent ? AREA_INFO[urgent.a].id : "conselho";
-  const ins = insights(R, H)[0], exps = (S.experimentos || []).filter(x => x.status === "ativo" && expSchedule(x)[TODAY] && !(x.desenho === "antes" && expSchedule(x)[TODAY] === "A")), al = radarAlerts().slice(0, 2);
-  const fwk = fsTarget(), fpend = parse(TODAY).getDay() <= 1 && S.fechamentos?.[fwk]?.status !== "fechado";
-  return `<div class="g2c hj">
-      ${panel(`${ic("bolt")}Capturar <small>escreva ou dite o dia; o Atlas separa os registros</small>`, captureFormHTML("h"), { cls: "span2 capcard", act: `<a class="lnk" href="#painel">${ic("mic")}Painel do dia</a>` })}
-      ${fpend ? `<div class="pn fscta span2"><div>${ic("week")}<b>Hora de fechar a semana de ${wkLabel(fwk)}</b><small>Números, destaques do diário, o que você cumpriu e as prioridades da próxima. Uns 15 minutos.</small></div><a class="btn primary" href="#semana">Fechar a semana</a></div>` : ""}
-      ${bmHoje()}
-      ${jHoje()}
-      ${exps.length ? panel(`${ic("flask")}Experimento de hoje`, exps.map(x => `<div class="hjexp"><b>${esc(x.titulo)}</b>${expToday(x, expAnalyze(x))}</div>`).join(""), { act: `<a class="lnk" href="#exp">ver análise</a>` }) : ""}
-      ${al.length ? panel(`${ic("radar")}No radar`, al.map(a => alertCard(a, true)).join(""), { act: `<a class="lnk" href="#radar">ver tudo</a>` }) : ""}
-      ${panel(`${ic("pulse")}Check-in de hoje <small>salva sozinho</small>`, `<div class="ck3">${scale("humor", "Humor")}${scale("energia", "Energia")}${scale("estresse", "Estresse")}</div>
-        <div class="form f4"><label>Sono (h)<input id="hj_sono" type="number" step="0.5" data-sdi="sono" data-day="${TODAY}" value="${e.sono ?? ""}"></label><label>Treino<select id="hj_treino" data-sdi="treino" data-day="${TODAY}"><option></option>${TREINOS.map(t => `<option${e.treino === t ? " selected" : ""}>${esc(t)}</option>`).join("")}</select></label><label>Minutos<input id="hj_min" type="number" data-sdi="min" data-day="${TODAY}" value="${e.min ?? ""}"></label><label>Passos<input id="hj_passos" type="number" data-sdi="passos" data-day="${TODAY}" value="${e.passos ?? ""}"></label></div>`)}
-      ${mentorMini(umid)}
-      ${panel(`${ic("repeat")}Hábitos de hoje <small>${R.hab.filter(h => S.marks[`${h.id}|${TODAY}`]).length} de ${R.hab.length}</small>`, habs ? `<div class="hgrid2">${habs}</div>` : `<div class="empty">Crie hábitos em Hábitos › Marcar hábitos.</div>`, { act: `<a class="lnk" href="#hab.marcar">ver semana</a>` })}
-      ${ins ? `<div class="pn"><div class="insight ${ins.st}"><div class="ik">${esc(ins.k)}</div><p>${ins.t}</p><p class="ia">${esc(ins.a)}</p></div></div>` : ""}
-      <div class="span2 hjd"><div class="dhead">${composerHTML()}</div>
-      ${ents.length ? `<div class="mhead">Hoje no diário<small>${plural(ents.length, "entrada", "entradas")}</small></div>${ents.map(x => entryCard(x)).join("")}` : ""}
-      </div>
-      ${panel(`${ic("flag")}Prioridades da semana`, `<div class="prio">${[0, 1, 2].map(i => `<label><span>${i + 1}</span><input id="prio${i}" type="text" data-prio="${i}" value="${esc(S.prio[i] || "")}" placeholder="O que mais importa"></label>`).join("")}</div>`)}
-      ${panel(`${ic("checksq")}Para hoje <small>${tasks.length ? tasks.length + " pendente(s)" : "em dia"}</small>`, `${tasks.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}"><span>${esc(t.tarefa)}<small class="st-${t.st}">${t.prazo < TODAY ? `atrasada ${relDay(t.prazo)}` : "vence hoje"}</small></span></label></div>`).join("")}${doneToday.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}" checked><span class="done">${esc(t.tarefa)}</span></label></div>`).join("")}${!tasks.length && !doneToday.length ? `<div class="empty">Nada vencendo hoje.</div>` : ""}${quickBox("hj_tar", "Nova tarefa: Ligar para o banco até sexta !alta", "qtar", "Prazo (até 15/10, amanhã, sexta), prioridade (!alta) e #área são opcionais.")}`)}
-      ${panel(`${ic("cal")}Próximos 7 dias`, agenda(R, 7))}
-    </div>`;
-}
-
 /* ---------------------------------------------------------------- Roda da Vida e revisão */
 function pRoda(R) {
   const mk = R.mk, cur = S.roda[mk] || {}, rv = S.revisao[mk] || {};
@@ -5229,12 +5171,7 @@ function pHabMarcar(R) {
     ${panel("Cumprimento por dia · 28 dias", strip(R.days28, "hab", "seq"))}`;
 }
 
-/* ---------------------------------------------------------------- Crescimento: carreira, aprendizado, lazer */
-function pCarreira(R) {
-  return `<div class="banner">${ic("brief")}<span>O plano completo (avaliação por grupo, trilhas, objetivos, geotecnia e biblioteca) fica no hub de <b>Carreira</b>; as competências são as mesmas daqui.</span><a class="btn sm primary" href="#carreira">Abrir o hub</a></div>${kpiRow([kmini(acol("Carreira"), "Candidaturas ativas", R.candAtivas, "aplicado, entrevista, teste ou proposta"), kmini(acol("Aprendizado"), "Competências", pct(R.compPct), "média do nível atual ÷ alvo"), kmini("var(--crit)", "Ações atrasadas", S.cand.filter(c => c.dataAcao && c.dataAcao < TODAY && !["Aceito", "Recusado", "Desisti"].includes(c.etapa)).length, "próximas ações das candidaturas")])}
-    <div class="g2c">${panel("Competências <small>1 iniciante · 5 referência</small>", table("comp", S.comp, [["Competência", c => `<b>${esc(c.nome)}</b>`], ["Nível", c => `<span class="lvl">${"●".repeat(+c.atual || 0)}<s>${"○".repeat(Math.max(0, (+c.alvo || 0) - (+c.atual || 0)))}</s></span>`], ["Falta", c => (+c.alvo - +c.atual) || "", "num"]]), { act: addBtn("comp", "Nova") })}
-    ${panel("Candidaturas", table("cand", [...S.cand].sort((a, b) => (b.data || "").localeCompare(a.data || "")), [["Empresa", c => `<b>${esc(c.empresa)}</b><div class="muted small">${esc(c.cargo)}</div>`], ["Etapa", c => esc(c.etapa)], ["Próxima ação", c => { const late = c.dataAcao && c.dataAcao < TODAY && !["Aceito", "Recusado", "Desisti"].includes(c.etapa); return `${esc(c.acao || "")}${c.dataAcao ? ` ${pill(late ? "crit" : diff(c.dataAcao, TODAY) <= 3 ? "warn" : "none", fmtD(c.dataAcao))}` : ""}`; }]]), { act: addBtn("cand", "Nova") })}</div>`;
-}
+/* ---------------------------------------------------------------- Crescimento: aprendizado, lazer */
 function pAprend(R) {
   const est = [...S.estudo].sort((a, b) => b.data.localeCompare(a.data)), horas = t => sum(S.estudo.filter(e => e.item === t).map(e => e.horas)), and = S.aprend.filter(a => a.status === "Em andamento").length;
   return `${kpiRow([kmini(acol("Aprendizado"), "Estudo no mês", num(R.horasEst) + " h", `meta ${S.cfg.metaEstudo} h/mês`), kmini(acol("Propósito & espiritualidade"), "Livros no ano", R.livros, `meta ${S.cfg.metaLivros}`), kmini(acol("Carreira"), "Em andamento", and, and > 3 ? "muitos ao mesmo tempo dispersam" : "foco saudável", and > 3 ? "warn" : "good"), kmini(acol("Saúde mental"), "Sessões no mês", S.estudo.filter(e => mkey(e.data) === R.mk).length, mlabel(R.mk))])}
@@ -5256,13 +5193,6 @@ function pContatos(R) {
   return `${panel("Contatos registrados", table("contatos", [...S.contatos].sort((a, b) => b.data.localeCompare(a.data)), [["Dia", c => fmtD(c.data), "num"], ["Pessoa", c => `<button type="button" class="lnk" data-ent="p|${esc(c.pessoa)}">${esc(c.pessoa)}</button>`], ["Tipo", c => esc(c.tipo)], ["Qualidade", c => c.qual ? `${c.qual}/5` : "", "num"], ["Minutos", c => c.min || "", "num opt"]], { limit: 40 }), { act: addBtn("contatos", "Registrar contato") })}`;
 }
 
-/* ---------------------------------------------------------------- Casa e documentos */
-function pCasa(R) {
-  return `${kpiRow([kmini(acol("Casa & organização"), "Documentos a renovar", R.docs.filter(d => d.st === "warn" || d.st === "crit").length, `aviso com ${S.cfg.alertaDocs} dias`, R.docs.some(d => d.st === "crit") ? "crit" : ""), kmini("var(--crit)", "Rotinas atrasadas", R.rot.filter(r => r.st === "crit").length, `${R.rot.filter(r => r.st === "warn").length} nos próximos 7 dias`, R.rot.some(r => r.st === "crit") ? "crit" : "good"), kmini(acol("Finanças"), "Assinaturas por mês", eur(R.assMes, 2), `${eur(R.assMes * 12)} por ano`), kmini("var(--warn)", "Economia possível", eur(R.economia, 2), "por mês, em serviços de pouco uso", R.economia ? "warn" : "good")])}
-    <div class="g3c">${panel("Documentos", table("docs", [...R.docs].sort((a, b) => (a.dias ?? 1e9) - (b.dias ?? 1e9)), [["Documento", d => `<b>${esc(d.doc)}</b><div class="muted small">${esc(d.acao || "")}</div>`], ["Validade", d => d.validade ? fmtDY(d.validade) : "", "num"], ["", d => pill(d.st, d.txt)]]), { act: addBtn("docs", "Novo") })}
-    ${panel("Rotinas", `<div class="list">${[...R.rot].sort((a, b) => (a.dias ?? 1e9) - (b.dias ?? 1e9)).map(r => `<div class="li"><button type="button" class="t lnkb" data-edit="rotinas" data-id="${r.id}">${esc(r.rotina)}<div class="m">a cada ${r.freq} d · próxima ${fmtD(r.prox)}</div></button><div class="row">${pill(r.st, r.txt)}<button type="button" class="btn sm" data-done="${r.id}" title="Marcar como feita hoje">Feito</button></div></div>`).join("") || `<div class="empty">Cadastre limpezas, backups e revisões.</div>`}</div>`, { act: addBtn("rotinas", "Nova") })}
-    ${panel("Assinaturas", table("assin", R.ass, [["Serviço", a => `<b>${esc(a.servico)}</b>`], ["Por mês", a => eur(a.mensal, 2), "num"], ["Uso", a => a.uso === "Baixo" ? pill("crit", "cancelar?") : esc(a.uso)]]), { act: addBtn("assin", "Nova") })}</div>`;
-}
 
 /* ---------------------------------------------------------------- lançamento e tarefa rápidos */
 function quickLanc(v) {
@@ -5732,7 +5662,6 @@ async function deriveKey(pass, salt, iter) {
 }
 async function sealWith(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)), ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, ENC.encode(JSON.stringify(obj))); return { iv: b64(iv), ct: b64(ct) }; }
 async function openWith(key, box) { const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(box.iv) }, key, unb64(box.ct)); return JSON.parse(new TextDecoder().decode(pt)); }
-const isLocked = e => !!e?.cifra;
 /* entrada como deve aparecer na tela: trancada e fechada = null; trancada e aberta nesta sessão = com o texto em memória */
 const viewEntry = e => !e?.cifra ? e : COFRE.plain.has(e.id) ? { ...e, ...COFRE.plain.get(e.id), _aberta: true } : null;
 async function cofreCreate(pass) {
@@ -9257,7 +9186,6 @@ const lzKey = div => div === "leitura" ? "aprend" : "lazerHub";
 const lzT = x => x.titulo ?? x.t ?? "";
 const lzNiv = div => lzData().nivel[div] || 0;
 const lzSec = s => { s = String(s ?? "").trim(); if (!s) return null; if (s.includes(":")) { const [m, x] = s.split(":"); return (+m || 0) * 60 + (+x || 0); } return isNum(+s) ? +s : null; };
-const lzMMSS = n => n == null ? "–" : `${Math.floor(n / 60)}:${String(Math.round(n % 60)).padStart(2, "0")}`;
 /* café: proporção = água (ou rendimento) ÷ dose; perda = (verde − torrado) ÷ verde; DTR = (total − 1º crack) ÷ total */
 function lzCafeCalc(e) {
   if (e.tipo === "torra") { const v = +e.verde, t = +e.torrado, T = lzSec(e.total), fc = lzSec(e.fc); return { perda: v > 0 && t > 0 ? (v - t) / v : null, dtr: T > 0 && fc != null && fc < T ? (T - fc) / T : null, dev: T > 0 && fc != null && fc < T ? T - fc : null }; }
@@ -11748,7 +11676,6 @@ function pdHit(F, title) { const ws = pdKw(title); if (!ws.length) return false;
 const PDX_TASK = /\b(conclui|terminei|finalizei|entreguei|resolvi|fiz|enviei|mandei|marquei|agendei|liguei|paguei|comprei|consegui|fechei|cumpri)\b/;
 const PDX_CASA = /\b(limpei|lavei|arrumei|passei|aspirei|tirei|troquei|fiz|organizei|varri|esfreguei|guardei|reguei|dobrei|recolhi)\b/;
 const PDX_CONTA = /\b(paguei|quitei|transferi)\b/;
-const PDX_BLK = [[/\b(pulei|faltei|nao fiz|perdi|deixei de)\b/, "pulado"], [/\b(metade|em parte|parcial|pela metade)\b/, "parcial"], [/\b(fiz|cumpri|completei|segui|consegui)\b/, "feito"]];
 const PDX_BM = [[/^(nao pratiquei|esqueci(?: de)?|falhei(?: em| na| no)?)$/, 0], [/^tentei$/, 1], [/^(pratiquei|vivi|exercitei)$/, 2]];
 const pdR3 = () => { PD.bm ||= {}; PD.rt ||= {}; PD.chkT ||= {}; pdL(); return PD; };
 function pdReset3() {
@@ -13492,11 +13419,9 @@ function ckCalOf(cfg = {}) {
   const cal = { fer, util, next, prev, add, diff: dif, sig }; CK_CALS.set(sig, cal); return cal;
 }
 const ckCal = () => ckCalOf(ckD().cfg);
-const ckFeriados = y => ckFeriadosAno(y, ckD().cfg);
 const ckFer = d => ckCal().fer(d);
 const ckUtil = d => ckCal().util(d);
 const ckNextU = d => ckCal().next(d);
-const ckPrevU = d => ckCal().prev(d);
 const ckAddU = (d, n) => ckCal().add(d, n);
 /* dias úteis de a até b: positivo se b vem depois; 0 no mesmo dia */
 const ckDiffU = (a, b) => ckCal().diff(a, b);
@@ -13535,7 +13460,6 @@ function ckCPMcalc(tasks, membros, cfg, hoje) {
 function ckCPM() { return memo("ckcpm", () => ckCPMcalc(ckT(), ckD().membros, ckD().cfg, TODAY)); }
 const ckC = id => ckCPM().R[id] || null;
 const ckHpd = m => ckHpdOf(m, ckD().cfg);
-const ckDur = t => ckCPM().R[t.id]?.dur ?? Math.max(1, Math.ceil(ckRem(t) / ckHpd(ckM(t.resp))));
 
 /* ---------------------------------------------------------------- prioridade: Eisenhower + prazo + caminho crítico (numa passada só) */
 function ckPrioCalc(t, R, marcos, hoje, cal) {
@@ -13572,7 +13496,6 @@ function ckAgendaHOf(eventos, cfg, d0, d1, cal) {
   for (const e of eventos || []) { if (e.data < d0 || e.data > d1 || !cal.util(e.data)) continue; const a = hm2min(e.hora), z = hm2min(e.fim) ?? (a != null ? a + 60 : null); if (a == null) continue; h += Math.max(0, Math.min(z, j1) - Math.max(a, j0)) / 60; }
   return h;
 }
-const ckAgendaH = (d0, d1) => ckAgendaHOf(S.eventos, ckD().cfg, d0, d1, ckCal());
 function ckCargaCalc({ tasks, R, membro, d0, d1, extra = 0, eventos, cfg, lim }) {
   const cal = ckCalOf(cfg), n = Math.max(1, cal.diff(d0, d1) + (cal.util(d0) ? 1 : 0)), mid = membro?.id; let dem = 0; const ts = [];
   for (const t of tasks) { if (!ckOpen(t) || t.resp !== mid || !R[t.id]) continue; const r = R[t.id]; if (r.es > d1 || r.ef < d0) continue; const a = r.es < d0 ? d0 : r.es, z = r.ef > d1 ? d1 : r.ef, k = Math.max(1, cal.diff(a, z) + 1); dem += ckRem(t) * k / r.dur; ts.push(t.id); }
@@ -14883,7 +14806,6 @@ const ckFD = F => d => (!F.pes || d.quem === F.pes) && (!F.proj || d.projeto ===
 const ckFL = F => e => !F.proj || e.projeto === F.proj;
 const ckFE = F => e => (!F.pes || e.resp === F.pes) && (!F.proj || e.projeto === F.proj);
 const ckFB = F => b => (!F.proj || b.projeto === F.proj) && (!F.pes || b.tipo !== "modelo" || b.resp === F.pes);
-const ckFM = F => x => (!F.pes || x.membro === F.pes) && (!F.proj || !x.projeto || x.projeto === F.proj);
 const ckFLic = F => l => (!F.proj || l.projeto === F.proj) && (!F.tag || (l.tags || []).includes(F.tag));
 const ids = a => a.map(x => x.id);
 
@@ -15602,7 +15524,6 @@ function nuFoods() {
   return memo("nufoods", () => [...NU_BASE.map(([id, nome, kcal, p, c, f, porcao, pnome, al]) => ({ id, nome, kcal, p, c, f, porcao, pnome, al: al.split("|").map(norm) })),
     ...(S.nutri?.favs || []).map(x => ({ id: "fav:" + x.id, nome: x.nome, kcal: +x.kcal || 0, p: +x.p || 0, c: +x.c || 0, f: +x.f || 0, porcao: +x.porcao || 100, pnome: x.pnome || `${+x.porcao || 100} g`, al: [norm(x.nome)], fav: true }))]);
 }
-const nuFood = id => nuFoods().find(f => f.id === id);
 const nuTxt = s => ` ${norm(s).replace(/[^a-z0-9' -]+/g, " ").replace(/-/g, " ").replace(/\s+/g, " ").trim()} `;
 function nuMatch(txt) {
   const t = nuTxt(txt); let best = null;
