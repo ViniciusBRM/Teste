@@ -24,6 +24,21 @@ const ckD = () => { const c = (S.ck ||= {}); c.perfil ||= {}; c.membros ||= []; 
 const ckA = k => (S[k] ||= []);
 const ckT = () => ckA("ckTar");
 const ckOpen = t => t.status !== "concluída";
+/* concluir ou reabrir sem gravar (quem chama grava): Cockpit, Hoje, Secretário e Painel do dia passam por aqui */
+function ckMarca(t, st, d = TODAY) {
+  if (!t || t.status === st) return false; const antes = t.status; t.status = st;
+  if (st === "concluída") { t.concluida = d; t.feito = 100; } else { t.concluida = ""; if (antes === "concluída" && t.feito === 100) t.feito = 0; }
+  (t.hist ||= []).push({ at: Date.now(), por: "você", antes: { status: antes }, depois: { status: st } }); return true;
+}
+/* minhas tarefas do Cockpit fora dele (Hoje, Secretário, Rotina, Painel do dia, Fechamento): só as em que o responsável sou eu,
+   no formato das pessoais (tarefa, prazo) e marcadas com ck; Ajustes → Cockpit de Trabalho desliga */
+const ckEu = () => (S.ck?.membros || []).find(m => m.eu)?.id || "eu";
+function ckMinhas(f = () => true) {
+  if (S.cfg?.ckVida === false || !(S.ckTar || []).length) return [];
+  const eu = ckEu();
+  return S.ckTar.filter(t => t.resp === eu && f(t)).map(t => ({ id: t.id, ck: true, cod: t.cod, titulo: t.titulo, tarefa: `${t.cod} · ${t.titulo}`, prazo: t.prazo || "", status: t.status, concluida: t.concluida || "", prio: t.prio }));
+}
+const ckMinhasAte = d => ckMinhas(t => ckOpen(t) && t.prazo && t.prazo <= d).sort((a, b) => a.prazo.localeCompare(b.prazo));
 const ckM = id => ckD().membros.find(m => m.id === id);
 const ckMN = id => { const m = ckM(id); return !m ? (id ? "?" : "sem responsável") : m.eu ? "Eu" : m.nome; };
 const ckMNa = id => { const m = ckM(id); return !m ? "sem responsável" : m.eu ? `${ckD().perfil.nome?.split(" ")[0] || "o usuário"} (o próprio usuário)` : m.nome; };
@@ -377,9 +392,10 @@ function ckIntercept(text) {
   const sim = CK_SIM.test(t), nao = CK_NAO.test(t), rest = t.replace(CK_SIM, "").replace(CK_NAO, "").trim(); if (!sim && !nao) return false;
   const toks = rest.split(/[\s,.;:!]+/).filter(Boolean), okTok = /^(\d+|e|tudo|todas?|todos|as|os|s[oó]|apenas|pode|isso|ent[aã]o|por|favor|obrigad[oa]|valeu|essas?|esses?)$/i; if (toks.some(x => !okTok.test(x))) return false;
   const nums = toks.filter(x => /^\d+$/.test(x)).map(Number);
-  const lastMi = Math.max(...pend.map(x => x.mi)), alvo = nums.length ? pend.filter(x => x.mi === lastMi && nums.includes(x.p.n)) : pend; if (!alvo.length) return false;
+  /* “ok” vale para as propostas da mensagem mais recente que tem pendências (a mesma regra da Saúde): nada que já saiu da tela é aprovado junto */
+  const lastMi = Math.max(...pend.map(x => x.mi)), alvo = pend.filter(x => x.mi === lastMi && (!nums.length || nums.includes(x.p.n))), resto = pend.length - alvo.length; if (!alvo.length) return false;
   const r = ckDecideMany(alvo.map(x => x.p), sim), m = mstate("ck");
-  m.conversa.push({ role: "user", content: t, at: Date.now(), mode: "chat" }, { role: "assistant", content: sim ? `Aprovado${r.n !== 1 ? "s" : ""}: ${r.refs.join(", ") || "nada a aplicar"}.${r.falhas.length ? ` Não apliquei: ${r.falhas.join("; ")}.` : ""}` : `Descartei ${plural(alvo.length, "proposta", "propostas")}.`, at: Date.now(), local: true });
+  m.conversa.push({ role: "user", content: t, at: Date.now(), mode: "chat" }, { role: "assistant", content: (sim ? `Aprovado${r.n !== 1 ? "s" : ""}: ${r.refs.join(", ") || "nada a aplicar"}.${r.falhas.length ? ` Não apliquei: ${r.falhas.join("; ")}.` : ""}` : `Descartei ${plural(alvo.length, "proposta", "propostas")}.`) + (resto ? ` ${resto === 1 ? "Uma proposta anterior continua" : `${resto} propostas anteriores continuam`} esperando.` : ""), at: Date.now(), local: true });
   MST.input.ck = ""; touch("mentores", { noUndo: true }); scrollChat(); return true;
 }
 

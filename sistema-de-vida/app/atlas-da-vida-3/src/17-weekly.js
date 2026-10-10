@@ -19,7 +19,7 @@ function weekNums(wk) {
     const ds = []; for (let i = 0; i < 7; i++) ds.push(addDays(wk, i)); const days = ds.filter(d => d <= TODAY), D = DAILY(), col = k => days.map(d => { const i = D.idx[d]; return i == null || !D.C[k] ? null : D.C[k][i]; });
     const mk = mkey(addDays(wk, 3)), orcSem = Math.max(0, sum(Object.values(S.orc)) - sum(fixedItems().map(f => f.valor))) * 7 / dim(mk);
     return { days: days.length, bem: avg(col("bem")), sono: avg(col("sono")), estresse: avg(col("estresse")), treinos: sum(col("treino")), hab: avg(col("hab")), gasto: sum(S.lanc.filter(l => l.tipo === "Despesa" && l.data >= wk && l.data <= ds[6] && !isFixed(l)).map(l => l.valor)), orcSem,
-      tarefas: S.tarefas.filter(t => t.status === "Concluída" && t.concluida >= wk && t.concluida <= ds[6]).length, contatos: S.contatos.filter(c => c.data >= wk && c.data <= ds[6]).length, estudo: sum(S.estudo.filter(e => e.data >= wk && e.data <= ds[6]).map(e => e.horas)),
+      tarefas: S.tarefas.filter(t => t.status === "Concluída" && t.concluida >= wk && t.concluida <= ds[6]).length + ckMinhas(t => t.status === "concluída" && t.concluida >= wk && t.concluida <= ds[6]).length, contatos: S.contatos.filter(c => c.data >= wk && c.data <= ds[6]).length, estudo: sum(S.estudo.filter(e => e.data >= wk && e.data <= ds[6]).map(e => e.horas)),
       entradas: S.diario.filter(e => e.data >= wk && e.data <= ds[6]).length, humorDia: ds.map(d => ({ d, humor: (() => { const i = D.idx[d]; return i == null ? null : D.C.bem[i]; })() })) };
   });
 }

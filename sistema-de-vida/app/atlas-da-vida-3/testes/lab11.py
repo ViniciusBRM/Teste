@@ -7,7 +7,7 @@ def chk(c, msg):
     global ok, bad
     if c: ok += 1; print("PASS", msg)
     else: bad += 1; print("FAIL", msg)
-T = datetime.date.today()
+T = datetime.date.fromisoformat(TODAY_ISO)
 TS = T.isoformat()
 U = "data/users/u_test/"
 def months_ago(n, day=10):

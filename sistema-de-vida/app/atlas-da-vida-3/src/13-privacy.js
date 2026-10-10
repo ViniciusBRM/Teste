@@ -24,7 +24,11 @@ async function cofreUnlock(pass) {
   try { const key = await deriveKey(pass, unb64(c.salt), c.iter), v = await openWith(key, c.check); if (v?.ok !== "atlas") return false; COFRE.key = key; await cofreDecryptAll(); return true; }
   catch { return false; }
 }
-async function cofreDecryptAll() { for (const e of S.diario) if (e.cifra && !COFRE.plain.has(e.id)) { try { COFRE.plain.set(e.id, await openWith(COFRE.key, e.cifra)); } catch {} } }
+async function cofreDecryptAll() {
+  let falhas = 0; for (const e of S.diario) if (e.cifra && !COFRE.plain.has(e.id)) { try { COFRE.plain.set(e.id, await openWith(COFRE.key, e.cifra)); } catch { falhas++; } }
+  /* uma entrada que não abre com esta senha (cifrada com outra ou corrompida) não some calada */
+  if (falhas) toast(`${plural(falhas, "entrada protegida não abriu", "entradas protegidas não abriram")} com esta senha`); return falhas;
+}
 function cofreLock() { COFRE.key = null; COFRE.plain.clear(); if (DIA.draft?.lock) { DIA.draft = null; storeDraft(); } render(); toast("Cofre trancado: as entradas protegidas sumiram da tela"); }
 async function sealEntry(e, plain) { e.cifra = await sealWith(COFRE.key, { titulo: plain.titulo || "", texto: plain.texto || "" }); e.titulo = ""; e.texto = ""; e.semIA = true; COFRE.plain.set(e.id, { titulo: plain.titulo || "", texto: plain.texto || "" }); }
 async function lockEntry(id) {

@@ -10,43 +10,43 @@ const CF_ESC = ["", "em desarmonia", "inquieto", "oscilando", "sereno", "em harm
 const CF = [
   { id: "cor", nome: "Coronário", chakra: "Sahasrara", local: "alto da cabeça", x: 120, y: 40,
     funcao: "Recebe primeiro os estímulos do Espírito e do plano superior e comanda os demais centros; nele se assenta a ligação com a mente. Associado à epífise, a “glândula da vida mental”.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX; Missionários da Luz, cap. 2",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma); Missionários da Luz, cap. 2 (A epífise)",
     val: ["espiritualidade", "humildade", "desprendimento"], prat: ["Prece ao acordar e ao deitar", "Culto do Evangelho no lar"],
     perg: "O que tem ocupado o meu pensamento quando estou sozinho: isso me eleva ou me prende?",
     prece: "Pense no alto da cabeça. Com gratidão, eleve o pensamento a Deus e entregue o que não depende de você. Que a sua mente se abra às boas inspirações." },
   { id: "cer", nome: "Cerebral", chakra: "Ajna", local: "fronte, entre as sobrancelhas", x: 120, y: 66,
     funcao: "Governa o córtex e o sistema nervoso, sustenta os sentidos e marca o ritmo das glândulas endócrinas. É o centro do pensamento que discerne.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["consciencia", "sabedoria", "justica"], prat: ["Exame de consciência", "O Livro dos Espíritos (Allan Kardec, 1857)"],
     perg: "Que pensamento repetido eu alimentei hoje sem examinar?",
     prece: "Leve a atenção à fronte. Aquiete os pensamentos e peça discernimento: ver com clareza e julgar com justiça, começando por você." },
   { id: "lar", nome: "Laríngeo", chakra: "Vishuddha", local: "garganta", x: 120, y: 112,
     funcao: "Controla sobretudo a respiração e a fonação: o sopro e a palavra.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["educacao", "gentileza", "paciencia"], prat: ["Vigilância da palavra"],
     perg: "As minhas palavras de hoje consolaram ou feriram?",
     prece: "Sinta o ar passar pela garganta. Que a sua palavra seja verdadeira, branda e útil, e que você saiba calar quando o silêncio for caridade." },
   { id: "car", nome: "Cardíaco", chakra: "Anahata", local: "centro do peito", x: 120, y: 166,
     funcao: "Dirige a emotividade e a circulação das forças de base.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["compaixao", "caridade", "fraternidade", "tolerancia"], prat: ["Caridade semanal", "Culto do Evangelho no lar"],
     perg: "A quem preciso estender hoje a indulgência que eu gostaria de receber?",
     prece: "Leve a atenção ao centro do peito. Envolva em pensamento de paz quem você ama e quem o feriu. Perdoe, peça perdão e deseje o bem." },
   { id: "esp", nome: "Esplênico", chakra: "Svadhisthana (na lista de Leadbeater, o centro do baço ocupa esse lugar)", local: "região do baço, à esquerda do abdome", x: 150, y: 210,
     funcao: "Regula a distribuição e a circulação dos recursos vitais por todo o corpo: a vitalidade.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["equilibrio"], prat: ["Frequentar uma casa espírita"],
     perg: "Onde estou gastando energia vital à toa: excesso, pressa, noites curtas?",
     prece: "Pense na vitalidade que circula pelo corpo. Agradeça ao corpo, instrumento da sua evolução, e proponha-se a cuidar dele com descanso, movimento e medida." },
   { id: "gas", nome: "Gástrico", chakra: "Manipura", local: "região do estômago (plexo solar)", x: 120, y: 236,
     funcao: "Responde pela penetração de alimentos e fluidos no organismo: o que assimilamos, no prato e nas emoções.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["temperanca"], prat: ["Água fluidificada"],
     perg: "O que eu engoli hoje sem digerir: comida, raiva, preocupação?",
     prece: "Leve a atenção à região do estômago. Que você receba o alimento com gratidão e medida, e não guarde o que precisa ser perdoado." },
   { id: "gen", nome: "Genésico", chakra: "Muladhara (a energia criadora também é ligada ao Svadhisthana)", local: "base do tronco", x: 120, y: 296,
     funcao: "Sede do sexo como templo modelador de formas e estímulos: a energia criadora, da vida e das obras.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["respeito", "igualdade"], prat: [],
     perg: "Estou usando a minha energia criadora com respeito, a mim e ao outro?",
     prece: "Pense na energia criadora. Que ela sirva ao amor e à vida, com respeito a você e ao outro, e se transforme também em trabalho e criação." }];
@@ -134,7 +134,7 @@ function cfHistorico() {
 function cfBase() {
   return `<details class="pn cfbase"><summary>${ic("book")}Base doutrinária e limites</summary>
     <p>Allan Kardec não usa a palavra chakra. A doutrina fala do <b>perispírito</b>, o envoltório fluídico que liga o Espírito ao corpo (O Livro dos Espíritos, q. 93 a 95 e 135), e dos <b>fluidos</b>, que o pensamento e a vontade modificam (A Gênese, cap. XIV).</p>
-    <p>Os <b>centros de força</b> aparecem na obra de André Luiz, psicografada por Chico Xavier: sete centros do perispírito (coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico), descritos em Entre a Terra e o Céu (cap. XX) e retomados em Evolução em Dois Mundos. Em Missionários da Luz, a epífise aparece como a glândula da vida mental.</p>
+    <p>Os <b>centros de força</b> aparecem na obra de André Luiz, psicografada por Chico Xavier: sete centros do perispírito (coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico), descritos pelo ministro Clarêncio em Entre a Terra e o Céu (cap. XX, Conflitos da alma) e retomados em Evolução em Dois Mundos (1ª parte, cap. II, Corpo espiritual). Em Missionários da Luz (cap. 2, A epífise), a epífise aparece como a glândula da vida mental.</p>
     <p><b>Onde se encontram com os chakras:</b> sete centros de energia ao longo do corpo, do alto da cabeça à base do tronco, ligados ao estado da mente. <b>Onde se separam:</b> nomes e funções próprios (o esplênico vem da lista de Leadbeater, que põe um centro no baço; o gástrico e o genésico não seguem a lista clássica) e, sobretudo, o foco: no espiritismo, a harmonia dos centros vem do pensamento, da conduta moral, da prece e do passe, não de técnicas para “abrir” ou “ativar” chakras, cores ou cristais.</p>
     <p>O passe e a água fluidificada são assistência fluídica oferecida nas casas espíritas e não substituem tratamento médico, como a própria orientação espírita lembra. As ligações com os valores da Bússola e com os seus dados são uma leitura do Atlas para a reflexão, não doutrina nem diagnóstico.</p></details>`;
 }

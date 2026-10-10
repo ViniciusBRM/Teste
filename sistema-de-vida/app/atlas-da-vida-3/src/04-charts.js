@@ -311,7 +311,9 @@ function corrHeat(keys, o = {}) {
   /* célula fraca (o intervalo de 95% passa pelo zero) fica apagada; par em que uma métrica é parte da outra não é cruzado */
   return `<div class="hscroll"><div class="corr" style="grid-template-columns:minmax(118px,170px) repeat(${n},minmax(30px,1fr));min-width:${118 + n * 33}px"><div></div>${keys.map(k => `<div class="ch" title="${esc(lab(k))}">${esc(trunc(lab(k), 11))}</div>`).join("")}
     ${keys.map((a, i) => `<div class="crl">${esc(lab(a))}</div>${keys.map((b, j) => { const x = M[i][j], rel = i !== j && x?.rel, r = i === j ? 1 : !rel && x && x.n >= 15 ? x.r : null, fraca = r != null && i !== j && !czConsist(x);
-      return `<button type="button" class="cc${i === j ? " diag" : ""}${fraca ? " weak" : ""}${rel ? " rel" : ""}" style="background:${i === j || rel ? "var(--cell)" : c(r)}"${i !== j && !rel ? ` data-cx="${a}|${b}"` : ""} ${tip(i === j ? lab(a) : `${lab(a)} × ${lab(b)}\n${rel ? "uma é parte da outra: não se cruza" : `r = ${r == null ? "dados insuficientes" : num(r, 2)}${fraca ? " · pode ser acaso" : ""}${x?.n ? ` · ${x.n} dias` : ""}`}`)}>${i === j || rel ? "" : r == null ? "" : num(r, 1)}</button>`; }).join("")}`).join("")}</div></div>`;
+      /* a diagonal (a métrica com ela mesma) e o par que não se cruza não têm ação: são células, não botões */
+      const tag = i === j || rel ? "span" : "button";
+      return `<${tag}${tag === "button" ? ` type="button"` : ""} class="cc${i === j ? " diag" : ""}${fraca ? " weak" : ""}${rel ? " rel" : ""}" style="background:${i === j || rel ? "var(--cell)" : c(r)}"${i !== j && !rel ? ` data-cx="${a}|${b}"` : ""} ${tip(i === j ? lab(a) : `${lab(a)} × ${lab(b)}\n${rel ? "uma é parte da outra: não se cruza" : `r = ${r == null ? "dados insuficientes" : num(r, 2)}${fraca ? " · pode ser acaso" : ""}${x?.n ? ` · ${x.n} dias` : ""}`}`)}>${i === j || rel ? "" : r == null ? "" : num(r, 1)}</${tag}>`; }).join("")}`).join("")}</div></div>`;
 }
 function ring(p, color, size = 64, stroke = 7) {
   const r = (size - stroke) / 2, c = 2 * Math.PI * r, v = clamp(p ?? 0);

@@ -27,8 +27,10 @@ function pdParse3(txt) {
   for (const { F } of cl) {
     if (PDX_TASK.test(F)) for (const t of pdTarefasDia(d)) if (pdHit(F, t.tarefa)) mark("tdone", t.id);
     if (PDX_CASA.test(F)) for (const r of CD.rot) if (pdHit(F, r.rotina)) mark("rot", r.id);
-    if (PDX_CONTA.test(F)) for (const { c, v } of CD.contas) if (pdHit(F, c.conta) || pdKw(c.cat).some(w => new RegExp(`\\b${w}`).test(F) && w.length >= 4)) {
-      mark("conta", `${c.id}|${v}`);
+    /* uma frase paga uma ocorrência de cada conta: a mais antiga em aberto (a lista vem em ordem de vencimento) */
+    const pagas = new Set();
+    if (PDX_CONTA.test(F)) for (const { c, v } of CD.contas) if (!pagas.has(c.id) && (pdHit(F, c.conta) || pdKw(c.cat).some(w => new RegExp(`\\b${w}`).test(F) && w.length >= 4))) {
+      pagas.add(c.id); mark("conta", `${c.id}|${v}`);
       /* a conta paga já lança a despesa: o gasto do mesmo trecho não entra em dobro */
       PD.gastos = PD.gastos.filter(g => !(g.src === "texto" && (pdHit(fold(g.d || ""), c.conta) || (Math.abs((pdMoney(g.v) || 0) - (+c.valor || 0)) < .01 && F.includes(fold(String(g.d || "")).slice(0, 6))))));
     }

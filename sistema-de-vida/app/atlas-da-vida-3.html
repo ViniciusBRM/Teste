@@ -343,7 +343,7 @@ svg .ax.pl{font-size:10.5px;fill:var(--ink-2)}
 .ch{font-size:10px;color:var(--muted);text-align:center;writing-mode:vertical-rl;transform:rotate(180deg);height:86px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;justify-self:center}
 .crl{font-size:12px;color:var(--ink-2);padding:0 6px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cc{border:0;border-radius:5px;min-height:28px;font-family:var(--f-mono);font-size:10px;color:var(--ink);cursor:pointer;padding:0;transition:transform .12s}
-.cc:hover{transform:scale(1.1);z-index:1}.cc.diag{cursor:default}
+.cc:hover{transform:scale(1.1);z-index:1}.cc.diag{cursor:default}.cc.diag:hover,.cc.rel:hover{transform:none}
 .strip{display:grid;grid-template-columns:repeat(28,minmax(0,1fr));gap:3px}
 .strip div{aspect-ratio:1;border-radius:3px;max-width:100%}
 .strip-l{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px;font-family:var(--f-mono)}
@@ -1946,7 +1946,8 @@ const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())
 const parse = s => { const [y, m, d] = String(s).split("-").map(Number); return new Date(y, (m || 1) - 1, d || 1); };
 const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
 const diff = (a, b) => Math.round((parse(a) - parse(b)) / 864e5);
-const TODAY = iso(new Date());
+/* a data de hoje muda com o app aberto (virada do dia em 11-main.js) */
+let TODAY = iso(new Date());
 const nowHM = () => { const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
 const mkey = s => s.slice(0, 7);
 const addMonth = (mk, n) => { const d = parse(mk + "-01"); d.setMonth(d.getMonth() + n); return iso(d).slice(0, 7); };
@@ -3458,7 +3459,9 @@ function corrHeat(keys, o = {}) {
   /* célula fraca (o intervalo de 95% passa pelo zero) fica apagada; par em que uma métrica é parte da outra não é cruzado */
   return `<div class="hscroll"><div class="corr" style="grid-template-columns:minmax(118px,170px) repeat(${n},minmax(30px,1fr));min-width:${118 + n * 33}px"><div></div>${keys.map(k => `<div class="ch" title="${esc(lab(k))}">${esc(trunc(lab(k), 11))}</div>`).join("")}
     ${keys.map((a, i) => `<div class="crl">${esc(lab(a))}</div>${keys.map((b, j) => { const x = M[i][j], rel = i !== j && x?.rel, r = i === j ? 1 : !rel && x && x.n >= 15 ? x.r : null, fraca = r != null && i !== j && !czConsist(x);
-      return `<button type="button" class="cc${i === j ? " diag" : ""}${fraca ? " weak" : ""}${rel ? " rel" : ""}" style="background:${i === j || rel ? "var(--cell)" : c(r)}"${i !== j && !rel ? ` data-cx="${a}|${b}"` : ""} ${tip(i === j ? lab(a) : `${lab(a)} × ${lab(b)}\n${rel ? "uma é parte da outra: não se cruza" : `r = ${r == null ? "dados insuficientes" : num(r, 2)}${fraca ? " · pode ser acaso" : ""}${x?.n ? ` · ${x.n} dias` : ""}`}`)}>${i === j || rel ? "" : r == null ? "" : num(r, 1)}</button>`; }).join("")}`).join("")}</div></div>`;
+      /* a diagonal (a métrica com ela mesma) e o par que não se cruza não têm ação: são células, não botões */
+      const tag = i === j || rel ? "span" : "button";
+      return `<${tag}${tag === "button" ? ` type="button"` : ""} class="cc${i === j ? " diag" : ""}${fraca ? " weak" : ""}${rel ? " rel" : ""}" style="background:${i === j || rel ? "var(--cell)" : c(r)}"${i !== j && !rel ? ` data-cx="${a}|${b}"` : ""} ${tip(i === j ? lab(a) : `${lab(a)} × ${lab(b)}\n${rel ? "uma é parte da outra: não se cruza" : `r = ${r == null ? "dados insuficientes" : num(r, 2)}${fraca ? " · pode ser acaso" : ""}${x?.n ? ` · ${x.n} dias` : ""}`}`)}>${i === j || rel ? "" : r == null ? "" : num(r, 1)}</${tag}>`; }).join("")}`).join("")}</div></div>`;
 }
 function ring(p, color, size = 64, stroke = 7) {
   const r = (size - stroke) / 2, c = 2 * Math.PI * r, v = clamp(p ?? 0);
@@ -3621,7 +3624,7 @@ function route() {
   if (PAGE === "mentor" && !(SUB in MENTOR_DEF)) SUB = "conselho";
   NAVOPEN = false; DRAWER = null; if (PAGE !== "painel" && VOZ.sr) stopVoice(); if (PAGE !== "hoje") HJ.skip.clear();
   /* o registro do radar é atualizado antes de desenhar, para os alertas novos já virem com “útil / alarme falso” */
-  if (LOADED && (PAGE === "radar" || PAGE === "hoje")) try { radarSync(); } catch {}
+  if (LOADED && (PAGE === "radar" || PAGE === "hoje")) try { radarSync(); } catch (e) { console.warn("radar", e); }
   render(); $("#main")?.focus({ preventScroll: true }); window.scrollTo({ top: 0 });
 }
 function navHTML(R) {
@@ -5547,6 +5550,7 @@ function pAjustes(R) {
     ${panel("Perfil e metas", `<div class="form f2">${f.map(([k, l, t]) => `<label>${l}<input id="cfg_${k}" type="${t}" step="any" data-cfg="${k}" value="${esc(C[k] ?? "")}"></label>`).join("")}<label>Moeda<select id="cfg_moeda" data-cfg="moeda">${["€", "R$", "US$", "£"].map(m => `<option${C.moeda === m ? " selected" : ""}>${m}</option>`).join("")}</select></label></div>`)}
     ${panel("Mentores", `<div class="form f2"><label>Profundidade das respostas<select id="cfg_mentorNivel" data-cfg="mentorNivel">${[["quick", "Rápida (respostas em segundos)"], ["default", "Equilibrada"], ["complex", "Profunda (pensa mais, demora mais)"]].map(([k, l]) => `<option value="${k}"${C.mentorNivel === k ? " selected" : ""}>${l}</option>`).join("")}</select></label><label>Tom<select id="cfg_mentorTom" data-cfg="mentorTom">${["Direto e caloroso", "Acolhedor e paciente", "Desafiador e exigente", "Técnico e objetivo"].map(m => `<option${C.mentorTom === m ? " selected" : ""}>${m}</option>`).join("")}</select></label></div><label class="chk"><input type="checkbox" id="cfg_mentorNotion2" data-cfg="mentorNotion"${C.mentorNotion ? " checked" : ""}> Permitir que os mentores busquem no meu Notion</label>
       <p class="note">Acompanhamentos e o Conselho usam um nível acima do escolhido. As conversas usam a sua conta do Claude.</p><div class="row wrap"><button type="button" class="btn sm danger" data-act="memwipe">${ic("trash")}Apagar memória dos mentores</button></div>`)}
+    ${panel("Cockpit de Trabalho", `<label class="chk"><input type="checkbox" id="cfg_ckVida" data-cfg="ckVida"${C.ckVida !== false ? " checked" : ""}> Mostrar minhas tarefas do Cockpit no Hoje, no Secretário, na Rotina, no Painel do dia e no Fechamento da semana</label><p class="note">Só as tarefas em que o responsável é você. Concluir fora do Cockpit é o mesmo que concluir nele; mudar prazo continua sendo no Cockpit, por causa das dependências.</p>`)}
     ${panel("Áreas da vida <small>nome exibido, peso no índice e alvo</small>", `<div class="hscroll"><table class="dt"><thead><tr><th>Área</th><th>Nome exibido</th><th class="num">Peso</th><th class="num">Alvo</th><th>No índice</th></tr></thead><tbody>${AREAS.map((a, i) => `<tr><td>${areaDot(a)}${esc(a)}</td><td><input id="ar_l${i}" type="text" data-acfg="${esc(a)}|rotulo" value="${esc(S.areasCfg?.[a]?.rotulo || "")}" placeholder="${esc(AREA_INFO[a].curto)}"></td><td class="num"><select id="ar_p${i}" data-acfg="${esc(a)}|peso">${[0, .5, 1, 1.5, 2, 3].map(v => `<option value="${v}"${apeso(a) === v ? " selected" : ""}>${num(v, v % 1 ? 1 : 0)}×</option>`).join("")}</select></td><td class="num"><input id="ar_a${i}" type="number" min="0" max="10" data-alvo="${esc(a)}" value="${S.alvo[a] ?? ""}" style="width:70px"></td><td><input id="ar_on${i}" type="checkbox" data-acfg="${esc(a)}|ativa"${aativa(a) ? " checked" : ""} aria-label="Contar ${esc(a)} no índice"></td></tr>`).join("")}</tbody></table></div><p class="note">Peso 2× faz a área contar o dobro no Índice de vida; 0× ou desmarcar tira a área do índice (ela continua nos relatórios).</p>`, { cls: "span2" })}
     ${panel("Listas e categorias", `<div class="lists">${LIST_EDIT.map(([k, l, h]) => `<label>${l}<textarea id="ls_${k}" rows="${k === "desp" ? 10 : 5}" data-list="${k}" spellcheck="false">${esc(listVal(k))}</textarea><small class="muted">${h}</small></label>`).join("")}</div><div class="row wrap"><button type="button" class="btn sm primary" data-act="listsave">${ic("check")}Salvar listas</button><button type="button" class="btn sm ghost" data-act="listreset">Restaurar padrão</button></div>`, { cls: "span2" })}
     ${panel("Aparência", `<div class="segs">${[["sistema", "Seguir o sistema"], ["dark", "Escuro"], ["light", "Claro"]].map(([k, l]) => `<button type="button" class="seg" data-theme="${k}" aria-pressed="${theme === k}">${l}</button>`).join("")}</div>`)}
@@ -5742,7 +5746,11 @@ async function cofreUnlock(pass) {
   try { const key = await deriveKey(pass, unb64(c.salt), c.iter), v = await openWith(key, c.check); if (v?.ok !== "atlas") return false; COFRE.key = key; await cofreDecryptAll(); return true; }
   catch { return false; }
 }
-async function cofreDecryptAll() { for (const e of S.diario) if (e.cifra && !COFRE.plain.has(e.id)) { try { COFRE.plain.set(e.id, await openWith(COFRE.key, e.cifra)); } catch {} } }
+async function cofreDecryptAll() {
+  let falhas = 0; for (const e of S.diario) if (e.cifra && !COFRE.plain.has(e.id)) { try { COFRE.plain.set(e.id, await openWith(COFRE.key, e.cifra)); } catch { falhas++; } }
+  /* uma entrada que não abre com esta senha (cifrada com outra ou corrompida) não some calada */
+  if (falhas) toast(`${plural(falhas, "entrada protegida não abriu", "entradas protegidas não abriram")} com esta senha`); return falhas;
+}
 function cofreLock() { COFRE.key = null; COFRE.plain.clear(); if (DIA.draft?.lock) { DIA.draft = null; storeDraft(); } render(); toast("Cofre trancado: as entradas protegidas sumiram da tela"); }
 async function sealEntry(e, plain) { e.cifra = await sealWith(COFRE.key, { titulo: plain.titulo || "", texto: plain.texto || "" }); e.titulo = ""; e.texto = ""; e.semIA = true; COFRE.plain.set(e.id, { titulo: plain.titulo || "", texto: plain.texto || "" }); }
 async function lockEntry(id) {
@@ -6422,7 +6430,7 @@ function weekNums(wk) {
     const ds = []; for (let i = 0; i < 7; i++) ds.push(addDays(wk, i)); const days = ds.filter(d => d <= TODAY), D = DAILY(), col = k => days.map(d => { const i = D.idx[d]; return i == null || !D.C[k] ? null : D.C[k][i]; });
     const mk = mkey(addDays(wk, 3)), orcSem = Math.max(0, sum(Object.values(S.orc)) - sum(fixedItems().map(f => f.valor))) * 7 / dim(mk);
     return { days: days.length, bem: avg(col("bem")), sono: avg(col("sono")), estresse: avg(col("estresse")), treinos: sum(col("treino")), hab: avg(col("hab")), gasto: sum(S.lanc.filter(l => l.tipo === "Despesa" && l.data >= wk && l.data <= ds[6] && !isFixed(l)).map(l => l.valor)), orcSem,
-      tarefas: S.tarefas.filter(t => t.status === "Concluída" && t.concluida >= wk && t.concluida <= ds[6]).length, contatos: S.contatos.filter(c => c.data >= wk && c.data <= ds[6]).length, estudo: sum(S.estudo.filter(e => e.data >= wk && e.data <= ds[6]).map(e => e.horas)),
+      tarefas: S.tarefas.filter(t => t.status === "Concluída" && t.concluida >= wk && t.concluida <= ds[6]).length + ckMinhas(t => t.status === "concluída" && t.concluida >= wk && t.concluida <= ds[6]).length, contatos: S.contatos.filter(c => c.data >= wk && c.data <= ds[6]).length, estudo: sum(S.estudo.filter(e => e.data >= wk && e.data <= ds[6]).map(e => e.horas)),
       entradas: S.diario.filter(e => e.data >= wk && e.data <= ds[6]).length, humorDia: ds.map(d => ({ d, humor: (() => { const i = D.idx[d]; return i == null ? null : D.C.bem[i]; })() })) };
   });
 }
@@ -7908,8 +7916,8 @@ const J_PIL = {
       { t: "Harmonização dos centros de força", tipo: "prática", d: "Uma prece pelos sete centros de força descritos por André Luiz, do coronário ao genésico, com um pensamento de elevação para cada um (Espiritismo › Centros de força)." },
       { t: "Água fluidificada", tipo: "prática", d: "Um copo de água posto ao lado durante a prece ou o Culto do Evangelho e bebido depois: um recurso de assistência fluídica comum nas casas espíritas." },
       { t: "Vigilância da palavra", tipo: "exercício", d: "Um dia por semana sem maledicência, queixa ou ironia. Antes de falar: é verdadeiro, é bom, é útil? O que sai da boca é o que contamina (Mateus 15:11, comentado em O Evangelho segundo o Espiritismo, cap. VIII)." },
-      { t: "Entre a Terra e o Céu (André Luiz, psicografia de Chico Xavier, 1954)", tipo: "leitura", d: "No capítulo XX, o instrutor Clarêncio descreve os centros de força do perispírito: coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico." },
-      { t: "Evolução em Dois Mundos (André Luiz, psicografia de Chico Xavier e Waldo Vieira, 1958)", tipo: "leitura", d: "O corpo espiritual, os centros vitais e a ligação entre o perispírito e o corpo físico." }],
+      { t: "Entre a Terra e o Céu (André Luiz, psicografia de Chico Xavier, 1954)", tipo: "leitura", d: "No capítulo XX (Conflitos da alma), o ministro Clarêncio descreve os centros de força do perispírito: coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico." },
+      { t: "Evolução em Dois Mundos (André Luiz, psicografia de Chico Xavier e Waldo Vieira, 1958)", tipo: "leitura", d: "Na 1ª parte, cap. II (Corpo espiritual): o corpo espiritual, os centros vitais e a ligação entre o perispírito e o corpo físico." }],
     cot: "Onde a fé raciocinada, a caridade ou a vigilância mudaram algo no seu dia?" },
   med: { sub: "meditacao", nome: "Meditação", mid: "med", cor: "var(--jp-med)", ico: "breath",
     lema: "A atenção que volta, gentilmente, para o agora.",
@@ -9692,7 +9700,7 @@ function pdParse(o = {}) {
 }
 
 /* ---------------------------------------------------------------- o que vai ser salvo: uma linha por registro, comparada com o que o dia já tem */
-const PD_DEST = { bmExames: ["Jornada › Exame da noite", "jornada.exame"], rotina: ["Rotina", "rotina.dia"], rotinas: ["Casa › Limpeza", "casa.limpeza"], contasCasa: ["Casa › Contas", "casa.contas"], saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
+const PD_DEST = { bmExames: ["Jornada › Exame da noite", "jornada.exame"], rotina: ["Rotina", "rotina.dia"], rotinas: ["Casa › Limpeza", "casa.limpeza"], contasCasa: ["Casa › Contas", "casa.contas"], saude: ["Saúde › Check-in", "saude.checkin"], lanc: ["Finanças › Lançamentos", "fin.lanc"], marks: ["Hábitos", "hab.marcar"], jornada: ["Jornada › Práticas", "jornada.praticas"], lazer: ["Lazer", "cresc.lazer"], diario: ["Diário", "diario.feed"], tarefas: ["Tarefas", "metas.tarefas"], ckTar: ["Cockpit de Trabalho", "trabalho.hoje"], contatos: ["Relações › Contatos", "pessoas.contatos"], estudo: ["Crescimento", "cresc.aprend"], aprend: ["Crescimento", "cresc.aprend"], metas: ["Metas", "metas.lista"] };
 function pdRows() {
   const d = PD.date, B = pdBase(d), C = pdCheck(), V = PD.v, rows = [], bad = k => C.f[k]?.st === "err";
   const ctx = { date: d, area: "", humor: +V.humor || null };
@@ -10130,7 +10138,7 @@ const FRASES = [
   ["Logo terás esquecido tudo; logo todos te terão esquecido.", "Marco Aurélio, Meditações VII.21", ["noite"], ["estresse"]],
 ];
 function hjTema(c) {
-  const s = S.saude[TODAY] || {}, sono = s.sono ?? S.saude[addDays(TODAY, -1)]?.sono, atras = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo < TODAY).length;
+  const s = S.saude[TODAY] || {}, sono = s.sono ?? S.saude[addDays(TODAY, -1)]?.sono, atras = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo < TODAY).length + ckMinhas(t => ckOpen(t) && t.prazo && t.prazo < TODAY).length;
   if (+c.humor && +c.humor <= 2) return ["coragem", "o humor está baixo"];
   if (c.energia === "baixa" || (isNum(sono) && sono < 6)) return ["cansaco", isNum(sono) && sono < 6 ? `você dormiu ${num(sono)} h` : "a energia está baixa"];
   if ((s.estresse ?? 0) >= 4) return ["estresse", "o estresse está alto"];
@@ -10141,7 +10149,7 @@ function hjTema(c) {
 function hjFrase(c) {
   const per = periodo(), [tema, porque] = hjTema(c), pool = FRASES.filter(f => f[2].includes(per) && f[3].includes(tema)), all = pool.length ? pool : FRASES.filter(f => f[2].includes(per));
   const seed = [...TODAY].reduce((a, ch) => a + ch.charCodeAt(0), 0), f = all[(seed + HJ.fr) % all.length];
-  const tasks = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= TODAY).length;
+  const tasks = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= TODAY).length + ckMinhasAte(TODAY).length;
   const concreto = { cansaco: `Com ${porque}, o dia rende menos: escolha a uma coisa que importa${tasks ? ` entre as ${tasks} que vencem` : ""} e permita-se fazer o resto pela metade.`, estresse: "Antes de responder ao próximo pedido urgente, pergunte o que acontece se ele esperar uma hora.", coragem: "Não precisa ser um bom dia; precisa ter um momento bom. Uma ligação, uma caminhada, uma coisa feita.", dinheiro: "Dias de orçamento curto pedem lazer que não custa: o que você já tem em casa ou na cidade de graça.", foco: `${porque[0]?.toUpperCase() + porque.slice(1)}. Escolha duas, faça antes do almoço e renegocie o prazo das outras.`, rotina: per === "noite" ? "O que valeu a pena hoje? Uma linha no diário guarda isso." : per === "tarde" ? "A tarde é boa para o trabalho que exige menos decisão; deixe as escolhas para amanhã cedo." : "Comece pelo que você vai se orgulhar de ter feito às 18 h." }[tema];
   return { f, concreto, porque };
 }
@@ -10209,11 +10217,13 @@ function pHoje2(R) {
   const news = HJ.news?.length ? HJ.news : feedFresco() && FEED.news?.length ? FEED.news : null, newsFeed = !HJ.news?.length && !!news;
   const s = S.saude[TODAY] || {}, F = hjFrase(c), I = hjIdeias(c, W);
   const tasks = R.tar.filter(t => t.open && t.prazo && t.prazo <= TODAY).sort((a, b) => a.prazo.localeCompare(b.prazo)), doneToday = R.tar.filter(t => t.status === "Concluída" && t.concluida === TODAY);
+  /* as minhas do Cockpit entram junto, marcadas como Trabalho; concluir aqui é o mesmo clique do Cockpit */
+  const trab = ckMinhasAte(TODAY), trabFeitas = ckMinhas(t => t.status === "concluída" && t.concluida === TODAY), nVence = tasks.length + trab.length;
   const CC = typeof casaCalc === "function" ? casaCalc() : null, contas = CC ? [...CC.atrasadas, ...CC.prox14.filter(v => v.dias <= 3)] : [];
   const exps = (S.experimentos || []).filter(x => x.status === "ativo" && expSchedule(x)[TODAY] && !(x.desenho === "antes" && expSchedule(x)[TODAY] === "A")), al = radarAlerts().slice(0, 2);
   const fwk = fsTarget(), fpend = parse(TODAY).getDay() <= 1 && S.fechamentos?.[fwk]?.status !== "fechado";
   const reg = [["humor", "humor"], ["sono", "sono"], ["treino", "treino"]].filter(([k]) => s[k] != null && s[k] !== ""), habs = S.habitos.filter(h => S.marks[`${h.id}|${TODAY}`]).length;
-  const resumo = [W ? `${num(W.t, 0)}° agora, ${num(W.min, 0)}–${num(W.max, 0)}° no dia${W.chuva >= 30 ? `, ${W.chuva}% de chuva` : ", sem chuva prevista"}` : "", tasks.length ? plural(tasks.length, "tarefa vence até hoje", "tarefas vencem até hoje") : "nenhuma tarefa vencendo", contas.length ? plural(contas.length, "conta da casa para pagar", "contas da casa para pagar") : ""].filter(Boolean).join(" · ");
+  const resumo = [W ? `${num(W.t, 0)}° agora, ${num(W.min, 0)}–${num(W.max, 0)}° no dia${W.chuva >= 30 ? `, ${W.chuva}% de chuva` : ", sem chuva prevista"}` : "", nVence ? plural(nVence, "tarefa vence até hoje", "tarefas vencem até hoje") : "nenhuma tarefa vencendo", contas.length ? plural(contas.length, "conta da casa para pagar", "contas da casa para pagar") : ""].filter(Boolean).join(" · ");
   return `<p class="hjlead">${esc(resumo)}.</p>
     ${hjAsk(c)}
     <div class="g2c hj2">
@@ -10224,7 +10234,7 @@ function pHoje2(R) {
       ${panel(`${ic("mic")}Registro do dia`, `<div class="hjreg">${reg.length || habs ? `${reg.map(([k, l]) => chip(`${l} ${k === "sono" ? num(s[k]) + " h" : k === "treino" ? s[k] : s[k] + "/5"}`, "good")).join("")}${habs ? chip(`${habs}/${S.habitos.length} hábitos`, "good") : ""}` : `<span class="muted">Nada registrado hoje ainda.</span>`}</div><a class="btn sm primary" href="#painel">${ic("mic")}Registrar no Painel do dia</a>`)}
       ${(() => { const bs = rtOcc(TODAY).sort((x, y) => x.a - y.a); return panel(`${ic("cal")}Rotina de hoje <small>${bs.length ? `${bs.filter(b => b.done).length} de ${bs.length} feitos` : "nada planejado"}</small>`, bs.length ? `<div class="list">${bs.map(b => `<div class="li"><label class="ckl"><input type="checkbox" data-rtdone="${b.id}"${b.done ? " checked" : ""}><span class="${b.done ? "done" : ""}"><b style="color:${rtCor(b.cat)}">${b.ini}–${b.fim}</b> ${esc(b.titulo)}</span></label></div>`).join("")}</div>` : `<div class="empty">Planeje o dia em blocos de 30 minutos na aba Rotina.</div>`, { act: `<a class="lnk" href="#rotina.dia">abrir a rotina</a>` }); })()}
       ${fpend ? `<div class="pn fscta span2"><div>${ic("week")}<b>Hora de fechar a semana de ${wkLabel(fwk)}</b><small>Uns 15 minutos.</small></div><a class="btn primary" href="#semana">Fechar a semana</a></div>` : ""}
-      ${panel(`${ic("checksq")}Para hoje <small>${tasks.length ? tasks.length + " pendente(s)" : "em dia"}</small>`, `${tasks.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}"><span>${esc(t.tarefa)}<small class="st-${t.st}">${t.prazo < TODAY ? `atrasada ${relDay(t.prazo)}` : "vence hoje"}</small></span></label></div>`).join("")}${doneToday.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}" checked><span class="done">${esc(t.tarefa)}</span></label></div>`).join("")}${contas.map(v => `<div class="li"><span>${ic("house")}${esc(v.c.conta)} · ${eur(+v.c.valor || 0, 2)}</span>${pill(v.dias < 0 ? "crit" : "warn", v.dias < 0 ? "atrasada" : v.dias === 0 ? "hoje" : `em ${v.dias} d`)}</div>`).join("")}${!tasks.length && !doneToday.length && !contas.length ? `<div class="empty">Nada vencendo hoje.</div>` : ""}${quickBox("hj_tar", "Nova tarefa: Ligar para o banco até sexta !alta", "qtar", "Prazo, prioridade (!alta) e #área são opcionais.")}`)}
+      ${panel(`${ic("checksq")}Para hoje <small>${nVence ? nVence + " pendente(s)" : "em dia"}</small>`, `${tasks.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}"><span>${esc(t.tarefa)}<small class="st-${t.st}">${t.prazo < TODAY ? `atrasada ${relDay(t.prazo)}` : "vence hoje"}</small></span></label></div>`).join("")}${trab.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-ckdone="${t.id}"><span>${esc(t.titulo)}<small class="st-${t.prazo < TODAY ? "crit" : "warn"}">Trabalho · ${esc(t.cod)} · ${t.prazo < TODAY ? `atrasada ${relDay(t.prazo)}` : "vence hoje"}</small></span></label></div>`).join("")}${doneToday.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-tdone="${t.id}" checked><span class="done">${esc(t.tarefa)}</span></label></div>`).join("")}${trabFeitas.map(t => `<div class="li"><label class="ckl"><input type="checkbox" data-ckdone="${t.id}" checked><span class="done">${esc(t.titulo)}<small class="muted">Trabalho · ${esc(t.cod)}</small></span></label></div>`).join("")}${contas.map(v => `<div class="li"><span>${ic("house")}${esc(v.c.conta)} · ${eur(+v.c.valor || 0, 2)}</span>${pill(v.dias < 0 ? "crit" : "warn", v.dias < 0 ? "atrasada" : v.dias === 0 ? "hoje" : `em ${v.dias} d`)}</div>`).join("")}${!tasks.length && !doneToday.length && !contas.length ? `<div class="empty">Nada vencendo hoje.</div>` : ""}${quickBox("hj_tar", "Nova tarefa: Ligar para o banco até sexta !alta", "qtar", "Prazo, prioridade (!alta) e #área são opcionais.")}`)}
       ${panel(`${ic("flag")}Prioridades da semana`, `<div class="prio">${[0, 1, 2].map(i => `<label><span>${i + 1}</span><input id="prio${i}" type="text" data-prio="${i}" value="${esc(S.prio[i] || "")}" placeholder="O que mais importa"></label>`).join("")}</div>`)}
       ${panel(`${ic("cal")}Próximos 7 dias`, agenda(R, 7), { act: S.integ?.gcal?.on ? `<button type="button" class="lnk" data-act="gcsync">${ic("refresh")}Google</button>` : `<a class="lnk" href="#integ">conectar Google Calendar</a>` })}
       ${bmHoje()}${jHoje()}
@@ -10598,7 +10608,9 @@ let EX_MODE = false, EX_REAL = null;
 const EX_TXT = "Dormi 7 e meia, humor 4, corri 30 min, gastei 12,50 no almoço e 32,40 no mercado, meditei 15 min. Preciso ligar para o comune até sexta";
 async function exOn() {
   if (EX_MODE) return;
-  try { if (STORE && dirty.size) { clearTimeout(saveTimer); await (FLUSHING || flush()); } } catch {}
+  /* o modo exemplo não grava nada: se as últimas mudanças não foram salvas, entrar agora arriscaria perdê-las ao fechar a aba */
+  if (STORE && dirty.size) { clearTimeout(saveTimer); for (let i = 0; i < 2 && dirty.size; i++) { try { await (FLUSHING || flush()); } catch (e) { console.warn("salvar", e); } }
+    if (dirty.size) { toast("Não consegui salvar as últimas mudanças, então o modo exemplo não foi ligado. Tente de novo em instantes."); return; } }
   EX_REAL = { S, IS_EXAMPLE, undo: UNDO.splice(0), redo: REDO.splice(0), PD, MCP, NOTION_OK, ref: REF };
   EX_MODE = true; S = exampleData(); IS_EXAMPLE = false; MCP = null; NOTION_OK = false; REF = mkey(TODAY);
   PD = pdNew(); PD.text = EX_TXT; pdParse();
@@ -10621,7 +10633,8 @@ const PD_SEC = [["sec_saude", "Saúde", "pulse"], ["sec_din", "Finanças", "coin
 const CT_TIPOS = ["Encontro", "Ligação", "Videochamada", "Mensagem", "Evento / grupo"];
 const estItens = () => ["Inglês", "Italiano", ...S.aprend.filter(a => a.status === "Em andamento" && !/^(inglês|italiano)$/i.test(a.titulo)).map(a => a.titulo)];
 const lerItens = () => S.aprend.filter(a => a.status === "Em andamento" && (a.tipo === "Livro" || +a.total)).map(a => a.titulo);
-function pdTarefasDia(d = PD.date) { return S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= d).sort((a, b) => a.prazo.localeCompare(b.prazo)); }
+/* as pessoais primeiro (os exemplos do roteiro saem delas), depois as minhas do Cockpit */
+function pdTarefasDia(d = PD.date) { return [...S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= d).sort((a, b) => a.prazo.localeCompare(b.prazo)), ...ckMinhasAte(d)]; }
 function pdCasaDia(d = PD.date) {
   const rot = S.rotinas.filter(r => { const prox = r.ultima && +r.freq ? addDays(r.ultima, +r.freq) : d; return prox <= d && r.ultima !== d; });
   const contas = []; for (const c of S.contasCasa || []) for (const v of contaOcorr(c, addDays(d, -30), addDays(d, 3))) if (!contaPaga(c, v)) contas.push({ c, v });
@@ -10631,7 +10644,7 @@ function pdCasaDia(d = PD.date) {
 function pdMapa(rows) {
   const d = PD.date, B = pdBase(d), s = S.saude[d] || {}, has = id => rows.some(r => r.on && r.id.startsWith(id));
   const st = { sec_saude: [["humor", "sono", "energia", "estresse", "passos", "treino", "peso"].some(k => s[k] != null && s[k] !== ""), has("s.")], sec_din: [S.lanc.some(l => l.data === d), has("g.")], sec_hab: [S.habitos.some(h => S.marks[`${h.id}|${d}`]), has("h.")],
-    sec_tar: [S.tarefas.some(t => t.concluida === d), has("t.")], sec_pes: [S.contatos.some(c => c.data === d), has("c.")], sec_est: [S.estudo.some(x => x.data === d), has("e.") || has("r.")],
+    sec_tar: [S.tarefas.some(t => t.concluida === d) || ckMinhas(t => t.concluida === d).length > 0, has("t.")], sec_pes: [S.contatos.some(c => c.data === d), has("c.")], sec_est: [S.estudo.some(x => x.data === d), has("e.") || has("r.")],
     sec_jor: [B.sess.length > 0 || B.lz.length > 0, has("j.") || has("l.")], sec_casa: [S.rotinas.some(r => r.ultima === d) || (S.contasCasa || []).some(c => Object.values(c.pagos || {}).includes(d)), has("k.")], sec_dia: [B.ent.length > 0, has("d.")], sec_bm: [!!bmEx()[d] || rtOcc(d).some(b => b.st), has("b.") || has("q.")] };
   return `<nav class="pdmapa" aria-label="Abas do dia">${PD_SEC.map(([id, l, i]) => { const [ok, pend] = st[id] || []; return `<a href="#painel" class="pdmc${ok ? " ok" : ""}${pend ? " pend" : ""}" data-pdgo="${id}" title="${ok ? "já tem registro neste dia" : pend ? "há registros esperando para salvar" : "nada ainda"}">${ic(ok ? "check" : i)}<span>${l}</span>${pend ? "<i></i>" : ""}</a>`; }).join("")}</nav>`;
 }
@@ -10682,6 +10695,7 @@ function pdRows2(rows, cmd, B, d, bad) {
   const L = pdL(), V = PD.v;
   if (V.peso !== "" && V.peso != null && !bad("peso")) { const v = pdMoney(V.peso), old = S.saude[d]?.peso; if (old == null || Math.abs(old - v) > 1e-9) cmd("s.peso", `/peso ${fmtDec(v)}`, { kind: old == null ? "novo" : "subst", old: old == null ? "" : num(old) + " kg", dest: "saude" }); }
   for (const t of S.tarefas) if (PD.chk.tdone[t.id] && t.status !== "Concluída") rows.push({ id: `t.done.${t.id}`, txt: `Tarefa concluída: ${t.tarefa}`, kind: "novo", dest: "tarefas", on: true, apply: () => { const x = S.tarefas.find(z => z.id === t.id); if (x) { x.status = "Concluída"; x.concluida = d; } return ["tarefas"]; } });
+  for (const t of ckMinhas(t => ckOpen(t) && PD.chk.tdone[t.id])) rows.push({ id: `t.done.${t.id}`, txt: `Tarefa concluída: ${t.tarefa}`, kind: "novo", dest: "ckTar", on: true, apply: () => { const x = (S.ckTar || []).find(z => z.id === t.id); if (x) ckMarca(x, "concluída", d); return ["ckTar"]; } });
   L.tar.forEach(r => { const t = String(r.t || "").trim(); if (t.length < 3) return; const dup = S.tarefas.some(x => x.status !== "Concluída" && norm(x.tarefa) === norm(t.replace(/\s+at[eé].*$/, "").replace(/!\w+/, "").trim())); cmd(`t.n.${r.id}`, `/tarefa ${t}`, { kind: dup ? "dup" : "novo", old: dup ? "tarefa igual já aberta" : "", on: !dup, dest: "tarefas" }); });
   L.cont.forEach((r, i) => { if (!r.pessoa || bad(`cont${i}`)) return; const dup = S.contatos.some(c => c.data === d && c.pessoa === r.pessoa); cmd(`c.${r.id}`, `/contato ${personTok(r.pessoa)} ${r.tipo || "Encontro"}${r.min ? " " + r.min : ""}`, { kind: dup ? "dup" : "novo", old: dup ? "já há contato com essa pessoa neste dia" : "", on: !dup, dest: "contatos" }); });
   L.est.forEach((r, i) => { if (!r.item || bad(`est${i}`)) return; const h = Math.round(+r.min / 60 * 100) / 100, lang = /^ingl/i.test(r.item) ? "en" : /^italia/i.test(r.item) ? "it" : null, dup = S.estudo.some(x => x.data === d && norm(x.item) === norm(r.item) && Math.abs(x.horas - h) < .01);
@@ -10713,6 +10727,8 @@ const GCAL = { st: "", msg: "", busy: false };
 const GC_SRV = "Google Calendar";
 const gcInteg = () => { S.integ ||= {}; return (S.integ.gcal ||= {}); };
 const gcErr = e => ({ not_granted: "Você não liberou o Google Calendar para esta página.", needs_reauth: "O Google Calendar precisa ser reconectado nas configurações do Claude.", server_not_connected: "O Google Calendar não está conectado na sua conta Claude.", not_in_manifest: "Esta versão da página não tem acesso ao Google Calendar.", blocked_by_policy: "A sua organização bloqueou este conector.", cancelled: "Cancelado." }[e?.code] || `Não consegui falar com o Google Calendar (${e?.code || "erro"}).`);
+/* o conector pede a hora local sem fuso nem “Z” (o fuso vai à parte, em timeZone) */
+const gcLocal = d => `${iso(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
 const tzLocal = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Rome"; } catch { return "Europe/Rome"; } };
 const hhmm = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 function gcMap(ev) {
@@ -10726,7 +10742,7 @@ async function gcSync(o = {}) {
   const de = addDays(TODAY, -1), ate = addDays(TODAY, 30), evs = [];
   try {
     let tok = ""; for (let p = 0; p < 4; p++) {
-      const r = await MCP.callTool(GC_SRV, "list_events", { startTime: new Date(de + "T00:00:00").toISOString(), endTime: new Date(ate + "T23:59:59").toISOString(), orderBy: "startTime", pageSize: 250, timeZone: tzLocal(), ...(tok ? { pageToken: tok } : {}) }, { cache: false });
+      const r = await MCP.callTool(GC_SRV, "list_events", { startTime: de + "T00:00:00", endTime: ate + "T23:59:59", orderBy: "startTime", pageSize: 250, timeZone: tzLocal(), ...(tok ? { pageToken: tok } : {}) }, { cache: false });
       const pl = r?.payload || {}; for (const ev of pl.events || []) if (ev.status !== "cancelled" && ev.id) evs.push(ev); tok = pl.nextPageToken || ""; if (!tok) break; }
     const keep = (S.eventos || []).filter(e => e.origem !== "gcal" || e.data < de || e.data > ate), novos = evs.map(ev => { const m = gcMap(ev); return { id: "gc_" + ev.id, uid: "gcal:" + ev.id, ...m, titulo: String(ev.summary || "(sem título)").slice(0, 200), local: String(ev.location || "").slice(0, 200), link: ev.htmlLink || "", origem: "gcal" }; }).filter(e => e.data);
     S.eventos = [...keep, ...novos]; const G = gcInteg(); G.on = true; G.last = Date.now(); G.n = novos.length;
@@ -10748,7 +10764,7 @@ async function gcCriarEstudo() {
       let st = ini; for (const e of p.ev.sort((a, b) => (a.hora || "").localeCompare(b.hora || ""))) { const a = hm2m(e.hora), b = hm2m(e.fim) ?? (a != null ? a + 60 : null); if (a != null && a <= st && b > st) st = b; }
       const min = p.en + p.it, a = new Date(`${p.d}T${pad(Math.floor(st / 60))}:${pad(st % 60)}:00`), b = new Date(a.getTime() + min * 60e3);
       const titulo = `Estudo · ${p.en ? `inglês ${p.en} min` : ""}${p.en && p.it ? " + " : ""}${p.it ? `italiano ${p.it} min` : ""}`;
-      await MCP.callTool(GC_SRV, "create_event", { summary: titulo, startTime: a.toISOString(), endTime: b.toISOString(), description: "Criado pelo Atlas da Vida a partir do plano de Idiomas.", availability: "AVAILABILITY_BUSY", useDefaultReminders: true });
+      await MCP.callTool(GC_SRV, "create_event", { summary: titulo, startTime: gcLocal(a), endTime: gcLocal(b), timeZone: tzLocal(), description: "Criado pelo Atlas da Vida a partir do plano de Idiomas.", availability: "AVAILABILITY_BUSY", useDefaultReminders: true });
       S.eventos.push({ id: uid(), uid: "atlas:" + p.d, data: p.d, hora: hhmm(a), fim: hhmm(b), titulo, local: "", origem: "gcal" }); n++;
     }
     toast(`${plural(n, "bloco criado", "blocos criados")} no Google Calendar`);
@@ -10801,7 +10817,7 @@ function rtOcc(d) {
 }
 function rtAgenda(d) {
   const ev = (S.eventos || []).filter(e => e.data === d || (e.ate && e.data <= d && e.ate >= d)).map(e => { const a = hm2min(e.hora), z = hm2min(e.fim) ?? (a != null ? a + 60 : null); return { id: e.id, titulo: e.titulo, a, z: z != null && z <= a ? 1440 : z, gcal: e.origem === "gcal", local: e.local, link: e.link, dia: a == null || (e.ate && e.data !== d) }; });
-  const tar = S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada");
+  const tar = [...S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada"), ...ckMinhas(t => ckOpen(t) && t.prazo === d)];
   return { timed: ev.filter(e => !e.dia), allday: ev.filter(e => e.dia), tar };
 }
 /* colunas para itens que se sobrepõem */
@@ -10857,7 +10873,7 @@ function rtCol(d) {
     ${occ.map(b => { const len = b.z - b.a, tiny = len / 30 * H < 34; return `<div role="button" tabindex="0" class="rtb${b.st ? " st-" + b.st : ""}${tiny ? " tiny" : ""}${cf.has(b.id) ? " conf" : ""}" style="${pos(b, b.n || 1, b.col)};--c:${rtCor(b.cat)}" data-rtb="${b.id}|${d}" title="${esc(`${b.ini}–${b.fim} · ${b.titulo}${b.rep ? " · " + REP_TXT[b.rep] : ""}${b.st ? " · " + ST_TXT[b.st] : ""}`)}"><b>${b.st === "feito" ? "✓ " : b.st === "pulado" ? "✕ " : ""}${esc(b.titulo)}</b><small>${b.ini}–${b.fim}${b.rep ? ` ${ic("repeat")}` : ""}</small><i class="rtrs" data-rtrs="${b.id}|${d}" aria-hidden="true"></i></div>`; }).join("")}
     ${ag.map(e => `<div class="rte${e.gcal ? " gcal" : ""}" style="${pos(e, e.n || 1, e.col)}" title="${esc(`${m2hm(e.a)}–${m2hm(Math.min(e.z, 1440))} · ${e.titulo}${e.local ? " · " + e.local : ""} (Agenda${e.gcal ? ", Google" : ""})`)}"><b>${esc(e.titulo)}</b><small>${m2hm(e.a)} · ${e.gcal ? "Google" : "agenda"}</small></div>`).join("")}${now}</div>`;
 }
-function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<span class="rtad e" title="Agenda">${ic("cal")}${esc(e.titulo)}</span>`), ...A.tar.map(t => `<span class="rtad t" title="Tarefa com prazo">${ic("checksq")}${esc(t.tarefa)}</span>`)].join(""); }
+function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<span class="rtad e" title="Agenda">${ic("cal")}${esc(e.titulo)}</span>`), ...A.tar.map(t => `<span class="rtad t" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo"}">${ic("checksq")}${esc(t.tarefa)}</span>`)].join(""); }
 function rtGrid(days) {
   const H = rtSH(), one = days.length === 1, hasAll = days.some(d => { const A = rtAgenda(d); return A.allday.length || A.tar.length; });
   return `<div class="rtgrid${one ? " one" : ""}" style="--n:${days.length};--sh:${H}px"><div class="rtscroll" id="rtscroll">
@@ -11747,8 +11763,10 @@ function pdParse3(txt) {
   for (const { F } of cl) {
     if (PDX_TASK.test(F)) for (const t of pdTarefasDia(d)) if (pdHit(F, t.tarefa)) mark("tdone", t.id);
     if (PDX_CASA.test(F)) for (const r of CD.rot) if (pdHit(F, r.rotina)) mark("rot", r.id);
-    if (PDX_CONTA.test(F)) for (const { c, v } of CD.contas) if (pdHit(F, c.conta) || pdKw(c.cat).some(w => new RegExp(`\\b${w}`).test(F) && w.length >= 4)) {
-      mark("conta", `${c.id}|${v}`);
+    /* uma frase paga uma ocorrência de cada conta: a mais antiga em aberto (a lista vem em ordem de vencimento) */
+    const pagas = new Set();
+    if (PDX_CONTA.test(F)) for (const { c, v } of CD.contas) if (!pagas.has(c.id) && (pdHit(F, c.conta) || pdKw(c.cat).some(w => new RegExp(`\\b${w}`).test(F) && w.length >= 4))) {
+      pagas.add(c.id); mark("conta", `${c.id}|${v}`);
       /* a conta paga já lança a despesa: o gasto do mesmo trecho não entra em dobro */
       PD.gastos = PD.gastos.filter(g => !(g.src === "texto" && (pdHit(fold(g.d || ""), c.conta) || (Math.abs((pdMoney(g.v) || 0) - (+c.valor || 0)) < .01 && F.includes(fold(String(g.d || "")).slice(0, 6))))));
     }
@@ -11872,6 +11890,7 @@ function secItems() {
   const open = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo);
   for (const t of open.filter(t => t.prazo < d).sort((a, b) => a.prazo.localeCompare(b.prazo)).slice(0, 6)) add({ id: "tar:" + t.id, area: t.area || "Tarefas", st: "crit", txt: t.tarefa, sub: `atrasada desde ${fmtD(t.prazo)}${t.prio === "Alta" ? " · prioridade alta" : ""}`, go: "metas.tarefas", acts: [["Concluí", `tdone|${t.id}`], ["Adiar para amanhã", `tadiar|${t.id}`]] });
   for (const t of open.filter(t => t.prazo === d)) add({ id: "tar:" + t.id, area: t.area || "Tarefas", st: "warn", txt: t.tarefa, sub: `vence hoje${t.prio === "Alta" ? " · prioridade alta" : ""}`, go: "metas.tarefas", acts: [["Concluí", `tdone|${t.id}`], ["Adiar para amanhã", `tadiar|${t.id}`]] });
+  for (const t of ckMinhasAte(d).slice(0, 6)) add({ id: "ck:" + t.id, area: "Trabalho", st: t.prazo < d ? "crit" : "warn", txt: t.tarefa, sub: `${t.prazo < d ? `atrasada desde ${fmtD(t.prazo)}` : "vence hoje"}${t.prio === "alta" ? " · prioridade alta" : ""}`, go: "trabalho.hoje", acts: [["Concluí", `ckdone|${t.id}`]] });
   const CD = pdCasaDia(d);
   for (const { c, v } of CD.contas) add({ id: `conta:${c.id}|${v}`, area: "Casa & organização", st: v < d ? "crit" : "warn", txt: `Conta: ${c.conta} · ${eur(+c.valor || 0, 2)}`, sub: v < d ? `venceu ${fmtD(v)}` : v === d ? "vence hoje" : `vence ${fmtD(v)}`, go: "casa.contas", acts: [["Paguei", `conta|${c.id}|${v}`, true]] });
   for (const x of (S.docs || []).filter(x => x.validade && diff(x.validade, d) <= (+S.cfg.alertaDocs || 30))) { const n = diff(x.validade, d); add({ id: "doc:" + x.id, area: "Casa & organização", st: n < 0 ? "crit" : "warn", txt: `Documento: ${x.doc || x.nome || x.tipo || "documento"}`, sub: n < 0 ? `venceu ${fmtD(x.validade)}` : `vence em ${plural(n, "dia", "dias")}`, go: "casa.docs" }); }
@@ -11888,7 +11907,7 @@ function secItems() {
   const late = R.pes.filter(p => p.st === "crit" && +p.freq).sort((a, b) => b.ratio - a.ratio)[0];
   if (late) add({ id: "pes:" + late.id, area: "Família", st: "info", txt: `Falar com ${late.nome}`, sub: late.txt || "contato atrasado", go: "pessoas.lista" });
   for (const l of secData().lembretes.filter(l => !l.feito && l.quando && l.quando.slice(0, 10) <= d)) { const past = new Date(l.quando) <= new Date(); add({ id: "lem:" + l.id, area: "Lembretes", st: past ? "crit" : "warn", txt: l.texto, sub: `${past ? "era para" : "hoje às"} ${l.quando.slice(11, 16)}${l.quando.slice(0, 10) < d ? ` de ${fmtD(l.quando.slice(0, 10))}` : ""}`, acts: [["Feito", `lemok|${l.id}`]], go: null }); }
-  try { const a = jdAsks()[0]; if (a) add({ id: "jd:" + a[3], area: "Propósito & espiritualidade", st: "info", txt: `Jardim: ${a[1]}`, sub: a[2], go: "jornada.jardim" }); } catch {}
+  try { const a = jdAsks()[0]; if (a) add({ id: "jd:" + a[3], area: "Propósito & espiritualidade", st: "info", txt: `Jardim: ${a[1]}`, sub: a[2], go: "jornada.jardim" }); } catch (e) { console.warn("jardim", e); }
   const rk = { crit: 0, warn: 1, info: 2 };
   return out.sort((a, b) => rk[a.st] - rk[b.st]);
 }
@@ -11898,6 +11917,10 @@ function secConflitos() {
     out.push({ chave: k, txt: `O bloco “${bk?.titulo || "da rotina"}” (${bk?.ini || ""}) bate com “${ev?.titulo || "um compromisso"}”`, sub: "Um dos dois precisa mudar de horário, ou você assume a sobreposição.", ops: [["Abrir a Rotina para mover", "go:rotina.dia"], ["Manter os dois", "ok"]] }); }
   const hoje = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= d), livre = D.livre || 0;
   if (hoje.length >= 4 && hoje.length * 45 > livre) out.push({ chave: "sobrecarga:" + d, txt: `${plural(hoje.length, "tarefa vence", "tarefas vencem")} até hoje e há ${num(livre / 60, 1)} h livres na rotina`, sub: "Não cabe tudo. Decida o que sai hoje.", ops: [["Adiar as de prioridade baixa e média para amanhã", "adiar_baixas"], ["Manter tudo", "ok"], ["Ver as tarefas", "go:metas.tarefas"]] });
+  /* as do Cockpit não entram na conta do tempo livre (são feitas no horário de trabalho): comparam com a capacidade do Cockpit */
+  const trab = ckMinhasAte(d).map(x => S.ckTar.find(t => t.id === x.id)), eu = (S.ck?.membros || []).find(m => m.eu);
+  if (trab.length >= 2) { const dem = sum(trab.map(ckRem)), cap = ckHpdOf(eu, S.ck?.cfg || {});
+    if (dem > cap) out.push({ chave: "sobrecarga-trab:" + d, txt: `${plural(trab.length, "tarefa do Cockpit vence", "tarefas do Cockpit vencem")} até hoje: ${num(dem, 1)} h de trabalho para ${num(cap, 1)} h de capacidade no dia`, sub: "No trabalho também não cabe tudo. Decida no Cockpit o que muda de prazo ou de responsável.", ops: [["Abrir o Cockpit", "go:trabalho.hoje"], ["Manter tudo", "ok"]] }); }
   const altas = hoje.filter(t => t.prio === "Alta" && t.prazo < d);
   if (altas.length >= 3) out.push({ chave: "altas:" + d, txt: `${altas.length} tarefas de prioridade alta estão atrasadas`, sub: "Quando tudo é prioridade, nada é. Qual delas vem primeiro?", ops: [...altas.slice(0, 3).map(t => [`Primeiro: ${trunc(t.tarefa, 40)}`, "first:" + t.id]), ["Pedir ajuda ao Secretário", "ask"]] });
   return out.filter(c => !dec.has(c.chave));
@@ -12048,6 +12071,7 @@ function secLocal(text) {
 function secDo(code, el) {
   const [k, a, b] = code.split("|");
   if (k === "tdone") { const t = S.tarefas.find(x => x.id === a); if (!t) return; t.status = "Concluída"; t.concluida = TODAY; touch("tarefas", { label: "Tarefa concluída" }); undoToast(`Concluída: ${trunc(t.tarefa, 50)}`); return; }
+  if (k === "ckdone") { const t = (S.ckTar || []).find(x => x.id === a); if (!t) return; ckSetStatus(t.id, "concluída"); undoToast(`Concluída: ${t.cod} · ${trunc(t.titulo, 50)}`); return; }
   if (k === "tadiar") { const t = S.tarefas.find(x => x.id === a); if (!t) return; t.prazo = addDays(TODAY, 1); touch("tarefas", { label: "Tarefa adiada" }); undoToast(`Adiada para amanhã: ${trunc(t.tarefa, 50)}`); return; }
   if (k === "conta") { const c = (S.contasCasa || []).find(z => z.id === a); if (!c) return; c.pagos = { ...(c.pagos || {}), [b]: TODAY }; const ks = ["contasCasa"], cat = /aluguel|condom/i.test(c.cat || "") ? "Moradia" : "Contas da casa"; if (+c.valor > 0 && cat in CAT_DESP) { S.lanc.push({ id: uid(), data: TODAY, tipo: "Despesa", cat, desc: c.conta, valor: +c.valor, conta: c.debito === "Sim" ? "Conta corrente" : "PIX / transferência", origem: "secretário" }); ks.push("lanc"); } touch(...ks, { label: "Conta paga" }); undoToast(`Conta paga: ${c.conta} · ${eur(+c.valor || 0, 2)} lançado`); return; }
   if (k === "lemok") { const l = secData().lembretes.find(x => x.id === a); if (l) { l.feito = true; touch("secretario", { label: "Lembrete feito" }); } return; }
@@ -13411,6 +13435,21 @@ const ckD = () => { const c = (S.ck ||= {}); c.perfil ||= {}; c.membros ||= []; 
 const ckA = k => (S[k] ||= []);
 const ckT = () => ckA("ckTar");
 const ckOpen = t => t.status !== "concluída";
+/* concluir ou reabrir sem gravar (quem chama grava): Cockpit, Hoje, Secretário e Painel do dia passam por aqui */
+function ckMarca(t, st, d = TODAY) {
+  if (!t || t.status === st) return false; const antes = t.status; t.status = st;
+  if (st === "concluída") { t.concluida = d; t.feito = 100; } else { t.concluida = ""; if (antes === "concluída" && t.feito === 100) t.feito = 0; }
+  (t.hist ||= []).push({ at: Date.now(), por: "você", antes: { status: antes }, depois: { status: st } }); return true;
+}
+/* minhas tarefas do Cockpit fora dele (Hoje, Secretário, Rotina, Painel do dia, Fechamento): só as em que o responsável sou eu,
+   no formato das pessoais (tarefa, prazo) e marcadas com ck; Ajustes → Cockpit de Trabalho desliga */
+const ckEu = () => (S.ck?.membros || []).find(m => m.eu)?.id || "eu";
+function ckMinhas(f = () => true) {
+  if (S.cfg?.ckVida === false || !(S.ckTar || []).length) return [];
+  const eu = ckEu();
+  return S.ckTar.filter(t => t.resp === eu && f(t)).map(t => ({ id: t.id, ck: true, cod: t.cod, titulo: t.titulo, tarefa: `${t.cod} · ${t.titulo}`, prazo: t.prazo || "", status: t.status, concluida: t.concluida || "", prio: t.prio }));
+}
+const ckMinhasAte = d => ckMinhas(t => ckOpen(t) && t.prazo && t.prazo <= d).sort((a, b) => a.prazo.localeCompare(b.prazo));
 const ckM = id => ckD().membros.find(m => m.id === id);
 const ckMN = id => { const m = ckM(id); return !m ? (id ? "?" : "sem responsável") : m.eu ? "Eu" : m.nome; };
 const ckMNa = id => { const m = ckM(id); return !m ? "sem responsável" : m.eu ? `${ckD().perfil.nome?.split(" ")[0] || "o usuário"} (o próprio usuário)` : m.nome; };
@@ -13764,9 +13803,10 @@ function ckIntercept(text) {
   const sim = CK_SIM.test(t), nao = CK_NAO.test(t), rest = t.replace(CK_SIM, "").replace(CK_NAO, "").trim(); if (!sim && !nao) return false;
   const toks = rest.split(/[\s,.;:!]+/).filter(Boolean), okTok = /^(\d+|e|tudo|todas?|todos|as|os|s[oó]|apenas|pode|isso|ent[aã]o|por|favor|obrigad[oa]|valeu|essas?|esses?)$/i; if (toks.some(x => !okTok.test(x))) return false;
   const nums = toks.filter(x => /^\d+$/.test(x)).map(Number);
-  const lastMi = Math.max(...pend.map(x => x.mi)), alvo = nums.length ? pend.filter(x => x.mi === lastMi && nums.includes(x.p.n)) : pend; if (!alvo.length) return false;
+  /* “ok” vale para as propostas da mensagem mais recente que tem pendências (a mesma regra da Saúde): nada que já saiu da tela é aprovado junto */
+  const lastMi = Math.max(...pend.map(x => x.mi)), alvo = pend.filter(x => x.mi === lastMi && (!nums.length || nums.includes(x.p.n))), resto = pend.length - alvo.length; if (!alvo.length) return false;
   const r = ckDecideMany(alvo.map(x => x.p), sim), m = mstate("ck");
-  m.conversa.push({ role: "user", content: t, at: Date.now(), mode: "chat" }, { role: "assistant", content: sim ? `Aprovado${r.n !== 1 ? "s" : ""}: ${r.refs.join(", ") || "nada a aplicar"}.${r.falhas.length ? ` Não apliquei: ${r.falhas.join("; ")}.` : ""}` : `Descartei ${plural(alvo.length, "proposta", "propostas")}.`, at: Date.now(), local: true });
+  m.conversa.push({ role: "user", content: t, at: Date.now(), mode: "chat" }, { role: "assistant", content: (sim ? `Aprovado${r.n !== 1 ? "s" : ""}: ${r.refs.join(", ") || "nada a aplicar"}.${r.falhas.length ? ` Não apliquei: ${r.falhas.join("; ")}.` : ""}` : `Descartei ${plural(alvo.length, "proposta", "propostas")}.`) + (resto ? ` ${resto === 1 ? "Uma proposta anterior continua" : `${resto} propostas anteriores continuam`} esperando.` : ""), at: Date.now(), local: true });
   MST.input.ck = ""; touch("mentores", { noUndo: true }); scrollChat(); return true;
 }
 
@@ -14003,8 +14043,8 @@ function ckContextoV() {
   </div>
   ${panel(`${ic("gauge")}Limites dos alertas e do Dashboard`, `<div class="form f3">${Object.entries(CK_LIMITES_TXT).map(([k, l]) => `<label>${esc(l)}<input type="number" step="any" data-cklim="${k}" value="${esc(c.cfg.lim?.[k] ?? "")}" placeholder="${CK_LIMITES[k]}"></label>`).join("")}</div><p class="muted small">Vazio = o valor padrão da configuração (src/44-cockpit-config.js), que aparece em cinza. Valem para o Hoje, os alertas, a delegação e o Dashboard.</p>`)}
   ${panel(`${ic("users")}Equipe`, `${ckMembrosTab()}<div class="row wrap"><button type="button" class="btn sm" data-ckmemb="">${ic("plus")}Pessoa</button></div>`)}
-  <div class="g2c">${panel(`${ic("brief")}Projetos`, `${c.projetos.length ? `<table class="dt"><thead><tr><th>Projeto</th><th>Cliente</th><th>Fase</th><th class="num">Abertas</th><th></th></tr></thead><tbody>${c.projetos.map(p => `<tr class="click" data-ckproj="${p.id}" tabindex="0"><td><span class="ckdot" style="--pc:${p.cor}"></span>${esc(p.nome)}${p.ativo === false ? ` <span class="pill none">encerrado</span>` : ""}</td><td>${esc(p.cliente || "")}</td><td>${esc(p.fase || "")}</td><td class="num">${ckT().filter(t => t.projeto === p.id && ckOpen(t)).length}</td><td>${ic("edit")}</td></tr>`).join("")}</tbody></table>` : `<p class="muted">Nenhum projeto.</p>`}<button type="button" class="btn sm" data-ckproj="">${ic("plus")}Projeto</button>`)}
-    ${panel(`${ic("flag")}Marcos: consegne, revisioni, approvazioni`, `${c.marcos.length ? `<table class="dt"><thead><tr><th>Data</th><th>Marco</th><th>Tipo</th><th>Projeto</th><th></th></tr></thead><tbody>${[...c.marcos].sort((a, b) => a.data.localeCompare(b.data)).map(m => `<tr class="click${m.feito ? " muted" : ""}" data-ckmarco="${m.id}" tabindex="0"><td>${fmtDY(m.data)}</td><td>${esc(m.nome)}${m.feito ? " ✓" : ""}</td><td>${esc(m.tipo || "")}</td><td>${esc(ckPN(m.projeto))}</td><td>${ic("edit")}</td></tr>`).join("")}</tbody></table>` : `<p class="muted">Nenhum marco.</p>`}<button type="button" class="btn sm" data-ckmarco="">${ic("plus")}Marco</button>`)}</div>
+  <div class="g2c">${panel(`${ic("brief")}Projetos`, `${c.projetos.length ? `<div class="hscroll"><table class="dt"><thead><tr><th>Projeto</th><th>Cliente</th><th>Fase</th><th class="num">Abertas</th><th></th></tr></thead><tbody>${c.projetos.map(p => `<tr class="click" data-ckproj="${p.id}" tabindex="0"><td><span class="ckdot" style="--pc:${p.cor}"></span>${esc(p.nome)}${p.ativo === false ? ` <span class="pill none">encerrado</span>` : ""}</td><td>${esc(p.cliente || "")}</td><td>${esc(p.fase || "")}</td><td class="num">${ckT().filter(t => t.projeto === p.id && ckOpen(t)).length}</td><td>${ic("edit")}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">Nenhum projeto.</p>`}<button type="button" class="btn sm" data-ckproj="">${ic("plus")}Projeto</button>`)}
+    ${panel(`${ic("flag")}Marcos: consegne, revisioni, approvazioni`, `${c.marcos.length ? `<div class="hscroll"><table class="dt"><thead><tr><th>Data</th><th>Marco</th><th>Tipo</th><th>Projeto</th><th></th></tr></thead><tbody>${[...c.marcos].sort((a, b) => a.data.localeCompare(b.data)).map(m => `<tr class="click${m.feito ? " muted" : ""}" data-ckmarco="${m.id}" tabindex="0"><td>${fmtDY(m.data)}</td><td>${esc(m.nome)}${m.feito ? " ✓" : ""}</td><td>${esc(m.tipo || "")}</td><td>${esc(ckPN(m.projeto))}</td><td>${ic("edit")}</td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">Nenhum marco.</p>`}<button type="button" class="btn sm" data-ckmarco="">${ic("plus")}Marco</button>`)}</div>
   ${panel(`${ic("gauge")}O agente: configuração versionada (v${CK_AGENTE.versao})`, `<p class="muted small">O comportamento do PMO vem de um arquivo de configuração do app (seção 5 do pedido); o contexto acima entra na seção 2. Abaixo, exatamente o texto fixo que ele recebe antes do estado do Cockpit.</p><details><summary>Ver o prompt fixo</summary><pre class="ckpre">${esc(ckEspec() + "\n\n" + ckContexto())}</pre></details><details><summary>Ferramentas (${CK_AGENTE.ferramentas.length})</summary><p class="small">${CK_AGENTE.ferramentas.map(x => `<code>${x}</code>`).join(" ")}</p><p class="muted small">Leitura: listar_tarefas, sugerir_delegacao, calcular_caminho_critico, gerar_briefing, gerar_relatorio. As demais só criam propostas.</p></details>`)}`;
 }
 function ckMembrosTab() {
@@ -14110,9 +14150,7 @@ document.addEventListener("dragend", e => { e.target.closest?.(".ckcard")?.class
 document.addEventListener("dragover", e => { const col = e.target.closest?.(".ckcol"); if (!col || !CK.drag) return; e.preventDefault(); $$(".ckcol.over").forEach(x => x !== col && x.classList.remove("over")); col.classList.add("over"); });
 document.addEventListener("drop", e => { const col = e.target.closest?.(".ckcol"); if (!col || !CK.drag) return; e.preventDefault(); ckSetStatus(CK.drag, col.dataset.ckcol); CK.drag = null; });
 function ckSetStatus(id, st) {
-  const t = ckT().find(x => x.id === id); if (!t || t.status === st) return; const antes = t.status; t.status = st;
-  if (st === "concluída") { t.concluida = TODAY; t.feito = 100; } else { t.concluida = ""; if (antes === "concluída" && t.feito === 100) t.feito = 0; }
-  (t.hist ||= []).push({ at: Date.now(), por: "você", antes: { status: antes }, depois: { status: st } }); touch("ckTar", { label: `${t.cod}: ${st}` });
+  const t = ckT().find(x => x.id === id); if (!t || !ckMarca(t, st)) return; touch("ckTar", { label: `${t.cod}: ${st}` });
 }
 
 /* ---------------------------------------------------------------- ações */
@@ -16623,43 +16661,43 @@ const CF_ESC = ["", "em desarmonia", "inquieto", "oscilando", "sereno", "em harm
 const CF = [
   { id: "cor", nome: "Coronário", chakra: "Sahasrara", local: "alto da cabeça", x: 120, y: 40,
     funcao: "Recebe primeiro os estímulos do Espírito e do plano superior e comanda os demais centros; nele se assenta a ligação com a mente. Associado à epífise, a “glândula da vida mental”.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX; Missionários da Luz, cap. 2",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma); Missionários da Luz, cap. 2 (A epífise)",
     val: ["espiritualidade", "humildade", "desprendimento"], prat: ["Prece ao acordar e ao deitar", "Culto do Evangelho no lar"],
     perg: "O que tem ocupado o meu pensamento quando estou sozinho: isso me eleva ou me prende?",
     prece: "Pense no alto da cabeça. Com gratidão, eleve o pensamento a Deus e entregue o que não depende de você. Que a sua mente se abra às boas inspirações." },
   { id: "cer", nome: "Cerebral", chakra: "Ajna", local: "fronte, entre as sobrancelhas", x: 120, y: 66,
     funcao: "Governa o córtex e o sistema nervoso, sustenta os sentidos e marca o ritmo das glândulas endócrinas. É o centro do pensamento que discerne.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["consciencia", "sabedoria", "justica"], prat: ["Exame de consciência", "O Livro dos Espíritos (Allan Kardec, 1857)"],
     perg: "Que pensamento repetido eu alimentei hoje sem examinar?",
     prece: "Leve a atenção à fronte. Aquiete os pensamentos e peça discernimento: ver com clareza e julgar com justiça, começando por você." },
   { id: "lar", nome: "Laríngeo", chakra: "Vishuddha", local: "garganta", x: 120, y: 112,
     funcao: "Controla sobretudo a respiração e a fonação: o sopro e a palavra.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["educacao", "gentileza", "paciencia"], prat: ["Vigilância da palavra"],
     perg: "As minhas palavras de hoje consolaram ou feriram?",
     prece: "Sinta o ar passar pela garganta. Que a sua palavra seja verdadeira, branda e útil, e que você saiba calar quando o silêncio for caridade." },
   { id: "car", nome: "Cardíaco", chakra: "Anahata", local: "centro do peito", x: 120, y: 166,
     funcao: "Dirige a emotividade e a circulação das forças de base.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["compaixao", "caridade", "fraternidade", "tolerancia"], prat: ["Caridade semanal", "Culto do Evangelho no lar"],
     perg: "A quem preciso estender hoje a indulgência que eu gostaria de receber?",
     prece: "Leve a atenção ao centro do peito. Envolva em pensamento de paz quem você ama e quem o feriu. Perdoe, peça perdão e deseje o bem." },
   { id: "esp", nome: "Esplênico", chakra: "Svadhisthana (na lista de Leadbeater, o centro do baço ocupa esse lugar)", local: "região do baço, à esquerda do abdome", x: 150, y: 210,
     funcao: "Regula a distribuição e a circulação dos recursos vitais por todo o corpo: a vitalidade.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["equilibrio"], prat: ["Frequentar uma casa espírita"],
     perg: "Onde estou gastando energia vital à toa: excesso, pressa, noites curtas?",
     prece: "Pense na vitalidade que circula pelo corpo. Agradeça ao corpo, instrumento da sua evolução, e proponha-se a cuidar dele com descanso, movimento e medida." },
   { id: "gas", nome: "Gástrico", chakra: "Manipura", local: "região do estômago (plexo solar)", x: 120, y: 236,
     funcao: "Responde pela penetração de alimentos e fluidos no organismo: o que assimilamos, no prato e nas emoções.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["temperanca"], prat: ["Água fluidificada"],
     perg: "O que eu engoli hoje sem digerir: comida, raiva, preocupação?",
     prece: "Leve a atenção à região do estômago. Que você receba o alimento com gratidão e medida, e não guarde o que precisa ser perdoado." },
   { id: "gen", nome: "Genésico", chakra: "Muladhara (a energia criadora também é ligada ao Svadhisthana)", local: "base do tronco", x: 120, y: 296,
     funcao: "Sede do sexo como templo modelador de formas e estímulos: a energia criadora, da vida e das obras.",
-    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["respeito", "igualdade"], prat: [],
     perg: "Estou usando a minha energia criadora com respeito, a mim e ao outro?",
     prece: "Pense na energia criadora. Que ela sirva ao amor e à vida, com respeito a você e ao outro, e se transforme também em trabalho e criação." }];
@@ -16747,7 +16785,7 @@ function cfHistorico() {
 function cfBase() {
   return `<details class="pn cfbase"><summary>${ic("book")}Base doutrinária e limites</summary>
     <p>Allan Kardec não usa a palavra chakra. A doutrina fala do <b>perispírito</b>, o envoltório fluídico que liga o Espírito ao corpo (O Livro dos Espíritos, q. 93 a 95 e 135), e dos <b>fluidos</b>, que o pensamento e a vontade modificam (A Gênese, cap. XIV).</p>
-    <p>Os <b>centros de força</b> aparecem na obra de André Luiz, psicografada por Chico Xavier: sete centros do perispírito (coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico), descritos em Entre a Terra e o Céu (cap. XX) e retomados em Evolução em Dois Mundos. Em Missionários da Luz, a epífise aparece como a glândula da vida mental.</p>
+    <p>Os <b>centros de força</b> aparecem na obra de André Luiz, psicografada por Chico Xavier: sete centros do perispírito (coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico), descritos pelo ministro Clarêncio em Entre a Terra e o Céu (cap. XX, Conflitos da alma) e retomados em Evolução em Dois Mundos (1ª parte, cap. II, Corpo espiritual). Em Missionários da Luz (cap. 2, A epífise), a epífise aparece como a glândula da vida mental.</p>
     <p><b>Onde se encontram com os chakras:</b> sete centros de energia ao longo do corpo, do alto da cabeça à base do tronco, ligados ao estado da mente. <b>Onde se separam:</b> nomes e funções próprios (o esplênico vem da lista de Leadbeater, que põe um centro no baço; o gástrico e o genésico não seguem a lista clássica) e, sobretudo, o foco: no espiritismo, a harmonia dos centros vem do pensamento, da conduta moral, da prece e do passe, não de técnicas para “abrir” ou “ativar” chakras, cores ou cristais.</p>
     <p>O passe e a água fluidificada são assistência fluídica oferecida nas casas espíritas e não substituem tratamento médico, como a própria orientação espírita lembra. As ligações com os valores da Bússola e com os seus dados são uma leitura do Atlas para a reflexão, não doutrina nem diagnóstico.</p></details>`;
 }
@@ -17068,6 +17106,32 @@ document.addEventListener("pointerdown", e => { if (e.pointerType !== "touch") r
 document.addEventListener("scroll", () => { $("#tip").hidden = true; }, { passive: true, capture: true });
 window.addEventListener("hashchange", route);
 window.addEventListener("resize", debounce(() => { const old = REPW; measureGrid(); if (Math.abs(old - REPW) > 8 && isReport()) render(); else pack(); }, 180));
+
+/* ================================================================ virada do dia
+   com o app aberto depois da meia-noite, tudo passa a gravar no dia novo; o que guardou a data da abertura acompanha
+   se ainda estava nela (um rascunho do Painel do dia fica no dia em que foi escrito) */
+const refDe = d => +d.slice(8) <= 7 ? addMonth(mkey(d), -1) : mkey(d);
+function diaVirou() {
+  const novo = iso(new Date()); if (novo === TODAY || !LOADED) return false;
+  /* redesenhar agora tiraria da mão o campo que está sendo digitado: espera ele perder o foco */
+  if (document.activeElement?.matches?.("input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]), textarea, select, [contenteditable=true]")) return false;
+  const old = TODAY; TODAY = novo;
+  if (REF === refDe(old)) REF = refDe(novo); else if (REF === mkey(old)) REF = mkey(novo);
+  if (CAP.data === old) CAP.data = novo;
+  if (RT.d === old) RT.d = novo;
+  let rasc = false; if (PD.date === old) { if (pdEmpty()) { PD = pdNew(novo); pdStore(); } else rasc = true; }
+  Object.assign(HJ, { wx: null, wxSt: "", news: null, newsSt: "" }); HJ.skip.clear();
+  VER++;
+  try { radarSync(); } catch (e) { console.warn("radar", e); }
+  try { ckSnapTake(); } catch (e) { console.warn("ckSnap", e); }
+  render();
+  toast(`Novo dia: os registros agora vão para ${fmtDL(novo)}${rasc ? `. O rascunho do Painel do dia continua em ${fmtD(old)}` : ""}`);
+  return true;
+}
+setInterval(diaVirou, 60e3);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) diaVirou(); });
+window.addEventListener("focus", () => diaVirou());
+document.addEventListener("focusout", () => setTimeout(diaVirou, 250));
 
 /* ================================================================ inicialização */
 (async function init() {

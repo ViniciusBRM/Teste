@@ -7,7 +7,8 @@ const PD_SEC = [["sec_saude", "Saúde", "pulse"], ["sec_din", "Finanças", "coin
 const CT_TIPOS = ["Encontro", "Ligação", "Videochamada", "Mensagem", "Evento / grupo"];
 const estItens = () => ["Inglês", "Italiano", ...S.aprend.filter(a => a.status === "Em andamento" && !/^(inglês|italiano)$/i.test(a.titulo)).map(a => a.titulo)];
 const lerItens = () => S.aprend.filter(a => a.status === "Em andamento" && (a.tipo === "Livro" || +a.total)).map(a => a.titulo);
-function pdTarefasDia(d = PD.date) { return S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= d).sort((a, b) => a.prazo.localeCompare(b.prazo)); }
+/* as pessoais primeiro (os exemplos do roteiro saem delas), depois as minhas do Cockpit */
+function pdTarefasDia(d = PD.date) { return [...S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= d).sort((a, b) => a.prazo.localeCompare(b.prazo)), ...ckMinhasAte(d)]; }
 function pdCasaDia(d = PD.date) {
   const rot = S.rotinas.filter(r => { const prox = r.ultima && +r.freq ? addDays(r.ultima, +r.freq) : d; return prox <= d && r.ultima !== d; });
   const contas = []; for (const c of S.contasCasa || []) for (const v of contaOcorr(c, addDays(d, -30), addDays(d, 3))) if (!contaPaga(c, v)) contas.push({ c, v });
@@ -17,7 +18,7 @@ function pdCasaDia(d = PD.date) {
 function pdMapa(rows) {
   const d = PD.date, B = pdBase(d), s = S.saude[d] || {}, has = id => rows.some(r => r.on && r.id.startsWith(id));
   const st = { sec_saude: [["humor", "sono", "energia", "estresse", "passos", "treino", "peso"].some(k => s[k] != null && s[k] !== ""), has("s.")], sec_din: [S.lanc.some(l => l.data === d), has("g.")], sec_hab: [S.habitos.some(h => S.marks[`${h.id}|${d}`]), has("h.")],
-    sec_tar: [S.tarefas.some(t => t.concluida === d), has("t.")], sec_pes: [S.contatos.some(c => c.data === d), has("c.")], sec_est: [S.estudo.some(x => x.data === d), has("e.") || has("r.")],
+    sec_tar: [S.tarefas.some(t => t.concluida === d) || ckMinhas(t => t.concluida === d).length > 0, has("t.")], sec_pes: [S.contatos.some(c => c.data === d), has("c.")], sec_est: [S.estudo.some(x => x.data === d), has("e.") || has("r.")],
     sec_jor: [B.sess.length > 0 || B.lz.length > 0, has("j.") || has("l.")], sec_casa: [S.rotinas.some(r => r.ultima === d) || (S.contasCasa || []).some(c => Object.values(c.pagos || {}).includes(d)), has("k.")], sec_dia: [B.ent.length > 0, has("d.")], sec_bm: [!!bmEx()[d] || rtOcc(d).some(b => b.st), has("b.") || has("q.")] };
   return `<nav class="pdmapa" aria-label="Abas do dia">${PD_SEC.map(([id, l, i]) => { const [ok, pend] = st[id] || []; return `<a href="#painel" class="pdmc${ok ? " ok" : ""}${pend ? " pend" : ""}" data-pdgo="${id}" title="${ok ? "já tem registro neste dia" : pend ? "há registros esperando para salvar" : "nada ainda"}">${ic(ok ? "check" : i)}<span>${l}</span>${pend ? "<i></i>" : ""}</a>`; }).join("")}</nav>`;
 }
@@ -68,6 +69,7 @@ function pdRows2(rows, cmd, B, d, bad) {
   const L = pdL(), V = PD.v;
   if (V.peso !== "" && V.peso != null && !bad("peso")) { const v = pdMoney(V.peso), old = S.saude[d]?.peso; if (old == null || Math.abs(old - v) > 1e-9) cmd("s.peso", `/peso ${fmtDec(v)}`, { kind: old == null ? "novo" : "subst", old: old == null ? "" : num(old) + " kg", dest: "saude" }); }
   for (const t of S.tarefas) if (PD.chk.tdone[t.id] && t.status !== "Concluída") rows.push({ id: `t.done.${t.id}`, txt: `Tarefa concluída: ${t.tarefa}`, kind: "novo", dest: "tarefas", on: true, apply: () => { const x = S.tarefas.find(z => z.id === t.id); if (x) { x.status = "Concluída"; x.concluida = d; } return ["tarefas"]; } });
+  for (const t of ckMinhas(t => ckOpen(t) && PD.chk.tdone[t.id])) rows.push({ id: `t.done.${t.id}`, txt: `Tarefa concluída: ${t.tarefa}`, kind: "novo", dest: "ckTar", on: true, apply: () => { const x = (S.ckTar || []).find(z => z.id === t.id); if (x) ckMarca(x, "concluída", d); return ["ckTar"]; } });
   L.tar.forEach(r => { const t = String(r.t || "").trim(); if (t.length < 3) return; const dup = S.tarefas.some(x => x.status !== "Concluída" && norm(x.tarefa) === norm(t.replace(/\s+at[eé].*$/, "").replace(/!\w+/, "").trim())); cmd(`t.n.${r.id}`, `/tarefa ${t}`, { kind: dup ? "dup" : "novo", old: dup ? "tarefa igual já aberta" : "", on: !dup, dest: "tarefas" }); });
   L.cont.forEach((r, i) => { if (!r.pessoa || bad(`cont${i}`)) return; const dup = S.contatos.some(c => c.data === d && c.pessoa === r.pessoa); cmd(`c.${r.id}`, `/contato ${personTok(r.pessoa)} ${r.tipo || "Encontro"}${r.min ? " " + r.min : ""}`, { kind: dup ? "dup" : "novo", old: dup ? "já há contato com essa pessoa neste dia" : "", on: !dup, dest: "contatos" }); });
   L.est.forEach((r, i) => { if (!r.item || bad(`est${i}`)) return; const h = Math.round(+r.min / 60 * 100) / 100, lang = /^ingl/i.test(r.item) ? "en" : /^italia/i.test(r.item) ? "it" : null, dup = S.estudo.some(x => x.data === d && norm(x.item) === norm(r.item) && Math.abs(x.horas - h) < .01);

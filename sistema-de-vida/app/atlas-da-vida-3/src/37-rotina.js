@@ -28,7 +28,7 @@ function rtOcc(d) {
 }
 function rtAgenda(d) {
   const ev = (S.eventos || []).filter(e => e.data === d || (e.ate && e.data <= d && e.ate >= d)).map(e => { const a = hm2min(e.hora), z = hm2min(e.fim) ?? (a != null ? a + 60 : null); return { id: e.id, titulo: e.titulo, a, z: z != null && z <= a ? 1440 : z, gcal: e.origem === "gcal", local: e.local, link: e.link, dia: a == null || (e.ate && e.data !== d) }; });
-  const tar = S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada");
+  const tar = [...S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada"), ...ckMinhas(t => ckOpen(t) && t.prazo === d)];
   return { timed: ev.filter(e => !e.dia), allday: ev.filter(e => e.dia), tar };
 }
 /* colunas para itens que se sobrepõem */
@@ -84,7 +84,7 @@ function rtCol(d) {
     ${occ.map(b => { const len = b.z - b.a, tiny = len / 30 * H < 34; return `<div role="button" tabindex="0" class="rtb${b.st ? " st-" + b.st : ""}${tiny ? " tiny" : ""}${cf.has(b.id) ? " conf" : ""}" style="${pos(b, b.n || 1, b.col)};--c:${rtCor(b.cat)}" data-rtb="${b.id}|${d}" title="${esc(`${b.ini}–${b.fim} · ${b.titulo}${b.rep ? " · " + REP_TXT[b.rep] : ""}${b.st ? " · " + ST_TXT[b.st] : ""}`)}"><b>${b.st === "feito" ? "✓ " : b.st === "pulado" ? "✕ " : ""}${esc(b.titulo)}</b><small>${b.ini}–${b.fim}${b.rep ? ` ${ic("repeat")}` : ""}</small><i class="rtrs" data-rtrs="${b.id}|${d}" aria-hidden="true"></i></div>`; }).join("")}
     ${ag.map(e => `<div class="rte${e.gcal ? " gcal" : ""}" style="${pos(e, e.n || 1, e.col)}" title="${esc(`${m2hm(e.a)}–${m2hm(Math.min(e.z, 1440))} · ${e.titulo}${e.local ? " · " + e.local : ""} (Agenda${e.gcal ? ", Google" : ""})`)}"><b>${esc(e.titulo)}</b><small>${m2hm(e.a)} · ${e.gcal ? "Google" : "agenda"}</small></div>`).join("")}${now}</div>`;
 }
-function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<span class="rtad e" title="Agenda">${ic("cal")}${esc(e.titulo)}</span>`), ...A.tar.map(t => `<span class="rtad t" title="Tarefa com prazo">${ic("checksq")}${esc(t.tarefa)}</span>`)].join(""); }
+function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<span class="rtad e" title="Agenda">${ic("cal")}${esc(e.titulo)}</span>`), ...A.tar.map(t => `<span class="rtad t" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo"}">${ic("checksq")}${esc(t.tarefa)}</span>`)].join(""); }
 function rtGrid(days) {
   const H = rtSH(), one = days.length === 1, hasAll = days.some(d => { const A = rtAgenda(d); return A.allday.length || A.tar.length; });
   return `<div class="rtgrid${one ? " one" : ""}" style="--n:${days.length};--sh:${H}px"><div class="rtscroll" id="rtscroll">

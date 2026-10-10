@@ -6,7 +6,7 @@ def chk(c, msg):
     global ok, bad
     if c: ok += 1; print("PASS", msg)
     else: bad += 1; print("FAIL", msg)
-T = datetime.date.today(); TS = T.isoformat(); U = "data/users/u_test/"
+T = datetime.date.fromisoformat(TODAY_ISO); TS = T.isoformat(); U = "data/users/u_test/"
 D = lambda n: (T + datetime.timedelta(days=n)).isoformat()
 SEED = {U + "s_cfg": {"at": 1, "v": {"nome": "Teste"}},
         U + "s_pessoas": {"at": 1, "v": [{"id": "p1", "nome": "Mãe", "relacao": "Família", "freq": 7}]},

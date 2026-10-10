@@ -5,7 +5,9 @@ let EX_MODE = false, EX_REAL = null;
 const EX_TXT = "Dormi 7 e meia, humor 4, corri 30 min, gastei 12,50 no almoço e 32,40 no mercado, meditei 15 min. Preciso ligar para o comune até sexta";
 async function exOn() {
   if (EX_MODE) return;
-  try { if (STORE && dirty.size) { clearTimeout(saveTimer); await (FLUSHING || flush()); } } catch {}
+  /* o modo exemplo não grava nada: se as últimas mudanças não foram salvas, entrar agora arriscaria perdê-las ao fechar a aba */
+  if (STORE && dirty.size) { clearTimeout(saveTimer); for (let i = 0; i < 2 && dirty.size; i++) { try { await (FLUSHING || flush()); } catch (e) { console.warn("salvar", e); } }
+    if (dirty.size) { toast("Não consegui salvar as últimas mudanças, então o modo exemplo não foi ligado. Tente de novo em instantes."); return; } }
   EX_REAL = { S, IS_EXAMPLE, undo: UNDO.splice(0), redo: REDO.splice(0), PD, MCP, NOTION_OK, ref: REF };
   EX_MODE = true; S = exampleData(); IS_EXAMPLE = false; MCP = null; NOTION_OK = false; REF = mkey(TODAY);
   PD = pdNew(); PD.text = EX_TXT; pdParse();

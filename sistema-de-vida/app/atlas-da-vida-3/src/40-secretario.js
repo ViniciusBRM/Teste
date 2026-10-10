@@ -30,6 +30,7 @@ function secItems() {
   const open = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo);
   for (const t of open.filter(t => t.prazo < d).sort((a, b) => a.prazo.localeCompare(b.prazo)).slice(0, 6)) add({ id: "tar:" + t.id, area: t.area || "Tarefas", st: "crit", txt: t.tarefa, sub: `atrasada desde ${fmtD(t.prazo)}${t.prio === "Alta" ? " · prioridade alta" : ""}`, go: "metas.tarefas", acts: [["Concluí", `tdone|${t.id}`], ["Adiar para amanhã", `tadiar|${t.id}`]] });
   for (const t of open.filter(t => t.prazo === d)) add({ id: "tar:" + t.id, area: t.area || "Tarefas", st: "warn", txt: t.tarefa, sub: `vence hoje${t.prio === "Alta" ? " · prioridade alta" : ""}`, go: "metas.tarefas", acts: [["Concluí", `tdone|${t.id}`], ["Adiar para amanhã", `tadiar|${t.id}`]] });
+  for (const t of ckMinhasAte(d).slice(0, 6)) add({ id: "ck:" + t.id, area: "Trabalho", st: t.prazo < d ? "crit" : "warn", txt: t.tarefa, sub: `${t.prazo < d ? `atrasada desde ${fmtD(t.prazo)}` : "vence hoje"}${t.prio === "alta" ? " · prioridade alta" : ""}`, go: "trabalho.hoje", acts: [["Concluí", `ckdone|${t.id}`]] });
   const CD = pdCasaDia(d);
   for (const { c, v } of CD.contas) add({ id: `conta:${c.id}|${v}`, area: "Casa & organização", st: v < d ? "crit" : "warn", txt: `Conta: ${c.conta} · ${eur(+c.valor || 0, 2)}`, sub: v < d ? `venceu ${fmtD(v)}` : v === d ? "vence hoje" : `vence ${fmtD(v)}`, go: "casa.contas", acts: [["Paguei", `conta|${c.id}|${v}`, true]] });
   for (const x of (S.docs || []).filter(x => x.validade && diff(x.validade, d) <= (+S.cfg.alertaDocs || 30))) { const n = diff(x.validade, d); add({ id: "doc:" + x.id, area: "Casa & organização", st: n < 0 ? "crit" : "warn", txt: `Documento: ${x.doc || x.nome || x.tipo || "documento"}`, sub: n < 0 ? `venceu ${fmtD(x.validade)}` : `vence em ${plural(n, "dia", "dias")}`, go: "casa.docs" }); }
@@ -46,7 +47,7 @@ function secItems() {
   const late = R.pes.filter(p => p.st === "crit" && +p.freq).sort((a, b) => b.ratio - a.ratio)[0];
   if (late) add({ id: "pes:" + late.id, area: "Família", st: "info", txt: `Falar com ${late.nome}`, sub: late.txt || "contato atrasado", go: "pessoas.lista" });
   for (const l of secData().lembretes.filter(l => !l.feito && l.quando && l.quando.slice(0, 10) <= d)) { const past = new Date(l.quando) <= new Date(); add({ id: "lem:" + l.id, area: "Lembretes", st: past ? "crit" : "warn", txt: l.texto, sub: `${past ? "era para" : "hoje às"} ${l.quando.slice(11, 16)}${l.quando.slice(0, 10) < d ? ` de ${fmtD(l.quando.slice(0, 10))}` : ""}`, acts: [["Feito", `lemok|${l.id}`]], go: null }); }
-  try { const a = jdAsks()[0]; if (a) add({ id: "jd:" + a[3], area: "Propósito & espiritualidade", st: "info", txt: `Jardim: ${a[1]}`, sub: a[2], go: "jornada.jardim" }); } catch {}
+  try { const a = jdAsks()[0]; if (a) add({ id: "jd:" + a[3], area: "Propósito & espiritualidade", st: "info", txt: `Jardim: ${a[1]}`, sub: a[2], go: "jornada.jardim" }); } catch (e) { console.warn("jardim", e); }
   const rk = { crit: 0, warn: 1, info: 2 };
   return out.sort((a, b) => rk[a.st] - rk[b.st]);
 }
@@ -56,6 +57,10 @@ function secConflitos() {
     out.push({ chave: k, txt: `O bloco “${bk?.titulo || "da rotina"}” (${bk?.ini || ""}) bate com “${ev?.titulo || "um compromisso"}”`, sub: "Um dos dois precisa mudar de horário, ou você assume a sobreposição.", ops: [["Abrir a Rotina para mover", "go:rotina.dia"], ["Manter os dois", "ok"]] }); }
   const hoje = S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && t.prazo && t.prazo <= d), livre = D.livre || 0;
   if (hoje.length >= 4 && hoje.length * 45 > livre) out.push({ chave: "sobrecarga:" + d, txt: `${plural(hoje.length, "tarefa vence", "tarefas vencem")} até hoje e há ${num(livre / 60, 1)} h livres na rotina`, sub: "Não cabe tudo. Decida o que sai hoje.", ops: [["Adiar as de prioridade baixa e média para amanhã", "adiar_baixas"], ["Manter tudo", "ok"], ["Ver as tarefas", "go:metas.tarefas"]] });
+  /* as do Cockpit não entram na conta do tempo livre (são feitas no horário de trabalho): comparam com a capacidade do Cockpit */
+  const trab = ckMinhasAte(d).map(x => S.ckTar.find(t => t.id === x.id)), eu = (S.ck?.membros || []).find(m => m.eu);
+  if (trab.length >= 2) { const dem = sum(trab.map(ckRem)), cap = ckHpdOf(eu, S.ck?.cfg || {});
+    if (dem > cap) out.push({ chave: "sobrecarga-trab:" + d, txt: `${plural(trab.length, "tarefa do Cockpit vence", "tarefas do Cockpit vencem")} até hoje: ${num(dem, 1)} h de trabalho para ${num(cap, 1)} h de capacidade no dia`, sub: "No trabalho também não cabe tudo. Decida no Cockpit o que muda de prazo ou de responsável.", ops: [["Abrir o Cockpit", "go:trabalho.hoje"], ["Manter tudo", "ok"]] }); }
   const altas = hoje.filter(t => t.prio === "Alta" && t.prazo < d);
   if (altas.length >= 3) out.push({ chave: "altas:" + d, txt: `${altas.length} tarefas de prioridade alta estão atrasadas`, sub: "Quando tudo é prioridade, nada é. Qual delas vem primeiro?", ops: [...altas.slice(0, 3).map(t => [`Primeiro: ${trunc(t.tarefa, 40)}`, "first:" + t.id]), ["Pedir ajuda ao Secretário", "ask"]] });
   return out.filter(c => !dec.has(c.chave));
@@ -206,6 +211,7 @@ function secLocal(text) {
 function secDo(code, el) {
   const [k, a, b] = code.split("|");
   if (k === "tdone") { const t = S.tarefas.find(x => x.id === a); if (!t) return; t.status = "Concluída"; t.concluida = TODAY; touch("tarefas", { label: "Tarefa concluída" }); undoToast(`Concluída: ${trunc(t.tarefa, 50)}`); return; }
+  if (k === "ckdone") { const t = (S.ckTar || []).find(x => x.id === a); if (!t) return; ckSetStatus(t.id, "concluída"); undoToast(`Concluída: ${t.cod} · ${trunc(t.titulo, 50)}`); return; }
   if (k === "tadiar") { const t = S.tarefas.find(x => x.id === a); if (!t) return; t.prazo = addDays(TODAY, 1); touch("tarefas", { label: "Tarefa adiada" }); undoToast(`Adiada para amanhã: ${trunc(t.tarefa, 50)}`); return; }
   if (k === "conta") { const c = (S.contasCasa || []).find(z => z.id === a); if (!c) return; c.pagos = { ...(c.pagos || {}), [b]: TODAY }; const ks = ["contasCasa"], cat = /aluguel|condom/i.test(c.cat || "") ? "Moradia" : "Contas da casa"; if (+c.valor > 0 && cat in CAT_DESP) { S.lanc.push({ id: uid(), data: TODAY, tipo: "Despesa", cat, desc: c.conta, valor: +c.valor, conta: c.debito === "Sim" ? "Conta corrente" : "PIX / transferência", origem: "secretário" }); ks.push("lanc"); } touch(...ks, { label: "Conta paga" }); undoToast(`Conta paga: ${c.conta} · ${eur(+c.valor || 0, 2)} lançado`); return; }
   if (k === "lemok") { const l = secData().lembretes.find(x => x.id === a); if (l) { l.feito = true; touch("secretario", { label: "Lembrete feito" }); } return; }

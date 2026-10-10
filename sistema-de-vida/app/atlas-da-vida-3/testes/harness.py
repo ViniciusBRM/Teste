@@ -1,4 +1,4 @@
-import asyncio, json, sys, base64, pathlib, os
+import asyncio, json, os, sys, base64, pathlib
 from playwright.async_api import async_playwright
 
 ROOT = pathlib.Path(__file__).parent
@@ -181,6 +181,24 @@ MOCK = r"""
   if (!cfg.none) window.claude = { use: async n => (cfg.off || []).includes(n) ? null : caps[n] || null };
 })();
 """
+
+# Relógio fixo: os testes não dependem do dia em que rodam. Só Date é deslocado (os timers seguem reais).
+# ATLAS_NOW muda o padrão; cfg {"now": "2026-10-10T10:00:00"} fixa outro instante; cfg {"now": None} usa o relógio real.
+NOW = os.environ.get("ATLAS_NOW", "2026-10-09T10:00:00")  # sexta-feira, dia útil no meio do mês (os dados de exemplo saem desta data)
+TODAY_ISO = NOW[:10]
+CLOCK = r"""
+(() => {
+  const cfg = window.__MOCKCFG || {}, at = cfg.now === undefined ? "%s" : cfg.now;
+  if (at === null) return;
+  const RD = Date; let off = RD.parse(at) - RD.now();
+  function FD(...a) { if (!new.target) return new RD(RD.now() + off).toString(); return a.length ? new RD(...a) : new RD(RD.now() + off); }
+  FD.prototype = RD.prototype; Object.setPrototypeOf(FD, RD);
+  FD.now = () => RD.now() + off; FD.parse = RD.parse; FD.UTC = RD.UTC;
+  window.Date = FD;
+  window.__clock = { shift: ms => { off += ms; }, set: s => { off = RD.parse(s) - RD.now(); } };
+})();
+""" % NOW
+MOCK = CLOCK + MOCK
 
 async def open_page(p, w=1440, h=900, theme="dark", cfg=None, hash_=""):
     b = await p.chromium.launch(**({"executable_path": CHROME} if CHROME else {}))

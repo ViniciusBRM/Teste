@@ -148,7 +148,7 @@ function route() {
   if (PAGE === "mentor" && !(SUB in MENTOR_DEF)) SUB = "conselho";
   NAVOPEN = false; DRAWER = null; if (PAGE !== "painel" && VOZ.sr) stopVoice(); if (PAGE !== "hoje") HJ.skip.clear();
   /* o registro do radar é atualizado antes de desenhar, para os alertas novos já virem com “útil / alarme falso” */
-  if (LOADED && (PAGE === "radar" || PAGE === "hoje")) try { radarSync(); } catch {}
+  if (LOADED && (PAGE === "radar" || PAGE === "hoje")) try { radarSync(); } catch (e) { console.warn("radar", e); }
   render(); $("#main")?.focus({ preventScroll: true }); window.scrollTo({ top: 0 });
 }
 function navHTML(R) {

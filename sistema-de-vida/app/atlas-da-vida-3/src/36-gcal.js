@@ -5,6 +5,8 @@ const GCAL = { st: "", msg: "", busy: false };
 const GC_SRV = "Google Calendar";
 const gcInteg = () => { S.integ ||= {}; return (S.integ.gcal ||= {}); };
 const gcErr = e => ({ not_granted: "Você não liberou o Google Calendar para esta página.", needs_reauth: "O Google Calendar precisa ser reconectado nas configurações do Claude.", server_not_connected: "O Google Calendar não está conectado na sua conta Claude.", not_in_manifest: "Esta versão da página não tem acesso ao Google Calendar.", blocked_by_policy: "A sua organização bloqueou este conector.", cancelled: "Cancelado." }[e?.code] || `Não consegui falar com o Google Calendar (${e?.code || "erro"}).`);
+/* o conector pede a hora local sem fuso nem “Z” (o fuso vai à parte, em timeZone) */
+const gcLocal = d => `${iso(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
 const tzLocal = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Rome"; } catch { return "Europe/Rome"; } };
 const hhmm = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 function gcMap(ev) {
@@ -18,7 +20,7 @@ async function gcSync(o = {}) {
   const de = addDays(TODAY, -1), ate = addDays(TODAY, 30), evs = [];
   try {
     let tok = ""; for (let p = 0; p < 4; p++) {
-      const r = await MCP.callTool(GC_SRV, "list_events", { startTime: new Date(de + "T00:00:00").toISOString(), endTime: new Date(ate + "T23:59:59").toISOString(), orderBy: "startTime", pageSize: 250, timeZone: tzLocal(), ...(tok ? { pageToken: tok } : {}) }, { cache: false });
+      const r = await MCP.callTool(GC_SRV, "list_events", { startTime: de + "T00:00:00", endTime: ate + "T23:59:59", orderBy: "startTime", pageSize: 250, timeZone: tzLocal(), ...(tok ? { pageToken: tok } : {}) }, { cache: false });
       const pl = r?.payload || {}; for (const ev of pl.events || []) if (ev.status !== "cancelled" && ev.id) evs.push(ev); tok = pl.nextPageToken || ""; if (!tok) break; }
     const keep = (S.eventos || []).filter(e => e.origem !== "gcal" || e.data < de || e.data > ate), novos = evs.map(ev => { const m = gcMap(ev); return { id: "gc_" + ev.id, uid: "gcal:" + ev.id, ...m, titulo: String(ev.summary || "(sem título)").slice(0, 200), local: String(ev.location || "").slice(0, 200), link: ev.htmlLink || "", origem: "gcal" }; }).filter(e => e.data);
     S.eventos = [...keep, ...novos]; const G = gcInteg(); G.on = true; G.last = Date.now(); G.n = novos.length;
@@ -40,7 +42,7 @@ async function gcCriarEstudo() {
       let st = ini; for (const e of p.ev.sort((a, b) => (a.hora || "").localeCompare(b.hora || ""))) { const a = hm2m(e.hora), b = hm2m(e.fim) ?? (a != null ? a + 60 : null); if (a != null && a <= st && b > st) st = b; }
       const min = p.en + p.it, a = new Date(`${p.d}T${pad(Math.floor(st / 60))}:${pad(st % 60)}:00`), b = new Date(a.getTime() + min * 60e3);
       const titulo = `Estudo · ${p.en ? `inglês ${p.en} min` : ""}${p.en && p.it ? " + " : ""}${p.it ? `italiano ${p.it} min` : ""}`;
-      await MCP.callTool(GC_SRV, "create_event", { summary: titulo, startTime: a.toISOString(), endTime: b.toISOString(), description: "Criado pelo Atlas da Vida a partir do plano de Idiomas.", availability: "AVAILABILITY_BUSY", useDefaultReminders: true });
+      await MCP.callTool(GC_SRV, "create_event", { summary: titulo, startTime: gcLocal(a), endTime: gcLocal(b), timeZone: tzLocal(), description: "Criado pelo Atlas da Vida a partir do plano de Idiomas.", availability: "AVAILABILITY_BUSY", useDefaultReminders: true });
       S.eventos.push({ id: uid(), uid: "atlas:" + p.d, data: p.d, hora: hhmm(a), fim: hhmm(b), titulo, local: "", origem: "gcal" }); n++;
     }
     toast(`${plural(n, "bloco criado", "blocos criados")} no Google Calendar`);

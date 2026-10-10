@@ -8,8 +8,8 @@ def chk(c, msg):
     if c: ok += 1; print("PASS", msg)
     else: bad += 1; print("FAIL", msg)
 
-T = datetime.date.today().isoformat()
-Y = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+T = TODAY_ISO
+Y = (datetime.date.fromisoformat(TODAY_ISO) - datetime.timedelta(days=1)).isoformat()
 def seed():
     u = "data/users/u_test/"
     return {u + "s_saude": {"at": 1, "v": {T: {"humor": 3, "sono": 6}}},

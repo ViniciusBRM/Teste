@@ -230,6 +230,32 @@ document.addEventListener("scroll", () => { $("#tip").hidden = true; }, { passiv
 window.addEventListener("hashchange", route);
 window.addEventListener("resize", debounce(() => { const old = REPW; measureGrid(); if (Math.abs(old - REPW) > 8 && isReport()) render(); else pack(); }, 180));
 
+/* ================================================================ virada do dia
+   com o app aberto depois da meia-noite, tudo passa a gravar no dia novo; o que guardou a data da abertura acompanha
+   se ainda estava nela (um rascunho do Painel do dia fica no dia em que foi escrito) */
+const refDe = d => +d.slice(8) <= 7 ? addMonth(mkey(d), -1) : mkey(d);
+function diaVirou() {
+  const novo = iso(new Date()); if (novo === TODAY || !LOADED) return false;
+  /* redesenhar agora tiraria da mão o campo que está sendo digitado: espera ele perder o foco */
+  if (document.activeElement?.matches?.("input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]), textarea, select, [contenteditable=true]")) return false;
+  const old = TODAY; TODAY = novo;
+  if (REF === refDe(old)) REF = refDe(novo); else if (REF === mkey(old)) REF = mkey(novo);
+  if (CAP.data === old) CAP.data = novo;
+  if (RT.d === old) RT.d = novo;
+  let rasc = false; if (PD.date === old) { if (pdEmpty()) { PD = pdNew(novo); pdStore(); } else rasc = true; }
+  Object.assign(HJ, { wx: null, wxSt: "", news: null, newsSt: "" }); HJ.skip.clear();
+  VER++;
+  try { radarSync(); } catch (e) { console.warn("radar", e); }
+  try { ckSnapTake(); } catch (e) { console.warn("ckSnap", e); }
+  render();
+  toast(`Novo dia: os registros agora vão para ${fmtDL(novo)}${rasc ? `. O rascunho do Painel do dia continua em ${fmtD(old)}` : ""}`);
+  return true;
+}
+setInterval(diaVirou, 60e3);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) diaVirou(); });
+window.addEventListener("focus", () => diaVirou());
+document.addEventListener("focusout", () => setTimeout(diaVirou, 250));
+
 /* ================================================================ inicialização */
 (async function init() {
   try { const th = localStorage.getItem("atlas_theme"); if (th) document.documentElement.dataset.theme = th; } catch {}

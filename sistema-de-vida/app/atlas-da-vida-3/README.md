@@ -59,6 +59,8 @@ Gestão do trabalho de engenharia com um agente PMO que lê tudo e só **propõe
 - **Personalizar** oculta e reordena os widgets (fica no banco); **Modo reunião** mostra uma seção por vez em tela cheia (← → e Esc).
 - **Camada de agregação** (`src/49-cockpit-agg.js`): funções puras que recebem dados, filtros, período e contexto e devolvem os números e os ids. O **registro diário** (`ckSnap`) guarda uma vez por dia o que as datas não reconstituem (a menor folga, a carga, os abertos), para os períodos passados; nunca no modo Exemplo.
 - **Limites** (`CK_LIMITES` em `src/44-cockpit-config.js`): janela e faixas da carga, score de risco alto, dias até um problema virar alerta, ciclo de 1:1 e os da Minha agenda. A aba Contexto sobrescreve cada um.
+- **Fora do Cockpit**: as tarefas em que o responsável é você aparecem no Hoje (em Para hoje, marcadas como Trabalho · T12), no Secretário (com Concluí e um aviso de sobrecarga que compara as horas restantes com a sua capacidade diária no Cockpit, sem misturar com o tempo livre da Rotina), na Rotina, no Painel do dia e no Fechamento da semana. Concluir fora é o mesmo que concluir no Cockpit; o prazo continua sendo mudado no Cockpit, por causa das dependências. Ajustes → Cockpit de Trabalho desliga.
+- **“ok” no chat** aprova as propostas da mensagem mais recente que tem pendências (a mesma regra da Saúde); as anteriores continuam esperando e o PMO diz quantas.
 
 ## Cruzamentos (Laboratório)
 
@@ -90,7 +92,7 @@ Duas sub-abas novas na Saúde, cada uma com um agente que lê os dados a cada me
 ## Jornada → Espiritismo → Centros de força
 
 Os chakras lidos à luz da Doutrina Espírita, dentro do pilar Espiritismo (navegação **O pilar | Centros de força**; não é um quinto pilar nem um item novo na barra da Jornada).
-- **Os sete centros** do perispírito descritos por André Luiz (Entre a Terra e o Céu, cap. XX): coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico, cada um com o chakra correspondente (Sahasrara, Ajna, Vishuddha, Anahata, Svadhisthana na lista de Leadbeater, Manipura, Muladhara), a função, a fonte, uma pergunta e a prece.
+- **Os sete centros** do perispírito descritos por André Luiz (Entre a Terra e o Céu, cap. XX, Conflitos da alma): coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico, cada um com o chakra correspondente (Sahasrara, Ajna, Vishuddha, Anahata, Svadhisthana na lista de Leadbeater, Manipura, Muladhara), a função, a fonte, uma pergunta e a prece.
 - **Virtudes da Bússola** que trabalham cada centro (leitura do Atlas, não doutrina): os 17 valores, cada um em um centro só, com a prática de cada um no exame da noite.
 - **O que os seus dados mostram** (14 dias): dias com o Espiritismo e sessões de prece; qualidade do sono, estresse e estudo; respiração e vigilância da palavra; humor, contatos e caridade; sono, treino e passos; alimentação na meta e álcool; no genésico, o Atlas não mede nada.
 - **Autoavaliação semanal** de 1 (em desarmonia) a 5 (em harmonia), com as últimas 12 semanas; **harmonização guiada** (abertura, os sete centros de cima para baixo e encerramento, 30 s a 2 min por centro, leitura em voz alta opcional) que vira sessão de prática do Espiritismo (Práticas, ritmo do pilar, jardim e Cruzamentos).
@@ -103,9 +105,17 @@ Os chakras lidos à luz da Doutrina Espírita, dentro do pilar Espiritismo (nave
 - **O Terapeuta**: agente com memória que muda de forma (profundo, escuta, direto, acolhimento, socrático). Em Automático, ele lê os sinais do que você escreve; uma forma tocada fica fixa. Não substitui a terapia e tem protocolo de segurança.
 - **Fios**: um registro de pensamento vira triagem estoica; uma triagem pode ir para a pauta da terapia; os padrões aparecem na Filosofia; sessões e processos se ligam a pilares e valores; os mentores da Jornada e o Conselho leem um resumo (nada marcado como só seu, e nada se a Saúde mental estiver fora da IA).
 
+## Virada do dia
+
+Com o Atlas aberto depois da meia-noite, a data muda sozinha (a cada minuto e ao voltar para a aba): os registros passam
+para o dia novo, e o que estava no dia velho acompanha (mês do relatório, Rotina, Captura e um Painel do dia vazio). Um
+rascunho do Painel fica no dia em que foi escrito, com aviso; se um campo estiver em edição, a virada espera ele perder o foco.
+
 ## Testes (Playwright + Chromium)
 
 Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` por verificação e o total no fim.
+O relógio do navegador fica fixo em 09/10/2026, 10:00 (sexta), para os testes não dependerem do dia em que rodam:
+`ATLAS_NOW=2026-10-10T10:00:00` muda o instante, e `cfg={"now": None}` num teste usa o relógio real.
 
 | Script | O que cobre |
 |---|---|
@@ -117,6 +127,7 @@ Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` 
 | `lab26.py` | Cruzamentos: menu no Laboratório, famílias parte-todo, r, dias efetivos, intervalo de 95% e p conferidos com Python, Benjamini–Hochberg igual ao Python, zeros só enquanto há registro, só gastos mostra o que falta, métricas de Rotina, Cockpit, Psicologia e Idiomas conferidas com as abas, sessão privada fora, perguntas, pistas, Ver no gráfico, Testar como experimento, aviso parte-todo, matriz, Visão geral, ideias de experimento, celular |
 | `lab27.py` | Saúde: metas da alimentação (Mifflin-St Jeor, piso, ritmo, macros), tendência do peso e gasto pelos dados conferidos com Python; registro por texto, água e peso; progressão dupla, Epley, volume, carga aguda:crônica e Riegel conferidos; regras do plano de corrida reescritas em Python; treino série a série com o check-in; corrida; ficha à mão e por modelo; plano básico; Nutri e Personal com propostas válidas e recusadas, aprovação por clique e por “ok”, desfazer, sem ferramentas e bloqueados pela Privacidade; métricas novas nos Cruzamentos; celular |
 | `lab28.py` | Centros de força: os sete centros com o chakra correspondente, os 17 valores da Bússola uma vez cada, seção agrupada no Espiritismo, mapa por toque e teclado, sinais conferidos em Python, autoavaliação (marca, troca, desmarca, desfaz), harmonização guiada que vira sessão (e aparece em Práticas), encerrar cedo não registra, sair da página para o relógio, reflexão e prática pelo centro, resumo no pilar, fatos dos mentores sem números de saúde, celular |
+| `lab29.py` | Correções da auditoria: virada do dia com o app aberto (e a espera do campo em edição), sábado fixo (Cockpit e sobrecarga), minhas tarefas do Cockpit no Hoje, Secretário, Rotina, Painel e Fechamento, e o interruptor; “ok” do Cockpit só no lote mais recente; Google Agenda com hora local; modo exemplo que não liga sem salvar, cofre, radar e jardim; Contexto no celular; diagonal dos Cruzamentos; fontes espíritas; uma frase no Painel paga uma ocorrência da conta |
 | `lab24.py` | Dashboard (1/2): a camada de agregação confere com um cálculo independente em Python (período, dias úteis italianos, comparação com o mesmo trecho, KPIs atual e anterior, burnup, status semanal, throughput e lead time, esforço, matriz de riscos, problemas por semana, conhecimento, Minha agenda, carga realizada, heatmap); calendário indexado = dia a dia; filtros consistentes; KPIs do Hoje vindos da camada; drill-down com os ids exatos; registro diário uma vez por dia, nunca no Exemplo |
 | `lab25.py` | Dashboard (2/2): sub-aba e rotas, 21 widgets, drill-down de todos os KPIs e de dois números por widget até a aba certa, Limpar, filtros e período na sessão, período personalizado, insights que viram propostas e “ok”, relatório do período em italiano com os mesmos números, modo reunião, estados vazios, layout persistente no banco, Exemplo sem gravar, celular sem rolagem horizontal, 1000 tarefas |
 | `lab23.py` | Cockpit (2/2): diário de bordo com extração local e pela IA, riscos (mapa, sugestões, mitigação), problemas com soluções convertidas em tarefas, lições, decisões, Gantt com tabela, clash, revisão de elaborati, relatório mensal em italiano (exportação e PMO), blocos de foco, PMO sem ferramentas, persistência no banco |
