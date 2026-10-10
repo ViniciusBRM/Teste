@@ -1871,6 +1871,56 @@ body.ckdmeet-on .app{grid-template-columns:minmax(0,1fr)}body.ckdmeet-on .ckwrap
 .trfrow input{min-width:0;width:100%}
 #trf_rows{max-height:50vh;overflow:auto;margin-bottom:8px}
 @media (max-width:640px){.nuday{grid-template-columns:minmax(0,1fr);justify-items:center}.numac{width:100%}.nuq{flex-direction:column}.trfhead{display:none}.trfrow{grid-template-columns:repeat(4,minmax(0,1fr));padding:8px 0;border-top:1px solid var(--line)}.trfrow .trf_ex{grid-column:1/-1}.trfrow .trf_o{grid-column:1/4}.trset input{width:74px;padding:6px}.trtimer{bottom:76px}}
+
+/* Jornada → Espiritismo → Centros de força */
+.cfgrid{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:16px}
+.cfmap{display:flex;flex-direction:column;gap:10px}
+.cfsvg{width:100%;max-width:330px;height:auto;margin:0 auto;display:block}
+.cfbody{fill:none;stroke:var(--line-2);stroke-width:1.4}
+.cfaxis{stroke:var(--jp-esp);stroke-opacity:.35;stroke-width:1.2;stroke-dasharray:3 4}
+.cfl{stroke:var(--line-2);stroke-width:.8;stroke-dasharray:2 3}
+.cfn{cursor:pointer;outline:none}
+.cfd{stroke:var(--jp-esp);stroke-width:1.4;transition:r .15s}
+.cfd.vazio{stroke:var(--line-2);stroke-dasharray:3 2}
+.cfn:hover .cfd,.cfn:focus-visible .cfd{stroke-width:2.6}
+.cfsel{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:4 3}
+.cfnum{font:600 11px var(--f-ui);fill:var(--ink);text-anchor:middle;pointer-events:none}
+.cflab{font:500 12px var(--f-ui);fill:var(--ink-2)}
+.cfn.on .cflab{fill:var(--ink);font-weight:700}
+.cfstart{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end}
+.cfstart .lbl{min-width:150px}
+.cfdet .cfdh{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+.cfdet h2{margin:0}
+.cfdot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--jp-esp);flex:none}
+.cfvals{display:flex;flex-wrap:wrap;gap:6px}
+.cfsin{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:4px 0 6px}
+.cfsin>div{border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.cfsin span{font-size:12px;color:var(--muted)}
+.cfsin b{font-size:16px}
+.cfprs{display:grid;gap:6px}
+.cfpr{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:6px}
+.cfavs{display:grid;gap:8px}
+.cfav{display:grid;grid-template-columns:96px auto minmax(0,1fr);gap:8px;align-items:center}
+.cfav .segs .seg{min-width:34px}
+.cfheat{display:grid;grid-template-columns:86px repeat(var(--n),minmax(18px,1fr));gap:3px;align-items:center;font-size:11px;overflow-x:auto}
+.cfheat small{color:var(--muted);font-size:9.5px;writing-mode:vertical-rl;transform:rotate(180deg);justify-self:center}
+.cfheat b{font-weight:500;font-size:12px}
+.cfheat i{display:flex;align-items:center;justify-content:center;height:20px;border-radius:4px;border:1px solid var(--line);font-style:normal;font-size:10px;color:var(--ink)}
+.cfhist{display:grid;gap:4px}
+.cfhist>div{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;border-top:1px solid var(--line);padding-top:4px}
+.cfharm{border-color:var(--jp-esp);background:color-mix(in srgb,var(--jp-esp) 7%,var(--surface));margin-bottom:16px}
+.cfhtop{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cfhtop b{font-size:17px}
+.cfhtxt{font:400 19px/1.55 var(--f-display);margin:10px 0}
+.cfhbar{height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:6px 0}
+.cfhbar i{display:block;height:100%;width:0;background:var(--jp-esp);transition:width .25s linear}
+.cfmini{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.cfm{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--ink-2);min-width:0}
+.cfm i{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--jp-esp);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:600;color:var(--ink)}
+.cfm small{font-size:10.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfbase summary{cursor:pointer;font-weight:600;display:flex;gap:8px;align-items:center}
+.cfbase p{max-width:78ch}
+@media (max-width:820px){.cfgrid{grid-template-columns:minmax(0,1fr)}.cfav{grid-template-columns:minmax(0,1fr)}.cfav small{margin-top:-4px}}
 </style>
 
 <div class="app">
@@ -2322,6 +2372,7 @@ function exampleData() {
   D.psique = psiExemplo();
   ckExemplo(D);
   sdExemplo(D);
+  cfExemplo(D);
   D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${addDays(TODAY, 1)}T09:00` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
   return D;
 }
@@ -3541,7 +3592,7 @@ const SUBS = {
   lazer: [["inicio", "Início"], ["leitura", "Leitura"], ["filmes", "Filmes e séries"], ["jogos", "Jogos"], ["viagens", "Viagens"], ["cafe", "Café"], ["aviacao", "Aviação"], ["estudos", "Estudos"], ["existencial", "Existencial"]],
   carreira: [["panorama", "Panorama"], ["avaliacao", "Avaliação atual"], ["portfolio", "Portfólio"], ["objetivos", "Objetivos"], ["decisoes", "Decisões"], ["geotecnia", "Geotecnia"], ["plano", "Plano de ação"], ["mercado", "Mercado"], ["caderno", "Caderno técnico"], ["rede", "Rede profissional"], ["biblioteca", "Biblioteca"]],
   /* o terceiro elemento marca uma seção interna: não vira aba, e acende a aba-mãe */
-  jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["filosofia", "Filosofia"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
+  jornada: [["inicio", "Início"], ["jardim", "Saúde espiritual"], ["espiritismo", "Espiritismo"], ["centros", "Centros de força", "espiritismo"], ["meditacao", "Meditação"], ["taoismo", "Taoísmo"], ["budismo", "Budismo"], ["confluencias", "Confluências"], ["filosofia", "Filosofia"], ["praticas", "Práticas"], ["bussola", "Bússola moral"], ["exame", "Exame da noite", "bussola"], ["decidir", "Decidir", "bussola"], ["caminhos", "Caminhos", "bussola"], ["navegante", "O Navegante", "bussola"]],
   rotina: [["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]],
   trabalho: [["dashboard", "Dashboard"], ["hoje", "Hoje"], ["semana", "Semana"], ["mes", "Mês"], ["kanban", "Kanban"], ["lista", "Lista"], ["gantt", "Gantt"], ["riscos", "Riscos"], ["problemas", "Problemas"], ["equipe", "Equipe"], ["log", "Diário de bordo"], ["decisoes", "Decisões"], ["bim", "Tracker BIM"], ["entregas", "Entregas"], ["reunioes", "Reuniões"], ["relatorios", "Relatórios"], ["licoes", "Lições"], ["contexto", "Contexto"], ["pessoa", "Pessoa", "equipe"]],
   psi: [["inicio", "Início"], ["sessoes", "Sessões"], ["processos", "Processos"], ["entre", "Entre sessões"], ["padroes", "Padrões"], ["terapeuta", "O Terapeuta"]],
@@ -5007,10 +5058,10 @@ function pMentores(R) {
     <div class="mgrid">${MIDS.filter(m => !MENTOR_DEF[m].jor && !MENTOR_DEF[m].lz && !MENTOR_DEF[m].page).map(card).join("")}</div>
     <div class="mhead jmh2">${ic("palette")}Mentores do lazer<small>um para cada tema, do básico ao avançado</small></div>
     <div class="jmgrid">${LZ_MIDS.map(mid => { const def = MENTOR_DEF[mid]; return `<a class="jmc" href="#lazer.${def.lz}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${esc(lzDiv(def.lz).nome)}</small><em>${esc(def.arq)}</em></span></a>`; }).join("")}</div>
-    <div class="mhead jmh2">${ic("lotus")}Mentores da vida interior<small>um para cada pilar, o Navegante da Bússola, o Mestre do Pórtico e o Terapeuta</small></div>
-    <div class="jmgrid">${[...J_MIDS, "sto", "psi"].map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#${mid === "psi" ? "psi.terapeuta" : "jornada." + jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : mid === "sto" ? "Filosofia · estoicismo" : mid === "psi" ? "Psicologia" : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>
     <div class="mhead jmh2">${ic("heart")}Mentores do corpo<small>o Nutri na Alimentação e o Personal nos Treinos; propõem e você aprova</small></div>
-    <div class="jmgrid">${["nutri", "personal"].filter(mid => MENTOR_DEF[mid]).map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), n = sdPendentes(mid).length; return `<a class="jmc" href="#saude.${def.sub}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}${n ? ` <em class="nb acc">${n}</em>` : ""}</b><small>Saúde · ${def.sub === "alimentacao" ? "Alimentação" : "Treinos"}</small><em>${m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.arq)}</em></span></a>`; }).join("")}</div>`;
+    <div class="jmgrid">${["nutri", "personal"].filter(mid => MENTOR_DEF[mid]).map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), n = sdPendentes(mid).length; return `<a class="jmc" href="#saude.${def.sub}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}${n ? ` <em class="nb acc">${n}</em>` : ""}</b><small>Saúde · ${def.sub === "alimentacao" ? "Alimentação" : "Treinos"}</small><em>${m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.arq)}</em></span></a>`; }).join("")}</div>
+    <div class="mhead jmh2">${ic("lotus")}Mentores da vida interior<small>um para cada pilar, o Navegante da Bússola, o Mestre do Pórtico e o Terapeuta</small></div>
+    <div class="jmgrid">${[...J_MIDS, "sto", "psi"].map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#${mid === "psi" ? "psi.terapeuta" : "jornada." + jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : mid === "sto" ? "Filosofia · estoicismo" : mid === "psi" ? "Psicologia" : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>`;
 }
 function aiBanner() {
   if (AI_OFF) return `<div class="banner warn">${ic("info")}<span>${esc(AI_OFF)}</span></div>`;
@@ -7853,7 +7904,12 @@ const J_PIL = {
       { t: "O Evangelho segundo o Espiritismo (Allan Kardec, 1864)", tipo: "leitura", d: "A moral do Cristo à luz da doutrina; é o livro lido no Culto do Evangelho no lar." },
       { t: "O Céu e o Inferno (Allan Kardec, 1865)", tipo: "leitura", d: "A justiça divina e relatos sobre a situação dos Espíritos depois da morte." },
       { t: "A Gênese (Allan Kardec, 1868)", tipo: "leitura", d: "A criação, os milagres e as predições examinados à luz da razão e da ciência." },
-      { t: "Nosso Lar (André Luiz, psicografia de Chico Xavier, 1944)", tipo: "leitura", d: "Clássico da literatura espírita brasileira sobre a vida no plano espiritual." }],
+      { t: "Nosso Lar (André Luiz, psicografia de Chico Xavier, 1944)", tipo: "leitura", d: "Clássico da literatura espírita brasileira sobre a vida no plano espiritual." },
+      { t: "Harmonização dos centros de força", tipo: "prática", d: "Uma prece pelos sete centros de força descritos por André Luiz, do coronário ao genésico, com um pensamento de elevação para cada um (Espiritismo › Centros de força)." },
+      { t: "Água fluidificada", tipo: "prática", d: "Um copo de água posto ao lado durante a prece ou o Culto do Evangelho e bebido depois: um recurso de assistência fluídica comum nas casas espíritas." },
+      { t: "Vigilância da palavra", tipo: "exercício", d: "Um dia por semana sem maledicência, queixa ou ironia. Antes de falar: é verdadeiro, é bom, é útil? O que sai da boca é o que contamina (Mateus 15:11, comentado em O Evangelho segundo o Espiritismo, cap. VIII)." },
+      { t: "Entre a Terra e o Céu (André Luiz, psicografia de Chico Xavier, 1954)", tipo: "leitura", d: "No capítulo XX, o instrutor Clarêncio descreve os centros de força do perispírito: coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico." },
+      { t: "Evolução em Dois Mundos (André Luiz, psicografia de Chico Xavier e Waldo Vieira, 1958)", tipo: "leitura", d: "O corpo espiritual, os centros vitais e a ligação entre o perispírito e o corpo físico." }],
     cot: "Onde a fé raciocinada, a caridade ou a vigilância mudaram algo no seu dia?" },
   med: { sub: "meditacao", nome: "Meditação", mid: "med", cor: "var(--jp-med)", ico: "breath",
     lema: "A atenção que volta, gentilmente, para o agora.",
@@ -8052,6 +8108,7 @@ function jPilarFacts(pid, full) {
   if (pi) L.push(`Programa guiado "${pr.t}": ${pi.feitos} de ${pi.n} ${pr.un === "dia" ? "dias" : "semanas"} feitos${pi.prox ? `, próximo: ${pr.itens[pi.prox - 1][0]}` : ", concluído"}${pi.atraso ? `, ${pi.atraso} para pôr em dia` : ""}.`);
   if (ss.n) L.push(`Sessões de prática nas últimas 4 semanas: ${ss.n}, ${num(ss.min, 0)} minutos${ss.qual != null ? `, qualidade média ${num(ss.qual, 1)}/5` : ""}${ss.delta != null ? `, estado antes → depois ${ss.delta >= 0 ? "+" : ""}${num(ss.delta, 2)} em média (escala 1 a 5)` : ""}.`);
   const cc = J_CONC[pid].filter(([n]) => P.conc[n]); if (cc.length) L.push("Conceitos (autoavaliação): " + cc.map(([n]) => `${n}: ${J_CST[P.conc[n]]}`).join("; ") + ".");
+  if (pid === "esp") L.push(...cfFacts());
   if (!full) { const r = P.refl.filter(x => !x.priv).sort((a, b) => b.at - a.at)[0]; if (r) L.push(`Reflexão mais recente (${fmtD(r.data)}): ${trunc(r.texto, 200)}`); return L; }
   const sug = P.prat.filter(x => x.status === "sugerida"); if (sug.length) L.push("Sugestões suas ainda não adotadas (não repita): " + sug.map(x => x.titulo).join("; "));
   const rs = P.refl.filter(x => !x.priv).sort((a, b) => b.at - a.at), np = P.refl.length - rs.length;
@@ -8225,7 +8282,8 @@ function jChat(mid, o = {}) {
 function pJornada(R) {
   if (SUB === "inicio") return jInicio();
   if (SUB === "jardim") return pJardim();
-  if (J_SUB2P[SUB]) return jPilar(J_SUB2P[SUB]);
+  if (SUB === "centros") return pCentros();
+  if (J_SUB2P[SUB]) return (SUB === "espiritismo" ? cfNav() : "") + jPilar(J_SUB2P[SUB]);
   if (SUB === "confluencias") return jConf();
   if (SUB === "filosofia") return jFilosofia();
   if (SUB === "praticas") return jPraticas();
@@ -8277,7 +8335,7 @@ function jPilar(pid) {
   const est = D.est.map((e, i) => { const v = jEstV(pid, e.id), at = P.est[e.id]?.at;
     return `<div class="jst v${v}"><span class="jsn">${i + 1}</span><div><b>${esc(e.nome)}</b><p>${esc(e.desc)}</p><p class="muted small">Sinal de que está acontecendo: ${esc(e.sinal)}</p>
       <div class="segs jsegs" role="group" aria-label="${esc(e.nome)}">${J_EST.map(([n, l]) => `<button type="button" class="seg" data-act="jest" data-p="${pid}" data-s="${e.id}" data-v="${n}" aria-pressed="${v === n}">${l}</button>`).join("")}${at && v ? `<small class="muted">desde ${fmtD(iso(new Date(at)))}</small>` : ""}</div></div></div>`; }).join("");
-  const rcard = r => `<article class="jrf${r.priv ? " priv" : ""}"><header><span class="jtag sm">${esc(r.tipo)}</span>${(r.tambem || []).map(o => `<span class="jtag sm" style="--c:${J_PIL[o].cor}">${esc(J_PIL[o].nome)}</span>`).join("")}${r.priv ? `<span class="jtag sm lock">${ic("lock")}só sua</span>` : ""}<small class="muted">${fmtDY(r.data)}</small></header><p>${esc(r.texto).replace(/\n/g, "<br>")}</p>
+  const rcard = r => `<article class="jrf${r.priv ? " priv" : ""}"><header><span class="jtag sm">${esc(r.tipo)}</span>${r.cf ? `<span class="jtag sm">${ic("lotus")}centro ${esc(cfNome(r.cf).toLowerCase())}</span>` : ""}${(r.tambem || []).map(o => `<span class="jtag sm" style="--c:${J_PIL[o].cor}">${esc(J_PIL[o].nome)}</span>`).join("")}${r.priv ? `<span class="jtag sm lock">${ic("lock")}só sua</span>` : ""}<small class="muted">${fmtDY(r.data)}</small></header><p>${esc(r.texto).replace(/\n/g, "<br>")}</p>
     <footer><button type="button" class="lnk" data-act="jrask" data-p="${pid}" data-id="${r.id}"${r.priv ? " disabled" : ""}>${ic("spark")}levar a ${esc(MENTOR_DEF[mid].nome)}</button><button type="button" class="lnk" data-act="jrlock" data-p="${pid}" data-id="${r.id}">${ic(r.priv ? "unlock" : "lock")}${r.priv ? "liberar ao mentor" : "manter só para mim"}</button><button type="button" class="lnk" data-act="jrdel" data-p="${pid}" data-id="${r.id}">apagar</button></footer></article>`;
   const pcard = x => { const m = (x.marcas || []).filter(d => d >= from).length, hoje = (x.marcas || []).includes(TODAY);
     return `<div class="jpc"><span class="jpi">${ic(tipoIc[x.tipo] || "repeat")}</span><div><b>${esc(x.titulo)}</b>${x.desc ? `<p>${esc(x.desc)}</p>` : ""}${x.porque ? `<p class="muted small">${ic("spark")}${esc(x.porque)}</p>` : ""}<small class="muted">${x.tipo} · ${m ? `${m}× em 4 semanas` : "ainda sem registro"}${x.fonte === "mentor" ? ` · sugerida por ${esc(MENTOR_DEF[mid].nome)}` : x.fonte === "você" ? " · sua" : ""}</small></div>
@@ -8292,6 +8350,7 @@ function jPilar(pid) {
         <details class="jsobre"><summary>Sobre o pilar</summary><p>${esc(D.intro)}</p></details>
         <button type="button" class="btn sm jgochat" data-act="jtochat">${ic("spark")}Conversar com ${esc(MENTOR_DEF[mid].nome)}</button></section>
       ${panel(`${ic("sprout")}Estações do caminho`, `<p class="muted">Não é uma escada nem uma nota: é como você sente cada dimensão hoje. Ajuste quando perceber mudança; a data fica guardada.</p><div class="jest">${est}</div>${P.estHist.length ? `<details class="jhist"><summary>Como as estações mudaram <small>${P.estHist.length}</small></summary><ol>${P.estHist.slice().reverse().slice(0, 12).map(h => `<li><span class="muted small">${fmtDY(h.data)}</span> ${esc(D.est.find(e => e.id === h.sid)?.nome || h.sid)}: ${J_EST[h.de][1]} → <b>${J_EST[h.para][1]}</b></li>`).join("")}</ol></details>` : ""}`)}
+      ${pid === "esp" ? cfPainelPilar() : ""}
       ${(() => { const pr = J_PROG.find(z => z.pid === pid), s = jSessStats(28, pid); return panel(`${ic("flag")}Prática guiada`, `${pr ? jProgCard(pr) : ""}<div class="flbl">Registrar uma sessão</div>${jSessForm(pid)}<p class="muted small">${s.n ? `Nas últimas 4 semanas: ${plural(s.n, "sessão", "sessões")}, ${num(s.min, 0)} minutos${s.delta != null ? `, antes → depois ${s.delta >= 0 ? "+" : ""}${num(s.delta, 2)} em média` : ""}.` : "Nenhuma sessão nas últimas 4 semanas."} <a class="lnk" href="#jornada.praticas">ver todas as práticas</a></p>`, { style: `--c:${D.cor}` }); })()}
       ${jConcPanel(pid)}
       ${panel(`${ic("pen")}Reflexões, insights e aprendizados <small>${P.refl.length}</small>`, `<textarea class="jta" rows="4" data-jr="${pid}" placeholder="O que você percebeu, aprendeu ou está perguntando?">${esc(dr.txt)}</textarea>
@@ -8482,7 +8541,7 @@ const J_PROG = [
   { id: "ese", pid: "esp", t: "O Evangelho segundo o Espiritismo em 28 semanas", un: "semana", fonte: "Um capítulo por semana, de preferência no Culto do Evangelho no lar.",
     itens: ["Não vim destruir a lei", "Meu reino não é deste mundo", "Há muitas moradas na casa de meu Pai", "Ninguém poderá ver o reino de Deus se não nascer de novo", "Bem-aventurados os aflitos", "O Cristo consolador", "Bem-aventurados os pobres de espírito", "Bem-aventurados os que têm puro o coração", "Bem-aventurados os que são brandos e pacíficos", "Bem-aventurados os que são misericordiosos", "Amar o próximo como a si mesmo", "Amai os vossos inimigos", "Não saiba a vossa mão esquerda o que dá a vossa mão direita", "Honrai a vosso pai e a vossa mãe", "Fora da caridade não há salvação", "Não se pode servir a Deus e a Mamon", "Sede perfeitos", "Muitos os chamados, poucos os escolhidos", "A fé transporta montanhas", "Os trabalhadores da última hora", "Haverá falsos cristos e falsos profetas", "Não separeis o que Deus juntou", "Estranha moral", "Não ponhais a candeia debaixo do alqueire", "Buscai e achareis", "Dai gratuitamente o que gratuitamente recebestes", "Pedi e obtereis", "Coletânea de preces espíritas"].map((t, i) => [`Cap. ${["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI", "XXVII", "XXVIII"][i]} · ${t}`, "Leia, comente em família e escolha uma atitude para a semana."]) },
 ];
-const J_TEC = { esp: ["Prece", "Leitura e estudo", "Culto do Evangelho", "Exame de consciência", "Passe"], med: ["Respiração (ānāpānasati)", "Escaneamento do corpo", "Caminhada", "Mettā", "Sentado em silêncio", "Pausa de três minutos"], tao: ["Zuowang", "Qigong ou tai chi", "Caminhada na natureza", "Leitura do Tao Te Ching"], bud: ["Mettā", "Vipassana", "Contemplação da impermanência", "Recitação", "Leitura"] };
+const J_TEC = { esp: ["Prece", "Leitura e estudo", "Culto do Evangelho", "Exame de consciência", "Passe", "Harmonização dos centros de força"], med: ["Respiração (ānāpānasati)", "Escaneamento do corpo", "Caminhada", "Mettā", "Sentado em silêncio", "Pausa de três minutos"], tao: ["Zuowang", "Qigong ou tai chi", "Caminhada na natureza", "Leitura do Tao Te Ching"], bud: ["Mettā", "Vipassana", "Contemplação da impermanência", "Recitação", "Leitura"] };
 const J_CST = ["não conheço", "conheço", "consigo explicar", "vivo na prática"];
 const J_CONC = {
   esp: [["Deus", "Para O Livro dos Espíritos, a inteligência suprema, causa primária de todas as coisas (q. 1)."], ["Espírito", "O ser inteligente da criação, que sobrevive ao corpo e progride."], ["Perispírito", "O envoltório semimaterial que liga o Espírito ao corpo."], ["Reencarnação", "O retorno do Espírito a um novo corpo para continuar aprendendo."], ["Erraticidade", "O estado do Espírito entre duas encarnações."], ["Lei de causa e efeito", "Cada ação traz consequências que educam o Espírito, sem castigo eterno."], ["Lei de progresso", "Tudo avança: nenhum Espírito fica para sempre no mesmo ponto."], ["Livre-arbítrio", "A liberdade de escolher, e a responsabilidade que vem com ela."], ["Mediunidade", "A faculdade de perceber a influência dos Espíritos ou de servir de intermediário a eles."], ["Caridade", "Benevolência para com todos, indulgência para as imperfeições dos outros, perdão das ofensas (q. 886)."]],
@@ -9896,6 +9955,7 @@ const TAB_INFO = {
   mentores: { cor: "var(--accent)", cena: "spark", foto: "Mesa de conversa com duas cadeiras e luz suave", missao: "Um conselheiro por área, que lê os seus dados (só os que você liberar) e lembra do que vocês combinaram.", resolve: "Conselho genérico que ignora a sua situação real.", entra: "Os dados das áreas liberadas em Privacidade.", sai: "Tarefas, metas e hábitos que você aceitar.", manual: ["Escolha o mentor da área; o Conselho vê todas.", "As propostas só viram tarefa quando você aceita.", "Privacidade controla o que cada mentor pode ler."] },
   trabalho: { cor: "var(--a-car)", cena: "target", foto: "Mesa de projeto com pranchas de uma rodovia, um modelo BIM na tela e post-its por prazo", missao: "Um centro de comando do trabalho de engenharia: tarefas, prazos e caminho crítico, riscos, problemas, decisões, a equipe e o BIM, com um PMO que lê tudo e propõe, e você aprova.", resolve: "Prazos que escorregam em cascata sem ninguém ver, riscos lembrados tarde demais e uma equipe júnior que cresce sem plano.", entra: "Suas tarefas, o diário de bordo, as reuniões, a agenda e a Rotina (que descontam a sua capacidade).", sai: "Blocos de foco na Rotina, relatórios e comunicações em italiano, e o histórico de decisões e lições.", manual: ["Comece pelo Contexto: seu perfil, a equipe (nível e horas por semana) e os projetos com os marcos.", "Registre com Alt+Shift+N de qualquer aba: t: tarefa, r: risco, p: problema, d: decisão; sem prefixo vai para o diário de bordo. Use @pessoa, #tag, 8h, sex ou 12/11 e [projeto].", "Hoje mostra o briefing, os alertas e as suas prioridades (Eisenhower + prazo + caminho crítico); o Gantt mostra folgas e atrasos em cascata em dias úteis.", "Peça ao PMO no painel lateral: ele cita os códigos, mostra os trade-offs e propõe. Nada muda sem você aprovar: um clique, ou escreva “ok”, “aprova 1 e 3” ou “não”.", "Dashboard: escolha o período (comparado com o mesmo trecho do anterior) e, se quiser, pessoa, projeto ou tag. Todo número clicável abre a aba certa só com os itens que o compõem. Personalizar oculta e reordena os widgets; Modo reunião mostra uma seção por vez (← → e Esc)."] },
   psi: { cor: "var(--a-men)", cena: "notebook", foto: "Duas poltronas frente a frente numa sala com luz de janela", missao: "Acompanhar o trabalho psicológico de verdade: as sessões, os processos ao longo do tempo, o que se repete e o que você faz entre uma sessão e outra, ligado à sua jornada.", resolve: "Insights da terapia que se perdem até a sessão seguinte, e um trabalho interior separado do resto da vida.", entra: "Sessões, registros entre sessões, padrões, e a jornada, a Bússola e a Filosofia.", sai: "A pauta da próxima sessão, triagens estoicas, padrões na Filosofia, e o resumo que os mentores e o Conselho leem.", manual: ["Logo depois da sessão, registre os temas, um insight e o combinado.", "Entre sessões, responda a pergunta do dia ou faça um registro de pensamento quando algo pesar; dali dá para ir à triagem estoica.", "Nomeie os padrões que se repetem: a Filosofia mostra o exercício estoico que conversa com cada um.", "O Terapeuta muda de forma conforme o que você pede; toque numa forma para fixá-la. Ele não substitui o seu terapeuta."] },
+  "jornada.centros": { cena: "lotus", missao: "Os chakras à luz da Doutrina Espírita: os sete centros de força do perispírito descritos por André Luiz, cada um com a função, as virtudes da Bússola que o trabalham, o que os seus dados mostram, uma pergunta e a prece; com a autoavaliação da semana e a harmonização guiada.", resolve: "Falar de energia e chakras sem chão doutrinário, e práticas soltas que não conversam com o resto da vida.", entra: "A autoavaliação semanal, o exame da noite, o check-in, a alimentação, os contatos e as sessões de prática.", sai: "Sessões de harmonização no Espiritismo (Práticas, jardim e Cruzamentos), reflexões marcadas com o centro e o resumo para O Benfeitor.", manual: ["Toque num centro do mapa para ver a função, as virtudes e o que os seus dados mostram.", "Dê de 1 a 5 a cada centro uma vez por semana: é como você sente aquele aspecto da vida, não uma medida.", "A harmonização guiada é uma prece pelos sete centros, do coronário ao genésico; no fim, registre como sessão.", "Base e limites ficam no fim da página: nada aqui substitui tratamento médico."] },
   "jornada.filosofia": { cena: "chapters", missao: "O estoicismo tecido na jornada: a dicotomia do controle aplicada às suas decisões, padrões e tarefas, as quatro virtudes lidas nos seus exames e o mesmo dilema visto por todas as tradições." },
   admin: { cor: "var(--accent)", cena: "constel", foto: "Mesa redonda de reunião vista de cima, com cadeiras de cores diferentes", missao: "O Conselho de Administração da sua vida: os mentores de todas as áreas reunidos como diretores, conduzidos pelo Intermediador, para ver o todo e decidir o que importa.", resolve: "Cada área otimizada sozinha, sem ver o que uma custa à outra.", entra: "Os briefings de cada área, a memória de cada mentor e a ata anterior.", sai: "A ata, com decisões e ações que aparecem nas abas das áreas e na memória dos mentores.", manual: ["Escolha o tipo de sessão e, se quiser, um foco; toque em Iniciar sessão.", "Quando o Intermediador falar com você, a sessão pausa e espera a sua resposta.", "Intervenha a qualquer momento pelo campo de baixo; Pular fase e Encerrar e gerar ata estão sempre à mão.", "Marque as ações como feitas aqui ou na aba da área. Uma sessão interrompida continua de onde parou."] },
   cruz: { cor: "var(--a-apr)", cena: "scatter", foto: "Fios coloridos se cruzando num tear", missao: "Achar pistas sobre o que anda junto entre áreas diferentes da sua vida (sono e humor, treino e energia, gastos e estresse), com o quanto dá para confiar em cada uma, para virar experimento.", resolve: "Intuições sobre si que nunca são conferidas, e coincidências tomadas por padrão.", entra: "As séries diárias de Saúde, Hábitos, Finanças, Diário, Relações, Estudo e Lazer, Rotina, Cockpit de Trabalho, Psicologia e Jornada.", sai: "Hipóteses prontas para Experimentos, e leituras para o Conselho e os mentores.", manual: ["Precisa de duas áreas registradas nos mesmos dias, em pelo menos 20 dias; o check-in da Saúde já basta. Sem isso, a aba mostra o que falta em vez de números.", "Em Perguntas, escolha o que importa (humor, energia, estresse, sono, cumprir o plano, gastos). As pistas vêm da mais forte para a mais fraca, e só entram as que dificilmente são coincidência.", "Ver no gráfico abre o cruzamento; Testar como experimento cria o teste com dias COM e SEM sorteados.", "Correlação não é causa. Uma métrica nunca é cruzada com uma parte dela (o gasto do mercado está dentro do gasto do dia), e dias depois do último registro de uma área não contam como zero."] },
@@ -16551,6 +16611,232 @@ function sdExemplo(D) {
   } finally { S = keep; VER++; }
 }
 
+/* ================================================================ Jornada → Espiritismo → Centros de força
+   Os chakras lidos à luz da Doutrina Espírita: os sete centros de força do perispírito descritos por André Luiz (coronário,
+   cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico), cada um com o chakra correspondente, a função, as virtudes da
+   Bússola que o trabalham (leitura do Atlas, não doutrina), o que os seus dados mostram, uma pergunta e as práticas.
+   A autoavaliação é semanal (1 a 5). A harmonização guiada, uma prece pelos sete centros, vira uma sessão de prática do
+   Espiritismo: aparece em Práticas, no ritmo do pilar, no jardim e nos Cruzamentos.
+   Dados: jornada.cf = { av: { segunda-feira: { centro: 1..5 } } }; as sessões ficam em jornada.sess (pilar "esp"). */
+const CF_TEC = "Harmonização dos centros de força";
+const CF_ESC = ["", "em desarmonia", "inquieto", "oscilando", "sereno", "em harmonia"];
+const CF = [
+  { id: "cor", nome: "Coronário", chakra: "Sahasrara", local: "alto da cabeça", x: 120, y: 40,
+    funcao: "Recebe primeiro os estímulos do Espírito e do plano superior e comanda os demais centros; nele se assenta a ligação com a mente. Associado à epífise, a “glândula da vida mental”.",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX; Missionários da Luz, cap. 2",
+    val: ["espiritualidade", "humildade", "desprendimento"], prat: ["Prece ao acordar e ao deitar", "Culto do Evangelho no lar"],
+    perg: "O que tem ocupado o meu pensamento quando estou sozinho: isso me eleva ou me prende?",
+    prece: "Pense no alto da cabeça. Com gratidão, eleve o pensamento a Deus e entregue o que não depende de você. Que a sua mente se abra às boas inspirações." },
+  { id: "cer", nome: "Cerebral", chakra: "Ajna", local: "fronte, entre as sobrancelhas", x: 120, y: 66,
+    funcao: "Governa o córtex e o sistema nervoso, sustenta os sentidos e marca o ritmo das glândulas endócrinas. É o centro do pensamento que discerne.",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    val: ["consciencia", "sabedoria", "justica"], prat: ["Exame de consciência", "O Livro dos Espíritos (Allan Kardec, 1857)"],
+    perg: "Que pensamento repetido eu alimentei hoje sem examinar?",
+    prece: "Leve a atenção à fronte. Aquiete os pensamentos e peça discernimento: ver com clareza e julgar com justiça, começando por você." },
+  { id: "lar", nome: "Laríngeo", chakra: "Vishuddha", local: "garganta", x: 120, y: 112,
+    funcao: "Controla sobretudo a respiração e a fonação: o sopro e a palavra.",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    val: ["educacao", "gentileza", "paciencia"], prat: ["Vigilância da palavra"],
+    perg: "As minhas palavras de hoje consolaram ou feriram?",
+    prece: "Sinta o ar passar pela garganta. Que a sua palavra seja verdadeira, branda e útil, e que você saiba calar quando o silêncio for caridade." },
+  { id: "car", nome: "Cardíaco", chakra: "Anahata", local: "centro do peito", x: 120, y: 166,
+    funcao: "Dirige a emotividade e a circulação das forças de base.",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    val: ["compaixao", "caridade", "fraternidade", "tolerancia"], prat: ["Caridade semanal", "Culto do Evangelho no lar"],
+    perg: "A quem preciso estender hoje a indulgência que eu gostaria de receber?",
+    prece: "Leve a atenção ao centro do peito. Envolva em pensamento de paz quem você ama e quem o feriu. Perdoe, peça perdão e deseje o bem." },
+  { id: "esp", nome: "Esplênico", chakra: "Svadhisthana (na lista de Leadbeater, o centro do baço ocupa esse lugar)", local: "região do baço, à esquerda do abdome", x: 150, y: 210,
+    funcao: "Regula a distribuição e a circulação dos recursos vitais por todo o corpo: a vitalidade.",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    val: ["equilibrio"], prat: ["Frequentar uma casa espírita"],
+    perg: "Onde estou gastando energia vital à toa: excesso, pressa, noites curtas?",
+    prece: "Pense na vitalidade que circula pelo corpo. Agradeça ao corpo, instrumento da sua evolução, e proponha-se a cuidar dele com descanso, movimento e medida." },
+  { id: "gas", nome: "Gástrico", chakra: "Manipura", local: "região do estômago (plexo solar)", x: 120, y: 236,
+    funcao: "Responde pela penetração de alimentos e fluidos no organismo: o que assimilamos, no prato e nas emoções.",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    val: ["temperanca"], prat: ["Água fluidificada"],
+    perg: "O que eu engoli hoje sem digerir: comida, raiva, preocupação?",
+    prece: "Leve a atenção à região do estômago. Que você receba o alimento com gratidão e medida, e não guarde o que precisa ser perdoado." },
+  { id: "gen", nome: "Genésico", chakra: "Muladhara (a energia criadora também é ligada ao Svadhisthana)", local: "base do tronco", x: 120, y: 296,
+    funcao: "Sede do sexo como templo modelador de formas e estímulos: a energia criadora, da vida e das obras.",
+    fonte: "André Luiz: Entre a Terra e o Céu, cap. XX",
+    val: ["respeito", "igualdade"], prat: [],
+    perg: "Estou usando a minha energia criadora com respeito, a mim e ao outro?",
+    prece: "Pense na energia criadora. Que ela sirva ao amor e à vida, com respeito a você e ao outro, e se transforme também em trabalho e criação." }];
+const CF_ABRE = "Sente-se com a coluna ereta e os pés no chão; se quiser, deixe um copo de água ao lado. Respire devagar algumas vezes. Eleve o pensamento a Deus e peça a presença dos bons Espíritos, com a intenção de servir e de melhorar.";
+const CF_FECHA = "Agradeça a assistência recebida. Se deixou água ao lado, beba-a agora: na tradição espírita, é a água fluidificada. Leve para o dia uma intenção concreta.";
+const cfC = id => CF.find(c => c.id === id);
+const cfNome = id => cfC(id)?.nome || id;
+const cfD = () => { const d = jData(); d.cf ||= {}; d.cf.av ||= {}; return d.cf; };
+const CFV = { sel: "cor", txt: "", dur: 60, voz: false };
+const CFH = { on: false, i: 0, t0: 0, pausaEm: 0, gasto: 0, h: null, fim: false, antes: "", depois: "", nota: "", ini: 0 };
+
+/* ---------------------------------------------------------------- o que os dados mostram (14 dias; valores da Bússola em 28) */
+const cfDe = (dias = 14) => addDays(TODAY, -dias + 1);
+function cfSaude(k, dias = 14) { const a = cfDe(dias), v = Object.entries(S.saude || {}).filter(([d, e]) => d >= a && d <= TODAY && isNum(e?.[k]) && e[k] !== "").map(([, e]) => +e[k]); return v.length ? { m: avg(v), n: v.length } : null; }
+function cfSess(tecs, dias = 14) { const a = cfDe(dias), ss = jData().sess.filter(x => x.data >= a && x.data <= TODAY && (!tecs || tecs.includes(x.tec))); return { n: ss.length, min: sum(ss.map(x => +x.min || 0)) }; }
+function cfMarcas(titulo, dias = 14) { const a = cfDe(dias), p = jP("esp").prat.find(x => norm(x.titulo) === norm(titulo)); return p ? (p.marcas || []).filter(d => d >= a && d <= TODAY).length : null; }
+function cfValores(ids, dias = 28) { const sc = bmScores(dias), vs = ids.filter(id => sc.val[id] != null); return { m: vs.length ? avg(vs.map(id => sc.val[id])) : null, por: Object.fromEntries(ids.map(id => [id, sc.val[id] ?? null])), noites: sc.dias }; }
+function cfSinais(id) {
+  const c = cfC(id), V = cfValores(c.val), out = [], add = (l, v, s = "") => out.push({ l, v, s });
+  if (id === "cor") { const s = cfSess(["Prece", "Culto do Evangelho", CF_TEC]); add("Dias com o Espiritismo", `${jActDays("esp", cfDe()).size} de 14`, "reflexões, práticas, sessões e conversas"); add("Prece, Evangelho e harmonização", plural(s.n, "sessão", "sessões"), s.min ? `${num(s.min, 0)} min` : ""); }
+  if (id === "cer") { const q = cfSaude("qual"), e = cfSaude("estresse"), h = sum((S.estudo || []).filter(x => x.data >= cfDe() && x.data <= TODAY).map(x => +x.horas || 0)); add("Qualidade do sono", q ? `${num(q.m, 1)} de 5` : "–", q ? `${q.n} noites` : "sem check-in"); add("Estresse", e ? `${num(e.m, 1)} de 5` : "–", e ? "quanto menor, melhor" : "sem check-in"); add("Estudo", `${num(h, 1)} h`, "Crescimento"); }
+  if (id === "lar") { const s = cfSess(["Respiração (ānāpānasati)", "Pausa de três minutos"]); add("Respiração e pausas", `${num(s.min, 0)} min`, plural(s.n, "sessão", "sessões")); const m = cfMarcas("Vigilância da palavra"); if (m != null) add("Vigilância da palavra", `${m}×`, "prática adotada"); }
+  if (id === "car") { const h = cfSaude("humor"), ct = (S.contatos || []).filter(x => x.data >= cfDe() && x.data <= TODAY).length, m = cfMarcas("Caridade semanal"); add("Humor", h ? `${num(h.m, 1)} de 5` : "–", h ? `${h.n} dias` : "sem check-in"); add("Contatos com pessoas", String(ct), "Relações"); if (m != null) add("Caridade semanal", `${m}×`, "prática adotada"); }
+  if (id === "esp") { const s = cfSaude("sono"), p = cfSaude("passos"), tr = Object.entries(S.saude || {}).filter(([d, e]) => d >= cfDe() && d <= TODAY && e?.treino).length; add("Sono", s ? `${num(s.m, 1)} h` : "–", s ? `meta ${num(+S.cfg?.metaSono || 7.5, 1)} h` : "sem check-in"); add("Dias com treino", `${tr} de 14`, "check-in"); if (p) add("Passos", num(p.m, 0), "média por dia"); }
+  if (id === "gas") { const L = (S.nutriLog || []).filter(x => x.data >= cfDe() && x.data <= TODAY), dias = [...new Set(L.map(x => x.data))], alc = new Set(L.filter(x => ["cerveja", "vinho"].includes(x.base)).map(x => x.data)).size, M = typeof nuMetas === "function" ? nuMetas() : null;
+    add("Dias com a alimentação registrada", `${dias.length} de 14`, "Saúde › Alimentação");
+    if (dias.length && M?.ok) { const ok = dias.filter(d => Math.abs(sum(L.filter(x => x.data === d).map(x => +x.kcal || 0)) - M.kcal) <= M.kcal * .1).length; add("Na meta de calorias (±10%)", `${ok} de ${dias.length}`, `meta ${num(M.kcal, 0)} kcal`); }
+    if (dias.length) add("Dias com álcool", String(alc), "cerveja ou vinho registrados"); }
+  if (id === "gen") add("O que o Atlas mede aqui", "nada", "só a sua autoavaliação e as suas reflexões");
+  add("Virtudes no exame da noite", V.m == null ? "–" : pct(V.m), V.noites ? `${c.val.map(v => bmV(v)?.nome).join(", ")} · ${plural(V.noites, "noite", "noites")} em 28 dias` : "sem exames em 28 dias");
+  return out;
+}
+/* autoavaliação: a da semana atual, a da anterior e as últimas 12 semanas */
+const cfSemana = (w = weekStart(TODAY)) => cfD().av[w] || {};
+function cfFacts() {
+  const w = weekStart(TODAY), a = cfSemana(w), b = cfSemana(addDays(w, -7)), s = cfSess([CF_TEC], 28), L = [];
+  const fm = o => CF.map(c => `${c.nome} ${o[c.id] ?? "–"}`).join(", ");
+  if (!Object.keys(a).length && !Object.keys(b).length && !s.n) return ["Centros de força (André Luiz): ainda sem autoavaliação nem harmonização registrada."];
+  L.push(`Centros de força (autoavaliação semanal, 1 em desarmonia a 5 em harmonia): esta semana: ${fm(a)}; semana passada: ${fm(b)}.`);
+  const bx = CF.filter(c => a[c.id] && a[c.id] <= 2).map(c => c.nome); if (bx.length) L.push(`Centros que a pessoa sente em desarmonia esta semana: ${bx.join(", ")}.`);
+  L.push(`Harmonizações guiadas nas últimas 4 semanas: ${s.n}${s.n ? ` (${num(s.min, 0)} min)` : ""}.`);
+  return L;
+}
+
+/* ---------------------------------------------------------------- telas */
+function cfNav() {
+  const it = [["espiritismo", "O pilar", "flame"], ["centros", "Centros de força", "lotus"]];
+  return `<nav class="jbmnav" aria-label="Espiritismo">${it.map(([k, l, i]) => `<a href="#jornada.${k}" class="${SUB === k ? "on" : ""}"${SUB === k ? ' aria-current="page"' : ""}>${ic(i)}${l}</a>`).join("")}</nav>`;
+}
+const cfCor = n => n ? `color-mix(in srgb,var(--jp-esp) ${[0, 24, 40, 56, 72, 90][n]}%,var(--surface))` : "var(--surface-2)";
+function cfMapa() {
+  const a = cfSemana(), sel = CFV.sel;
+  const nodes = CF.map(c => { const n = a[c.id], on = c.id === sel;
+    return `<g class="cfn${on ? " on" : ""}" data-cf="${c.id}" role="button" tabindex="0" aria-pressed="${on}" aria-label="Centro ${esc(c.nome)}${n ? `, ${n} de 5 (${CF_ESC[n]})` : ", sem autoavaliação nesta semana"}">
+      <line x1="${c.x + 13}" y1="${c.y}" x2="182" y2="${c.y}" class="cfl"/>${on ? `<circle cx="${c.x}" cy="${c.y}" r="17" class="cfsel"/>` : ""}<circle cx="${c.x}" cy="${c.y}" r="11.5" class="cfd${n ? "" : " vazio"}" style="fill:${cfCor(n)}"/>
+      ${n ? `<text x="${c.x}" y="${c.y + 4}" class="cfnum">${n}</text>` : ""}<text x="188" y="${c.y + 4}" class="cflab">${esc(c.nome)}</text></g>`; }).join("");
+  return `<svg viewBox="0 0 270 340" class="cfsvg" role="group" aria-label="Os sete centros de força">
+    <defs><radialGradient id="cfaura" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="var(--jp-esp)" stop-opacity=".22"/><stop offset="1" stop-color="var(--jp-esp)" stop-opacity="0"/></radialGradient></defs>
+    <ellipse cx="120" cy="176" rx="104" ry="166" fill="url(#cfaura)"/>
+    <circle cx="120" cy="70" r="27" class="cfbody"/><path d="M70 150 Q72 106 120 102 Q168 106 170 150 L162 290 Q150 326 120 330 Q90 326 78 290 Z" class="cfbody"/>
+    <line x1="120" y1="30" x2="120" y2="312" class="cfaxis"/>${nodes}</svg>`;
+}
+function cfDetalhe(c) {
+  const V = cfValores(c.val), P = jP("esp"), cat = J_PIL.esp.cat;
+  const pr = c.prat.map(t => { const x = P.prat.find(z => norm(z.titulo) === norm(t)), i = cat.findIndex(k => norm(k.t) === norm(t)), hoje = (x?.marcas || []).includes(TODAY);
+    return `<div class="cfpr"><span>${esc(t)}</span>${x && x.status === "ativa" ? `<button type="button" class="btn sm${hoje ? " primary" : ""}" data-act="jmark" data-p="esp" data-id="${x.id}" aria-pressed="${hoje}">${ic("check")}${hoje ? "Feita hoje" : "Fiz hoje"}</button>` : i >= 0 ? `<button type="button" class="btn sm ghost" data-act="jadopt" data-p="esp"${x ? ` data-id="${x.id}"` : ` data-k="${i}"`}>${ic("plus")}Adotar</button>` : ""}</div>`; }).join("");
+  return `<div class="cfdh"><span class="cfdot" style="background:${cfCor(cfSemana()[c.id])}"></span><div><h2>Centro ${esc(c.nome.toLowerCase())}</h2><small class="muted">chakra correspondente: ${esc(c.chakra)} · ${esc(c.local)}</small></div></div>
+    <p>${esc(c.funcao)}</p><p class="muted small">${ic("book")}${esc(c.fonte)}</p>
+    <div class="flbl">Virtudes que o trabalham <small>Bússola · leitura do Atlas</small></div><div class="cfvals">${c.val.map(id => `<span class="jtag sm">${esc(bmV(id)?.nome || id)}${V.por[id] != null ? ` · ${pct(V.por[id])}` : ""}</span>`).join("")}</div>
+    <div class="flbl">O que os seus dados mostram <small>14 dias</small></div><div class="cfsin">${cfSinais(c.id).map(s => `<div><span>${esc(s.l)}</span><b>${esc(s.v)}</b><small class="muted">${esc(s.s)}</small></div>`).join("")}</div>
+    <div class="flbl">Para contemplar</div><p class="bmq">${ic("info")}<span>${esc(c.perg)}</span></p>
+    <textarea class="jta" rows="2" id="cf_refl" placeholder="Escreva o que percebeu; vai para as reflexões do Espiritismo">${esc(CFV.txt)}</textarea><div class="row"><button type="button" class="btn sm primary" data-act="cfrsave" data-cf="${c.id}">${ic("check")}Guardar reflexão</button></div>
+    ${pr ? `<div class="flbl">Práticas que ajudam</div><div class="cfprs">${pr}</div>` : ""}`;
+}
+function cfAvaliacao() {
+  const w = weekStart(TODAY), a = cfSemana(w), b = cfSemana(addDays(w, -7));
+  return panel(`${ic("sliders")}Como cada centro está nesta semana`, `<p class="muted small">De 1 (${CF_ESC[1]}) a 5 (${CF_ESC[5]}). Não é medida: é como você sente cada aspecto da vida que o centro representa. Vale para a semana de ${fmtD(w)} a ${fmtD(addDays(w, 6))}.</p>
+    <div class="cfavs">${CF.map(c => `<div class="cfav"><b>${esc(c.nome)}</b><div class="segs" role="group" aria-label="${esc(c.nome)}">${[1, 2, 3, 4, 5].map(n => `<button type="button" class="seg" data-cfav="${c.id}|${n}" aria-pressed="${a[c.id] === n}" title="${CF_ESC[n]}">${n}</button>`).join("")}</div><small class="muted">${b[c.id] ? `semana passada: ${b[c.id]}` : ""}</small></div>`).join("")}</div>`);
+}
+function cfHistorico() {
+  const w0 = weekStart(TODAY), wks = Array.from({ length: 12 }, (_, i) => addDays(w0, -7 * (11 - i))), ss = jData().sess.filter(x => x.tec === CF_TEC).sort((x, y) => y.data.localeCompare(x.data));
+  const grid = `<div class="cfheat" style="--n:${wks.length}"><span></span>${wks.map(w => `<small>${fmtD(w)}</small>`).join("")}${CF.map(c => `<b>${esc(c.nome)}</b>${wks.map(w => { const n = cfSemana(w)[c.id]; return `<i style="background:${cfCor(n)}" ${tip(`${c.nome}, semana de ${fmtD(w)}: ${n ? `${n} (${CF_ESC[n]})` : "sem autoavaliação"}`)}>${n || ""}</i>`; }).join("")}`).join("")}</div>`;
+  return panel(`${ic("week")}Últimas 12 semanas`, `${grid}<div class="flbl">Harmonizações guiadas <small>${ss.length}</small></div>${ss.length ? `<div class="cfhist">${ss.slice(0, 8).map(x => `<div><b>${fmtD(x.data)}</b><span>${num(+x.min || 0, 0)} min</span><small class="muted">${x.antes && x.depois ? `estado ${x.antes} → ${x.depois}` : ""}${x.notas && x.notas !== CF_TEC ? ` · ${esc(trunc(x.notas, 80))}` : ""}</small></div>`).join("")}</div>` : `<p class="muted small">Nenhuma ainda. Cada harmonização vira uma sessão de prática do Espiritismo.</p>`}`);
+}
+function cfBase() {
+  return `<details class="pn cfbase"><summary>${ic("book")}Base doutrinária e limites</summary>
+    <p>Allan Kardec não usa a palavra chakra. A doutrina fala do <b>perispírito</b>, o envoltório fluídico que liga o Espírito ao corpo (O Livro dos Espíritos, q. 93 a 95 e 135), e dos <b>fluidos</b>, que o pensamento e a vontade modificam (A Gênese, cap. XIV).</p>
+    <p>Os <b>centros de força</b> aparecem na obra de André Luiz, psicografada por Chico Xavier: sete centros do perispírito (coronário, cerebral, laríngeo, cardíaco, esplênico, gástrico e genésico), descritos em Entre a Terra e o Céu (cap. XX) e retomados em Evolução em Dois Mundos. Em Missionários da Luz, a epífise aparece como a glândula da vida mental.</p>
+    <p><b>Onde se encontram com os chakras:</b> sete centros de energia ao longo do corpo, do alto da cabeça à base do tronco, ligados ao estado da mente. <b>Onde se separam:</b> nomes e funções próprios (o esplênico vem da lista de Leadbeater, que põe um centro no baço; o gástrico e o genésico não seguem a lista clássica) e, sobretudo, o foco: no espiritismo, a harmonia dos centros vem do pensamento, da conduta moral, da prece e do passe, não de técnicas para “abrir” ou “ativar” chakras, cores ou cristais.</p>
+    <p>O passe e a água fluidificada são assistência fluídica oferecida nas casas espíritas e não substituem tratamento médico, como a própria orientação espírita lembra. As ligações com os valores da Bússola e com os seus dados são uma leitura do Atlas para a reflexão, não doutrina nem diagnóstico.</p></details>`;
+}
+function cfHarmHTML() {
+  if (!CFH.on) return "";
+  const P = cfPassos(), s = P[CFH.i];
+  if (CFH.fim) return `<section class="pn cfharm fim" aria-live="polite"><h2>${ic("check")}Harmonização concluída</h2><p class="muted">${num(Math.max(1, Math.round(CFH.gasto / 6e4)), 0)} min. Registre como sessão de prática do Espiritismo.</p>
+    <div class="form f3"><label>Antes (1 a 5)<select id="cfh_antes"><option value=""></option>${[1, 2, 3, 4, 5].map(n => `<option${+CFH.antes === n ? " selected" : ""}>${n}</option>`).join("")}</select></label><label>Depois (1 a 5)<select id="cfh_depois"><option value=""></option>${[1, 2, 3, 4, 5].map(n => `<option${+CFH.depois === n ? " selected" : ""}>${n}</option>`).join("")}</select></label><label>Nota<input type="text" id="cfh_nota" value="${esc(CFH.nota)}" placeholder="o que sentiu, por quem orou"></label></div>
+    <div class="row wrap"><button type="button" class="btn primary" data-act="cfhsave">${ic("check")}Registrar sessão</button><button type="button" class="btn ghost" data-act="cfhdesc">Não registrar</button></div></section>`;
+  const c = s.c;
+  return `<section class="pn cfharm" aria-live="polite"><div class="cfhtop"><span class="jtag sm">${CFH.i + 1} de ${P.length}</span><b>${esc(s.t)}</b>${c ? `<small class="muted">${esc(c.local)}</small>` : ""}</div>
+    <p class="cfhtxt">${esc(s.txt)}</p><div class="cfhbar"><i id="cfh_bar"></i></div><p class="muted small"><span id="cfh_t"></span></p>
+    <div class="row wrap"><button type="button" class="btn sm" data-act="cfhpause">${CFH.pausaEm ? `${ic("bolt")}Continuar` : `${ic("stop")}Pausar`}</button><button type="button" class="btn sm" data-act="cfhnext">${CFH.i < P.length - 1 ? "Próximo" : "Concluir"}</button><button type="button" class="btn sm ghost" data-act="cfhstop">Encerrar</button></div></section>`;
+}
+function pCentros() {
+  const c = cfC(CFV.sel) || CF[0];
+  return `${cfNav()}<p class="lead">Na tradição indiana, os chakras são centros de energia ao longo do corpo. Na Doutrina Espírita, André Luiz descreve sete <b>centros de força</b> no perispírito, o corpo espiritual, que o pensamento e a conduta harmonizam. Toque num centro para ver a função, as virtudes que o trabalham e o que os seus dados mostram.</p>
+    ${cfHarmHTML()}
+    <div class="cfgrid"><section class="pn cfmap">${cfMapa()}
+      <div class="cfstart"><label class="lbl">Tempo por centro<select id="cfh_dur"${CFH.on ? " disabled" : ""}>${[[30, "30 segundos"], [60, "1 minuto"], [120, "2 minutos"]].map(([v, l]) => `<option value="${v}"${CFV.dur === v ? " selected" : ""}>${l}</option>`).join("")}</select></label>
+        <label class="ckl"><input type="checkbox" id="cfh_voz"${CFV.voz ? " checked" : ""}><span>Ler em voz alta</span></label>
+        <button type="button" class="btn primary" data-act="cfhini"${CFH.on ? " disabled" : ""}>${ic("lotus")}Harmonização guiada</button></div>
+      <p class="muted small">Uma prece pelos sete centros, do coronário ao genésico, como no passe. Vira uma sessão de prática do Espiritismo.</p></section>
+      <section class="pn cfdet">${cfDetalhe(c)}</section></div>
+    <div class="g2c">${cfAvaliacao()}${cfHistorico()}</div>${cfBase()}`;
+}
+/* resumo para a página do pilar */
+function cfPainelPilar() {
+  const a = cfSemana(), n = Object.keys(a).length, s = cfSess([CF_TEC], 28);
+  return panel(`${ic("lotus")}Centros de força`, `<div class="cfmini">${CF.map(c => `<a href="#jornada.centros" data-act="cfgo" data-cf="${c.id}" class="cfm" ${tip(`${c.nome}: ${a[c.id] ? `${a[c.id]} (${CF_ESC[a[c.id]]})` : "sem autoavaliação nesta semana"}`)}><i style="background:${cfCor(a[c.id])}">${a[c.id] || ""}</i><small>${esc(c.nome)}</small></a>`).join("")}</div>
+    <p class="muted small">Os sete centros do perispírito descritos por André Luiz, que correspondem aos chakras. ${n ? `Autoavaliação desta semana: ${n} de 7.` : "Ainda sem autoavaliação nesta semana."} ${s.n ? `${plural(s.n, "harmonização", "harmonizações")} em 4 semanas.` : ""}</p>
+    <div class="row wrap"><a class="btn sm" href="#jornada.centros">${ic("lotus")}Abrir os centros de força</a></div>`);
+}
+
+/* ---------------------------------------------------------------- harmonização guiada */
+const cfPassos = () => [{ t: "Abertura", txt: CF_ABRE, dur: Math.min(CFV.dur, 45) }, ...CF.map(c => ({ t: `Centro ${c.nome.toLowerCase()}`, c, txt: c.prece, dur: CFV.dur })), { t: "Encerramento", txt: CF_FECHA, dur: Math.min(CFV.dur, 45) }];
+function cfFala(txt) { if (!CFV.voz || !window.speechSynthesis) return; try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = "pt-BR"; u.rate = .92; speechSynthesis.speak(u); } catch {} }
+function cfhTick() {
+  if (!CFH.on || CFH.fim) return; if (PAGE !== "jornada" || SUB !== "centros") { cfhParar(); return; }
+  const P = cfPassos(), s = P[CFH.i]; if (!s) return; const el = (CFH.pausaEm || Date.now()) - CFH.t0, f = Math.min(1, el / (s.dur * 1000));
+  const bar = $("#cfh_bar"), tt = $("#cfh_t"); if (bar) bar.style.width = `${(f * 100).toFixed(1)}%`; if (tt) { const r = Math.max(0, Math.ceil(s.dur - el / 1000)); tt.textContent = CFH.pausaEm ? "em pausa" : `${Math.floor(r / 60)}:${pad(r % 60)}`; }
+  if (f >= 1 && !CFH.pausaEm) cfhAvancar();
+}
+function cfhAvancar() {
+  const P = cfPassos(); CFH.gasto += Date.now() - CFH.t0;
+  if (CFH.i >= P.length - 1) { CFH.fim = true; clearInterval(CFH.h); CFH.h = null; try { speechSynthesis?.cancel(); } catch {} render(); return; }
+  CFH.i++; CFH.t0 = Date.now(); CFV.sel = P[CFH.i].c?.id || CFV.sel; render(); cfFala(P[CFH.i].txt);
+}
+function cfhParar() { clearInterval(CFH.h); Object.assign(CFH, { on: false, i: 0, t0: 0, pausaEm: 0, gasto: 0, h: null, fim: false, antes: "", depois: "", nota: "" }); try { speechSynthesis?.cancel(); } catch {} }
+function cfhIniciar() { cfhParar(); Object.assign(CFH, { on: true, i: 0, t0: Date.now(), ini: Date.now() }); CFH.h = setInterval(cfhTick, 250); render(); cfFala(CF_ABRE); setTimeout(() => $(".cfharm")?.scrollIntoView({ block: "start", behavior: "smooth" }), 60); }
+
+/* ---------------------------------------------------------------- ações */
+function cfClick(t) {
+  const ds = t.dataset, a = ds.act;
+  if (ds.cfav) { const [id, n] = ds.cfav.split("|"), w = weekStart(TODAY), av = cfD().av, cur = { ...(av[w] || {}) }; if (cur[id] === +n) delete cur[id]; else cur[id] = +n; if (Object.keys(cur).length) av[w] = cur; else delete av[w]; touch("jornada", { label: `Centro ${cfNome(id).toLowerCase()}: ${cur[id] || "sem nota"}` }); return true; }
+  if (a === "cfgo") { if (CFV.sel !== ds.cf) CFV.txt = ""; CFV.sel = ds.cf; return true; }   // o link segue para #jornada.centros
+  if (ds.cf && !a) { if (CFV.sel !== ds.cf) CFV.txt = ""; CFV.sel = ds.cf; render(); return true; }
+  if (a === "cfrsave") { const txt = String($("#cf_refl")?.value || CFV.txt).trim(), id = ds.cf || CFV.sel; if (!txt) { toast("Escreva a reflexão."); return true; }
+    jP("esp").refl.push({ id: uid(), at: Date.now(), data: TODAY, texto: txt.slice(0, 4000), tipo: "reflexão", tambem: [], priv: false, cf: id }); CFV.txt = ""; touch("jornada", { label: `Reflexão (centro ${cfNome(id).toLowerCase()})` }); toast("Guardada nas reflexões do Espiritismo."); return true; }
+  if (a === "cfhini") { cfhIniciar(); return true; }
+  if (a === "cfhpause") { if (CFH.pausaEm) { CFH.t0 += Date.now() - CFH.pausaEm; CFH.pausaEm = 0; } else CFH.pausaEm = Date.now(); render(); cfhTick(); return true; }
+  if (a === "cfhnext") { if (CFH.pausaEm) { CFH.t0 += Date.now() - CFH.pausaEm; CFH.pausaEm = 0; } cfhAvancar(); return true; }
+  if (a === "cfhstop") { const g = CFH.gasto + (CFH.on && !CFH.fim ? Date.now() - CFH.t0 : 0); if (g >= 6e4) { CFH.gasto = g; CFH.fim = true; clearInterval(CFH.h); CFH.h = null; try { speechSynthesis?.cancel(); } catch {} } else cfhParar(); render(); return true; }
+  if (a === "cfhdesc") { cfhParar(); render(); toast("Harmonização não registrada."); return true; }
+  if (a === "cfhsave") { const n = v => { const x = +v; return x >= 1 && x <= 5 ? x : ""; }, min = Math.max(1, Math.round(CFH.gasto / 6e4));
+    jData().sess.push({ id: uid(), at: Date.now(), data: TODAY, pid: "esp", tec: CF_TEC, min, qual: "", antes: n($("#cfh_antes")?.value), depois: n($("#cfh_depois")?.value), notas: String($("#cfh_nota")?.value || "").trim().slice(0, 300) || CF_TEC });
+    cfhParar(); touch("jornada", { label: "Harmonização registrada" }); undoToast(`Harmonização registrada: ${min} min`); return true; }
+  return false;
+}
+function cfInput(t) {
+  if (t.id === "cf_refl") { CFV.txt = t.value; return true; }
+  if (t.id === "cfh_nota") { CFH.nota = t.value; return true; }
+  return false;
+}
+function cfChange(t) {
+  if (t.id === "cfh_dur") { CFV.dur = +t.value || 60; return true; }
+  if (t.id === "cfh_voz") { CFV.voz = t.checked; if (!t.checked) try { speechSynthesis?.cancel(); } catch {} return true; }
+  if (t.id === "cfh_antes") { CFH.antes = t.value; return true; }
+  if (t.id === "cfh_depois") { CFH.depois = t.value; return true; }
+  return false;
+}
+
+/* ---------------------------------------------------------------- exemplo (fictício): autoavaliações das últimas 8 semanas */
+function cfExemplo(D) {
+  const rnd = mulberry32(1857), w0 = weekStart(TODAY), base = { cor: 4, cer: 3, lar: 3, car: 4, esp: 2, gas: 3, gen: 4 }, av = {};
+  for (let k = 7; k >= 0; k--) { const w = addDays(w0, -7 * k), o = {}; for (const c of CF) { if (k === 0 && ["gas", "gen"].includes(c.id)) continue; o[c.id] = clamp(Math.round(base[c.id] + (rnd() - .45) * 1.6 + (7 - k) * .08), 1, 5); } av[w] = o; }
+  D.jornada ||= {}; D.jornada.cf = { av };
+}
+
 
 /* ================================================================ render */
 let RELAYOUT = false;
@@ -16586,7 +16872,7 @@ function render() {
     ajustes: () => ["Ajustes", "Metas, áreas, listas, mentores e aparência", pAjustes],
     lazer: () => ["Lazer", { inicio: "Oito temas, cada um com um mentor que conversa no seu nível", existencial: "Os quatro mentores da Jornada, dentro do Lazer" }[SUB] || (lzDiv(SUB)?.mid ? `${esc(lzDiv(SUB).nome)} com ${esc(MENTOR_DEF[lzDiv(SUB).mid].nome)}` : ""), pLazerHub],
     carreira: () => ["Carreira", { panorama: "Onde você está, aonde quer chegar, como e com o quê", avaliacao: "O retrato de hoje: perfil, competências, pontos fortes e gaps", portfolio: "Os projetos que provam o que você sabe", decisoes: "Cenários comparados com os seus critérios e pesos", mercado: "Referências de mercado e o dossiê para negociar", objetivos: "O norte, as trilhas e os objetivos com prazo", geotecnia: "Uma frente nova, no seu ritmo", plano: "Do gap à ação, com marcos verificáveis", biblioteca: "Normas, cursos, livros e ferramentas por tópico", caderno: "Caderno técnico de engenharia", rede: "Contatos, cadência e oportunidades" }[SUB] || "", pCarreiraHub],
-    jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", jardim: "Saúde espiritual: o jardim interior que cresce com a sua jornada", confluencias: "Onde os quatro caminhos se encontram", praticas: "Programas guiados, sessões de prática e o que elas mudam", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
+    jornada: () => ["Jornada existencial", { inicio: "Quatro pilares, cinco mentores e a bússola no centro", jardim: "Saúde espiritual: o jardim interior que cresce com a sua jornada", confluencias: "Onde os quatro caminhos se encontram", praticas: "Programas guiados, sessões de prática e o que elas mudam", centros: "Os centros de força do perispírito, à luz da Doutrina Espírita", bussola: "Bússola moral: valores, princípios e perguntas das cinco tradições", exame: "O exame da noite: valores, vigilância e serviço", decidir: "Oito perguntas antes de decidir", caminhos: "Os seus desafios, um por um", navegante: "O Navegante, mentor da Bússola moral" }[SUB] || esc(J_PIL[J_SUB2P[SUB]]?.lema || ""), pJornada],
     semana: () => ["Fechamento da semana", `Semana de ${wkLabel(fsWk())}`, pSemana],
     radar: () => ["Radar", "Alertas antes que aconteçam, com evidência do seu histórico e conferência depois", pRadar],
     exp: () => ["Experimentos", "Teste uma mudança e meça o efeito em você", pExp],
@@ -16670,13 +16956,13 @@ function pack() {
 }
 
 /* ================================================================ eventos */
-const CLICK_SEL = "[data-rtb],button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv],[data-cktask],[data-ckmemb],[data-ckproj],[data-ckmarco],[data-ckpessoa],[data-ckrisk],[data-ckiss],[data-ckdec],[data-cklic],[data-ckbim],[data-ckel],[data-ckmeetv],[data-ckrel],[data-ckdrill],[data-ckdper],[data-ckdnav],[data-ckdsec],[data-ckwmv],[data-ckwhide],[data-czver]";
+const CLICK_SEL = "[data-rtb],button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv],[data-cktask],[data-ckmemb],[data-ckproj],[data-ckmarco],[data-ckpessoa],[data-ckrisk],[data-ckiss],[data-ckdec],[data-cklic],[data-ckbim],[data-ckel],[data-ckmeetv],[data-ckrel],[data-ckdrill],[data-ckdper],[data-ckdnav],[data-ckdsec],[data-ckwmv],[data-ckwhide],[data-czver],[data-cf]";
 document.addEventListener("click", e => {
   const t = e.target.closest(CLICK_SEL); if (!t || t.disabled) return;
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (sdClick(t) || nuClick(t) || trClick(t) || ckClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -16742,7 +17028,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (nuInput(t) || trInput(t) || ckInput(t) || secInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
+  if (nuInput(t) || trInput(t) || cfInput(t) || ckInput(t) || secInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -16757,7 +17043,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (nuChange(t) || trChange(t) || ckChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

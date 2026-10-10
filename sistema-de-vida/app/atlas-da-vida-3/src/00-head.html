@@ -1871,6 +1871,56 @@ body.ckdmeet-on .app{grid-template-columns:minmax(0,1fr)}body.ckdmeet-on .ckwrap
 .trfrow input{min-width:0;width:100%}
 #trf_rows{max-height:50vh;overflow:auto;margin-bottom:8px}
 @media (max-width:640px){.nuday{grid-template-columns:minmax(0,1fr);justify-items:center}.numac{width:100%}.nuq{flex-direction:column}.trfhead{display:none}.trfrow{grid-template-columns:repeat(4,minmax(0,1fr));padding:8px 0;border-top:1px solid var(--line)}.trfrow .trf_ex{grid-column:1/-1}.trfrow .trf_o{grid-column:1/4}.trset input{width:74px;padding:6px}.trtimer{bottom:76px}}
+
+/* Jornada → Espiritismo → Centros de força */
+.cfgrid{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:16px}
+.cfmap{display:flex;flex-direction:column;gap:10px}
+.cfsvg{width:100%;max-width:330px;height:auto;margin:0 auto;display:block}
+.cfbody{fill:none;stroke:var(--line-2);stroke-width:1.4}
+.cfaxis{stroke:var(--jp-esp);stroke-opacity:.35;stroke-width:1.2;stroke-dasharray:3 4}
+.cfl{stroke:var(--line-2);stroke-width:.8;stroke-dasharray:2 3}
+.cfn{cursor:pointer;outline:none}
+.cfd{stroke:var(--jp-esp);stroke-width:1.4;transition:r .15s}
+.cfd.vazio{stroke:var(--line-2);stroke-dasharray:3 2}
+.cfn:hover .cfd,.cfn:focus-visible .cfd{stroke-width:2.6}
+.cfsel{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:4 3}
+.cfnum{font:600 11px var(--f-ui);fill:var(--ink);text-anchor:middle;pointer-events:none}
+.cflab{font:500 12px var(--f-ui);fill:var(--ink-2)}
+.cfn.on .cflab{fill:var(--ink);font-weight:700}
+.cfstart{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end}
+.cfstart .lbl{min-width:150px}
+.cfdet .cfdh{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+.cfdet h2{margin:0}
+.cfdot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--jp-esp);flex:none}
+.cfvals{display:flex;flex-wrap:wrap;gap:6px}
+.cfsin{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:4px 0 6px}
+.cfsin>div{border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.cfsin span{font-size:12px;color:var(--muted)}
+.cfsin b{font-size:16px}
+.cfprs{display:grid;gap:6px}
+.cfpr{display:flex;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:6px}
+.cfavs{display:grid;gap:8px}
+.cfav{display:grid;grid-template-columns:96px auto minmax(0,1fr);gap:8px;align-items:center}
+.cfav .segs .seg{min-width:34px}
+.cfheat{display:grid;grid-template-columns:86px repeat(var(--n),minmax(18px,1fr));gap:3px;align-items:center;font-size:11px;overflow-x:auto}
+.cfheat small{color:var(--muted);font-size:9.5px;writing-mode:vertical-rl;transform:rotate(180deg);justify-self:center}
+.cfheat b{font-weight:500;font-size:12px}
+.cfheat i{display:flex;align-items:center;justify-content:center;height:20px;border-radius:4px;border:1px solid var(--line);font-style:normal;font-size:10px;color:var(--ink)}
+.cfhist{display:grid;gap:4px}
+.cfhist>div{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;border-top:1px solid var(--line);padding-top:4px}
+.cfharm{border-color:var(--jp-esp);background:color-mix(in srgb,var(--jp-esp) 7%,var(--surface));margin-bottom:16px}
+.cfhtop{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cfhtop b{font-size:17px}
+.cfhtxt{font:400 19px/1.55 var(--f-display);margin:10px 0}
+.cfhbar{height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:6px 0}
+.cfhbar i{display:block;height:100%;width:0;background:var(--jp-esp);transition:width .25s linear}
+.cfmini{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.cfm{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--ink-2);min-width:0}
+.cfm i{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--jp-esp);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:600;color:var(--ink)}
+.cfm small{font-size:10.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cfbase summary{cursor:pointer;font-weight:600;display:flex;gap:8px;align-items:center}
+.cfbase p{max-width:78ch}
+@media (max-width:820px){.cfgrid{grid-template-columns:minmax(0,1fr)}.cfav{grid-template-columns:minmax(0,1fr)}.cfav small{margin-top:-4px}}
 </style>
 
 <div class="app">
