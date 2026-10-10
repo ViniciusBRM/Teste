@@ -72,6 +72,29 @@ MOCK = r"""
       await emit("Proponho um lembrete e preciso que você decida o horário das 18h.");
       return { text, truncated: false };
     }
+    if (/Você é o (Nutri|Personal),/.test(P) && !opts.tools) { const nu = /Você é o Nutri/.test(P); await emit(nu ? "Sem ferramentas nesta visualização (teste): proponho o lanche no bloco." : "Sem ferramentas (teste): proponho a corrida no bloco.");
+      await emit("\n```atlas\n" + JSON.stringify(nu ? { memorias: [{ tipo: "preferência", texto: "Fallback do Nutri: gosta de iogurte (teste)" }], acoes: [{ tipo: "registrar_refeicao", dados: { refeicao: "lanche", itens: [{ nome: "banana", gramas: 120 }] } }, { tipo: "ajustar_metas", dados: { kcal: 900, motivo: "abaixo do piso (teste)" } }] } : { acoes: [{ tipo: "registrar_corrida", dados: { km: 4, tempo: "24:00", tipo: "leve" } }] }) + "\n```"); return { text, truncated: false }; }
+    if (T.registrar_refeicao && /Você é o Nutri,/.test(P)) { window.__nuPrompt = P; const hoje = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; })();
+      const r1 = await T.consultar_alimentacao.execute({ dias: 7 }, ctx); window.__calls.push({ kind: "tool", name: "consultar_alimentacao", r: r1 });
+      const r2 = await T.tendencia_peso.execute({ dias: 30 }, ctx); window.__calls.push({ kind: "tool", name: "tendencia_peso", r: r2 });
+      const r3 = await T.buscar_alimento.execute({ nome: "pizza" }, ctx); window.__calls.push({ kind: "tool", name: "buscar_alimento", r: r3 });
+      const bad = await T.ajustar_metas.execute({ kcal: 1100, motivo: "abaixo do piso (teste)" }, ctx); window.__calls.push({ kind: "tool", name: "metas_bad", r: bad });
+      const ok1 = await T.registrar_refeicao.execute({ data: hoje, refeicao: "jantar", itens: [{ nome: "Pizza margherita", gramas: 300 }, { nome: "Tiramisù da cantina", gramas: 120, kcal: 360, proteina_g: 6, carboidrato_g: 38, gordura_g: 20 }] }, ctx); window.__calls.push({ kind: "tool", name: "refeicao_ok", r: ok1 });
+      const ok2 = await T.ajustar_metas.execute({ kcal: 2200, proteina_g: 160, carboidrato_g: 255, gordura_g: 62, motivo: "o peso desceu devagar com 2.300 kcal (teste)" }, ctx); window.__calls.push({ kind: "tool", name: "metas_ok", r: ok2 });
+      if (T.consultar_treinos) { const r4 = await T.consultar_treinos.execute({ dias: 7 }, ctx); window.__calls.push({ kind: "tool", name: "nu_treinos", r: r4 }); }
+      await emit("Na média de 7 dias você ficou perto da meta (teste). Deixei o jantar e um ajuste de metas como propostas.");
+      return { text, truncated: false }; }
+    if (T.criar_ficha && /Você é o Personal,/.test(P)) { window.__trPrompt = P; const hoje = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; })();
+      const r1 = await T.progresso_exercicio.execute({ exercicio: "supino" }, ctx); window.__calls.push({ kind: "tool", name: "progresso_exercicio", r: r1 });
+      const r2 = await T.volume_semanal.execute({ semanas: 2 }, ctx); window.__calls.push({ kind: "tool", name: "volume_semanal", r: r2 });
+      const r3 = await T.listar_exercicios.execute({ grupo: "gluteos" }, ctx); window.__calls.push({ kind: "tool", name: "listar_exercicios", r: r3 });
+      const r5 = await T.consultar_treinos.execute({ dias: 14 }, ctx); window.__calls.push({ kind: "tool", name: "consultar_treinos", r: r5 });
+      const b1 = await T.criar_ficha.execute({ nome: "Ficha pesada (teste)", exercicios: [{ exercicio: "supino", series: 4, reps: "6-8", carga_kg: 200 }] }, ctx); window.__calls.push({ kind: "tool", name: "ficha_bad", r: b1 });
+      const b2 = await T.planejar_corrida.execute({ objetivo: "Maratona já (teste)", semanas: [{ sessoes: [{ dia: "dom", tipo: "longo", km: 30 }] }] }, ctx); window.__calls.push({ kind: "tool", name: "plano_bad", r: b2 });
+      const o1 = await T.criar_ficha.execute({ nome: "Glúteos e core (teste)", exercicios: [{ exercicio: "hipthrust", series: 4, reps: "8-12", carga_kg: 60, descanso_s: 120 }, { exercicio: "bulgaro", series: 3, reps: "8-12", carga_kg: 12 }, { exercicio: "prancha", series: 3, reps: "30-45" }] }, ctx); window.__calls.push({ kind: "tool", name: "ficha_ok", r: o1 });
+      const o2 = await T.registrar_corrida.execute({ data: hoje, km: 6.2, tempo: "36:10", tipo: "leve", fc_media: 146, rpe: 4 }, ctx); window.__calls.push({ kind: "tool", name: "corrida_ok", r: o2 });
+      await emit("Revisei os treinos (teste): o supino está pronto para subir. Propus uma ficha de glúteos e registrei a corrida de hoje.");
+      return { text, truncated: false }; }
     if (T.criar_tarefa && /Cockpit de Trabalho/.test(P)) { window.__ckPrompt = P; const dday = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
       const r1 = await T.listar_tarefas.execute({ responsavel: "eu" }, ctx); window.__calls.push({ kind: "tool", name: "listar_tarefas", n: r1.length });
       if (T.sugerir_delegacao) { const r2 = await T.sugerir_delegacao.execute({ tarefa: "T13" }, ctx); window.__calls.push({ kind: "tool", name: "sugerir_delegacao", r: r2 }); }

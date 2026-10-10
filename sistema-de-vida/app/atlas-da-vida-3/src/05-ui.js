@@ -1,6 +1,9 @@
 
 /* ================================================================ ícones (traço 1.7, 24×24) */
 const ICONS = {
+  apple: '<path d="M12 7.6c-1.7-1.3-4.8-1.3-6.3 1-1.8 2.8-.6 7.6 1.7 10.1 1.3 1.4 2.6 1.8 4.6 1 2 .8 3.3.4 4.6-1 2.3-2.5 3.5-7.3 1.7-10.1-1.5-2.3-4.6-2.3-6.3-1z"/><path d="M12 7.6c0-2 .9-3.6 2.7-4.3"/><path d="M11.6 5.9C10.4 4.3 8.7 3.8 7.3 4.3c.5 1.6 2.1 2.5 4.3 1.6z"/>',
+  dumbbell: '<rect x="4.4" y="7" width="3" height="10" rx="1"/><rect x="16.6" y="7" width="3" height="10" rx="1"/><path d="M2.4 10v4M21.6 10v4M7.4 12h9.2"/>',
+  run: '<circle cx="15" cy="4.6" r="1.9"/><path d="M5.5 12.5l3.2-3.2h4.1l2.1 3.3 3.6.9"/><path d="M12.8 9.3l-2.5 5.4 3.6 2.6-1.1 4.6"/><path d="M10.3 14.7l-1.7 3.2-4.1.6"/>',
   column: '<path d="M4 6h16M5 6l2-3h10l2 3M7 6v12M10.3 6v12M13.7 6v12M17 6v12M5 18h14M4 21h16"/>',
   film: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7.5 5v14M16.5 5v14M3 9.5h4.5M3 14.5h4.5M16.5 9.5H21M16.5 14.5H21"/>',
   gamepad: '<path d="M6.5 8h11a4 4 0 0 1 3.9 4.9l-.8 3.3a2.4 2.4 0 0 1-4.1 1.1L14.4 15H9.6l-2.1 2.3a2.4 2.4 0 0 1-4.1-1.1l-.8-3.3A4 4 0 0 1 6.5 8z"/><path d="M8.5 10.5v3M7 12h3"/><circle cx="15.5" cy="11" r=".9"/><circle cx="17.3" cy="13" r=".9"/>',
@@ -104,7 +107,7 @@ const NAV = [
 ];
 const SUBS = {
   fin: [["rel", "Relatório"], ["lanc", "Lançamentos"], ["orc", "Orçamento & patrimônio"], ["futuro", "Futuro financeiro"], ["vida", "Itália & Brasil"], ["projetos", "Projetos & aquisições"], ["diario", "Diário"]],
-  saude: [["rel", "Relatório"], ["checkin", "Check-in"], ["diario", "Diário"]],
+  saude: [["rel", "Relatório"], ["checkin", "Check-in"], ["alimentacao", "Alimentação"], ["treinos", "Treinos"], ["diario", "Diário"]],
   hab: [["rel", "Relatório"], ["marcar", "Marcar hábitos"], ["diario", "Diário"]],
   metas: [["rel", "Relatório"], ["lista", "Metas"], ["tarefas", "Tarefas"], ["diario", "Diário"]],
   pessoas: [["rel", "Relatório"], ["lista", "Pessoas"], ["contatos", "Contatos"], ["diario", "Diário"]],
@@ -332,6 +335,12 @@ function palItems(q) {
   add("Ações", "Conversar com o PMO", "O agente do Cockpit de Trabalho: prioridades, riscos, delegação", "gauge", () => { CK.chat = true; CK_LS("chat", "1"); setHash("trabalho", SUB && PAGE === "trabalho" ? SUB : "hoje"); setTimeout(() => $("#m_in")?.focus(), 60); }, "pmo agente trabalho projeto prioridades delegar");
   add("Ações", EX_MODE ? "Desligar o modo exemplo" : "Ligar o modo exemplo", "Dados fictícios em todas as abas, sem tocar nos seus", "eye", () => exToggle(), "exemplo demonstracao demo ficticio tutorial");
   add("Ações", "Painel do dia", "Humor, sono, treino, gastos e hábitos em um minuto, por texto ou voz", "mic", () => setHash("painel"), "painel dia rapido voz falar ditar registrar check-in");
+  add("Ações", "Registrar refeição", "Alimentação: calorias e macros por texto (“almoço: 150 g arroz, 1 ovo”)", "apple", () => { NU.v = "dia"; NU.dia = null; setHash("saude", "alimentacao"); setTimeout(() => $("#nu_q")?.focus(), 60); }, "comida refeicao almoco jantar calorias dieta nutri nutricionista");
+  add("Ações", "Pesar", "Peso de hoje, tendência e metas", "pulse", () => { NU.v = "peso"; setHash("saude", "alimentacao"); setTimeout(() => $("#nu_peso")?.focus(), 60); }, "peso balanca emagrecer massa meta");
+  add("Ações", "Conversar com o Nutri", "Nutricionista virtual: metas, cardápios e registro", "apple", () => { sdLS("chat_nutri", "1"); setHash("saude", "alimentacao"); setTimeout(() => $("#m_in")?.focus(), 80); }, "nutri nutricionista dieta cardapio");
+  add("Ações", "Treinar agora", "Abre o registro do treino com a ficha", "dumbbell", () => { TRV.v = "registrar"; setHash("saude", "treinos"); }, "academia treino ficha musculacao serie");
+  add("Ações", "Registrar corrida", "Distância, tempo e ritmo", "run", () => { TRV.v = "corrida"; setHash("saude", "treinos"); setTimeout(() => $("#trc_km")?.focus(), 60); }, "corrida correr km ritmo pace");
+  add("Ações", "Conversar com o Personal", "Personal trainer virtual: fichas, cargas e plano de corrida", "dumbbell", () => { sdLS("chat_personal", "1"); setHash("saude", "treinos"); setTimeout(() => $("#m_in")?.focus(), 80); }, "personal treinador academia corrida");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");
   add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
   add("Ações", "Secretário da Vida", "Abre a janela do secretário: agora, lembretes e conversa", "brief", () => secToggle(true), "secretario assistente lembrete agenda resumo");

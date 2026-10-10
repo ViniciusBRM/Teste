@@ -54,7 +54,7 @@ function aiAllowed(e) {
   return !p.areas.some(a => semIA().includes(a));
 }
 function metricArea(k) {
-  if (["sono", "qual", "passos", "treino", "min", "peso"].includes(k)) return "Saúde física";
+  if (["sono", "qual", "passos", "treino", "min", "peso", "km", "kcal", "prot"].includes(k)) return "Saúde física";
   if (["humor", "bem", "energia", "estresse", "dhumor"].includes(k)) return "Saúde mental";
   if (k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:")) return "Finanças";
   if (k === "estudo" || k === "idi") return "Aprendizado";

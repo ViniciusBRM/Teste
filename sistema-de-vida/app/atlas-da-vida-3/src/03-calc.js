@@ -169,8 +169,9 @@ function buildDaily() {
   /* fontes das abas mais novas: Cockpit (o que você entregou), Psicologia (fora o que é só seu) e Rotina (dias com blocos marcados) */
   const euCk = (S.ck?.membros || []).find(m => m.eu)?.id || "eu", ckDone = (S.ckTar || []).filter(t => t.concluida && t.resp === euCk).map(t => t.concluida);
   const psS = (S.psique?.sessoes || []).filter(x => x.data && !x.privado).map(x => x.data), psR = (S.psique?.reflexoes || []).filter(x => x.data && !x.privado).map(x => x.data);
+  const coD = (S.corridas || []).map(c => c.data).filter(Boolean), nuDs = (S.nutriLog || []).map(x => x.data).filter(Boolean);
   const roDias = new Set(); for (const b of S.rotina || []) for (const d of [...Object.keys(b.st || {}), ...Object.keys(b.feitos || {})]) if (d <= TODAY) roDias.add(d);
-  let start = minOf([...dates0, minOf(ckDone), minOf(psS), minOf(psR), minOf([...roDias])].filter(Boolean)) || addDays(TODAY, -90); if (start < addDays(TODAY, -730)) start = addDays(TODAY, -730);
+  let start = minOf([...dates0, minOf(ckDone), minOf(psS), minOf(psR), minOf([...roDias]), minOf(coD), minOf(nuDs)].filter(Boolean)) || addDays(TODAY, -90); if (start < addDays(TODAY, -730)) start = addDays(TODAY, -730);
   const dates = []; for (let d = start; d <= TODAY; d = addDays(d, 1)) dates.push(d);
   const N = dates.length, idx = {}; dates.forEach((d, i) => idx[d] = i);
   const C = {}, E = {}, col = () => new Array(N).fill(null);
@@ -215,6 +216,9 @@ function buildDaily() {
   /* Psicologia: dia de sessão e dia com registro entre sessões */
   zero("psis", minOf(psS), maxOf(psS), 21); for (const d of psS) { const i = idx[d]; if (i != null) C.psis[i] = 1; }
   zero("psir", minOf(psR), maxOf(psR)); for (const d of psR) { const i = idx[d]; if (i != null) C.psir[i] = 1; }
+  /* Saúde: km de corrida (zero nos dias sem corrida enquanto você registra corridas) e o que você comeu (só nos dias com registro) */
+  zero("km", minOf(coD), maxOf(coD)); for (const c of S.corridas || []) { const i = idx[c.data]; if (i != null) C.km[i] += +c.km || 0; }
+  C.kcal = col(); C.prot = col(); for (const x of S.nutriLog || []) { const i = idx[x.data]; if (i == null) continue; C.kcal[i] = (C.kcal[i] || 0) + (+x.kcal || 0); C.prot[i] = (C.prot[i] || 0) + (+x.p || 0); }
   C.bem = C.humor.map((v, i) => v ?? C.dhumor[i]);   // humor do dia: check-in ou, na falta, o humor do diário
   if (typeof jDaily === "function") jDaily(C, idx, zero);   /* métricas da Jornada existencial (24-jornada.js) */
   return { dates, idx, C, N, E };
@@ -237,6 +241,9 @@ function metricList() {
     add("treino", "Treinou", "Corpo", "avg", fp, { bin: true });
     add("min", "Minutos de treino", "Corpo", "sum", f0);
     add("peso", "Peso (kg)", "Corpo", "avg", f1);
+    add("km", "Km de corrida", "Corpo", "sum", f1);
+    add("kcal", "Calorias registradas", "Alimentação", "avg", f0);
+    add("prot", "Proteína registrada (g)", "Alimentação", "avg", f0);
     add("hab", "Hábitos cumpridos", "Hábitos", "avg", fp);
     for (const h of S.habitos) add("h:" + h.id, "Hábito: " + h.nome, "Hábitos", "avg", fp, { bin: true });
     add("gasto", "Gasto do dia", "Dinheiro", "sum", fe);
@@ -271,7 +278,7 @@ const metric = k => metricList().find(m => m.k === k);
 const mfmt = (k, v) => (metric(k)?.fmt || (x => num(x)))(v);
 /* famílias: métricas que são a mesma medida, ou uma parte da outra (o gasto do grupo está dentro do gasto do dia, a tag só
    existe no dia em que você escreveu). Cruzar dentro da família dá correlação pela conta, não pela vida. */
-const family = k => k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:") ? "gasto" : k === "hab" || k.startsWith("h:") ? "hab" : ["diario", "palavras", "mencoes"].includes(k) || k.startsWith("t:") ? "diario" : ["treino", "min"].includes(k) ? "treino" : ["humor", "dhumor", "bem"].includes(k) ? "humor" : ["jmin", "jdia"].includes(k) ? "jornada" : k === "contatos" || k.startsWith("p:") ? "contatos" : ["estudo", "idi"].includes(k) ? "estudo" : ["ckh", "ckc"].includes(k) ? "ck" : ["psis", "psir"].includes(k) ? "psi" : k;
+const family = k => k === "gasto" || k === "receita" || k.startsWith("g:") || k.startsWith("c:") ? "gasto" : k === "hab" || k.startsWith("h:") ? "hab" : ["diario", "palavras", "mencoes"].includes(k) || k.startsWith("t:") ? "diario" : ["treino", "min", "km"].includes(k) ? "treino" : ["kcal", "prot"].includes(k) ? "nutri" : ["humor", "dhumor", "bem"].includes(k) ? "humor" : ["jmin", "jdia"].includes(k) ? "jornada" : k === "contatos" || k.startsWith("p:") ? "contatos" : ["estudo", "idi"].includes(k) ? "estudo" : ["ckh", "ckc"].includes(k) ? "ck" : ["psis", "psir"].includes(k) ? "psi" : k;
 /* “com fulano” também vem das menções no diário: é parte do diário */
 const czRel = (a, b) => a === b || family(a) === family(b) || (a.startsWith("p:") && family(b) === "diario") || (b.startsWith("p:") && family(a) === "diario");
 function aggSeries(k, gran = "m", n = 6, end = TODAY, colOver = null) {

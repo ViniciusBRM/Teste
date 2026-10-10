@@ -237,6 +237,7 @@ const USO_TXT = { ver_aba: ["eye", "Olhou a aba"], consultar_mentor: ["council",
 const usoHTML = us => (us || []).map(u => `<span class="uso">${ic(USO_TXT[u.t]?.[0] || "bolt")}<b>${USO_TXT[u.t]?.[1] || u.t}</b> ${esc(u.d)}</span>`).join("");
 function propHTML(mid, mi, p) {
   if (p.ck) return ckPropHTML(mid, mi, p);
+  if (p.sd) return sdPropHTML(mid, mi, p);
   const lab = { tarefa: "Tarefa", meta: "Meta", habito: "Hábito", lembrete: "Lembrete" }[p.tipo];
   return `<div class="prop ${p.status}"><div class="prop-t">${ic({ tarefa: "checksq", meta: "target", habito: "repeat", lembrete: "clock" }[p.tipo] || "plus")}<div><span class="prop-k">${lab} proposta</span><b>${esc(p.titulo)}</b><small>${[p.prazo && "até " + fmtD(p.prazo), p.tipo !== "habito" && p.prio, p.vezes && p.vezes + "×/semana", isNum(p.alvo) && `alvo ${p.alvo} ${p.un || ""}`, p.meta && "meta: " + p.meta].filter(Boolean).map(esc).join(" · ")}</small>${p.detalhes ? `<p>${esc(p.detalhes)}</p>` : ""}</div></div>
     <div class="prop-a">${p.status === "pendente" ? (mi >= 0 ? `<button type="button" class="btn sm primary" data-prop="${mid}|${mi}|${p.id}|ok">${ic("check")}Criar</button><button type="button" class="btn sm ghost" data-prop="${mid}|${mi}|${p.id}|no">Descartar</button>` : `<span class="muted">aguarde a resposta terminar</span>`) : p.status === "aceita" ? `<span class="pill good">Criada</span>` : `<span class="pill none">Descartada</span>`}</div></div>`;
@@ -244,6 +245,7 @@ function propHTML(mid, mi, p) {
 function decideProposal(mid, mi, pid, ok) {
   const msg = mstate(mid).conversa[mi], p = msg?.acoes?.find(x => x.id === pid); if (!p || p.status !== "pendente") return;
   if (p.ck) { ckDecide(mid, p, ok); return; }
+  if (p.sd) { sdDecide(mid, p, ok); return; }
   const area = MENTOR_DEF[mid].area || MENTOR_DEF[mid].gate || "", keys = ["mentores"];
   if (!ok) { p.status = "descartada"; touch("mentores", { label: "Proposta descartada" }); return; }
   if (p.tipo === "tarefa" || p.tipo === "lembrete") { const meta = S.metas.find(m => norm(m.meta) === norm(p.meta))?.meta || ""; S.tarefas.push({ id: p.ref = uid(), tarefa: p.titulo, projeto: "", area: area || (meta ? S.metas.find(m => m.meta === meta).area : ""), prio: p.prio, prazo: p.prazo, status: "A fazer", concluida: "", meta, notas: p.detalhes, origem: MENTOR_DEF[mid].nome }); keys.push("tarefas"); }
@@ -270,7 +272,9 @@ function pMentores(R) {
     <div class="mhead jmh2">${ic("palette")}Mentores do lazer<small>um para cada tema, do básico ao avançado</small></div>
     <div class="jmgrid">${LZ_MIDS.map(mid => { const def = MENTOR_DEF[mid]; return `<a class="jmc" href="#lazer.${def.lz}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${esc(lzDiv(def.lz).nome)}</small><em>${esc(def.arq)}</em></span></a>`; }).join("")}</div>
     <div class="mhead jmh2">${ic("lotus")}Mentores da vida interior<small>um para cada pilar, o Navegante da Bússola, o Mestre do Pórtico e o Terapeuta</small></div>
-    <div class="jmgrid">${[...J_MIDS, "sto", "psi"].map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#${mid === "psi" ? "psi.terapeuta" : "jornada." + jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : mid === "sto" ? "Filosofia · estoicismo" : mid === "psi" ? "Psicologia" : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>`;
+    <div class="jmgrid">${[...J_MIDS, "sto", "psi"].map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), pid = jMidP(mid); return `<a class="jmc" href="#${mid === "psi" ? "psi.terapeuta" : "jornada." + jSubOfMid(mid)}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}</b><small>${pid ? esc(J_PIL[pid].nome) : mid === "sto" ? "Filosofia · estoicismo" : mid === "psi" ? "Psicologia" : "Bússola moral"}</small><em>${m.plano ? esc(trunc(m.plano.foco, 60)) : m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.papel)}</em></span></a>`; }).join("")}</div>
+    <div class="mhead jmh2">${ic("heart")}Mentores do corpo<small>o Nutri na Alimentação e o Personal nos Treinos; propõem e você aprova</small></div>
+    <div class="jmgrid">${["nutri", "personal"].filter(mid => MENTOR_DEF[mid]).map(mid => { const def = MENTOR_DEF[mid], m = mget(mid), n = sdPendentes(mid).length; return `<a class="jmc" href="#saude.${def.sub}" style="--c:${mcol(mid)}">${mavatar(mid)}<span><b>${esc(def.nome)}${n ? ` <em class="nb acc">${n}</em>` : ""}</b><small>Saúde · ${def.sub === "alimentacao" ? "Alimentação" : "Treinos"}</small><em>${m.conversa?.length ? `conversaram ${relDay(iso(new Date(m.conversa.at(-1).at)))}` : esc(def.arq)}</em></span></a>`; }).join("")}</div>`;
 }
 function aiBanner() {
   if (AI_OFF) return `<div class="banner warn">${ic("info")}<span>${esc(AI_OFF)}</span></div>`;

@@ -120,7 +120,7 @@ async def main():
               touch('lanc'); location.hash = 'cruz'; })()""")
             await pg.wait_for_timeout(700)
             so = await pg.evaluate("[!!document.querySelector('.czpron'), !!document.querySelector('[data-vid=\"cz-sc\"]'), !!document.querySelector('.czpron a[href=\"#fin.rel\"]'), document.querySelectorAll('.czai').length, document.querySelectorAll('.czai.on').length, /\\d,\\d\\d/.test(document.querySelector('.czpron').innerText)]")
-            chk(so == [True, False, True, 12, 1, False], f"só com gastos: a aba diz o que falta e aponta Finanças → Relatório, sem nenhuma correlação ({so})")
+            chk(so == [True, False, True, 13, 1, False], f"só com gastos: a aba diz o que falta e aponta Finanças → Relatório, sem nenhuma correlação ({so})")
             zz = await pg.evaluate("(() => { const D = DAILY(), c = czCol('gasto'), e = D.E.gasto; return [D.dates[e], addDays(TODAY, -30 + 14), c.slice(e + 1).every(v => v === null), D.C.gasto.slice(e + 1).every(v => v === 0), c[e]]; })()")
             chk(zz[0] == zz[1] and zz[2] and zz[3] and zz[4] == 0, f"depois do último lançamento + 14 dias, os cruzamentos não contam zero (os alertas ainda contam) ({zz[0]})")
             await pg.evaluate("""(() => { for (let i = 0; i < 60; i++) { const d = addDays(TODAY, -i); S.saude[d] = { humor: 2 + (i % 3), energia: 3, sono: 6 + (i % 4) / 2 }; } S.psique = { ...(S.psique || {}), sessoes: [{ id: 'x1', data: addDays(TODAY, -40), privado: true }, { id: 'x2', data: addDays(TODAY, -33) }], reflexoes: [] }; touch('saude', 'psique'); })()""")
