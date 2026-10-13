@@ -279,6 +279,13 @@ const pdSrcTag = k => ({ texto: "do texto", voz: "por voz", base: "já salvo" }[
 const pdReqMark = k => pdReq().includes(k) ? `<b class="pdreq" title="Obrigatório">*</b>` : "";
 function pdField(C, k, lbl, input, mic, extra = "") { return `<div class="pdf ${pdSt(C, k)}" data-pdbox="${k}"><div class="pdfl"><label for="pd_${k}">${lbl}${pdReqMark(k)}</label>${pdSrcTag(k)}</div><div class="pdfi">${input}${mic || ""}</div>${pdMsg(C, k)}${extra}</div>`; }
 const pdIn = (k, ph, mode = "decimal") => `<input type="text" id="pd_${k}" data-pdf="${k}" inputmode="${mode}" autocomplete="off" value="${esc(PD.v[k] ?? "")}" placeholder="${ph}" aria-describedby="pdm_${k}"${pdSt(pdCheck(), k) === "err" ? ' aria-invalid="true"' : ""}>`;
+/* recomeçar do zero: limpa o painel (texto, marcas e valores ainda não salvos) e volta ao começo do roteiro; o que já foi salvo
+   nas abas continua lá. Um toque, com desfazer: o rascunho inteiro volta. */
+function pdRecomecar() {
+  if (pdEmpty()) return; const antes = JSON.parse(JSON.stringify(PD)); stopVoice();
+  PD = { ...pdNew(PD.date), dateSrc: antes.dateSrc }; VOZ.msg = ""; VOZ.st = ""; VOZ.interim = ""; if (typeof PDR !== "undefined") PDR.i = 0; pdStore(); render();
+  toast("Painel limpo para recomeçar. O que já foi salvo nas abas continua lá.", { l: "Desfazer", f: () => { PD = antes; pdStore(); render(); } });
+}
 function pPainel() {
   if (PD.step !== "rev") pdSyncBase();
   const C = pdCheck(), B = pdBase(), V = PD.v, d = PD.date, why = pdVoiceOk(), rev = PD.step === "rev";
@@ -296,7 +303,7 @@ function pPainel() {
     ${pdRoteiroHTML()}
     <section class="pn pdtxt" aria-label="Conte o dia">
       <div class="pdday ${pdSt(C, "date")}"><label class="pdd">Dia<input type="date" id="pd_date" value="${d}" max="${TODAY}"></label><div class="seg-g" role="group" aria-label="Atalhos de dia"><button type="button" class="seg" data-pdday="${TODAY}" aria-pressed="${d === TODAY}">Hoje</button><button type="button" class="seg" data-pdday="${addDays(TODAY, -1)}" aria-pressed="${d === addDays(TODAY, -1)}">Ontem</button></div>${pdMsg(C, "date")}
-        <span class="pdvst ${why ? "off" : ""}" title="${esc(why ? PD_WHY[why] + " " + PD_DICT[pdPlat()] : "Voz pelo navegador, em " + pdLang())}">${ic("mic")}${why ? "voz pelo ditado do sistema" : "voz pronta · " + pdLang()}</span></div>
+        <button type="button" class="btn sm ghost pdreset" data-act="pdreset"${pdEmpty() ? ' disabled title="Nada para limpar"' : ""}>${ic("refresh")}Recomeçar do zero</button><span class="pdvst ${why ? "off" : ""}" title="${esc(why ? PD_WHY[why] + " " + PD_DICT[pdPlat()] : "Voz pelo navegador, em " + pdLang())}">${ic("mic")}${why ? "voz pelo ditado do sistema" : "voz pronta · " + pdLang()}</span></div>
       <div class="pdbig"><textarea id="pd_txt" class="captxt" rows="3" placeholder="Fale ou escreva o dia. Ex.: dormi 7 e meia, humor 4, corri 30 min, gastei 18 euros no almoço, meditei 15 min" aria-label="Conte o dia">${esc(PD.text)}</textarea><button type="button" class="pdmicbig${VOZ.on === "texto" ? " on" : ""}" data-pdmic="texto" aria-pressed="${VOZ.on === "texto"}" aria-label="Falar o dia">${ic("mic")}<span>${VOZ.on === "texto" ? "Parar" : "Falar"}</span></button></div>
       <div id="pd_vbar" class="pdvbar ${VOZ.st || ""}" role="status" aria-live="polite">${pdVbarHTML()}</div>
       <p class="muted small">O texto preenche os campos abaixo. O que você digitar ou falar num campo prevalece sobre o texto.</p>
@@ -369,7 +376,7 @@ function pdPaint() {
   const rows = pdRows(), on = rows.filter(r => r.on), foot = $("#pd_foot"), mp = $(".pdmapa"), mh = pdMapa(rows); if (mp && mp.outerHTML !== mh) mp.outerHTML = mh;
   foot.querySelector(".pdinfo").innerHTML = pdFootInfo(C, on, on.filter(r => r.kind === "subst" || r.kind === "apagar").length);
   const go = foot.querySelector('[data-act="pdrev"],[data-act="pdsave"]'), cl = foot.querySelector('[data-act="pdclear"]');
-  if (go) go.disabled = !!(C.errs.length || C.missing.length) || !on.length; if (cl && !cl.dataset.c) cl.disabled = pdEmpty();
+  if (go) go.disabled = !!(C.errs.length || C.missing.length) || !on.length; const vazio = pdEmpty(); if (cl) cl.disabled = vazio; const rs = $(".pdreset"); if (rs) { rs.disabled = vazio; rs.title = vazio ? "Nada para limpar" : ""; }
   pdRotPaint();
 }
 function pdAddGasto() { PD.gastos.push({ id: uid(), v: "", d: "", cat: "", src: "mao" }); pdStore(); render(); setTimeout(() => document.getElementById(`pd_gv${PD.gastos.length - 1}`)?.focus(), 30); }
@@ -411,6 +418,6 @@ function pdClick(t) {
   if (a === "pdback") { PD.step = "form"; render(); return true; }
   if (a === "pdsave") { if (pdSave()) window.scrollTo({ top: 0 }); return true; }
   if (a === "pddone") { PD.done = null; render(); return true; }
-  if (a === "pdclear") { if (!ds.c) { t.dataset.c = 1; t.textContent = "Limpar tudo?"; setTimeout(() => { if (t.isConnected) { delete t.dataset.c; t.textContent = "Limpar"; } }, 3000); return true; } stopVoice(); PD = pdNew(PD.date); VOZ.msg = ""; VOZ.st = ""; pdStore(); render(); toast("Painel limpo. Nada foi apagado das abas."); return true; }
+  if (a === "pdclear" || a === "pdreset") { pdRecomecar(); return true; }
   return false;
 }

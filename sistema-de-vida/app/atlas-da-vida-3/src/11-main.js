@@ -117,7 +117,7 @@ function pack() {
 }
 
 /* ================================================================ eventos */
-const CLICK_SEL = "[data-rtb],button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv],[data-cktask],[data-ckmemb],[data-ckproj],[data-ckmarco],[data-ckpessoa],[data-ckrisk],[data-ckiss],[data-ckdec],[data-cklic],[data-ckbim],[data-ckel],[data-ckmeetv],[data-ckrel],[data-ckdrill],[data-ckdper],[data-ckdnav],[data-ckdsec],[data-ckwmv],[data-ckwhide],[data-czver],[data-cf]";
+const CLICK_SEL = "[data-rtb],[data-rtitem],button,input[type=checkbox],a[data-act],[data-act],[data-edit],[data-ent],[data-xf],[data-ref],[data-go],[data-cx],[data-dday],[data-ckday],[data-add],[data-mark],[data-done],[data-goentry],[data-newp],[data-pvdet],[data-chsel],[data-bmv],[data-cktask],[data-ckmemb],[data-ckproj],[data-ckmarco],[data-ckpessoa],[data-ckrisk],[data-ckiss],[data-ckdec],[data-cklic],[data-ckbim],[data-ckel],[data-ckmeetv],[data-ckrel],[data-ckdrill],[data-ckdper],[data-ckdnav],[data-ckdsec],[data-ckwmv],[data-ckwhide],[data-czver],[data-cf]";
 document.addEventListener("click", e => {
   const t = e.target.closest(CLICK_SEL); if (!t || t.disabled) return;
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }

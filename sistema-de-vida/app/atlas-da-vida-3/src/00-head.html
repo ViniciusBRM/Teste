@@ -1239,7 +1239,9 @@ tr.dim td{opacity:.5}
 .pdday .pdmsg{flex-basis:100%;margin:0}
 .pdday.err input[type=date]{border-color:var(--crit)}.pdday.warn input[type=date]{border-color:var(--warn)}
 .pdvst{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--good);border:1px solid color-mix(in srgb,var(--good) 40%,var(--line));border-radius:99px;padding:3px 10px}
-.pdvst .ico{width:13px;height:13px}.pdvst.off{color:var(--ink-2);border-color:var(--line-2)}
+.pdvst .ico{width:13px;height:13px}
+.pdreset{margin-left:auto}.pdreset+.pdvst{margin-left:0}
+.hjtl input{width:58px}.pdvst.off{color:var(--ink-2);border-color:var(--line-2)}
 .pdbig{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch}
 .pdbig textarea{min-height:76px;resize:vertical}
 .pdmicbig{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:78px;border-radius:12px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);cursor:pointer;font-weight:600;font-size:12.5px;transition:all .15s}
@@ -1420,7 +1422,12 @@ tr.dim td{opacity:.5}
 .rtb.st-pulado{opacity:.45;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0 5px,var(--surface) 5px 10px)}
 .rtb.conf{box-shadow:0 0 0 2px var(--crit)}
 .rtrs{position:absolute;left:0;right:0;bottom:0;height:7px;cursor:ns-resize}.rtrs::after{content:"";position:absolute;left:50%;bottom:2px;width:18px;margin-left:-9px;height:2px;border-radius:2px;background:var(--c);opacity:0}.rtb:hover .rtrs::after{opacity:.8}
-.rte{border:1px dashed var(--muted);background:repeating-linear-gradient(135deg,var(--surface-2) 0 6px,var(--surface-3) 6px 12px);pointer-events:none;opacity:.95}.rte.gcal{border-color:var(--a-car)}
+.rte{border:1px dashed var(--muted);background:repeating-linear-gradient(135deg,var(--surface-2) 0 6px,var(--surface-3) 6px 12px);cursor:pointer;opacity:.95}
+.rte:hover,.rte:focus-visible{opacity:1;outline:2px solid var(--accent);outline-offset:1px}
+.rte.tk{border:1px solid color-mix(in srgb,var(--warn) 60%,var(--line));background:color-mix(in srgb,var(--warn) 14%,var(--surface))}
+button.rtad{border:0;font:inherit;font-size:11px;color:inherit;text-align:left;cursor:pointer;width:100%}
+button.rtad:hover,button.rtad:focus-visible{outline:2px solid var(--accent);outline-offset:-1px}
+.rtitem .rtcc{background:var(--muted)}.rte.gcal{border-color:var(--a-car)}
 .rtghost{border:2px dashed var(--c);background:color-mix(in srgb,var(--c) 18%,transparent);left:2px;right:2px;pointer-events:none;z-index:4;justify-content:center}.rtghost b{font-size:11px}
 .rtnow{position:absolute;left:0;right:0;height:2px;background:var(--crit);z-index:3;pointer-events:none}.rtnow::before{content:"";position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--crit)}.rtnow span{position:absolute;right:4px;top:-17px;font-size:10px;font-weight:700;color:var(--crit);font-family:var(--f-mono)}
 .rtmonth{display:grid}.rtmw{display:grid;grid-template-columns:34px repeat(7,minmax(0,1fr));border-bottom:1px solid var(--line)}.rtmw.hd span{font-size:11px;color:var(--muted);text-transform:uppercase;padding:6px;text-align:center}

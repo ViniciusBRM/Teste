@@ -122,7 +122,8 @@ const IDEIAS = [
   ["Três linhas no diário sobre algo que mudou neste mês", "Dez minutos.", 0, 10, 0, 1, 0, "calma"],
 ];
 const CUSTO_TXT = ["grátis", "até € 10", "até € 30"];
-const TEMPO_OPT = [[15, "15 min"], [60, "1 hora"], [180, "meio dia"], [480, "dia livre"]];
+/* tempo livre em minutos; as opções são em horas cheias e o campo “outro” aceita qualquer valor em horas (1, 1,5, 3…) */
+const TEMPO_OPT = [[120, "2 h"], [240, "4 h"], [360, "6 h"]];
 const GRANA_OPT = [["zero", "nada", 0], ["pouco", "até € 10", 1], ["ok", "até € 30", 2], ["folga", "mais", 2]];
 function hjIdeias(c, W) {
   const per = periodo(), dow = parse(TODAY).getDay(), tempo = +c.tempo || 60, gmax = (GRANA_OPT.find(g => g[0] === c.grana) || [0, 0, 1])[2], en = { baixa: 1, media: 2, alta: 3 }[c.energia] || 2, chuva = W ? W.chuva >= 50 || W.code >= 61 : c.clima === "chuva", extremo = W ? W.sens < 3 || W.max >= 33 : c.clima === "frio" || c.clima === "calor";
@@ -151,7 +152,7 @@ function hjAsk(c) {
   return `<section class="pn hjask${falta.length ? " pend" : ""}" aria-label="Como você está agora">
     <div class="hjaskh"><b>${ic("mood")}Como você está agora?</b><span class="muted small">${falta.length ? `${falta.length} de 4 sem resposta: o resumo fica genérico nelas` : "Resumo ajustado às suas respostas"} · ${PER_TXT[periodo()]}, ${new Date().toTimeString().slice(0, 5)}</span></div>
     <div class="hjq"><span>Humor</span>${chips("humor", mood)}</div><div class="hjq"><span>Energia</span>${chips("energia", [["baixa", "baixa"], ["media", "média"], ["alta", "alta"]])}</div>
-    <div class="hjq"><span>Tempo livre hoje</span>${chips("tempo", TEMPO_OPT)}</div><div class="hjq"><span>Dinheiro para lazer</span>${chips("grana", GRANA_OPT.map(g => [g[0], g[1]]))}</div>
+    <div class="hjq"><span>Tempo livre hoje</span>${chips("tempo", TEMPO_OPT)}<label class="hjtemp hjtl">outro<input type="text" inputmode="decimal" data-hjtempo="1" value="${c.tempo && !TEMPO_OPT.some(([v]) => v === +c.tempo) ? String(+c.tempo / 60).replace(".", ",") : ""}" placeholder="h" aria-label="Outro tempo livre, em horas">h</label></div><div class="hjq"><span>Dinheiro para lazer</span>${chips("grana", GRANA_OPT.map(g => [g[0], g[1]]))}</div>
     ${HJ.wxSt === "err" || (!HJ.wx && c.clima) ? `<div class="hjq"><span>Tempo lá fora</span>${chips("clima", [["sol", "sol"], ["nublado", "nublado"], ["chuva", "chuva"], ["frio", "frio"], ["calor", "calor"]])}<label class="hjtemp">°C<input type="number" data-hjtemp="1" value="${esc(c.temp ?? "")}" aria-label="Temperatura"></label></div>` : ""}
   </section>`;
 }
@@ -202,4 +203,6 @@ function hjCidade() {
       S.cfg.cidade = { nome: x.name, lat: x.latitude, lon: x.longitude }; d.close(); HJ.wx = null; HJ.wxSt = ""; try { localStorage.removeItem("atlas_wx"); } catch {} touch("cfg", { label: "Cidade do clima" }); }
     catch { $("#hjcm").textContent = "Sem acesso à internet nesta visualização."; } };
 }
-function hjChange(t) { if (t.dataset.hjtemp) { hctx().temp = t.value === "" ? "" : +t.value; touch("hojeCtx", { noUndo: true }); return true; } return false; }
+function hjChange(t) {
+  if (t.dataset.hjtempo) { const h = parseNum(t.value); hctx().tempo = h > 0 ? Math.round(Math.min(24, h) * 60) : ""; HJ.skip.clear(); touch("hojeCtx", { label: "Tempo livre", noUndo: true }); return true; }
+  if (t.dataset.hjtemp) { hctx().temp = t.value === "" ? "" : +t.value; touch("hojeCtx", { noUndo: true }); return true; } return false; }

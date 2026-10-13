@@ -26,10 +26,37 @@ function rtOcc(d) {
   return (S.rotina || []).filter(b => !(b.exc || []).includes(d) && (b.rep ? b.data <= d && (b.rep === "diario" || (b.rep === "uteis" && dow >= 1 && dow <= 5) || (b.rep === "semanal" && parse(b.data).getDay() === dow)) : b.data === d))
     .map(b => { const st = rtSt(b, d); return { ...b, a: hm2min(b.ini), z: hm2min(b.fim), st, done: st === "feito", day: d }; }).filter(b => b.a != null && b.z > b.a);
 }
+/* horário escrito no texto: faixa (“09:00–10:30”, “9h às 10h30”, “das 9 às 10”, “14h-15h”) ou início (“às 14h”, “09:30”: 30 min).
+   “2h de estudo”, “1h30 de corrida” e “30 min” são duração, não horário: um número só vale como hora com “às/das” ou no formato hh:mm. */
+const RT_HT = String.raw`(\d{1,2})(?:([:h])(\d{2}))?(hs?(?![\p{L}\d]))?`;
+const RT_HRX = new RegExp(String.raw`(?<![\p{L}\d])(das\s+|de\s+)?${RT_HT}\s*(?:-|–|—|às|as|a|até|ate)\s*${RT_HT}`, "gu");
+const RT_H1X = new RegExp(String.raw`(?<![\p{L}\d])(?:(às|a partir das?|depois das|das|as)\s+${RT_HT}|(\d{1,2}):(\d{2})(?!\d))`, "gu");
+function rtHoraTxt(txt) {
+  const L = String(txt || "").toLowerCase().replace(/(?:\b(?:ao|à|a)\s+)?meio[ -]dia/g, "às 12h").replace(/meia[ -]noite/g, "0h"), mn = (h, m) => +h <= 24 && +(m || 0) < 60 ? +h * 60 + +(m || 0) : null;
+  for (const m of L.matchAll(RT_HRX)) { const [, pre, h1, s1, m1, t1, h2, s2, m2, t2] = m; if (!(/das/.test(pre || "") || s1 || t1 || s2 || t2)) continue;   // “2 a 3 vezes” não é hora
+    const a = mn(h1, m1), z = mn(h2, m2); if (a != null && z != null && z > a && z <= 1440) return { a, z, txt: m[0].trim() }; }
+  for (const m of L.matchAll(RT_H1X)) { const [, pre, h, s, mi, t, hc, mc] = m;
+    if (hc != null) { const a = mn(hc, mc); if (a != null && a < 1440) return { a, z: Math.min(1440, a + 30), txt: m[0].trim(), so: true }; continue; }
+    if (pre === "as" && !(s || t)) continue;   // “as 3 tarefas”: sem h nem minutos, não é hora
+    if (/\bat[eé]\s*$/.test(L.slice(Math.max(0, m.index - 6), m.index))) continue;   // “até às 18h” é prazo, não horário da atividade
+    const a = mn(h, mi); if (a != null && a < 1440) return { a, z: Math.min(1440, a + 30), txt: m[0].trim(), so: true }; }
+  return null;
+}
+/* campo de hora (“9”, “9h”, “9h30”, “09.30”, “09:00”) em minutos */
+const rtHM = s => { const m = String(s ?? "").trim().toLowerCase().match(/^(\d{1,2})(?:[:h.](\d{2}))?\s*h?$/); return m && +m[1] <= 24 && +(m[2] || 0) < 60 ? +m[1] * 60 + +(m[2] || 0) : null; };
+/* o título sem o horário (para virar bloco): tira a expressão e a pontuação que sobra em volta */
+const rtSemHora = (t, h) => h ? String(t).replace(new RegExp(h.txt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), " ").replace(/\(\s*\)|\[\s*\]/g, " ").replace(/^[\s:–—,;·-]+|[\s:–—,;·-]+$/g, "").replace(/\s{2,}/g, " ").trim() || String(t).trim() : String(t).trim();
 function rtAgenda(d) {
-  const ev = (S.eventos || []).filter(e => e.data === d || (e.ate && e.data <= d && e.ate >= d)).map(e => { const a = hm2min(e.hora), z = hm2min(e.fim) ?? (a != null ? a + 60 : null); return { id: e.id, titulo: e.titulo, a, z: z != null && z <= a ? 1440 : z, gcal: e.origem === "gcal", local: e.local, link: e.link, dia: a == null || (e.ate && e.data !== d) }; });
-  const tar = [...S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada"), ...ckMinhas(t => ckOpen(t) && t.prazo === d)];
-  return { timed: ev.filter(e => !e.dia), allday: ev.filter(e => e.dia), tar };
+  const ev = (S.eventos || []).filter(e => e.data === d || (e.ate && e.data <= d && e.ate >= d)).map(e => {
+    /* hora no campo próprio; sem ela (ou escrita como “9h”), a do título: compromisso com horário não vai para o dia todo */
+    const a0 = rtHM(e.hora), h = a0 == null ? rtHoraTxt(e.titulo) : null;
+    const a = a0 ?? h?.a ?? null, z = rtHM(e.fim) ?? (h && !h.so ? h.z : a != null ? a + 60 : null);
+    return { id: e.id, titulo: e.titulo, a, z: z != null && z <= a ? 1440 : z, gcal: e.origem === "gcal", local: e.local, link: e.link, dia: a == null || (e.ate && e.data !== d) }; });
+  /* tarefas do dia: com horário no título ou nas notas (como as que a IA cria) entram na grade, na faixa certa; sem horário, no “dia todo” */
+  const tar = [], tarH = [];
+  for (const t of [...S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada"), ...ckMinhas(t => ckOpen(t) && t.prazo === d)]) {
+    const h = rtHoraTxt(t.tarefa) || rtHoraTxt(t.notas); if (h) tarH.push({ id: t.id, titulo: t.ck ? t.tarefa : rtSemHora(t.tarefa, h), a: h.a, z: h.z, tarefa: t.ck ? "k" : "t", dia: false }); else tar.push(t); }
+  return { timed: [...ev.filter(e => !e.dia), ...tarH], allday: ev.filter(e => e.dia), tar };
 }
 /* colunas para itens que se sobrepõem */
 function rtLayout(items) {
@@ -76,15 +103,36 @@ function rtStrip() {
 }
 function rtCol(d) {
   const H = rtSH(), X = rtDia(d), occ = rtLayout(X.bs), ag = rtLayout(X.A.timed.filter(e => e.a != null)), [w0, w1] = rtWake(), cf = new Set(X.conf.map(([b]) => b.id));
-  const pos = (x, n, col) => `top:${x.a / 30 * H}px;height:${Math.max(H - 2, (Math.min(x.z, 1440) - x.a) / 30 * H - 2)}px;left:calc(${col / n * 100}% + 2px);width:calc(${100 / n}% - 4px)`;
+  const pos = (x, n, col, l0 = 0, w0 = 100) => `top:${x.a / 30 * H}px;height:${Math.max(H - 2, (Math.min(x.z, 1440) - x.a) / 30 * H - 2)}px;left:calc(${l0 + col / n * w0}% + 2px);width:calc(${w0 / n}% - 4px)`;
+  /* compromisso ou tarefa por cima de um bloco fica na metade direita: o bloco continua visível e clicável à esquerda */
+  const sobre = e => X.bs.some(b => b.a < e.z && e.a < b.z);
   const slots = Array.from({ length: 48 }, (_, i) => `<div class="rtslot${i % 2 ? " half" : ""}" data-rts="${d}|${i * 30}" data-h="${m2hm(i * 30)}"></div>`).join("");
   const sleep = w1 > w0 ? `<div class="rtsleep" style="top:0;height:${w0 / 30 * H}px"></div><div class="rtsleep" style="top:${w1 / 30 * H}px;height:${(1440 - w1) / 30 * H}px"></div>` : `<div class="rtsleep" style="top:${w1 / 30 * H}px;height:${(w0 - w1) / 30 * H}px"></div>`;
   const now = d === TODAY ? `<div class="rtnow" style="top:${nowMin() / 30 * H}px"><span>${m2hm(nowMin())}</span></div>` : "";
   return `<div class="rtcol${d === TODAY ? " today" : ""}" style="height:${48 * H}px" data-rtday="${d}">${sleep}${slots}
     ${occ.map(b => { const len = b.z - b.a, tiny = len / 30 * H < 34; return `<div role="button" tabindex="0" class="rtb${b.st ? " st-" + b.st : ""}${tiny ? " tiny" : ""}${cf.has(b.id) ? " conf" : ""}" style="${pos(b, b.n || 1, b.col)};--c:${rtCor(b.cat)}" data-rtb="${b.id}|${d}" title="${esc(`${b.ini}–${b.fim} · ${b.titulo}${b.rep ? " · " + REP_TXT[b.rep] : ""}${b.st ? " · " + ST_TXT[b.st] : ""}`)}"><b>${b.st === "feito" ? "✓ " : b.st === "pulado" ? "✕ " : ""}${esc(b.titulo)}</b><small>${b.ini}–${b.fim}${b.rep ? ` ${ic("repeat")}` : ""}</small><i class="rtrs" data-rtrs="${b.id}|${d}" aria-hidden="true"></i></div>`; }).join("")}
-    ${ag.map(e => `<div class="rte${e.gcal ? " gcal" : ""}" style="${pos(e, e.n || 1, e.col)}" title="${esc(`${m2hm(e.a)}–${m2hm(Math.min(e.z, 1440))} · ${e.titulo}${e.local ? " · " + e.local : ""} (Agenda${e.gcal ? ", Google" : ""})`)}"><b>${esc(e.titulo)}</b><small>${m2hm(e.a)} · ${e.gcal ? "Google" : "agenda"}</small></div>`).join("")}${now}</div>`;
+    ${ag.map(e => { const k = e.tarefa || "e", qual = e.tarefa === "k" ? "Tarefa do Cockpit" : e.tarefa ? "Tarefa" : `Agenda${e.gcal ? ", Google" : ""}`;
+      return `<div role="button" tabindex="0" class="rte${e.gcal ? " gcal" : ""}${e.tarefa ? " tk" : ""}" style="${sobre(e) ? pos(e, e.n || 1, e.col, 50, 50) : pos(e, e.n || 1, e.col)}" data-rtitem="${k}|${e.id}|${d}" title="${esc(`${m2hm(e.a)}–${m2hm(Math.min(e.z, 1440))} · ${e.titulo}${e.local ? " · " + e.local : ""} (${qual}) · toque para abrir`)}"><b>${esc(e.titulo)}</b><small>${m2hm(e.a)} · ${e.tarefa ? "tarefa" : e.gcal ? "Google" : "agenda"}</small></div>`; }).join("")}${now}</div>`;
 }
-function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<span class="rtad e" title="Agenda">${ic("cal")}${esc(e.titulo)}</span>`), ...A.tar.map(t => `<span class="rtad t" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo"}">${ic("checksq")}${esc(t.tarefa)}</span>`)].join(""); }
+function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<button type="button" class="rtad e" data-rtitem="e|${e.id}|${d}" title="Agenda, sem horário · toque para abrir">${ic("cal")}${esc(e.titulo)}</button>`), ...A.tar.map(t => `<button type="button" class="rtad t" data-rtitem="${t.ck ? "k" : "t"}|${t.id}|${d}" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo, sem horário"} · toque para abrir">${ic("checksq")}${esc(t.tarefa)}</button>`)].join(""); }
+/* cartão de um item que não é bloco (compromisso da agenda ou tarefa com prazo no dia): pôr na rotina, concluir, editar ou apagar */
+function rtItemCard(k, id, d) {
+  const dlg = $("#dlg"), foot = (...b) => `<div class="row wrap rtca">${b.filter(Boolean).join("")}</div>`;
+  let h = "", body = "";
+  if (k === "e") { const e = (S.eventos || []).find(x => x.id === id); if (!e) return; const it = rtAgenda(d).timed.find(x => x.id === id), gc = e.origem === "gcal";
+    h = `<h3>${esc(e.titulo || "Compromisso")}</h3><p class="muted small">${fmtDL(d)} · ${it ? `${m2hm(it.a)}–${m2hm(Math.min(it.z, 1440))}` : "dia todo"} · ${gc ? "Google Agenda" : "Agenda"}${e.local ? ` · ${esc(e.local)}` : ""}</p>`;
+    body = (gc ? `<p class="muted small">${ic("info")}Vem do Google Agenda: para sumir de vez, apague lá. Apagado só daqui, ele volta na próxima sincronização.</p>` : "") +
+      foot(`<button type="button" class="btn sm" data-rtiedit="eventos|${id}">${ic("edit")}Editar</button>`, `<button type="button" class="btn sm ghost danger" data-rtidel="e|${id}|${d}">${ic("trash")}Apagar${gc ? " daqui" : ""}</button>`); }
+  else if (k === "t") { const t = S.tarefas.find(x => x.id === id); if (!t) return; const hr = rtHoraTxt(t.tarefa) || rtHoraTxt(t.notas);
+    h = `<h3>${esc(t.tarefa)}</h3><p class="muted small">Tarefa · prazo ${fmtD(t.prazo)}${hr ? ` · horário no texto: ${m2hm(hr.a)}–${m2hm(hr.z)}` : " · sem horário"}${t.area ? ` · ${esc(t.area)}` : ""}</p>${t.notas ? `<p>${esc(t.notas)}</p>` : ""}`;
+    body = foot(`<button type="button" class="btn sm primary" data-rtibloco="${id}|${d}">${ic("week")}${hr ? `Transformar em bloco ${m2hm(hr.a)}–${m2hm(hr.z)}` : "Pôr na rotina como bloco"}</button>`, `<button type="button" class="btn sm" data-rtidone="t|${id}">${ic("check")}Concluir</button>`,
+      `<button type="button" class="btn sm" data-rtiedit="tarefas|${id}">${ic("edit")}Editar</button>`, `<button type="button" class="btn sm ghost danger" data-rtidel="t|${id}|${d}">${ic("trash")}Apagar</button>`); }
+  else if (k === "k") { const t = (S.ckTar || []).find(x => x.id === id); if (!t) return;
+    h = `<h3>${esc(t.cod)} · ${esc(t.titulo)}</h3><p class="muted small">Tarefa do Cockpit de Trabalho · prazo ${fmtD(t.prazo)}</p>`;
+    body = `<p class="muted small">Tarefa de trabalho: muda e apaga no Cockpit, por causa das dependências.</p>` + foot(`<button type="button" class="btn sm" data-rtidone="k|${id}">${ic("check")}Concluir</button>`, `<a class="btn sm" href="#trabalho.lista">Abrir no Cockpit</a>`); }
+  dlg.innerHTML = `<form method="dialog" class="rtcard rtitem"><div class="rtch"><span class="rtcc"></span><div>${h}</div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>${body}</form>`;
+  if (!dlg.open) dlg.showModal();
+}
 function rtGrid(days) {
   const H = rtSH(), one = days.length === 1, hasAll = days.some(d => { const A = rtAgenda(d); return A.allday.length || A.tar.length; });
   return `<div class="rtgrid${one ? " one" : ""}" style="--n:${days.length};--sh:${H}px"><div class="rtscroll" id="rtscroll">
@@ -256,6 +304,20 @@ function rtClick(t) {
   if (ds.act === "rtpick") { RT.pick = !RT.pick; render(); return true; }
   if (ds.rtgo) { const [v, d] = ds.rtgo.split("|"); rtGo(v, d); return true; }
   if (ds.rtb) { const [id, d] = ds.rtb.split("|"); rtCard(id, d); return true; }
+  if (ds.rtitem) { const [k, id, d] = ds.rtitem.split("|"); rtItemCard(k, id, d); return true; }
+  if (ds.rtidel) { const [k, id] = ds.rtidel.split("|"); $("#dlg").close();
+    if (k === "e") { const e = (S.eventos || []).find(x => x.id === id); if (e) { S.eventos = S.eventos.filter(x => x.id !== id); touch("eventos", { label: "Compromisso apagado" }); undoToast(`Apagado: ${trunc(e.titulo, 50)}`); } }
+    else { const t = S.tarefas.find(x => x.id === id); if (t) { S.tarefas = S.tarefas.filter(x => x.id !== id); touch("tarefas", { label: "Tarefa apagada" }); undoToast(`Apagada: ${trunc(t.tarefa, 50)}`); } }
+    return true; }
+  if (ds.rtidone) { const [k, id] = ds.rtidone.split("|"); $("#dlg").close(); if (k === "k") { ckSetStatus(id, "concluída"); return true; }
+    const t = S.tarefas.find(x => x.id === id); if (t) { t.status = "Concluída"; t.concluida = TODAY; touch("tarefas", { label: "Tarefa concluída" }); undoToast(`Concluída: ${trunc(t.tarefa, 50)}`); } return true; }
+  if (ds.rtiedit) { const [key, id] = ds.rtiedit.split("|"); $("#dlg").close(); openForm(key, id); return true; }
+  /* tarefa vira bloco: no horário escrito nela; sem horário, no primeiro tempo livre do dia, e o bloco abre para ajustar */
+  if (ds.rtibloco) { const [id, d] = ds.rtibloco.split("|"), t = S.tarefas.find(x => x.id === id); if (!t) return true;
+    const ht = rtHoraTxt(t.tarefa), hr = ht || rtHoraTxt(t.notas), lv = rtDia(d).livres[0], a = hr ? hr.a : lv ? lv[0] : 9 * 60, z = Math.min(1440, hr ? hr.z : a + 60);
+    const b = { id: uid(), data: d, ini: m2hm(a), fim: m2hm(z), titulo: rtSemHora(t.tarefa, ht), cat: rtGuessCat(t.tarefa), rep: "", exc: [], st: {}, notas: t.notas || "" };
+    (S.rotina ||= []).push(b); S.tarefas = S.tarefas.filter(x => x.id !== id); $("#dlg").close(); touch("rotina", "tarefas", { label: "Tarefa virou bloco" });
+    if (hr) undoToast(`Na rotina: ${b.titulo} ${b.ini}–${b.fim}`); else rtForm(b.id, d); return true; }
   if (ds.rtst) { const [id, d, s] = ds.rtst.split("|"); rtSetSt(id, d, s); if ($("#dlg").open && $(".rtcard")) rtCard(id, d); return true; }
   if (ds.rtcx) { $("#dlg").close(); return true; }
   if (ds.rtedit) { const [id, d] = ds.rtedit.split("|"); rtForm(id, d); return true; }
