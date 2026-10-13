@@ -147,6 +147,35 @@ async def main():
             chk(not errs, f"sem erros no celular ({errs[:2]})")
         finally:
             await b.close()
+        # mapa numerado e o centro da semana
+        b, pg, errs = await open_page(p, w=1440, h=1000, hash_="jornada.centros")
+        try:
+            await pg.wait_for_timeout(700)
+            m = await pg.evaluate("""(() => { const g = [...document.querySelectorAll('g.cfn')], n = g.map(x => x.querySelector('.cfnum')?.textContent), xs = g.map(x => +x.querySelector('.cfd').getAttribute('cx')),
+                ys = g.map(x => +x.querySelector('.cfd').getAttribute('cy')), gap = Math.min(...ys.slice(1).map((y, i) => y - ys[i])), sc = g.map(x => x.querySelector('.cfsc')?.textContent);
+                return { n, x1: new Set(xs).size, gap, sc, mini: [...document.querySelectorAll('.cfmini .cfm i')].map(i => i.textContent) }; })()""")
+            chk(m["n"] == ["1", "2", "3", "4", "5", "6", "7"] and m["x1"] == 1 and m["gap"] >= 36, f"mapa: os sete numerados de 1 a 7 na ordem do passe, no mesmo eixo, sem se sobrepor (menor distância {m['gap']})")
+            chk(m["sc"][5] == "sem nota" and all(x == "sem nota" or " · " in x for x in m["sc"]), f"a nota da semana fica ao lado do nome, não dentro do círculo ({m['sc']})")
+            low = await pg.evaluate("(() => { const a = cfSemana(); return CF.filter(c => a[c.id]).sort((x, y) => a[x.id] - a[y.id])[0].id; })()")
+            sug = await pg.evaluate("document.querySelector('.cfsug [data-act=cffoco]')?.dataset.cf")
+            chk(sug == low, f"sugere trabalhar o centro avaliado mais baixo na semana ({sug} = {low})")
+            await pg.click('[data-cf="car"]'); await pg.wait_for_timeout(250)
+            cards = await pg.evaluate("[...document.querySelectorAll('.cfdet .cfv h3')].map(h => h.firstChild.textContent.trim())")
+            chk(cards == ["Compaixão", "Caridade", "Fraternidade", "Tolerância"] and await pg.evaluate("document.querySelectorAll('.cfdet .cfv dl div').length") == 16, f"como trabalhar o cardíaco: as quatro virtudes com falta, excesso, prática e pergunta da noite ({cards})")
+            f0 = await pg.evaluate("[...bmFoco()]")
+            await pg.click('.cfdet [data-act="cffoco"]'); await pg.wait_for_timeout(250)
+            r = await pg.evaluate("[S.jornada.cf.foco?.id, [...bmFoco()], document.querySelector('g.cfn.foco')?.dataset.cf, document.querySelector('.cfsug.on b')?.textContent, cfFacts().join(' ')]")
+            chk(r[0] == "car" and len(r[1]) == 3 and all(v in ["compaixao", "caridade", "fraternidade", "tolerancia"] for v in r[1]) and r[2] == "car" and "cardíaco" in r[3] and "Cardíaco" in r[4], f"trabalhar o centro na semana: até 3 virtudes dele vão para o foco da Bússola, o mapa e o topo mostram o centro e o mentor sabe ({r[:4]})")
+            await pg.evaluate("location.hash = 'jornada.exame'"); await pg.wait_for_timeout(350)
+            ex = await pg.evaluate("[...document.querySelectorAll('.bmnota b')].slice(0, 3).map(b => b.textContent)")
+            chk(sorted(ex) == sorted([await pg.evaluate(f"bmV('{v}').nome") for v in r[1]]), f"o exame da noite pergunta pelas virtudes do centro ({ex})")
+            await pg.evaluate("location.hash = 'jornada.centros'"); await pg.wait_for_timeout(350)
+            await pg.click('.cfdet [data-act="cffoco"]'); await pg.wait_for_timeout(250)
+            r2 = await pg.evaluate("[S.jornada.cf.foco ?? null, [...bmFoco()]]")
+            chk(r2 == [None, f0], f"tirar do foco devolve o foco anterior da Bússola ({r2[1]} = {f0})")
+            chk(not errs, f"sem erros ({errs[:2]})")
+        finally:
+            await b.close()
     print(f"{ok} ok, {bad} falhas")
 
 asyncio.run(main())

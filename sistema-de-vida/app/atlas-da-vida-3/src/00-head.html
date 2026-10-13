@@ -1884,7 +1884,11 @@ body.ckdmeet-on .app{grid-template-columns:minmax(0,1fr)}body.ckdmeet-on .ckwrap
 .cfd.vazio{stroke:var(--line-2);stroke-dasharray:3 2}
 .cfn:hover .cfd,.cfn:focus-visible .cfd{stroke-width:2.6}
 .cfsel{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:4 3}
-.cfnum{font:600 11px var(--f-ui);fill:var(--ink);text-anchor:middle;pointer-events:none}
+.cfnum{font:700 12px var(--f-ui);fill:var(--ink);text-anchor:middle;pointer-events:none}
+.cfsc{font:400 10.5px var(--f-ui);fill:var(--muted)}
+.cfn.foco .cfsc{fill:var(--jp-esp);font-weight:600}
+.cfn.foco .cfd{stroke-width:2.6}
+.cfleg{margin:0;text-align:center}
 .cflab{font:500 12px var(--f-ui);fill:var(--ink-2)}
 .cfn.on .cflab{fill:var(--ink);font-weight:700}
 .cfstart{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end}
@@ -1892,7 +1896,20 @@ body.ckdmeet-on .app{grid-template-columns:minmax(0,1fr)}body.ckdmeet-on .ckwrap
 .cfdet .cfdh{display:flex;gap:12px;align-items:center;margin-bottom:6px}
 .cfdet h2{margin:0}
 .cfdot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--jp-esp);flex:none}
-.cfvals{display:flex;flex-wrap:wrap;gap:6px}
+.cfsug{display:flex;gap:12px;align-items:center;margin-bottom:16px;padding:12px 14px}
+.cfsug>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cfsug small{color:var(--muted)}
+.cfsug.on{border-color:var(--jp-esp);background:color-mix(in srgb,var(--jp-esp) 6%,var(--surface))}
+.cffoco{align-items:center;gap:8px 12px;margin:6px 0 10px}
+.cfvs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:8px}
+.cfv{border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;min-width:0}
+.cfv h3{margin:0 0 4px;font-size:15px}
+.cfv p{margin:0 0 6px}
+.cfv dl{margin:0 0 6px;display:grid;gap:4px}
+.cfv dl div{display:grid;grid-template-columns:104px minmax(0,1fr);gap:8px}
+.cfv dt{font-size:12px;color:var(--muted)}
+.cfv dd{margin:0;font-size:13px}
+.cfm em{font-style:normal;font-size:10px;color:var(--muted)}
 .cfsin{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:4px 0 6px}
 .cfsin>div{border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .cfsin span{font-size:12px;color:var(--muted)}
@@ -1920,7 +1937,8 @@ body.ckdmeet-on .app{grid-template-columns:minmax(0,1fr)}body.ckdmeet-on .ckwrap
 .cfm small{font-size:10.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cfbase summary{cursor:pointer;font-weight:600;display:flex;gap:8px;align-items:center}
 .cfbase p{max-width:78ch}
-@media (max-width:820px){.cfgrid{grid-template-columns:minmax(0,1fr)}.cfav{grid-template-columns:minmax(0,1fr)}.cfav small{margin-top:-4px}}
+@media (max-width:820px){.cfv dl div{grid-template-columns:1fr;gap:0}.cfsug{flex-wrap:wrap}
+.cfgrid{grid-template-columns:minmax(0,1fr)}.cfav{grid-template-columns:minmax(0,1fr)}.cfav small{margin-top:-4px}}
 </style>
 
 <div class="app">

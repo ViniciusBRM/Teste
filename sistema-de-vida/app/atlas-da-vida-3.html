@@ -1884,7 +1884,11 @@ body.ckdmeet-on .app{grid-template-columns:minmax(0,1fr)}body.ckdmeet-on .ckwrap
 .cfd.vazio{stroke:var(--line-2);stroke-dasharray:3 2}
 .cfn:hover .cfd,.cfn:focus-visible .cfd{stroke-width:2.6}
 .cfsel{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:4 3}
-.cfnum{font:600 11px var(--f-ui);fill:var(--ink);text-anchor:middle;pointer-events:none}
+.cfnum{font:700 12px var(--f-ui);fill:var(--ink);text-anchor:middle;pointer-events:none}
+.cfsc{font:400 10.5px var(--f-ui);fill:var(--muted)}
+.cfn.foco .cfsc{fill:var(--jp-esp);font-weight:600}
+.cfn.foco .cfd{stroke-width:2.6}
+.cfleg{margin:0;text-align:center}
 .cflab{font:500 12px var(--f-ui);fill:var(--ink-2)}
 .cfn.on .cflab{fill:var(--ink);font-weight:700}
 .cfstart{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end}
@@ -1892,7 +1896,20 @@ body.ckdmeet-on .app{grid-template-columns:minmax(0,1fr)}body.ckdmeet-on .ckwrap
 .cfdet .cfdh{display:flex;gap:12px;align-items:center;margin-bottom:6px}
 .cfdet h2{margin:0}
 .cfdot{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--jp-esp);flex:none}
-.cfvals{display:flex;flex-wrap:wrap;gap:6px}
+.cfsug{display:flex;gap:12px;align-items:center;margin-bottom:16px;padding:12px 14px}
+.cfsug>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cfsug small{color:var(--muted)}
+.cfsug.on{border-color:var(--jp-esp);background:color-mix(in srgb,var(--jp-esp) 6%,var(--surface))}
+.cffoco{align-items:center;gap:8px 12px;margin:6px 0 10px}
+.cfvs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:8px}
+.cfv{border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;min-width:0}
+.cfv h3{margin:0 0 4px;font-size:15px}
+.cfv p{margin:0 0 6px}
+.cfv dl{margin:0 0 6px;display:grid;gap:4px}
+.cfv dl div{display:grid;grid-template-columns:104px minmax(0,1fr);gap:8px}
+.cfv dt{font-size:12px;color:var(--muted)}
+.cfv dd{margin:0;font-size:13px}
+.cfm em{font-style:normal;font-size:10px;color:var(--muted)}
 .cfsin{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin:4px 0 6px}
 .cfsin>div{border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .cfsin span{font-size:12px;color:var(--muted)}
@@ -1920,7 +1937,8 @@ body.ckdmeet-on .app{grid-template-columns:minmax(0,1fr)}body.ckdmeet-on .ckwrap
 .cfm small{font-size:10.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cfbase summary{cursor:pointer;font-weight:600;display:flex;gap:8px;align-items:center}
 .cfbase p{max-width:78ch}
-@media (max-width:820px){.cfgrid{grid-template-columns:minmax(0,1fr)}.cfav{grid-template-columns:minmax(0,1fr)}.cfav small{margin-top:-4px}}
+@media (max-width:820px){.cfv dl div{grid-template-columns:1fr;gap:0}.cfsug{flex-wrap:wrap}
+.cfgrid{grid-template-columns:minmax(0,1fr)}.cfav{grid-template-columns:minmax(0,1fr)}.cfav small{margin-top:-4px}}
 </style>
 
 <div class="app">
@@ -16580,43 +16598,50 @@ function sdExemplo(D) {
 const CF_TEC = "Harmonização dos centros de força";
 const CF_ESC = ["", "em desarmonia", "inquieto", "oscilando", "sereno", "em harmonia"];
 const CF = [
-  { id: "cor", nome: "Coronário", chakra: "Sahasrara", local: "alto da cabeça", x: 120, y: 40,
+  { id: "cor", trab: "Trabalha-se pela elevação do pensamento: a prece, a humildade para receber e o desapego do que é passageiro.",
+    por: {"espiritualidade": "A prece e a elevação do pensamento são o alimento deste centro: é por ele que a mente se liga ao alto.", "humildade": "O orgulho fecha o centro que recebe. Só se deixa inspirar quem reconhece que ainda não sabe tudo.", "desprendimento": "Apego e posse prendem o pensamento no que passa; soltar deixa a mente livre para o essencial."}, nome: "Coronário", chakra: "Sahasrara", local: "alto da cabeça", x: 100, y: 26,
     funcao: "Recebe primeiro os estímulos do Espírito e do plano superior e comanda os demais centros; nele se assenta a ligação com a mente. Associado à epífise, a “glândula da vida mental”.",
     fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma); Missionários da Luz, cap. 2 (A epífise)",
     val: ["espiritualidade", "humildade", "desprendimento"], prat: ["Prece ao acordar e ao deitar", "Culto do Evangelho no lar"],
     perg: "O que tem ocupado o meu pensamento quando estou sozinho: isso me eleva ou me prende?",
     prece: "Pense no alto da cabeça. Com gratidão, eleve o pensamento a Deus e entregue o que não depende de você. Que a sua mente se abra às boas inspirações." },
-  { id: "cer", nome: "Cerebral", chakra: "Ajna", local: "fronte, entre as sobrancelhas", x: 120, y: 66,
+  { id: "cer", trab: "Trabalha-se pelo pensamento que examina: perceber o que se pensa, escolher o que alimenta a mente e julgar com justiça, a começar por si.",
+    por: {"consciencia": "Perceber o pensamento antes que ele vire ato é o trabalho próprio do centro do discernimento.", "sabedoria": "Escolher o que entra na mente (leituras, conversas, telas) e aprender com a experiência em vez de repeti-la.", "justica": "Julgar com equidade, ouvindo os dois lados, e medir a si mesmo com a régua que usa para os outros."}, nome: "Cerebral", chakra: "Ajna", local: "fronte, entre as sobrancelhas", x: 100, y: 66,
     funcao: "Governa o córtex e o sistema nervoso, sustenta os sentidos e marca o ritmo das glândulas endócrinas. É o centro do pensamento que discerne.",
     fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["consciencia", "sabedoria", "justica"], prat: ["Exame de consciência", "O Livro dos Espíritos (Allan Kardec, 1857)"],
     perg: "Que pensamento repetido eu alimentei hoje sem examinar?",
     prece: "Leve a atenção à fronte. Aquiete os pensamentos e peça discernimento: ver com clareza e julgar com justiça, começando por você." },
-  { id: "lar", nome: "Laríngeo", chakra: "Vishuddha", local: "garganta", x: 120, y: 112,
+  { id: "lar", trab: "Trabalha-se pela palavra e pelo sopro: falar menos e melhor, com respeito, e respirar antes de responder.",
+    por: {"educacao": "O tom cortês e a palavra respeitosa são a disciplina do centro da fala, inclusive por escrito e nas telas.", "gentileza": "Falar para construir: a palavra branda acalma quem ouve e quem fala.", "paciencia": "Respirar antes de falar põe o sopro e a palavra no mesmo ritmo: a resposta vem depois da reação passar."}, nome: "Laríngeo", chakra: "Vishuddha", local: "garganta", x: 100, y: 112,
     funcao: "Controla sobretudo a respiração e a fonação: o sopro e a palavra.",
     fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["educacao", "gentileza", "paciencia"], prat: ["Vigilância da palavra"],
     perg: "As minhas palavras de hoje consolaram ou feriram?",
     prece: "Sinta o ar passar pela garganta. Que a sua palavra seja verdadeira, branda e útil, e que você saiba calar quando o silêncio for caridade." },
-  { id: "car", nome: "Cardíaco", chakra: "Anahata", local: "centro do peito", x: 120, y: 166,
+  { id: "car", trab: "Trabalha-se pelos sentimentos: abrir o coração ao outro sem se desequilibrar, com indulgência e perdão.",
+    por: {"compaixao": "Sentir com o outro sem se afogar na dor dele: o coração se abre e continua firme.", "caridade": "Benevolência, indulgência e perdão, como O Livro dos Espíritos define a caridade (q. 886): o exercício diário do coração.", "fraternidade": "Tratar cada pessoa como irmã de caminho, não só os próximos: o afeto que não escolhe.", "tolerancia": "Aceitar o diferente e as imperfeições alheias como você gostaria que aceitassem as suas."}, nome: "Cardíaco", chakra: "Anahata", local: "centro do peito", x: 100, y: 170,
     funcao: "Dirige a emotividade e a circulação das forças de base.",
     fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["compaixao", "caridade", "fraternidade", "tolerancia"], prat: ["Caridade semanal", "Culto do Evangelho no lar"],
     perg: "A quem preciso estender hoje a indulgência que eu gostaria de receber?",
     prece: "Leve a atenção ao centro do peito. Envolva em pensamento de paz quem você ama e quem o feriu. Perdoe, peça perdão e deseje o bem." },
-  { id: "esp", nome: "Esplênico", chakra: "Svadhisthana (na lista de Leadbeater, o centro do baço ocupa esse lugar)", local: "região do baço, à esquerda do abdome", x: 150, y: 210,
+  { id: "esp", trab: "Trabalha-se pela vitalidade: descanso, movimento e medida, sem desperdiçar energia em excesso e pressa.",
+    por: {"equilibrio": "A vitalidade se gasta no excesso e na pressa e se recompõe no sono, no movimento e na medida: o equilíbrio é o cuidado deste centro."}, nome: "Esplênico", chakra: "Svadhisthana (na lista de Leadbeater, o centro do baço ocupa esse lugar)", local: "região do baço, à esquerda do abdome", x: 100, y: 222,
     funcao: "Regula a distribuição e a circulação dos recursos vitais por todo o corpo: a vitalidade.",
     fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["equilibrio"], prat: ["Frequentar uma casa espírita"],
     perg: "Onde estou gastando energia vital à toa: excesso, pressa, noites curtas?",
     prece: "Pense na vitalidade que circula pelo corpo. Agradeça ao corpo, instrumento da sua evolução, e proponha-se a cuidar dele com descanso, movimento e medida." },
-  { id: "gas", nome: "Gástrico", chakra: "Manipura", local: "região do estômago (plexo solar)", x: 120, y: 236,
+  { id: "gas", trab: "Trabalha-se pelo que se assimila: comer e beber com medida e digerir as emoções em vez de engoli-las.",
+    por: {"temperanca": "Medida no prato, no copo e no que se absorve dos outros: o que entra precisa ser digerido, não acumulado."}, nome: "Gástrico", chakra: "Manipura", local: "região do estômago (plexo solar)", x: 100, y: 272,
     funcao: "Responde pela penetração de alimentos e fluidos no organismo: o que assimilamos, no prato e nas emoções.",
     fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["temperanca"], prat: ["Água fluidificada"],
     perg: "O que eu engoli hoje sem digerir: comida, raiva, preocupação?",
     prece: "Leve a atenção à região do estômago. Que você receba o alimento com gratidão e medida, e não guarde o que precisa ser perdoado." },
-  { id: "gen", nome: "Genésico", chakra: "Muladhara (a energia criadora também é ligada ao Svadhisthana)", local: "base do tronco", x: 120, y: 296,
+  { id: "gen", trab: "Trabalha-se pela energia criadora: respeito ao próprio corpo e ao do outro, e criação também em obras e trabalho.",
+    por: {"respeito": "A energia criadora pede respeito ao próprio corpo e ao do outro: o sexo como expressão de afeto e responsabilidade.", "igualdade": "Ninguém é objeto do desejo de ninguém: tratar o outro como igual protege a energia criadora do uso egoísta."}, nome: "Genésico", chakra: "Muladhara (a energia criadora também é ligada ao Svadhisthana)", local: "base do tronco", x: 100, y: 326,
     funcao: "Sede do sexo como templo modelador de formas e estímulos: a energia criadora, da vida e das obras.",
     fonte: "André Luiz: Entre a Terra e o Céu, cap. XX (Conflitos da alma)",
     val: ["respeito", "igualdade"], prat: [],
@@ -16655,8 +16680,9 @@ function cfSinais(id) {
 const cfSemana = (w = weekStart(TODAY)) => cfD().av[w] || {};
 function cfFacts() {
   const w = weekStart(TODAY), a = cfSemana(w), b = cfSemana(addDays(w, -7)), s = cfSess([CF_TEC], 28), L = [];
-  const fm = o => CF.map(c => `${c.nome} ${o[c.id] ?? "–"}`).join(", ");
-  if (!Object.keys(a).length && !Object.keys(b).length && !s.n) return ["Centros de força (André Luiz): ainda sem autoavaliação nem harmonização registrada."];
+  const fm = o => CF.map(c => `${c.nome} ${o[c.id] ?? "–"}`).join(", "), fo = cfFocoSem();
+  if (fo) L.push(`Centro de força que a pessoa escolheu trabalhar nesta semana: ${cfNome(fo)} (virtudes no exame da noite: ${bmFoco().map(id => bmV(id)?.nome).filter(Boolean).join(", ")}).`);
+  if (!Object.keys(a).length && !Object.keys(b).length && !s.n) return [...L, "Centros de força (André Luiz): ainda sem autoavaliação nem harmonização registrada."];
   L.push(`Centros de força (autoavaliação semanal, 1 em desarmonia a 5 em harmonia): esta semana: ${fm(a)}; semana passada: ${fm(b)}.`);
   const bx = CF.filter(c => a[c.id] && a[c.id] <= 2).map(c => c.nome); if (bx.length) L.push(`Centros que a pessoa sente em desarmonia esta semana: ${bx.join(", ")}.`);
   L.push(`Harmonizações guiadas nas últimas 4 semanas: ${s.n}${s.n ? ` (${num(s.min, 0)} min)` : ""}.`);
@@ -16669,25 +16695,45 @@ function cfNav() {
   return `<nav class="jbmnav" aria-label="Espiritismo">${it.map(([k, l, i]) => `<a href="#jornada.${k}" class="${SUB === k ? "on" : ""}"${SUB === k ? ' aria-current="page"' : ""}>${ic(i)}${l}</a>`).join("")}</nav>`;
 }
 const cfCor = n => n ? `color-mix(in srgb,var(--jp-esp) ${[0, 24, 40, 56, 72, 90][n]}%,var(--surface))` : "var(--surface-2)";
+/* preenchimento do mapa: claro o bastante para o número de ordem ficar legível nos dois temas */
+const cfFill = n => n ? `color-mix(in srgb,var(--jp-esp) ${[0, 16, 26, 36, 48, 60][n]}%,var(--surface))` : "var(--surface)";
 function cfMapa() {
-  const a = cfSemana(), sel = CFV.sel;
-  const nodes = CF.map(c => { const n = a[c.id], on = c.id === sel;
-    return `<g class="cfn${on ? " on" : ""}" data-cf="${c.id}" role="button" tabindex="0" aria-pressed="${on}" aria-label="Centro ${esc(c.nome)}${n ? `, ${n} de 5 (${CF_ESC[n]})` : ", sem autoavaliação nesta semana"}">
-      <line x1="${c.x + 13}" y1="${c.y}" x2="182" y2="${c.y}" class="cfl"/>${on ? `<circle cx="${c.x}" cy="${c.y}" r="17" class="cfsel"/>` : ""}<circle cx="${c.x}" cy="${c.y}" r="11.5" class="cfd${n ? "" : " vazio"}" style="fill:${cfCor(n)}"/>
-      ${n ? `<text x="${c.x}" y="${c.y + 4}" class="cfnum">${n}</text>` : ""}<text x="188" y="${c.y + 4}" class="cflab">${esc(c.nome)}</text></g>`; }).join("");
-  return `<svg viewBox="0 0 270 340" class="cfsvg" role="group" aria-label="Os sete centros de força">
-    <defs><radialGradient id="cfaura" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="var(--jp-esp)" stop-opacity=".22"/><stop offset="1" stop-color="var(--jp-esp)" stop-opacity="0"/></radialGradient></defs>
-    <ellipse cx="120" cy="176" rx="104" ry="166" fill="url(#cfaura)"/>
-    <circle cx="120" cy="70" r="27" class="cfbody"/><path d="M70 150 Q72 106 120 102 Q168 106 170 150 L162 290 Q150 326 120 330 Q90 326 78 290 Z" class="cfbody"/>
-    <line x1="120" y1="30" x2="120" y2="312" class="cfaxis"/>${nodes}</svg>`;
+  const a = cfSemana(), sel = CFV.sel, fo = cfFocoSem();
+  const nodes = CF.map((c, i) => { const n = a[c.id], on = c.id === sel, foc = c.id === fo;
+    return `<g class="cfn${on ? " on" : ""}${foc ? " foco" : ""}" data-cf="${c.id}" role="button" tabindex="0" aria-pressed="${on}" aria-label="${i + 1}. Centro ${esc(c.nome)}${n ? `, ${n} de 5 (${CF_ESC[n]})` : ", sem autoavaliação nesta semana"}${foc ? ", centro desta semana" : ""}">
+      <line x1="${c.x + 14}" y1="${c.y}" x2="146" y2="${c.y}" class="cfl"/>${on ? `<circle cx="${c.x}" cy="${c.y}" r="18.5" class="cfsel"/>` : ""}
+      <circle cx="${c.x}" cy="${c.y}" r="13" class="cfd${n ? "" : " vazio"}" style="fill:${cfFill(n)}"/><text x="${c.x}" y="${c.y + 4.5}" class="cfnum">${i + 1}</text>
+      <text x="152" y="${c.y - 1}" class="cflab">${esc(c.nome)}</text><text x="152" y="${c.y + 12}" class="cfsc">${foc ? "foco · " : ""}${n ? `${n} · ${CF_ESC[n]}` : "sem nota"}</text></g>`; }).join("");
+  return `<svg viewBox="0 0 300 372" class="cfsvg" role="group" aria-label="Os sete centros de força">
+    <defs><radialGradient id="cfaura" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="var(--jp-esp)" stop-opacity=".2"/><stop offset="1" stop-color="var(--jp-esp)" stop-opacity="0"/></radialGradient></defs>
+    <ellipse cx="100" cy="190" rx="92" ry="180" fill="url(#cfaura)"/>
+    <circle cx="100" cy="64" r="38" class="cfbody"/><path d="M91 101 V122 M109 101 V122" class="cfbody"/>
+    <path d="M54 170 Q56 126 100 122 Q144 126 146 170 L140 322 Q130 356 100 360 Q70 356 60 322 Z" class="cfbody"/>
+    <line x1="100" y1="10" x2="100" y2="350" class="cfaxis"/>${nodes}</svg>
+    <p class="cfleg muted small">1 a 7: a ordem do passe e da harmonização, do alto da cabeça à base do tronco. A cor e a nota ao lado são a sua autoavaliação desta semana.</p>`;
+}
+/* centro da semana: as virtudes dele (até 3; as que nunca entraram no exame e as mais fracas primeiro) vão para o foco da
+   Bússola, que é o que o exame da noite pergunta; o foco anterior volta quando o centro sai */
+const cfFocoSem = () => { const f = cfD().foco; return f && f.w === weekStart(TODAY) ? f.id : null; };
+function cfVirtFoco(c) { const V = cfValores(c.val); return [...c.val].sort((x, y) => (V.por[x] ?? -1) - (V.por[y] ?? -1)).slice(0, 3); }
+function cfSugestao() {
+  const fo = cfFocoSem(), a = cfSemana();
+  if (fo) { const c = cfC(fo); return `<div class="pn cfsug on">${ic("lotus")}<div><b>Centro desta semana: ${esc(c.nome.toLowerCase())}</b><small>${esc(c.trab)} No exame da noite: ${esc(bmFoco().map(id => bmV(id)?.nome).filter(Boolean).join(", "))}.</small></div>${CFV.sel !== c.id ? `<button type="button" class="btn sm" data-cf="${c.id}">Ver o centro</button>` : ""}</div>`; }
+  const low = CF.filter(c => a[c.id]).sort((x, y) => a[x.id] - a[y.id])[0];
+  if (!low || a[low.id] > 3) return "";
+  return `<div class="pn cfsug">${ic("compass")}<div><b>Sugestão: trabalhar o centro ${esc(low.nome.toLowerCase())} nesta semana</b><small>Foi o que você avaliou mais baixo nesta semana (${a[low.id]}, ${CF_ESC[a[low.id]]}). ${esc(low.trab)}</small></div><button type="button" class="btn sm primary" data-act="cffoco" data-cf="${low.id}">Trabalhar nesta semana</button></div>`;
 }
 function cfDetalhe(c) {
-  const V = cfValores(c.val), P = jP("esp"), cat = J_PIL.esp.cat;
+  const V = cfValores(c.val), P = jP("esp"), cat = J_PIL.esp.cat, fo = cfFocoSem() === c.id, vs = cfVirtFoco(c);
   const pr = c.prat.map(t => { const x = P.prat.find(z => norm(z.titulo) === norm(t)), i = cat.findIndex(k => norm(k.t) === norm(t)), hoje = (x?.marcas || []).includes(TODAY);
     return `<div class="cfpr"><span>${esc(t)}</span>${x && x.status === "ativa" ? `<button type="button" class="btn sm${hoje ? " primary" : ""}" data-act="jmark" data-p="esp" data-id="${x.id}" aria-pressed="${hoje}">${ic("check")}${hoje ? "Feita hoje" : "Fiz hoje"}</button>` : i >= 0 ? `<button type="button" class="btn sm ghost" data-act="jadopt" data-p="esp"${x ? ` data-id="${x.id}"` : ` data-k="${i}"`}>${ic("plus")}Adotar</button>` : ""}</div>`; }).join("");
   return `<div class="cfdh"><span class="cfdot" style="background:${cfCor(cfSemana()[c.id])}"></span><div><h2>Centro ${esc(c.nome.toLowerCase())}</h2><small class="muted">chakra correspondente: ${esc(c.chakra)} · ${esc(c.local)}</small></div></div>
     <p>${esc(c.funcao)}</p><p class="muted small">${ic("book")}${esc(c.fonte)}</p>
-    <div class="flbl">Virtudes que o trabalham <small>Bússola · leitura do Atlas</small></div><div class="cfvals">${c.val.map(id => `<span class="jtag sm">${esc(bmV(id)?.nome || id)}${V.por[id] != null ? ` · ${pct(V.por[id])}` : ""}</span>`).join("")}</div>
+    <div class="flbl">Como trabalhar este centro <small>pelas virtudes da Bússola · leitura do Atlas, não doutrina</small></div><p>${esc(c.trab)}</p>
+    <div class="row wrap cffoco"><button type="button" class="btn sm${fo ? "" : " primary"}" data-act="cffoco" data-cf="${c.id}" aria-pressed="${fo}">${ic(fo ? "check" : "target")}${fo ? "Centro desta semana" : "Trabalhar este centro nesta semana"}</button><small class="muted">${fo ? `No exame da noite: ${esc(bmFoco().map(id => bmV(id)?.nome).filter(Boolean).join(", "))}. Toque de novo para tirar do foco.` : `${esc(vs.map(id => bmV(id)?.nome).join(", "))} vão para o foco da Bússola e o exame da noite pergunta por elas.`}</small></div>
+    <div class="cfvs">${c.val.map(id => { const v = bmV(id); if (!v) return ""; return `<article class="cfv"><h3>${esc(v.nome)}${V.por[id] != null ? ` <small class="muted">${pct(V.por[id])} nas noites</small>` : ""}</h3><p>${esc(c.por?.[id] || "")}</p>
+      <dl><div><dt>Quando falta</dt><dd>${esc(v.falta)}</dd></div><div><dt>Quando sobra</dt><dd>${esc(v.excesso)}</dd></div><div><dt>Na prática</dt><dd>${esc(v.pratica)}</dd></div><div><dt>À noite, pergunte</dt><dd>${esc(v.perg)}</dd></div></dl>
+      ${v.t?.kardec ? `<p class="muted small">${ic("book")}${esc(v.t.kardec)}</p>` : ""}</article>`; }).join("")}</div>
     <div class="flbl">O que os seus dados mostram <small>14 dias</small></div><div class="cfsin">${cfSinais(c.id).map(s => `<div><span>${esc(s.l)}</span><b>${esc(s.v)}</b><small class="muted">${esc(s.s)}</small></div>`).join("")}</div>
     <div class="flbl">Para contemplar</div><p class="bmq">${ic("info")}<span>${esc(c.perg)}</span></p>
     <textarea class="jta" rows="2" id="cf_refl" placeholder="Escreva o que percebeu; vai para as reflexões do Espiritismo">${esc(CFV.txt)}</textarea><div class="row"><button type="button" class="btn sm primary" data-act="cfrsave" data-cf="${c.id}">${ic("check")}Guardar reflexão</button></div>
@@ -16723,8 +16769,8 @@ function cfHarmHTML() {
 }
 function pCentros() {
   const c = cfC(CFV.sel) || CF[0];
-  return `${cfNav()}<p class="lead">Na tradição indiana, os chakras são centros de energia ao longo do corpo. Na Doutrina Espírita, André Luiz descreve sete <b>centros de força</b> no perispírito, o corpo espiritual, que o pensamento e a conduta harmonizam. Toque num centro para ver a função, as virtudes que o trabalham e o que os seus dados mostram.</p>
-    ${cfHarmHTML()}
+  return `${cfNav()}<p class="lead">Na tradição indiana, os chakras são centros de energia ao longo do corpo. Na Doutrina Espírita, André Luiz descreve sete <b>centros de força</b> no perispírito, o corpo espiritual, que o pensamento e a conduta harmonizam. Toque num centro para ver a função, como trabalhá-lo pelas virtudes e o que os seus dados mostram.</p>
+    ${cfHarmHTML()}${cfSugestao()}
     <div class="cfgrid"><section class="pn cfmap">${cfMapa()}
       <div class="cfstart"><label class="lbl">Tempo por centro<select id="cfh_dur"${CFH.on ? " disabled" : ""}>${[[30, "30 segundos"], [60, "1 minuto"], [120, "2 minutos"]].map(([v, l]) => `<option value="${v}"${CFV.dur === v ? " selected" : ""}>${l}</option>`).join("")}</select></label>
         <label class="ckl"><input type="checkbox" id="cfh_voz"${CFV.voz ? " checked" : ""}><span>Ler em voz alta</span></label>
@@ -16736,7 +16782,7 @@ function pCentros() {
 /* resumo para a página do pilar */
 function cfPainelPilar() {
   const a = cfSemana(), n = Object.keys(a).length, s = cfSess([CF_TEC], 28);
-  return panel(`${ic("lotus")}Centros de força`, `<div class="cfmini">${CF.map(c => `<a href="#jornada.centros" data-act="cfgo" data-cf="${c.id}" class="cfm" ${tip(`${c.nome}: ${a[c.id] ? `${a[c.id]} (${CF_ESC[a[c.id]]})` : "sem autoavaliação nesta semana"}`)}><i style="background:${cfCor(a[c.id])}">${a[c.id] || ""}</i><small>${esc(c.nome)}</small></a>`).join("")}</div>
+  return panel(`${ic("lotus")}Centros de força`, `<div class="cfmini">${CF.map((c, i) => `<a href="#jornada.centros" data-act="cfgo" data-cf="${c.id}" class="cfm" ${tip(`${i + 1}. ${c.nome}: ${a[c.id] ? `${a[c.id]} (${CF_ESC[a[c.id]]})` : "sem autoavaliação nesta semana"}`)}><i style="background:${cfFill(a[c.id])}">${i + 1}</i><small>${esc(c.nome)}</small><em>${a[c.id] ? `${a[c.id]} de 5` : "sem nota"}</em></a>`).join("")}</div>
     <p class="muted small">Os sete centros do perispírito descritos por André Luiz, que correspondem aos chakras. ${n ? `Autoavaliação desta semana: ${n} de 7.` : "Ainda sem autoavaliação nesta semana."} ${s.n ? `${plural(s.n, "harmonização", "harmonizações")} em 4 semanas.` : ""}</p>
     <div class="row wrap"><a class="btn sm" href="#jornada.centros">${ic("lotus")}Abrir os centros de força</a></div>`);
 }
@@ -16766,6 +16812,11 @@ function cfClick(t) {
   if (ds.cf && !a) { if (CFV.sel !== ds.cf) CFV.txt = ""; CFV.sel = ds.cf; render(); return true; }
   if (a === "cfrsave") { const txt = String($("#cf_refl")?.value || CFV.txt).trim(), id = ds.cf || CFV.sel; if (!txt) { toast("Escreva a reflexão."); return true; }
     jP("esp").refl.push({ id: uid(), at: Date.now(), data: TODAY, texto: txt.slice(0, 4000), tipo: "reflexão", tambem: [], priv: false, cf: id }); CFV.txt = ""; touch("jornada", { label: `Reflexão (centro ${cfNome(id).toLowerCase()})` }); toast("Guardada nas reflexões do Espiritismo."); return true; }
+  if (a === "cffoco") { const c = cfC(ds.cf || CFV.sel), D = cfD(), f = bmFoco(), w = weekStart(TODAY); if (!c) return true;
+    if (cfFocoSem() === c.id) { f.splice(0, f.length, ...(D.foco.antes || [])); delete D.foco; touch("jornada", "bussola", { label: `Centro ${c.nome.toLowerCase()} fora do foco` }); toast("O foco da Bússola voltou ao que era antes."); return true; }
+    const antes = D.foco?.w === w ? D.foco.antes || [] : [...f], vs = cfVirtFoco(c); f.splice(0, f.length, ...vs); D.foco = { w, id: c.id, antes };
+    if (CFV.sel !== c.id) { CFV.sel = c.id; CFV.txt = ""; }
+    touch("jornada", "bussola", { label: `Centro da semana: ${c.nome.toLowerCase()}` }); undoToast(`Centro ${c.nome.toLowerCase()} nesta semana: ${vs.map(id => bmV(id)?.nome).join(", ")} no exame da noite`); return true; }
   if (a === "cfhini") { cfhIniciar(); return true; }
   if (a === "cfhpause") { if (CFH.pausaEm) { CFH.t0 += Date.now() - CFH.pausaEm; CFH.pausaEm = 0; } else CFH.pausaEm = Date.now(); render(); cfhTick(); return true; }
   if (a === "cfhnext") { if (CFH.pausaEm) { CFH.t0 += Date.now() - CFH.pausaEm; CFH.pausaEm = 0; } cfhAvancar(); return true; }
