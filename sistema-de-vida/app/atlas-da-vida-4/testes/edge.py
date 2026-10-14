@@ -44,7 +44,7 @@ async def main():
         await pg.evaluate("""() => { for (let i = 0; i < 4200; i++) S.lanc.push({ id: 'big' + i, data: addDays(TODAY, -(i % 700)), tipo: 'Despesa', cat: 'Mercado', desc: 'Compra de teste número ' + i + ' com uma descrição razoavelmente longa', valor: 10 + i % 50, conta: 'Cartão de débito' }); touch('lanc'); }""")
         await pg.wait_for_timeout(2500)
         info = await pg.evaluate("({ parts: PARTS.lanc, main: window.__store['data/users/u_test/s_lanc'], n: S.lanc.length, maxDoc: Math.max(...Object.values(window.__store).map(v => JSON.stringify(v).length)) })")
-        check("volume grande fatiado em partes", (info["parts"] or 0) >= 2 and info["main"].get("parts") == info["parts"], {k: info[k] for k in ("parts", "n", "maxDoc")})
+        check("volume grande fatiado em partes", (info["parts"]["n"] or 0) >= 2 and info["main"].get("parts") == info["parts"]["n"] and info["main"].get("g") == info["parts"]["g"], {k: info[k] for k in ("parts", "n", "maxDoc")})   # Atlas 4: PARTS guarda partes e geração
         check("nenhum documento passa de 256 KiB", info["maxDoc"] < 262144)
         store = await pg.evaluate("JSON.stringify(window.__store)"); n = info["n"]; await b.close()
         b, pg, errs = await open_page(p, cfg={"seedStore": store}, hash_="visao")
