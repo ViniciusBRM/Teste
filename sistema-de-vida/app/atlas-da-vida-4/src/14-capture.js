@@ -109,7 +109,7 @@ function captureFormHTML(p) {
   return `<textarea id="${p === "h" ? "hj_cap" : "cap_txt"}" class="captxt" rows="${p === "h" ? 3 : 5}" placeholder="Escreva ou dite o que aconteceu. Ex.: dormi 7h, corri 30 min, almocei com o Marco por 18 euros, preciso ligar para o banco até sexta" aria-label="O que aconteceu">${esc(CAP.text)}</textarea>
     <div class="caprow"><label class="capd">Dia<input type="date" id="${p}_capdata" value="${CAP.data || TODAY}"></label><label class="chk"><input type="checkbox" id="${p}_capdia"${CAP.diario ? " checked" : ""}> Guardar também no diário</label><span class="muted small">${ic("mic")}No celular, toque no microfone do teclado para ditar.</span></div>
     <div id="${p === "h" ? "hj_capprev" : "cap_prev"}" class="capprev">${capPreviewHTML(p)}</div>
-    <div class="capfoot"><span class="muted small" id="${p === "h" ? "hj_capn" : "cap_n"}">${capCountTxt()}</span><div class="row wrap">${CAP.busy ? `<button type="button" class="btn sm" data-act="capstop">${ic("stop")}Parar</button>` : `<button type="button" class="btn sm" data-act="capai"${ai && CAP.text.trim() ? "" : " disabled"} title="${ai ? "A IA reescreve a entrada e separa os registros. Você revisa antes de salvar." : "A IA não está disponível nesta visualização"}">${ic("spark")}Organizar com IA</button>`}<button type="button" class="btn sm primary" data-act="capsave"${CAP.text.trim() ? "" : " disabled"}>${ic("check")}Salvar tudo</button></div></div>`;
+    <div class="capfoot"><span class="muted small" id="${p === "h" ? "hj_capn" : "cap_n"}">${capCountTxt()}</span><div class="row wrap">${CAP.busy ? `<button type="button" class="btn sm" data-act="capstop">${ic("stop")}Parar</button>` : `<button type="button" class="btn sm" data-act="capai"${ai && CAP.text.trim() ? "" : " disabled"} title="${ai ? "A IA reescreve a entrada e separa os registros. Você revisa antes de salvar." : "A IA não está disponível nesta visualização"}">${ic("spark")}Organizar com IA</button>`}<button type="button" class="btn sm" data-act="caprot"${CAP.text.trim() ? "" : " disabled"} title="Cada atividade com horário vira um bloco na Rotina, na faixa certa. Você confere antes.">${ic("clock")}Marcar na Rotina</button><button type="button" class="btn sm primary" data-act="capsave"${CAP.text.trim() ? "" : " disabled"}>${ic("check")}Salvar tudo</button></div></div>`;
 }
 function openCapture(text) {
   if (text != null) { CAP.text = text; capRefresh(); }
@@ -158,7 +158,7 @@ Relato:
 function capRepaint() { if ($("#capf")) { const v = CAP.text; $("#capf").innerHTML = `<div class="caph"><h3>${ic("bolt")}Capturar</h3><button type="button" class="iconbtn" id="capx" aria-label="Fechar">${ic("x")}</button></div>${captureFormHTML("d")}`; $("#capx").onclick = () => $("#dlg").close(); } else if (PAGE === "hoje") render(); }
 const capDeb = debounce(() => capRefresh(), 220);
 function capInput(t) {
-  if (t.id === "cap_txt" || t.id === "hj_cap") { CAP.text = t.value; capDeb(); for (const b of $$('[data-act="capsave"],[data-act="capai"]')) b.disabled = !t.value.trim() || (b.dataset.act === "capai" && (!SAMPLE || !!AI_OFF)); return true; }
+  if (t.id === "cap_txt" || t.id === "hj_cap") { CAP.text = t.value; capDeb(); for (const b of $$('[data-act="capsave"],[data-act="capai"],[data-act="caprot"]')) b.disabled = !t.value.trim() || (b.dataset.act === "capai" && (!SAMPLE || !!AI_OFF)); return true; }
   return false;
 }
 function capChange(t) {
@@ -169,7 +169,7 @@ function capChange(t) {
 }
 function capClick(t) {
   const a = t.dataset.act;
-  if (a === "cap") { openCapture(); return true; }
+  if (a === "cap") { if (PAGE === "rotina") rtcOpen(); else openCapture(); return true; }
   if (t.dataset.capon != null) { const it = CAP.items[+t.dataset.capon]; if (it) { it.on = t.checked; if (!it.on) CAP.off.add(it.line); else CAP.off.delete(it.line); const el = t.closest(".capi"); el?.classList.toggle("on", it.on); for (const id of ["cap_n", "hj_capn"]) { const n = document.getElementById(id); if (n) n.textContent = capCountTxt(); } } return true; }
   if (a === "capsave") { capSave(); return true; }
   if (a === "capai") { capAI(); return true; }

@@ -181,7 +181,7 @@ function secMkProp(inp) {
     return { id, tipo, titulo, data: /^\d{4}-\d{2}-\d{2}$/.test(inp.data || "") ? inp.data : TODAY, ini, fim, cat: RT_CATS.some(c => c[0] === inp.categoria) ? inp.categoria : rtGuessCat(String(inp.titulo || "")), motivo: [inp.motivo || "", inp.deTarefa ? "Tinha horário: vira bloco na rotina, no lugar de tarefa." : "", padrao ? "Sem horário de fim: 1 h, ajuste se precisar." : ""].filter(Boolean).join(" "), rotulo: `bloco: ${trunc(titulo, 40)} ${ini}–${fim}`, status: "pendente" }; }
   return { erro: "tipo desconhecido" };
 }
-const rtGuessCat = t => (RT_KW.find(([rx]) => rx.test(t)) || [0, "Pessoal"])[1];
+const rtGuessCat = t => (RT_KW.find(([rx]) => rx.test(fold(String(t || "")))) || [0, "Outro"])[1];
 async function secAsk(text) {
   text = String(text || "").trim(); if (!text) return;
   const local = secLocal(text); if (local) return;
