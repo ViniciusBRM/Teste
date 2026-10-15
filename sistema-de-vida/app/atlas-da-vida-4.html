@@ -1440,6 +1440,12 @@ tr.dim td{opacity:.5}
 .rtb.st-parcial{background:linear-gradient(90deg,color-mix(in srgb,var(--c) 22%,var(--surface)) 50%,color-mix(in srgb,var(--c) 8%,var(--surface)) 50%)}
 .rtb.st-pulado{opacity:.45;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0 5px,var(--surface) 5px 10px)}
 .rtb.conf{box-shadow:0 0 0 2px var(--crit)}
+/* bloco com cor própria (modelo importado): pintado como na planilha, fundo e letra */
+.rtb.cor{background:var(--bg);color:var(--tx);border-left-color:color-mix(in srgb,var(--bg) 60%,#000)}.rtb.cor small{color:var(--tx);opacity:.85}
+.rtb.cor:hover{background:color-mix(in srgb,var(--bg) 88%,#000)}
+.rtb.cor.st-feito{background:var(--bg);opacity:.55}.rtb.cor.st-pulado{background:repeating-linear-gradient(135deg,var(--bg) 0 5px,var(--surface) 5px 10px);opacity:.4}
+.rtb.cor.st-parcial{background:linear-gradient(90deg,var(--bg) 50%,color-mix(in srgb,var(--bg) 35%,var(--surface)) 50%)}
+.rtad.anual{background:color-mix(in srgb,var(--a-amo) 18%,var(--surface-2))}.rtad.anual .ico{color:var(--a-amo)}
 .rtrs{position:absolute;left:0;right:0;bottom:0;height:7px;cursor:ns-resize}.rtrs::after{content:"";position:absolute;left:50%;bottom:2px;width:18px;margin-left:-9px;height:2px;border-radius:2px;background:var(--c);opacity:0}.rtb:hover .rtrs::after{opacity:.8}
 .rte{border:1px dashed var(--muted);background:repeating-linear-gradient(135deg,var(--surface-2) 0 6px,var(--surface-3) 6px 12px);cursor:pointer;opacity:.95}
 .rte:hover,.rte:focus-visible{opacity:1;outline:2px solid var(--accent);outline-offset:1px}
@@ -4003,7 +4009,7 @@ const SCH = {
   comp: { t: "Competência", f: [["nome", "Competência", "text"], ["atual", "Nível atual (1–5)", "num"], ["alvo", "Nível alvo (1–5)", "num"]], def: () => ({ atual: 2, alvo: 4 }) },
   cand: { t: "Candidatura", f: [["empresa", "Empresa", "text"], ["cargo", "Cargo", "text"], ["data", "Data", "date"], ["etapa", "Etapa", ["Interesse", "Aplicado", "Entrevista", "Teste / case", "Proposta", "Aceito", "Recusado", "Desisti"]], ["acao", "Próxima ação", "text"], ["dataAcao", "Data da ação", "date"]], def: () => ({ data: TODAY, etapa: "Aplicado" }) },
   habitos: { t: "Hábito", f: [["nome", "Hábito", "text"], ["area", "Área da vida", () => AREAS], ["meta", "Meta (dias por semana)", "num"]], def: () => ({ meta: 5 }) },
-  eventos: { t: "Compromisso", f: [["data", "Data", "date"], ["hora", "Início (hh:mm)", "text"], ["fim", "Fim (hh:mm)", "text"], ["titulo", "Compromisso", "text", 1], ["local", "Local", "text"]], def: () => ({ data: TODAY }) },
+  eventos: { t: "Compromisso", f: [["data", "Data", "date"], ["hora", "Início (hh:mm)", "text"], ["fim", "Fim (hh:mm)", "text"], ["titulo", "Compromisso", "text", 1], ["local", "Local", "text"], ["rep", "Repetir (anual = todo ano no mesmo dia)", () => ["anual"]]], def: () => ({ data: TODAY }) },
   regras: { t: "Regra de categorização", f: [["termo", "Se a descrição contém", "text"], ["tipo", "Tipo", ["Despesa", "Receita", "Aporte"]], ["cat", "Categoria", o => o.tipo === "Receita" ? CAT_REC : o.tipo === "Aporte" ? CAT_APO : Object.keys(CAT_DESP)]], def: () => ({ tipo: "Despesa" }) },
 };
 const optsOf = (ty, o) => typeof ty === "function" ? ty(o) : Array.isArray(ty) ? ty : null;
@@ -4199,7 +4205,11 @@ function agenda(R, days = 14, max = 40) {
   S.cand.filter(c => c.dataAcao && c.dataAcao <= until && !["Aceito", "Recusado", "Desisti"].includes(c.etapa)).forEach(c => ev.push({ d: c.dataAcao, l: `${c.acao || "Próxima ação"} · ${c.empresa}`, s: "candidatura", ico: "brief", a: "Carreira" }));
   R.metas.filter(m => m.ativa && m.rt !== "Concluída" && m.prazo && m.prazo <= until).forEach(m => ev.push({ d: m.prazo, l: `Prazo da meta: ${m.meta}`, s: m.rt, ico: "target", ent: `meta|${m.id}`, a: m.area }));
   for (const mid of MIDS) for (const p of mget(mid).plano?.passos || []) if (!p.feito && p.prazo && p.prazo <= until) ev.push({ d: p.prazo, l: p.texto, s: MENTOR_DEF[mid].nome, ico: "flag", a: MENTOR_DEF[mid].area, go: `mentor.${mid}` });
-  for (const e of S.eventos || []) if (e.data >= TODAY && e.data <= until) ev.push({ d: e.data, l: `${e.hora ? e.hora + " · " : ""}${e.titulo}`, s: e.local || "agenda", ico: "cal", a: null, edit: e.id });
+  const anivP = new Set(S.pessoas.filter(p => p.aniv).map(p => p.id));
+  for (const e of S.eventos || []) {
+    if (e.rep === "anual") { if (anivP.has(e.pessoa)) continue;   /* o aniversário já entra pela ficha da pessoa */
+      for (let d = TODAY; d <= until; d = addDays(d, 1)) if (evNoDia(e, d)) { ev.push({ d, l: e.titulo, s: "todo ano", ico: "heart", a: null, edit: e.id }); break; } continue; }
+    if (e.data >= TODAY && e.data <= until) ev.push({ d: e.data, l: `${e.hora ? e.hora + " · " : ""}${e.titulo}`, s: e.local || "agenda", ico: "cal", a: null, edit: e.id }); }
   const f = xf(), all = ev.filter(e => !f.area || e.a === f.area).sort((a, b) => a.d.localeCompare(b.d)), list = all.slice(0, max), by = {};
   for (const e of list) (by[e.d < TODAY ? "late" : e.d] ||= []).push(e);
   return Object.keys(by).length ? `<div class="agenda">${Object.entries(by).map(([d, es]) => `<div class="agd"><div class="agh${d === "late" ? " st-crit" : d === TODAY ? " now" : ""}">${d === "late" ? "Atrasado" : d === TODAY ? "Hoje" : d === addDays(TODAY, 1) ? "Amanhã" : fmtDL(d)}</div>${es.map(e => `<button type="button" class="agi" ${e.ent ? `data-ent="${esc(e.ent)}"` : e.go ? `data-go="${e.go}"` : e.done ? `data-done="${e.done}" title="Marcar a rotina como feita hoje"` : e.edit ? `data-edit="eventos" data-id="${e.edit}"` : ""} style="--c:${e.a ? acol(e.a) : "var(--muted)"}">${ic(e.ico)}<span>${esc(e.l)}<small>${esc(e.s)}${d === "late" ? " · " + fmtD(e.d) : ""}</small></span></button>`).join("")}</div>`).join("")}${all.length > list.length ? `<div class="more">+ ${plural(all.length - list.length, "item", "itens")} até ${fmtD(until)} · exporte tudo para o Google Agenda em <a class="lnk" href="#integ">Integrações</a></div>` : ""}</div>` : `<div class="empty">Nada marcado para os próximos ${days} dias.</div>`;
@@ -10838,7 +10848,7 @@ function idiPlano() {
   const I = idi(), ini = hm2m(I.janela.ini) ?? 1170, fim = hm2m(I.janela.fim) ?? 1260, jan = Math.max(0, fim - ini), dias = [];
   for (let k = 0; k < 7; k++) {
     const d = addDays(TODAY, k), dow = parse(d).getDay(), disp = +I.disp[dow] || 0;
-    const ev = [...(S.eventos || []).filter(e => e.data === d), ...rtOcc(d).filter(b => b.cat !== "Estudo").map(b => ({ hora: b.ini, fim: b.fim, titulo: b.titulo }))], busy = sum(ev.map(e => { const a = hm2m(e.hora), b = hm2m(e.fim) ?? (a != null ? a + 60 : null); return a == null ? 0 : Math.max(0, Math.min(b, fim) - Math.max(a, ini)); }));
+    const ev = [...(S.eventos || []).filter(e => evNoDia(e, d)), ...rtOcc(d).filter(b => b.cat !== "Estudo").map(b => ({ hora: b.ini, fim: b.fim, titulo: b.titulo }))], busy = sum(ev.map(e => { const a = hm2m(e.hora), b = hm2m(e.fim) ?? (a != null ? a + 60 : null); return a == null ? 0 : Math.max(0, Math.min(b, fim) - Math.max(a, ini)); }));
     const livre = Math.max(0, Math.min(disp, jan - busy)), en = Math.round(livre * I.peso / 100 / 5) * 5, it = Math.max(0, livre - en), desl = dow >= 1 && dow <= 5 ? +I.desloc || 0 : 0;
     dias.push({ d, dow, disp, busy, ev, livre, en, it, desl });
   }
@@ -11139,6 +11149,12 @@ const RT_Z = { compacto: 18, normal: 28, grande: 40 };
 const rtSH = () => RT_Z[S.cfg.rtZoom] || RT_Z.normal;
 const RT_CATS = [["Trabalho", "var(--a-car)"], ["Estudo", "var(--a-apr)"], ["Saúde & treino", "var(--a-fis)"], ["Casa", "var(--a-fam)"], ["Pessoas", "var(--a-ami)"], ["Lazer", "var(--a-laz)"], ["Descanso", "var(--a-men)"], ["Espiritual", "var(--jp-med)"], ["Deslocamento", "var(--muted)"], ["Outro", "var(--ink-2)"]];
 const rtCor = c => (RT_CATS.find(x => x[0] === c) || RT_CATS.at(-1))[1];
+/* cor do bloco: a própria (#rrggbb, de um modelo importado) ou a da categoria. Com cor própria, o bloco fica pintado como na planilha */
+const rtHex = c => /^#[0-9a-f]{6}$/i.test(String(c || "")) ? c : "";
+const rtTx = bg => { const n = parseInt(bg.slice(1), 16), l = (.299 * (n >> 16) + .587 * (n >> 8 & 255) + .114 * (n & 255)) / 255; return l > .6 ? "#1a1a1a" : "#ffffff"; };
+const rtBC = b => rtHex(b.cor) || rtCor(b.cat);
+const rtCorDe = b => rtHex(b.cor) ? { cor: b.cor, ...(rtHex(b.tx) ? { tx: b.tx } : {}) } : {};
+const rtBStyle = b => rtHex(b.cor) ? `--c:${b.cor};--bg:${b.cor};--tx:${rtHex(b.tx) || rtTx(b.cor)}` : `--c:${rtCor(b.cat)}`;
 const REP_TXT = { "": "Não repete", diario: "Todo dia", uteis: "Dias úteis (seg–sex)", semanal: "Toda semana neste dia" };
 const ST_TXT = { feito: "Feito", parcial: "Parcial", pulado: "Pulado" };
 const m2hm = m => `${pad(Math.floor(m / 60))}:${pad(m % 60)}`;
@@ -11176,12 +11192,18 @@ function rtHoraTxt(txt) {
 const rtHM = s => { const m = String(s ?? "").trim().toLowerCase().match(/^(\d{1,2})(?:[:h.](\d{2}))?\s*h?$/); return m && +m[1] <= 24 && +(m[2] || 0) < 60 ? +m[1] * 60 + +(m[2] || 0) : null; };
 /* o título sem o horário (para virar bloco): tira a expressão e a pontuação que sobra em volta */
 const rtSemHora = (t, h) => h ? String(t).replace(new RegExp(h.txt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), " ").replace(/\(\s*\)|\[\s*\]/g, " ").replace(/^[\s:–—,;·-]+|[\s:–—,;·-]+$/g, "").replace(/\s{2,}/g, " ").trim() || String(t).trim() : String(t).trim();
+/* compromisso no dia: o próprio dia, um período (ate) ou, com rep "anual", o mesmo dia e mês todo ano a partir da data (29/02 cai em 28/02 nos anos comuns) */
+function evNoDia(e, d) {
+  if (!e?.data || !d) return false;
+  if (e.rep === "anual") { if (d < e.data) return false; const md = e.data.slice(5), y = +d.slice(0, 4), bis = y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0); return d.slice(5) === (md === "02-29" && !bis ? "02-28" : md); }
+  return e.data === d || (!!e.ate && e.data <= d && e.ate >= d);
+}
 function rtAgenda(d) {
-  const ev = (S.eventos || []).filter(e => e.data === d || (e.ate && e.data <= d && e.ate >= d)).map(e => {
+  const ev = (S.eventos || []).filter(e => evNoDia(e, d)).map(e => {
     /* hora no campo próprio; sem ela (ou escrita como “9h”), a do título: compromisso com horário não vai para o dia todo */
     const a0 = rtHM(e.hora), h = a0 == null ? rtHoraTxt(e.titulo) : null;
     const a = a0 ?? h?.a ?? null, z = rtHM(e.fim) ?? (h && !h.so ? h.z : a != null ? a + 60 : null);
-    return { id: e.id, titulo: e.titulo, a, z: z != null && z <= a ? 1440 : z, gcal: e.origem === "gcal", local: e.local, link: e.link, dia: a == null || (e.ate && e.data !== d) }; });
+    return { id: e.id, titulo: e.titulo, a, z: z != null && z <= a ? 1440 : z, gcal: e.origem === "gcal", local: e.local, link: e.link, anual: e.rep === "anual", dia: a == null || (e.ate && e.data !== d) }; });
   /* tarefas do dia: com horário no título ou nas notas (como as que a IA cria) entram na grade, na faixa certa; sem horário, no “dia todo” */
   const tar = [], tarH = [];
   for (const t of [...S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada"), ...ckMinhas(t => ckOpen(t) && t.prazo === d)]) {
@@ -11240,19 +11262,19 @@ function rtCol(d) {
   const sleep = w1 > w0 ? `<div class="rtsleep" style="top:0;height:${w0 / 30 * H}px"></div><div class="rtsleep" style="top:${w1 / 30 * H}px;height:${(1440 - w1) / 30 * H}px"></div>` : `<div class="rtsleep" style="top:${w1 / 30 * H}px;height:${(w0 - w1) / 30 * H}px"></div>`;
   const now = d === TODAY ? `<div class="rtnow" style="top:${nowMin() / 30 * H}px"><span>${m2hm(nowMin())}</span></div>` : "";
   return `<div class="rtcol${d === TODAY ? " today" : ""}" style="height:${48 * H}px" data-rtday="${d}">${sleep}${slots}
-    ${occ.map(b => { const len = b.z - b.a, tiny = len / 30 * H < 34; return `<div role="button" tabindex="0" class="rtb${b.st ? " st-" + b.st : ""}${tiny ? " tiny" : ""}${cf.has(b.id) ? " conf" : ""}" style="${pos(b, b.n || 1, b.col)};--c:${rtCor(b.cat)}" data-rtb="${b.id}|${d}" title="${esc(`${b.ini}–${b.fim} · ${b.titulo}${b.rep ? " · " + REP_TXT[b.rep] : ""}${b.st ? " · " + ST_TXT[b.st] : ""}`)}"><b>${b.st === "feito" ? "✓ " : b.st === "pulado" ? "✕ " : ""}${esc(b.titulo)}</b><small>${b.ini}–${b.fim}${b.rep ? ` ${ic("repeat")}` : ""}</small><i class="rtrs" data-rtrs="${b.id}|${d}" aria-hidden="true"></i></div>`; }).join("")}
+    ${occ.map(b => { const len = b.z - b.a, tiny = len / 30 * H < 34; return `<div role="button" tabindex="0" class="rtb${rtHex(b.cor) ? " cor" : ""}${b.st ? " st-" + b.st : ""}${tiny ? " tiny" : ""}${cf.has(b.id) ? " conf" : ""}" style="${pos(b, b.n || 1, b.col)};${rtBStyle(b)}" data-rtb="${b.id}|${d}" title="${esc(`${b.ini}–${b.fim} · ${b.titulo}${b.rep ? " · " + REP_TXT[b.rep] : ""}${b.st ? " · " + ST_TXT[b.st] : ""}`)}"><b>${b.st === "feito" ? "✓ " : b.st === "pulado" ? "✕ " : ""}${esc(b.titulo)}</b><small>${b.ini}–${b.fim}${b.rep ? ` ${ic("repeat")}` : ""}</small><i class="rtrs" data-rtrs="${b.id}|${d}" aria-hidden="true"></i></div>`; }).join("")}
     ${ag.map(e => { const k = e.tarefa || "e", qual = e.tarefa === "k" ? "Tarefa do Cockpit" : e.tarefa ? "Tarefa" : `Agenda${e.gcal ? ", Google" : ""}`;
       return `<div role="button" tabindex="0" class="rte${e.gcal ? " gcal" : ""}${e.tarefa ? " tk" : ""}" style="${sobre(e) ? pos(e, e.n || 1, e.col, 50, 50) : pos(e, e.n || 1, e.col)}" data-rtitem="${k}|${e.id}|${d}" title="${esc(`${m2hm(e.a)}–${m2hm(Math.min(e.z, 1440))} · ${e.titulo}${e.local ? " · " + e.local : ""} (${qual}) · toque para abrir`)}"><b>${esc(e.titulo)}</b><small>${m2hm(e.a)} · ${e.tarefa ? "tarefa" : e.gcal ? "Google" : "agenda"}</small></div>`; }).join("")}${now}</div>`;
 }
-function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<button type="button" class="rtad e" data-rtitem="e|${e.id}|${d}" title="Agenda, sem horário · toque para abrir">${ic("cal")}${esc(e.titulo)}</button>`), ...A.tar.map(t => `<button type="button" class="rtad t" data-rtitem="${t.ck ? "k" : "t"}|${t.id}|${d}" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo, sem horário"} · toque para abrir">${ic("checksq")}${esc(t.tarefa)}</button>`)].join(""); }
+function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<button type="button" class="rtad e${e.anual ? " anual" : ""}" data-rtitem="e|${e.id}|${d}" title="${e.anual ? "Todo ano" : "Agenda, sem horário"} · toque para abrir">${ic(e.anual ? "heart" : "cal")}${esc(e.titulo)}</button>`), ...A.tar.map(t => `<button type="button" class="rtad t" data-rtitem="${t.ck ? "k" : "t"}|${t.id}|${d}" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo, sem horário"} · toque para abrir">${ic("checksq")}${esc(t.tarefa)}</button>`)].join(""); }
 /* cartão de um item que não é bloco (compromisso da agenda ou tarefa com prazo no dia): pôr na rotina, concluir, editar ou apagar */
 function rtItemCard(k, id, d) {
   const dlg = $("#dlg"), foot = (...b) => `<div class="row wrap rtca">${b.filter(Boolean).join("")}</div>`;
   let h = "", body = "";
   if (k === "e") { const e = (S.eventos || []).find(x => x.id === id); if (!e) return; const it = rtAgenda(d).timed.find(x => x.id === id), gc = e.origem === "gcal";
-    h = `<h3>${esc(e.titulo || "Compromisso")}</h3><p class="muted small">${fmtDL(d)} · ${it ? `${m2hm(it.a)}–${m2hm(Math.min(it.z, 1440))}` : "dia todo"} · ${gc ? "Google Agenda" : "Agenda"}${e.local ? ` · ${esc(e.local)}` : ""}</p>`;
+    h = `<h3>${esc(e.titulo || "Compromisso")}</h3><p class="muted small">${fmtDL(d)} · ${it ? `${m2hm(it.a)}–${m2hm(Math.min(it.z, 1440))}` : "dia todo"} · ${gc ? "Google Agenda" : "Agenda"}${e.rep === "anual" ? " · repete todo ano" : ""}${e.local ? ` · ${esc(e.local)}` : ""}</p>`;
     body = (gc ? `<p class="muted small">${ic("info")}Vem do Google Agenda: para sumir de vez, apague lá. Apagado só daqui, ele volta na próxima sincronização.</p>` : "") +
-      foot(`<button type="button" class="btn sm" data-rtiedit="eventos|${id}">${ic("edit")}Editar</button>`, `<button type="button" class="btn sm ghost danger" data-rtidel="e|${id}|${d}">${ic("trash")}Apagar${gc ? " daqui" : ""}</button>`); }
+      foot(`<button type="button" class="btn sm" data-rtiedit="eventos|${id}">${ic("edit")}Editar</button>`, `<button type="button" class="btn sm ghost danger" data-rtidel="e|${id}|${d}">${ic("trash")}Apagar${gc ? " daqui" : e.rep === "anual" ? " (todos os anos)" : ""}</button>`); }
   else if (k === "t") { const t = S.tarefas.find(x => x.id === id); if (!t) return; const hr = rtHoraTxt(t.tarefa) || rtHoraTxt(t.notas);
     h = `<h3>${esc(t.tarefa)}</h3><p class="muted small">Tarefa · prazo ${fmtD(t.prazo)}${hr ? ` · horário no texto: ${m2hm(hr.a)}–${m2hm(hr.z)}` : " · sem horário"}${t.area ? ` · ${esc(t.area)}` : ""}</p>${t.notas ? `<p>${esc(t.notas)}</p>` : ""}`;
     body = foot(`<button type="button" class="btn sm primary" data-rtibloco="${id}|${d}">${ic("week")}${hr ? `Transformar em bloco ${m2hm(hr.a)}–${m2hm(hr.z)}` : "Pôr na rotina como bloco"}</button>`, `<button type="button" class="btn sm" data-rtidone="t|${id}">${ic("check")}Concluir</button>`,
@@ -11272,13 +11294,13 @@ function rtGrid(days) {
 }
 function rtMonth() {
   const d = RT.d, m0 = d.slice(0, 7), first = weekStart(m0 + "-01"), weeks = Array.from({ length: 6 }, (_, i) => addDays(first, i * 7)).filter((w, i) => i < 5 || w.slice(0, 7) === m0);
-  return `<div class="rtmonth"><div class="rtmw hd"><span>#</span>${["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map(x => `<span>${x}</span>`).join("")}</div>${weeks.map(w => `<div class="rtmw"><button type="button" class="rtwk" data-rtgo="semana|${w}" title="Ver a semana">${isoWeek(w)}</button>${Array.from({ length: 7 }, (_, i) => { const x = addDays(w, i), X = rtDia(x), bs = X.bs.sort((p, q) => p.a - q.a), items = [...bs.map(b => `<i style="--c:${rtCor(b.cat)}"${b.st ? ` class="st-${b.st}"` : ""}>${b.ini} ${esc(b.titulo)}</i>`), ...X.A.timed.map(e => `<i class="e">${m2hm(e.a)} ${esc(e.titulo)}</i>`), ...X.A.allday.map(e => `<i class="e">${esc(e.titulo)}</i>`)], pf = X.plan ? X.feito / X.plan : 0;
+  return `<div class="rtmonth"><div class="rtmw hd"><span>#</span>${["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map(x => `<span>${x}</span>`).join("")}</div>${weeks.map(w => `<div class="rtmw"><button type="button" class="rtwk" data-rtgo="semana|${w}" title="Ver a semana">${isoWeek(w)}</button>${Array.from({ length: 7 }, (_, i) => { const x = addDays(w, i), X = rtDia(x), bs = X.bs.sort((p, q) => p.a - q.a), items = [...bs.map(b => `<i style="--c:${rtBC(b)}"${b.st ? ` class="st-${b.st}"` : ""}>${b.ini} ${esc(b.titulo)}</i>`), ...X.A.timed.map(e => `<i class="e">${m2hm(e.a)} ${esc(e.titulo)}</i>`), ...X.A.allday.map(e => `<i class="e">${esc(e.titulo)}</i>`)], pf = X.plan ? X.feito / X.plan : 0;
     return `<button type="button" class="rtmc${x.slice(0, 7) !== m0 ? " out" : ""}${x === TODAY ? " today" : ""}" data-rtgo="dia|${x}" aria-label="${fmtDL(x)}: ${items.length} itens"><span class="rtmct"><b>${parse(x).getDate()}</b>${X.plan ? `<small>${durTxt(X.plan)}</small>` : ""}</span>${X.plan && x < TODAY ? `<i class="rtsb"><u style="width:${clamp(pf) * 100}%"></u></i>` : ""}${items.slice(0, 3).join("")}${items.length > 3 ? `<em>+${items.length - 3}</em>` : ""}</button>`; }).join("")}</div>`).join("")}</div>`;
 }
 function rtInsights(days) {
   const v = rtView(), d = RT.d, today = days.includes(TODAY), out = [];
   if (today) { const X = rtDia(TODAY), n = nowMin(), cur = X.bs.find(b => b.a <= n && b.z > n), nx = X.bs.filter(b => b.a > n).sort((p, q) => p.a - q.a)[0];
-    out.push(`<div class="pn rtnowc">${cur ? `<div><small>Agora</small><b style="--c:${rtCor(cur.cat)}">${esc(cur.titulo)}</b><span>até ${cur.fim} · faltam ${durTxt(cur.z - n)}</span><div class="row wrap">${["feito", "parcial", "pulado"].map(s => `<button type="button" class="btn sm${cur.st === s ? " primary" : ""}" data-rtst="${cur.id}|${TODAY}|${s}">${ST_TXT[s]}</button>`).join("")}</div></div>` : `<div><small>Agora</small><b>Nenhum bloco</b><span>${X.livres.find(([a, z]) => a <= n + 30 && z > n) ? "tempo livre" : ""}</span></div>`}${nx ? `<div><small>A seguir · em ${durTxt(nx.a - n)}</small><b style="--c:${rtCor(nx.cat)}">${esc(nx.titulo)}</b><span>${nx.ini}–${nx.fim}</span></div>` : ""}</div>`); }
+    out.push(`<div class="pn rtnowc">${cur ? `<div><small>Agora</small><b style="--c:${rtBC(cur)}">${esc(cur.titulo)}</b><span>até ${cur.fim} · faltam ${durTxt(cur.z - n)}</span><div class="row wrap">${["feito", "parcial", "pulado"].map(s => `<button type="button" class="btn sm${cur.st === s ? " primary" : ""}" data-rtst="${cur.id}|${TODAY}|${s}">${ST_TXT[s]}</button>`).join("")}</div></div>` : `<div><small>Agora</small><b>Nenhum bloco</b><span>${X.livres.find(([a, z]) => a <= n + 30 && z > n) ? "tempo livre" : ""}</span></div>`}${nx ? `<div><small>A seguir · em ${durTxt(nx.a - n)}</small><b style="--c:${rtBC(nx)}">${esc(nx.titulo)}</b><span>${nx.ini}–${nx.fim}</span></div>` : ""}</div>`); }
   /* plano do período */
   const Xs = days.map(rtDia), plan = sum(Xs.map(x => x.plan)), feito = sum(Xs.map(x => x.feito)), livre = sum(Xs.map(x => x.livre)), per = {};
   for (const x of Xs) for (const b of x.bs) per[b.cat || "Outro"] = (per[b.cat || "Outro"] || 0) + (b.z - b.a);
@@ -11298,7 +11320,7 @@ function rtInsights(days) {
     : `${hbars(Object.entries(AD.per).filter(([, [, m]]) => m).sort((p, q) => q[1][1] - p[1][1]).map(([c, [v2, m]]) => ({ l: c, v: v2 / m, color: rtCor(c) })), { fmt: pct, max: 1 })}<div class="rtwks">${wks.map(w => { const [v2, m] = AD.wk[w]; return `<span title="Semana de ${fmtD(w)}: ${pct(v2 / m)}"><i style="height:${Math.max(4, v2 / m * 40)}px"></i><small>${fmtD(w)}</small></span>`; }).join("")}</div>`));
   /* ações */
   const mods = [...RT_MOD0, ...(S.rotinaModelos || [])];
-  out.push(panel(`${ic("list")}Modelos e atalhos`, `<div class="form f1"><label>Aplicar um modelo ${v === "dia" ? "neste dia" : "nesta semana"}<div class="row"><select id="rt_mod">${mods.map(m => `<option value="${m.id}"${m.id === RT.mod ? " selected" : ""}>${esc(m.nome)}</option>`).join("")}</select><button type="button" class="btn sm" data-act="rtmod">Aplicar</button></div></label></div>
+  out.push(panel(`${ic("list")}Modelos e atalhos`, `<div class="form f1"><label>Aplicar um modelo ${v === "dia" ? "neste dia" : "nesta semana"}<div class="row"><select id="rt_mod">${mods.map(m => `<option value="${m.id}"${m.id === RT.mod ? " selected" : ""}>${esc(m.nome)}${m.semana ? ` · semana, ${m.semana.length} blocos` : ""}</option>`).join("")}</select><button type="button" class="btn sm" data-act="rtmod">Aplicar</button></div></label></div>
     <div class="row wrap">${v === "dia" ? `<button type="button" class="btn sm" data-act="rtcopy">${ic("copy")}Copiar o dia…</button><button type="button" class="btn sm ghost" data-act="rtclear">${ic("trash")}Limpar o dia</button>` : `<button type="button" class="btn sm" data-act="rtsavemod">${ic("plus")}Salvar a semana como modelo</button><button type="button" class="btn sm" data-act="rtcopyw">${ic("copy")}Copiar para a próxima semana</button>`}</div>
     <details class="futd"><summary>Ajustes da grade</summary><div class="form f3"><label>Acordo<input type="time" step="1800" data-rtcfg="rtAcordar" value="${esc(S.cfg.rtAcordar || "06:30")}"></label><label>Durmo<input type="time" step="1800" data-rtcfg="rtDormir" value="${esc(S.cfg.rtDormir || "23:00")}"></label><label>Tamanho<select data-rtcfg="rtZoom">${Object.keys(RT_Z).map(k => `<option${(S.cfg.rtZoom || "normal") === k ? " selected" : ""}>${k}</option>`).join("")}</select></label></div><p class="muted small">Teclado: ← → período · T hoje · D S M vistas · N novo bloco.</p></details>`));
   return out.join("");
@@ -11371,19 +11393,19 @@ const RT_MOD0 = [
 function rtAplicar(mod, dias) {
   let n = 0, pulados = 0;
   for (const d of dias) { const dow = parse(d).getDay(), list = mod.semana ? mod.semana.filter(x => x[0] === dow).map(x => x.slice(1)) : mod.b, ex = rtDia(d);
-    for (const [ini, fim, titulo, cat] of list) { const a = hm2min(ini), z = hm2min(fim); if ([...ex.bs, ...ex.A.timed].some(x => x.a != null && x.a < z && a < x.z)) { pulados++; continue; } (S.rotina ||= []).push({ id: uid(), data: d, ini, fim, titulo, cat, rep: "", exc: [], st: {}, notas: "" }); n++; } }
+    for (const [ini, fim, titulo, cat, cor, tx] of list) { const a = hm2min(ini), z = hm2min(fim); if ([...ex.bs, ...ex.A.timed].some(x => x.a != null && x.a < z && a < x.z)) { pulados++; continue; } (S.rotina ||= []).push({ id: uid(), data: d, ini, fim, titulo, cat, rep: "", exc: [], st: {}, notas: "", ...(rtHex(cor) ? { cor, ...(rtHex(tx) ? { tx } : {}) } : {}) }); n++; } }
   touch("rotina", { label: `Modelo: ${mod.nome}` }); undoToast(`${plural(n, "bloco aplicado", "blocos aplicados")}${pulados ? ` · ${pulados} pulado(s) por conflito` : ""}`);
 }
 function rtCopiar(de, para) {
   const ex = rtDia(para); let n = 0, p = 0;
-  for (const b of rtOcc(de)) { if ([...ex.bs, ...ex.A.timed].some(x => x.a != null && x.a < b.z && b.a < x.z)) { p++; continue; } S.rotina.push({ id: uid(), data: para, ini: b.ini, fim: b.fim, titulo: b.titulo, cat: b.cat, rep: "", exc: [], st: {}, notas: b.notas || "" }); n++; }
+  for (const b of rtOcc(de)) { if ([...ex.bs, ...ex.A.timed].some(x => x.a != null && x.a < b.z && b.a < x.z)) { p++; continue; } S.rotina.push({ id: uid(), data: para, ini: b.ini, fim: b.fim, titulo: b.titulo, cat: b.cat, rep: "", exc: [], st: {}, notas: b.notas || "", ...rtCorDe(b) }); n++; }
   return [n, p];
 }
 /* ---------------------------------------------------------------- cartão e formulário do bloco */
 const RT_TIMES = Array.from({ length: 49 }, (_, i) => i * 30);
 function rtCard(id, day) {
   const b = (S.rotina || []).find(x => x.id === id); if (!b) return; const st = rtSt(b, day), dlg = $("#dlg");
-  dlg.innerHTML = `<form method="dialog" class="rtcard" style="--c:${rtCor(b.cat)}"><div class="rtch"><span class="rtcc"></span><div><h3>${esc(b.titulo)}</h3><p class="muted small">${fmtDL(day)} · ${b.ini}–${b.fim} · ${durTxt(hm2min(b.fim) - hm2min(b.ini))}<br>${esc(b.cat)}${b.rep ? ` · ${REP_TXT[b.rep]}` : ""}</p>${b.notas ? `<p>${esc(b.notas)}</p>` : ""}</div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>
+  dlg.innerHTML = `<form method="dialog" class="rtcard" style="--c:${rtBC(b)}"><div class="rtch"><span class="rtcc"></span><div><h3>${esc(b.titulo)}</h3><p class="muted small">${fmtDL(day)} · ${b.ini}–${b.fim} · ${durTxt(hm2min(b.fim) - hm2min(b.ini))}<br>${esc(b.cat)}${b.rep ? ` · ${REP_TXT[b.rep]}` : ""}</p>${b.notas ? `<p>${esc(b.notas)}</p>` : ""}</div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>
     <div class="flbl">Como foi${day > TODAY ? " (ainda não aconteceu)" : ""}</div><div class="seg-g rtsts">${["feito", "parcial", "pulado"].map(s => `<button type="button" class="seg" data-rtst="${b.id}|${day}|${s}" aria-pressed="${st === s}">${ST_TXT[s]}</button>`).join("")}</div>
     <div class="row wrap rtca"><button type="button" class="btn sm" data-rtedit="${b.id}|${day}">${ic("edit")}Editar</button><button type="button" class="btn sm" data-rtdup="${b.id}|${day}">${ic("copy")}Duplicar</button><button type="button" class="btn sm ghost" data-rtdel="${b.id}|${day}">${ic("trash")}${b.rep ? "Excluir neste dia" : "Excluir"}</button>${b.rep ? `<button type="button" class="btn sm ghost" data-rtdelall="${b.id}">Excluir a série</button>` : ""}</div></form>`;
   if (!dlg.open) dlg.showModal();
@@ -11417,7 +11439,7 @@ function rtSetSt(id, d, s) { const b = (S.rotina || []).find(x => x.id === id); 
 /* mover um bloco (ou só este dia de um bloco que repete) */
 function rtMover(id, de, para, a, z) {
   const b = S.rotina.find(x => x.id === id); if (!b) return;
-  if (b.rep) { b.exc = [...(b.exc || []), de]; const st = rtSt(b, de); S.rotina.push({ id: uid(), data: para, ini: m2hm(a), fim: m2hm(z), titulo: b.titulo, cat: b.cat, rep: "", exc: [], st: st ? { [para]: st } : {}, notas: b.notas || "", serie: b.id }); }
+  if (b.rep) { b.exc = [...(b.exc || []), de]; const st = rtSt(b, de); S.rotina.push({ id: uid(), data: para, ini: m2hm(a), fim: m2hm(z), titulo: b.titulo, cat: b.cat, rep: "", exc: [], st: st ? { [para]: st } : {}, notas: b.notas || "", serie: b.id, ...rtCorDe(b) }); }
   else { b.data = para; b.ini = m2hm(a); b.fim = m2hm(z); if (de !== para && b.st?.[de]) { b.st = { [para]: b.st[de] }; } }
   touch("rotina", { label: "Bloco movido" }); undoToast(`${b.titulo}: ${m2hm(a)}–${m2hm(z)}${de !== para ? " · " + fmtD(para) : ""}${b.rep ? " (só este dia)" : ""}`);
 }
@@ -11451,7 +11473,7 @@ function rtClick(t) {
   if (ds.rtst) { const [id, d, s] = ds.rtst.split("|"); rtSetSt(id, d, s); if ($("#dlg").open && $(".rtcard")) rtCard(id, d); return true; }
   if (ds.rtcx) { $("#dlg").close(); return true; }
   if (ds.rtedit) { const [id, d] = ds.rtedit.split("|"); rtForm(id, d); return true; }
-  if (ds.rtdup) { const [id, d] = ds.rtdup.split("|"), b = S.rotina.find(x => x.id === id), z = hm2min(b.fim), len = z - hm2min(b.ini), a2 = Math.min(1440 - len, z); S.rotina.push({ id: uid(), data: d, ini: m2hm(a2), fim: m2hm(a2 + len), titulo: b.titulo, cat: b.cat, rep: "", exc: [], st: {}, notas: b.notas || "" }); $("#dlg").close(); touch("rotina", { label: "Bloco duplicado" }); undoToast(`Duplicado às ${m2hm(a2)}`); return true; }
+  if (ds.rtdup) { const [id, d] = ds.rtdup.split("|"), b = S.rotina.find(x => x.id === id), z = hm2min(b.fim), len = z - hm2min(b.ini), a2 = Math.min(1440 - len, z); S.rotina.push({ id: uid(), data: d, ini: m2hm(a2), fim: m2hm(a2 + len), titulo: b.titulo, cat: b.cat, rep: "", exc: [], st: {}, notas: b.notas || "", ...rtCorDe(b) }); $("#dlg").close(); touch("rotina", { label: "Bloco duplicado" }); undoToast(`Duplicado às ${m2hm(a2)}`); return true; }
   if (ds.rtdel) { const [id, d] = ds.rtdel.split("|"), b = S.rotina.find(x => x.id === id); if (b.rep) b.exc = [...(b.exc || []), d]; else S.rotina = S.rotina.filter(x => x.id !== id); $("#dlg").close(); touch("rotina", { label: "Bloco excluído" }); undoToast("Bloco excluído"); return true; }
   if (ds.rtdelall) { S.rotina = S.rotina.filter(x => x.id !== ds.rtdelall); $("#dlg").close(); touch("rotina", { label: "Série excluída" }); undoToast("Série excluída"); return true; }
   if (ds.rtdone) { const b = (S.rotina || []).find(x => x.id === ds.rtdone); if (b) { b.st = { ...(b.st || {}) }; if (b.feitos?.[TODAY]) { b.feitos = { ...b.feitos }; delete b.feitos[TODAY]; } if (t.checked) b.st[TODAY] = "feito"; else delete b.st[TODAY]; touch("rotina", { label: "Rotina" }); } return true; }
@@ -11459,7 +11481,7 @@ function rtClick(t) {
   if (ds.act === "rtnovo") { const m = RT.d === TODAY ? Math.ceil(nowMin() / 30) * 30 : 9 * 60; rtForm(null, RT.d, Math.min(m, 1410)); return true; }
   if (ds.act === "rtqadd") { rtQAdd(); return true; }
   if (ds.act === "rtmod") { const id = RT.mod = $("#rt_mod").value, mod = [...RT_MOD0, ...(S.rotinaModelos || [])].find(m => m.id === id); if (mod) rtAplicar(mod, rtView() === "dia" ? [RT.d] : rtWeek(RT.d)); return true; }
-  if (ds.act === "rtsavemod") { const w = rtWeek(RT.d), semana = w.flatMap(d => rtOcc(d).map(b => [parse(d).getDay(), b.ini, b.fim, b.titulo, b.cat])); if (!semana.length) { toast("A semana está vazia."); return true; } const nome = `Semana de ${fmtD(w[0])}`; (S.rotinaModelos ||= []).push({ id: uid(), nome, semana }); touch("rotinaModelos", { label: "Modelo salvo" }); undoToast(`Modelo “${nome}” salvo com ${semana.length} blocos`); return true; }
+  if (ds.act === "rtsavemod") { const w = rtWeek(RT.d), semana = w.flatMap(d => rtOcc(d).map(b => [parse(d).getDay(), b.ini, b.fim, b.titulo, b.cat, ...(rtHex(b.cor) ? [b.cor, rtHex(b.tx) || ""] : [])])); if (!semana.length) { toast("A semana está vazia."); return true; } const nome = `Semana de ${fmtD(w[0])}`; (S.rotinaModelos ||= []).push({ id: uid(), nome, semana }); touch("rotinaModelos", { label: "Modelo salvo" }); undoToast(`Modelo “${nome}” salvo com ${semana.length} blocos`); return true; }
   if (ds.act === "rtcopyw") { let n = 0, p = 0; for (const d of rtWeek(RT.d)) { const [a, b] = rtCopiar(d, addDays(d, 7)); n += a; p += b; } touch("rotina", { label: "Semana copiada" }); undoToast(`${plural(n, "bloco copiado", "blocos copiados")} para a próxima semana${p ? ` · ${p} pulado(s) por conflito` : ""}`); return true; }
   if (ds.act === "rtcopy") { const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="rtcpf"><h3>Copiar ${fmtDL(RT.d)}</h3><div class="form"><label>Para o dia<input type="date" id="rt_cpd" value="${addDays(RT.d, 1)}"></label></div><p class="muted small">Copia os blocos deste dia como blocos avulsos. Horários que já têm algo são pulados.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="rtcpx">Cancelar</button><button class="btn primary">Copiar</button></div></div></form>`; d.showModal(); $("#rtcpx").onclick = () => d.close();
     $("#rtcpf").onsubmit = e => { e.preventDefault(); const para = $("#rt_cpd").value; if (!para) return; const [n, p] = rtCopiar(RT.d, para); d.close(); touch("rotina", { label: "Dia copiado" }); undoToast(`${plural(n, "bloco copiado", "blocos copiados")} para ${fmtD(para)}${p ? ` · ${p} pulado(s)` : ""}`); }; return true; }
@@ -11476,7 +11498,7 @@ document.addEventListener("pointerdown", e => {
   if (PAGE !== "rotina" || e.button > 0) return;
   const rs = e.target.closest?.("[data-rtrs]"), bl = e.target.closest?.(".rtb");
   if ((rs || bl) && e.pointerType !== "touch") { const [id, d] = (rs || bl).dataset[rs ? "rtrs" : "rtb"].split("|"), b = S.rotina.find(x => x.id === id); if (!b) return;
-    RT.mv = { id, from: d, to: d, a: hm2min(b.ini), z: hm2min(b.fim), a0: hm2min(b.ini), z0: hm2min(b.fim), y0: e.clientY, x0: e.clientX, rs: !!rs, moved: false, cor: rtCor(b.cat) }; e.preventDefault(); return; }
+    RT.mv = { id, from: d, to: d, a: hm2min(b.ini), z: hm2min(b.fim), a0: hm2min(b.ini), z0: hm2min(b.fim), y0: e.clientY, x0: e.clientX, rs: !!rs, moved: false, cor: rtBC(b) }; e.preventDefault(); return; }
   const s = e.target.closest?.(".rtslot"); if (!s) return; const [d, m] = s.dataset.rts.split("|"); RT.drag = { d, a: +m, b: +m, touch: e.pointerType === "touch", x0: e.clientX, y0: e.clientY }; if (!RT.drag.touch) { e.preventDefault(); rtPaintDrag(); }
 });
 document.addEventListener("pointermove", e => {

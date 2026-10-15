@@ -162,6 +162,13 @@ Os chakras lidos à luz da Doutrina Espírita, dentro do pilar Espiritismo (nave
 
 ## Rotina, Hoje e Painel do dia
 
+- **Cor própria do bloco:** um modelo pode trazer, por atividade, a cor de fundo e a da letra (`semana: [[dia, início, fim,
+  título, categoria, "#fundo", "#letra"]]`, como num modelo importado de planilha). Ao aplicar, o bloco leva as duas cores e é
+  pintado como na planilha (grade, mês, cartão); copiar, duplicar, mover e salvar a semana como modelo mantêm a cor. Sem cor
+  própria, vale a da categoria. A categoria continua valendo para os números da semana.
+- **Compromisso que repete todo ano** (`rep: "anual"` em `S.eventos`, campo Repetir no formulário): aparece no mesmo dia e mês
+  todo ano a partir da data (29/02 cai em 28/02 nos anos comuns), na Rotina (dia todo, semana, mês) e na Visão geral. Um
+  aniversário ligado a uma pessoa (`pessoa: id`) que já tem a data na ficha não se repete na Visão geral.
 - **Rotina › Capturar o dia** (`src/55-rotina-voz.js`): na aba Rotina, o Capturar do topo (e o botão “Capturar o dia”) recebe o
   relato do dia inteiro, por voz ou texto. A voz vem do reconhecimento do navegador quando a página tem microfone; senão, do ditado
   do teclado do celular, direto no campo. A IA (`TAREFA: ROTINA DO DIA`) devolve cada atividade com início, fim, categoria e
@@ -222,6 +229,7 @@ O relógio do navegador fica fixo em 09/10/2026, 10:00 (sexta), para os testes n
 | `lab32.py` | Atlas 4 · o resto do diagnóstico: XSS e `safeHtml`, backup com formato conferido, Diário 50 por vez, teclado (setas e Enter), campos com nome, tabelas dos gráficos, contraste do tema claro, toque de 24 px, menu com 8 fixas e contagem de uso, Painel (roteiro, três estados, modo rápido, lembrete), dias 1–7, KPIs sem registro, backup lembrado, serviços externos, uso e avaliação da IA, primeiros passos, nomes novos, Google Agenda tolerante, modo local avisado |
 | `lab33.py` | Atlas 4 · dados fictícios só com o Exemplo: A Dois vazia (antes e depois de entrar), sem banco, com conteúdo real da outra pessoa e em só leitura, Exemplo ligado (marcado, sem gravar) e desligado de novo; varredura das 151 telas com o banco vazio contra os textos que só existem nos dados de exemplo |
 | `lab34.py` | Atlas 4 · Rotina › Capturar o dia: separação sem IA (pontuado, corrido, “até as 16h”, duração não é hora), faixas de meia hora sem sobrepor, pedido e resposta da IA, bloco planejado marcado em vez de repetido, revisão (horário, categoria, desmarcar), grade, banco, desfazer, voz do navegador com separação ao parar, sem voz (ditado do teclado), celular, outro dia, Capturar geral → Rotina, sem IA e erro da IA |
+| `lab35.py` | Atlas 4 · modelo com as cores da planilha (não se aplica sozinho, lista com o tamanho, aplicado no dia da semana certo, fundo e letra na grade e no mês, copiar, duplicar e salvar como modelo mantêm a cor, bloco sem cor segue a categoria) e compromisso anual (todo ano desde a data, 29/02, dia todo na Rotina, ano seguinte, cartão, formulário, edição mantém, mês, Visão geral sem repetir o aniversário da ficha) |
 | `flows.py`, `edge.py`, `sjflows.py` | fluxos herdados do Atlas original |
 | `smoke.py 390 dark`, `holes.py 1024` | todas as páginas numa largura/tema; buracos entre cartões |
 

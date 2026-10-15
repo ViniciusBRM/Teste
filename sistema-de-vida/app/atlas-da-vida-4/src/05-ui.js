@@ -251,7 +251,7 @@ const SCH = {
   comp: { t: "Competência", f: [["nome", "Competência", "text"], ["atual", "Nível atual (1–5)", "num"], ["alvo", "Nível alvo (1–5)", "num"]], def: () => ({ atual: 2, alvo: 4 }) },
   cand: { t: "Candidatura", f: [["empresa", "Empresa", "text"], ["cargo", "Cargo", "text"], ["data", "Data", "date"], ["etapa", "Etapa", ["Interesse", "Aplicado", "Entrevista", "Teste / case", "Proposta", "Aceito", "Recusado", "Desisti"]], ["acao", "Próxima ação", "text"], ["dataAcao", "Data da ação", "date"]], def: () => ({ data: TODAY, etapa: "Aplicado" }) },
   habitos: { t: "Hábito", f: [["nome", "Hábito", "text"], ["area", "Área da vida", () => AREAS], ["meta", "Meta (dias por semana)", "num"]], def: () => ({ meta: 5 }) },
-  eventos: { t: "Compromisso", f: [["data", "Data", "date"], ["hora", "Início (hh:mm)", "text"], ["fim", "Fim (hh:mm)", "text"], ["titulo", "Compromisso", "text", 1], ["local", "Local", "text"]], def: () => ({ data: TODAY }) },
+  eventos: { t: "Compromisso", f: [["data", "Data", "date"], ["hora", "Início (hh:mm)", "text"], ["fim", "Fim (hh:mm)", "text"], ["titulo", "Compromisso", "text", 1], ["local", "Local", "text"], ["rep", "Repetir (anual = todo ano no mesmo dia)", () => ["anual"]]], def: () => ({ data: TODAY }) },
   regras: { t: "Regra de categorização", f: [["termo", "Se a descrição contém", "text"], ["tipo", "Tipo", ["Despesa", "Receita", "Aporte"]], ["cat", "Categoria", o => o.tipo === "Receita" ? CAT_REC : o.tipo === "Aporte" ? CAT_APO : Object.keys(CAT_DESP)]], def: () => ({ tipo: "Despesa" }) },
 };
 const optsOf = (ty, o) => typeof ty === "function" ? ty(o) : Array.isArray(ty) ? ty : null;
