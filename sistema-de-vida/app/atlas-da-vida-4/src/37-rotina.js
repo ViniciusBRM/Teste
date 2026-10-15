@@ -59,7 +59,10 @@ function evNoDia(e, d) {
   return e.data === d || (!!e.ate && e.data <= d && e.ate >= d);
 }
 function rtAgenda(d) {
-  const ev = (S.eventos || []).filter(e => evNoDia(e, d)).map(e => {
+  const anivP = new Set(), aniv = [];
+  for (const p of S.pessoas || []) if (p.aniv && evNoDia({ data: p.aniv, rep: "anual" }, d)) { anivP.add(p.id); aniv.push({ id: p.id, nome: p.nome, titulo: `Aniversário de ${p.nome}`, a: null, z: null, anual: true, pessoa: true, dia: true }); }
+  /* compromisso anual ligado a uma pessoa que já tem o aniversário na ficha não se repete */
+  const ev = (S.eventos || []).filter(e => evNoDia(e, d) && !(e.pessoa && anivP.has(e.pessoa))).map(e => {
     /* hora no campo próprio; sem ela (ou escrita como “9h”), a do título: compromisso com horário não vai para o dia todo */
     const a0 = rtHM(e.hora), h = a0 == null ? rtHoraTxt(e.titulo) : null;
     const a = a0 ?? h?.a ?? null, z = rtHM(e.fim) ?? (h && !h.so ? h.z : a != null ? a + 60 : null);
@@ -68,7 +71,7 @@ function rtAgenda(d) {
   const tar = [], tarH = [];
   for (const t of [...S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada"), ...ckMinhas(t => ckOpen(t) && t.prazo === d)]) {
     const h = rtHoraTxt(t.tarefa) || rtHoraTxt(t.notas); if (h) tarH.push({ id: t.id, titulo: t.ck ? t.tarefa : rtSemHora(t.tarefa, h), a: h.a, z: h.z, tarefa: t.ck ? "k" : "t", dia: false }); else tar.push(t); }
-  return { timed: [...ev.filter(e => !e.dia), ...tarH], allday: ev.filter(e => e.dia), tar };
+  return { timed: [...ev.filter(e => !e.dia), ...tarH], allday: [...aniv, ...ev.filter(e => e.dia)], tar };
 }
 /* colunas para itens que se sobrepõem */
 function rtLayout(items) {
@@ -126,7 +129,7 @@ function rtCol(d) {
     ${ag.map(e => { const k = e.tarefa || "e", qual = e.tarefa === "k" ? "Tarefa do Cockpit" : e.tarefa ? "Tarefa" : `Agenda${e.gcal ? ", Google" : ""}`;
       return `<div role="button" tabindex="0" class="rte${e.gcal ? " gcal" : ""}${e.tarefa ? " tk" : ""}" style="${sobre(e) ? pos(e, e.n || 1, e.col, 50, 50) : pos(e, e.n || 1, e.col)}" data-rtitem="${k}|${e.id}|${d}" title="${esc(`${m2hm(e.a)}–${m2hm(Math.min(e.z, 1440))} · ${e.titulo}${e.local ? " · " + e.local : ""} (${qual}) · toque para abrir`)}"><b>${esc(e.titulo)}</b><small>${m2hm(e.a)} · ${e.tarefa ? "tarefa" : e.gcal ? "Google" : "agenda"}</small></div>`; }).join("")}${now}</div>`;
 }
-function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => `<button type="button" class="rtad e${e.anual ? " anual" : ""}" data-rtitem="e|${e.id}|${d}" title="${e.anual ? "Todo ano" : "Agenda, sem horário"} · toque para abrir">${ic(e.anual ? "heart" : "cal")}${esc(e.titulo)}</button>`), ...A.tar.map(t => `<button type="button" class="rtad t" data-rtitem="${t.ck ? "k" : "t"}|${t.id}|${d}" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo, sem horário"} · toque para abrir">${ic("checksq")}${esc(t.tarefa)}</button>`)].join(""); }
+function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => e.pessoa ? `<button type="button" class="rtad e anual" data-ent="p|${esc(e.nome)}" title="Aniversário, todo ano · toque para abrir a ficha">${ic("heart")}${esc(e.titulo)}</button>` : `<button type="button" class="rtad e${e.anual ? " anual" : ""}" data-rtitem="e|${e.id}|${d}" title="${e.anual ? "Todo ano" : "Agenda, sem horário"} · toque para abrir">${ic(e.anual ? "heart" : "cal")}${esc(e.titulo)}</button>`), ...A.tar.map(t => `<button type="button" class="rtad t" data-rtitem="${t.ck ? "k" : "t"}|${t.id}|${d}" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo, sem horário"} · toque para abrir">${ic("checksq")}${esc(t.tarefa)}</button>`)].join(""); }
 /* cartão de um item que não é bloco (compromisso da agenda ou tarefa com prazo no dia): pôr na rotina, concluir, editar ou apagar */
 function rtItemCard(k, id, d) {
   const dlg = $("#dlg"), foot = (...b) => `<div class="row wrap rtca">${b.filter(Boolean).join("")}</div>`;

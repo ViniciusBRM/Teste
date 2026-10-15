@@ -87,9 +87,44 @@ async def anual(p):
     finally:
         await b.close()
 
+async def aniversario_na_pessoa(p):
+    seed = json.loads(json.dumps(SEED))
+    seed[U + "s_pessoas"]["v"].append({"id": "p2", "nome": "Carla Teste", "relacao": "Família", "freq": "", "aniv": "1985-10-14", "notas": ""})
+    b, pg, errs = await open_page(p, w=1440, h=1000, hash_="pessoas.lista", cfg={"realBoot": True, "seedStore": json.dumps(seed)})
+    try:
+        await pg.wait_for_timeout(900)
+        cards = await pg.evaluate("[...document.querySelectorAll('.pcard')].map(c => c.innerText.replace(/\\s+/g, ' '))")
+        chk(any("Ana Teste" in c and "aniversário 12/10" in c for c in cards) and any("Carla Teste" in c and "aniversário 14/10" in c for c in cards), f"o cartão de cada pessoa mostra o aniversário ({cards[:2]})")
+        await pg.evaluate("openEnt('p', 'Ana Teste')"); await pg.wait_for_timeout(300)
+        f1 = await pg.evaluate("document.querySelector('#drawer').innerText")
+        await pg.evaluate("openEnt('p', 'Carla Teste')"); await pg.wait_for_timeout(300)
+        f2 = await pg.evaluate("document.querySelector('#drawer').innerText")
+        chk("12/10" in f1 and "ano não informado" in f1 and "1900" not in f1 and "14/10" in f2 and "faz 41 anos" in f2, "a ficha mostra o aniversário; sem ano, diz que não foi informado; com ano, a idade")
+        await pg.evaluate("DRAWER = null; render(); openForm('pessoas', 'p1')"); await pg.wait_for_timeout(200)
+        chk(await pg.evaluate("[f_aniv_d.value, f_aniv_m.value, f_aniv_y.value, !!document.querySelector('#f_aniv')]") == ["12", "10", "", False], "o formulário mostra dia e mês, e o ano vazio (sem o 1900)")
+        await pg.click("#fm button.primary"); await pg.wait_for_timeout(200)
+        chk(await pg.evaluate("S.pessoas.find(x => x.id === 'p1').aniv") == "1900-10-12", "salvar sem ano mantém o aniversário")
+        await pg.evaluate("openForm('pessoas', 'p1')"); await pg.wait_for_timeout(150)
+        await pg.select_option("#f_aniv_d", "31"); await pg.select_option("#f_aniv_m", "2"); await pg.click("#fm button.primary"); await pg.wait_for_timeout(200)
+        chk(await pg.evaluate("[document.querySelector('#dlg').open, S.pessoas.find(x => x.id === 'p1').aniv]") == [True, "1900-10-12"], "31/02 não é aceito: avisa e não grava")
+        await pg.select_option("#f_aniv_d", "12"); await pg.select_option("#f_aniv_m", "10"); await pg.fill("#f_aniv_y", "1990"); await pg.fill("#f_nome", "Ana Nova"); await pg.click("#fm button.primary"); await pg.wait_for_timeout(300)
+        chk(await pg.evaluate("[S.pessoas.find(x => x.id === 'p1').aniv, S.pessoas.find(x => x.id === 'p1').nome]") == ["1990-10-12", "Ana Nova"], "com ano e nome novo, grava os dois")
+        await pg.evaluate("location.hash = 'rotina.dia'; rtGo('dia', '2026-10-12')"); await pg.wait_for_timeout(300)
+        chk(await pg.evaluate("[...document.querySelectorAll('.rtad.anual')].map(e => e.textContent)") == ["Aniversário de Ana Nova"], "o calendário acompanha a ficha: nome novo, sem repetir o compromisso antigo")
+        await pg.evaluate("rtGo('dia', '2027-10-14')"); await pg.wait_for_timeout(200)
+        chk(await pg.evaluate("[...document.querySelectorAll('.rtad.anual')].map(e => e.textContent)") == ["Aniversário de Carla Teste"], "quem tem aniversário na ficha aparece no calendário todo ano, mesmo sem compromisso")
+        await pg.click(".rtad.anual"); await pg.wait_for_timeout(300)
+        chk("Carla Teste" in await pg.evaluate("document.querySelector('#drawer')?.innerText || ''"), "tocar no aniversário abre a ficha da pessoa")
+        await pg.evaluate("DRAWER = null; render(); openForm('pessoas', 'p2')"); await pg.wait_for_timeout(150)
+        await pg.select_option("#f_aniv_d", ""); await pg.click("#fm button.primary"); await pg.wait_for_timeout(200)
+        chk(await pg.evaluate("[S.pessoas.find(x => x.id === 'p2').aniv, rtAgenda('2027-10-14').allday.length]") == ["", 0], "tirar o aniversário da ficha tira do calendário")
+        chk(not errs, f"sem erros ({errs[:2]})")
+    finally:
+        await b.close()
+
 async def main():
     async with async_playwright() as p:
-        for n, f in (("modelo com cores", modelo), ("compromisso anual", anual)):
+        for n, f in (("modelo com cores", modelo), ("compromisso anual", anual), ("aniversário na pessoa", aniversario_na_pessoa)):
             print(f"== {n}")
             try: await f(p)
             except Exception as e: chk(False, f"{n}: exceção {e!r}"[:400])

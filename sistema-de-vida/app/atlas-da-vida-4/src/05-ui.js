@@ -255,7 +255,24 @@ const SCH = {
   regras: { t: "Regra de categorização", f: [["termo", "Se a descrição contém", "text"], ["tipo", "Tipo", ["Despesa", "Receita", "Aporte"]], ["cat", "Categoria", o => o.tipo === "Receita" ? CAT_REC : o.tipo === "Aporte" ? CAT_APO : Object.keys(CAT_DESP)]], def: () => ({ tipo: "Despesa" }) },
 };
 const optsOf = (ty, o) => typeof ty === "function" ? ty(o) : Array.isArray(ty) ? ty : null;
+/* aniversário: AAAA-MM-DD. Sem ano conhecido, guarda 1900 (1904 para 29/02), que nunca aparece na tela */
+const anivSemAno = a => /^(1900|1904)-/.test(a || "");
+const anivAno = a => a && !anivSemAno(a) ? a.slice(0, 4) : "";
+const anivDM = a => a ? `${a.slice(8, 10)}/${a.slice(5, 7)}` : "";
+function anivFieldHTML(o, lb) {
+  const a = o.aniv || "", d = a ? +a.slice(8, 10) : 0, m = a ? +a.slice(5, 7) : 0;
+  return `<label class="full">${esc(lb)}<span class="anivf"><select id="f_aniv_d" name="aniv_d" aria-label="Dia do aniversário"><option value="">dia</option>${Array.from({ length: 31 }, (_, i) => `<option value="${i + 1}"${d === i + 1 ? " selected" : ""}>${i + 1}</option>`).join("")}</select>
+    <select id="f_aniv_m" name="aniv_m" aria-label="Mês do aniversário"><option value="">mês</option>${MESES.map((x, i) => `<option value="${i + 1}"${m === i + 1 ? " selected" : ""}>${esc(x.toLowerCase())}</option>`).join("")}</select>
+    <input id="f_aniv_y" name="aniv_y" type="number" min="1901" max="${TODAY.slice(0, 4)}" step="1" inputmode="numeric" placeholder="ano (opcional)" aria-label="Ano de nascimento (opcional)" value="${esc(anivAno(a))}"></span></label>`;
+}
+/* dia, mês e ano (opcional) → AAAA-MM-DD; null quando a data não existe */
+function anivDe(dd, mm, yy) {
+  const d = +dd, m = +mm; if (!d || !m) return ""; const y = String(yy || "").trim() ? +yy : (m === 2 && d === 29 ? 1904 : 1900);
+  if (!(y >= 1900 && y <= +TODAY.slice(0, 4))) return null;
+  const dt = new Date(y, m - 1, d); return dt.getMonth() === m - 1 ? `${y}-${pad(m)}-${pad(d)}` : null;
+}
 function fieldHTML([k, lb, ty, full], o, pre = "f_") {
+  if (k === "aniv" && pre === "f_" && ty === "date") return anivFieldHTML(o, lb);
   const v = o[k] ?? "", opts = optsOf(ty, o);
   const inp = opts ? `<select id="${pre}${k}" name="${k}">${["", ...opts.filter(x => x !== "")].map(x => `<option${x === v ? " selected" : ""}>${esc(x)}</option>`).join("")}${v && !opts.includes(v) ? `<option selected>${esc(v)}</option>` : ""}</select>`
     : ty === "textarea" ? `<textarea id="${pre}${k}" name="${k}" rows="6">${esc(v)}</textarea>`
@@ -275,6 +292,7 @@ function openForm(key, id, preset) {
   const del = $("#del", dlg); if (del) del.onclick = () => { if (del.dataset.c) { S[key] = S[key].filter(x => x.id !== id); dlg.close(); touch(key, { label: `${sc.t} excluído(a)` }); undoToast(`${sc.t} excluído(a)`); } else { del.dataset.c = 1; del.textContent = "Confirmar exclusão"; } };
   fm.onsubmit = e => { e.preventDefault(); const fd = new FormData(fm); const rec = { ...(cur || {}), id: id || uid(), upd: Date.now() };
     sc.f.forEach(([k, , ty]) => { const v = fd.get(k); rec[k] = ty === "num" ? (v === "" || v == null ? "" : +v) : (v ?? ""); });
+    if (fd.has("aniv_d")) { const a = anivDe(fd.get("aniv_d"), fd.get("aniv_m"), fd.get("aniv_y")); if (a === null) { toast("Essa data de aniversário não existe (ou o ano está fora do intervalo)."); $("#f_aniv_d", dlg)?.focus(); return; } rec.aniv = a; }
     if (key === "tarefas" && rec.status === "Concluída" && !rec.concluida) rec.concluida = TODAY;
     if (key === "pessoas" && id && cur.nome && rec.nome !== cur.nome) renamePerson(cur.nome, rec.nome);
     if (key === "metas" && id && cur.meta && rec.meta !== cur.meta) S.tarefas.forEach(t => { if (t.meta === cur.meta) t.meta = rec.meta; });
