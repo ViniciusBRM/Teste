@@ -97,7 +97,7 @@ async def main():
             chk(await pg.evaluate("S.rotina.length") == n1, "aplicar de novo não duplica: pula o que já ocupa o horário")
             await pg.click("[data-act=rtcopy]"); await pg.wait_for_timeout(150); await pg.click("#rtcpf .btn.primary"); await pg.wait_for_timeout(250)
             chk(await pg.evaluate("rtOcc(addDays(TODAY, 4)).filter(b => /foco/i.test(b.titulo)).length") >= 3, "copiar o dia leva os blocos para o dia seguinte")
-            await pg.click("[data-act=rtclear]"); await pg.click("[data-act=rtclear]"); await pg.wait_for_timeout(250)
+            await pg.click("[data-act=rtclear]"); await pg.wait_for_timeout(150); await pg.click("#rtclf [data-rtclok]"); await pg.wait_for_timeout(250)
             chk(await pg.evaluate("rtOcc(addDays(TODAY, 3)).length") == 0 and await pg.evaluate("rtOcc(addDays(TODAY, 4)).length") > 0, "limpar o dia (com confirmação) só mexe naquele dia")
             # navegação e vistas sincronizadas
             await pg.evaluate("RT.d = TODAY; render()"); await pg.wait_for_timeout(100)
