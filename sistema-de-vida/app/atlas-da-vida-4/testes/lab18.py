@@ -69,7 +69,7 @@ async def main():
             mp = str(ment[0]["input"]) if ment else ""
             chk(ment and mp.startswith("Você é o Mentor do Dinheiro") and "MEMÓRIA:" in mp and "PLANO ATUAL:" in mp, "o diretor usa o próprio prompt de sistema e a própria memória (sem cópia)")
             chk("BRIEFING DA SUA ÁREA" in mp and "PERGUNTA DO INTERMEDIADOR PARA VOCÊ" in mp and "OUTRAS ÁREAS (manchetes)" in mp and "RESUMO DA SESSÃO" in mp, "e recebe o próprio briefing, as manchetes das outras áreas, o resumo e a pergunta")
-            chk("Use as ferramentas" not in mp and ment[0]["tools"] == [], "no Conselho o diretor só fala: sem ferramentas")
+            chk("Use as ferramentas" not in mp and ment[0]["tools"] == ["ler_dados"], f"no Conselho o diretor só fala e consulta: a única ferramenta é ler_dados, que não muda nada ({ment[0]['tools'] if ment else None})")
             chk(await pg.evaluate("document.querySelector('.csin').classList.contains('ceo') && document.querySelector('.csstatus.ceo') != null"), "a interface mostra que o Intermediador espera a sua resposta")
             chk(await pg.evaluate("document.querySelectorAll('.csfases li').length") == 10 and "Revisão" in (await pg.evaluate("document.querySelector('.csfases li.cur').textContent")), "barra com as 10 fases e a atual destacada")
             chk(await pg.evaluate("!!document.querySelector('.csm.int .csintav') && !!document.querySelector('.csm .mav')"), "chat com avatar e cor por mentor e o Intermediador destacado")

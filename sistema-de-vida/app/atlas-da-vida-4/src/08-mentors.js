@@ -172,8 +172,8 @@ function mentorTools(mid, live) {
   if (NOTION_OK && S.cfg.mentorNotion) T.push({ name: "buscar_notion", description: "Busca páginas no Notion da pessoa por palavras-chave e devolve até 5 resultados com título, link e trecho. Use para projetos, anotações e planos que estão lá.",
     inputSchema: { type: "object", properties: { consulta: { type: "string" } }, required: ["consulta"] },
     execute: async (inp, ctx) => { const res = await MCP.callTool("Notion", "notion-search", { query: String(inp.consulta).slice(0, 200), page_size: 5 }, { signal: ctx.signal }); const rs = (res.payload?.results || []).slice(0, 5).map(x => ({ titulo: x.title, link: x.url, trecho: trunc(String(x.highlight || "").replace(/\*\*/g, ""), 300) })); note("buscar_notion", `“${trunc(inp.consulta, 40)}” · ${rs.length} páginas`); return rs; } });
-  const out = def.tools ? def.tools(live, T) : def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T;
-  return TOOLS_MAX && TOOLS_MAX < out.length ? out.slice(0, TOOLS_MAX) : out;
+  /* ler_dados em todos: no fim da lista ou, se a visualização limita o número de ferramentas, na última vaga */
+  return iadCabe([...(def.tools ? def.tools(live, T) : def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T), iadTool(note, () => live.ctx)]);
 }
 function mkProposal(inp) {
   const tipo = ["tarefa", "meta", "habito", "lembrete"].includes(inp.tipo) ? inp.tipo : "tarefa";
@@ -195,7 +195,8 @@ async function askMentor(mid, text, mode = "chat") {
   const hist = m.conversa.slice(-12).map(x => ({ role: x.role, content: x.role === "assistant" ? x.content + (x.uso?.length ? `\n\n[ações que você executou: ${x.uso.map(u => `${u.t} (${u.d})`).join("; ")}]` : "") + (x.acoes?.length ? `\n[propostas: ${x.acoes.map(a => `${a.tipo} "${a.titulo}" — ${a.status}`).join("; ")}]` : "") : x.content })).filter(x => x.content.trim());
   const lv = S.cfg.mentorNivel || "default", tier = mode === "chat" ? lv : lv === "quick" ? "default" : "complex";
   try {
-    const r = await aiCall(MENTOR_DEF[mid].nome, ctx => { live.ctx = ctx; return [{ role: "user", content: mentorPrompt(mid, fallback) }, ...hist, { role: "user", content: text }]; }, { signal: live.ctl.signal, modelTier: tier, cache: false, ...(fallback ? {} : { tools: mentorTools(mid, live) }), onText: ({ text: t }) => { live.text = t; paintLive(); } });
+    const r = await aiCall(MENTOR_DEF[mid].nome, ctx => { live.ctx = ctx; const base = mentorPrompt(mid, fallback), used = iadBytes(base) + iadBytes(JSON.stringify(hist)) + iadBytes(text);
+      return [{ role: "user", content: base + iadPromptMentor(mid, fallback, Math.min(150000, 240000 - used)) }, ...hist, { role: "user", content: text }]; }, { signal: live.ctl.signal, modelTier: tier, cache: false, ...(fallback ? {} : { tools: mentorTools(mid, live) }), onText: ({ text: t }) => { live.text = t; paintLive(); } });
     finishMentor(r.text, r.truncated);
   } catch (e) {
     const soft = ["tools_unavailable", "invalid_request", "upstream_error", "transform_error", "prompt_too_large", "empty_completion"].includes(e?.code) || !e?.code;
@@ -233,7 +234,7 @@ function paintLive() {
   scrollChat(true);
 }
 function scrollChat(soft) { const c = $("#mchat"); if (c && (!soft || c.scrollHeight - c.scrollTop - c.clientHeight < 160)) c.scrollTop = c.scrollHeight; }
-const USO_TXT = { ver_aba: ["eye", "Olhou a aba"], consultar_mentor: ["council", "Consultou o mentor"], levantar_conflito: ["flag", "Levou para você decidir"], salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"], ajustar_nivel: ["sprout", "Ajustou o nível"] };
+const USO_TXT = { ler_dados: ["table", "Leu os dados"], ver_aba: ["eye", "Olhou a aba"], consultar_mentor: ["council", "Consultou o mentor"], levantar_conflito: ["flag", "Levou para você decidir"], salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"], ajustar_nivel: ["sprout", "Ajustou o nível"] };
 const usoHTML = us => (us || []).map(u => `<span class="uso">${ic(USO_TXT[u.t]?.[0] || "bolt")}<b>${USO_TXT[u.t]?.[1] || u.t}</b> ${esc(u.d)}</span>`).join("");
 function propHTML(mid, mi, p) {
   if (p.ck) return ckPropHTML(mid, mi, p);

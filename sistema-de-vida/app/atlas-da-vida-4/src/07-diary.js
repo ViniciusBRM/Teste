@@ -524,7 +524,7 @@ async function diaryAI() {
   };
   DIA.aiBusy = true; DIA.ai = { text: "", done: false }; DIA.aiCtl = new AbortController(); render();
   try {
-    const r = await aiCall("Leitura do diário", build, { signal: DIA.aiCtl.signal, modelTier: S.cfg.mentorNivel || "default", cache: false, onText: ({ text }) => { DIA.ai.text = text; const el = $(".aiblk .mdx"); if (el) el.innerHTML = md(text); } });
+    const r = await aiCall("Leitura do diário", build, { dados: true, signal: DIA.aiCtl.signal, modelTier: S.cfg.mentorNivel || "default", cache: false, onText: ({ text }) => { DIA.ai.text = text; const el = $(".aiblk .mdx"); if (el) el.innerHTML = md(text); } });
     DIA.ai = { text: r.text, done: true };
   } catch (e) { DIA.ai = e.text ? { text: e.text, done: true } : null; if (e.code !== "cancelled") aiError(e); }
   finally { DIA.aiBusy = false; render(); }

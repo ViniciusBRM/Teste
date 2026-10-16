@@ -118,16 +118,23 @@ const EXT_SERV = [["clima", "Clima", "Open-Meteo, no Hoje", "as coordenadas da c
 const extOk = k => S.cfg.ext?.[k] !== false;
 let IA_AVISO_DIA = null;
 /* porta única para a IA: monta o pedido com o filtro de privacidade, envia e registra */
-async function aiCall(recurso, build, { json = false, ctx: ext = null, ...sopts } = {}) {
+async function aiCall(recurso, build, { json = false, ctx: ext = null, dados = false, ...sopts } = {}) {
   if (!SAMPLE) throw { code: AI_OFF ? "not_granted" : "unavailable", message: "IA indisponível" };
   const av = +S.cfg.iaAviso || 0, nm = S.uso?.ia?.[TODAY.slice(0, 7)]?.n || 0;
   if (av && nm >= av && IA_AVISO_DIA !== TODAY) { IA_AVISO_DIA = TODAY; setTimeout(() => toast(`Aviso de uso: ${nm} chamadas de IA neste mês (seu limite de aviso é ${av}). Veja em Privacidade.`), 50); }
   const ctx = ext || aiCtx(recurso); let input;
-  AICTX = ctx; try { input = build(ctx); } finally { AICTX = null; }
+  AICTX = ctx; try { input = build(ctx);
+    /* dados: a IA pode ler qualquer conjunto do Atlas no detalhe (catálogo no pedido, ferramenta ler_dados) */
+    if (dados && TOOLS_MAX && !json) { const nota = iadNota(); input = typeof input === "string" ? input + nota : input.map((t, i) => i === 0 ? { ...t, content: t.content + nota } : t);
+      sopts = { ...sopts, cache: false, tools: iadCabe([...(sopts.tools || []), iadTool((t, d) => aiNote("ferr", `${t}: ${trunc(d, 60)}`, ctx), () => ctx)]) }; }
+  } finally { AICTX = null; }
   input = aiScrubInput(input);
   const bytes = ENC.encode(typeof input === "string" ? input : JSON.stringify(input)).length;
   try { const r = json ? await SAMPLE.json(input, sopts) : await SAMPLE(input, sopts); aiLog(ctx, bytes, "ok"); return r; }
-  catch (e) { aiLog(ctx, bytes, e?.code === "cancelled" ? "cancelada" : "erro: " + (e?.code || "desconhecido")); throw e; }
+  catch (e) { aiLog(ctx, bytes, e?.code === "cancelled" ? "cancelada" : "erro: " + (e?.code || "desconhecido"));
+    /* esta visualização não roda ferramentas: tenta uma vez sem elas */
+    if (dados && e?.code === "tools_unavailable" && TOOLS_MAX) { TOOLS_MAX = 0; const { tools, ...rest } = sopts; return aiCall(recurso, build, { json, ctx: ext, ...rest }); }
+    throw e; }
 }
 /* dados de um dia para a IA, sem nada dos setores bloqueados */
 function aiDayFacts(d) {

@@ -189,7 +189,7 @@ async function csMentor(mid, pergunta, resp) {
   const msg = csMsg(mid, "", { live: true, ...(resp ? { resp } : {}) }); CS.live = msg; render();
   csStatus(`${MENTOR_DEF[mid].nome} está falando…`);
   try {
-    const r = await csCall(MENTOR_DEF[mid].nome, () => csMentorPrompt(mid, pergunta), { modelTier: C.tierMentor, onText: ({ text }) => { msg.texto = text; csPaintLive(msg); } });
+    const r = await csCall(MENTOR_DEF[mid].nome, () => csMentorPrompt(mid, pergunta), { dados: true, modelTier: C.tierMentor, onText: ({ text }) => { msg.texto = text; csPaintLive(msg); } });
     msg.texto = csWords(r.text, Math.round(C.palavrasPorFala * 1.4)) || "Sem dados suficientes.";
   } catch (e) { if (e?.text) msg.texto = csWords(e.text, Math.round(C.palavrasPorFala * 1.4)) + " _(interrompida)_"; else s.msgs.splice(s.msgs.indexOf(msg), 1); throw e; }
   finally { delete msg.live; CS.live = null; }

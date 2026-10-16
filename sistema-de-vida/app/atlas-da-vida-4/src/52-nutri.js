@@ -385,10 +385,11 @@ function nuTools(live, T) {
     { name: "salvar_plano_alimentar", description: "Propõe salvar um plano alimentar ou cardápio (texto em Markdown, com refeições, quantidades em gramas e o total de kcal e proteína) em Plano e perfil.",
       inputSchema: { type: "object", properties: { titulo: { type: "string" }, texto: { type: "string" } }, required: ["titulo", "texto"] },
       execute: inp => prop("salvar_plano_alimentar", inp, trunc(inp.titulo || "", 60)) },
+    ...T.filter(x => x.name === "salvar_memoria" || x.name === "recado"),
+    /* por último: se a visualização limita o número de ferramentas, cede a vaga ao ler_dados, que lê treinos e corridas no detalhe */
     { name: "consultar_treinos", description: "Resumo dos treinos (academia e corrida) dos últimos N dias (1–60), do Personal: datas, duração, tipo, km.",
       inputSchema: { type: "object", properties: { dias: { type: "number" } } },
-      execute: inp => { const n = clamp(Math.round(+inp.dias || 14), 1, 60); note("consultar_treinos", `${n} dias`); return typeof trDias === "function" ? trDias(n) : []; } },
-    ...T.filter(x => x.name === "salvar_memoria" || x.name === "recado")];
+      execute: inp => { const n = clamp(Math.round(+inp.dias || 14), 1, 60); note("consultar_treinos", `${n} dias`); return typeof trDias === "function" ? trDias(n) : []; } }];
   return out;
 }
 /* validação: é aqui que os limites de saúde valem de fato */

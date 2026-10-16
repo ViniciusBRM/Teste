@@ -571,7 +571,7 @@ DADOS DA JORNADA:
 ${J_ORDER.map(p => `## ${J_PIL[p].nome}\n${jPilarFacts(p, false).join("\n")}`).join("\n")}
 ${jCommonFacts("todos").slice(1).join("\n")}`;
   try {
-    const r = await aiCall("Círculo dos mentores", build, { signal: K.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { K.txt = text; const el = $(".jcirc"); if (el) el.innerHTML = md(text); else render(); } });
+    const r = await aiCall("Círculo dos mentores", build, { dados: true, signal: K.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { K.txt = text; const el = $(".jcirc"); if (el) el.innerHTML = md(text); else render(); } });
     const texto = r.text.trim(), rec = { id: uid(), at: Date.now(), pergunta: q, quem, texto };
     jData().conf.circulos.push(rec); if (jData().conf.circulos.length > 30) jData().conf.circulos.shift();
     const conv = jSection(texto, "Onde convergem");

@@ -45,6 +45,7 @@ MOCK = r"""
     let text = "";
     const emit = async chunk => { for (const part of chunk.match(/.{1,40}/gs)) { text += part; opts.onText && opts.onText({ text, delta: part }); await sleep(6); } };
     const P = promptOf(input);
+    if (T.ler_dados && /TESTE LER DADOS/.test(P)) { window.__ldPrompt = P; window.__ldOut = []; for (const a of (window.__ldArgs || [{}])) window.__ldOut.push(await T.ler_dados.execute(a, ctx)); await emit("Li os dados: " + window.__ldOut.map(o => String(o).split("\n")[0]).join(" / ")); return { text, truncated: false }; }
     if (window.__csFail > 0 && /Conselho|CONSELHO/.test(P)) { window.__csFail--; throw { code: window.__csFailCode || "upstream_error", message: "mock" }; }
     if (/TAREFA: RESUMO DO CONSELHO/.test(P)) { await emit("Resumo de teste: sono e gastos ligados; amizades em queda; o CEO quer proteger o sono."); return { text, truncated: false }; }
     if (/REUNIÃO DO CONSELHO DE ADMINISTRAÇÃO DA VIDA/.test(P)) { const nm = (P.match(/^Você é (?:o |a )?([^,]+),/) || [])[1] || "?"; window.__csSpk = (window.__csSpk || 0) + 1; if (window.__csSlow) await sleep(window.__csSlow);
@@ -84,6 +85,7 @@ MOCK = r"""
       const ok1 = await T.registrar_refeicao.execute({ data: hoje, refeicao: "jantar", itens: [{ nome: "Pizza margherita", gramas: 300 }, { nome: "Tiramisù da cantina", gramas: 120, kcal: 360, proteina_g: 6, carboidrato_g: 38, gordura_g: 20 }] }, ctx); window.__calls.push({ kind: "tool", name: "refeicao_ok", r: ok1 });
       const ok2 = await T.ajustar_metas.execute({ kcal: 2200, proteina_g: 160, carboidrato_g: 255, gordura_g: 62, motivo: "o peso desceu devagar com 2.300 kcal (teste)" }, ctx); window.__calls.push({ kind: "tool", name: "metas_ok", r: ok2 });
       if (T.consultar_treinos) { const r4 = await T.consultar_treinos.execute({ dias: 7 }, ctx); window.__calls.push({ kind: "tool", name: "nu_treinos", r: r4 }); }
+      else if (T.ler_dados) { const r4 = await T.ler_dados.execute({ conjunto: "treinoLog", limite: 20 }, ctx); window.__calls.push({ kind: "tool", name: "nu_treinos", r: r4 }); }
       await emit("Na média de 7 dias você ficou perto da meta (teste). Deixei o jantar e um ajuste de metas como propostas.");
       return { text, truncated: false }; }
     if (T.criar_ficha && /Você é o Personal,/.test(P)) { window.__trPrompt = P; const hoje = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; })();

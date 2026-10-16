@@ -5117,7 +5117,7 @@ async function diaryAI() {
   };
   DIA.aiBusy = true; DIA.ai = { text: "", done: false }; DIA.aiCtl = new AbortController(); render();
   try {
-    const r = await aiCall("Leitura do diário", build, { signal: DIA.aiCtl.signal, modelTier: S.cfg.mentorNivel || "default", cache: false, onText: ({ text }) => { DIA.ai.text = text; const el = $(".aiblk .mdx"); if (el) el.innerHTML = md(text); } });
+    const r = await aiCall("Leitura do diário", build, { dados: true, signal: DIA.aiCtl.signal, modelTier: S.cfg.mentorNivel || "default", cache: false, onText: ({ text }) => { DIA.ai.text = text; const el = $(".aiblk .mdx"); if (el) el.innerHTML = md(text); } });
     DIA.ai = { text: r.text, done: true };
   } catch (e) { DIA.ai = e.text ? { text: e.text, done: true } : null; if (e.code !== "cancelled") aiError(e); }
   finally { DIA.aiBusy = false; render(); }
@@ -5297,8 +5297,8 @@ function mentorTools(mid, live) {
   if (NOTION_OK && S.cfg.mentorNotion) T.push({ name: "buscar_notion", description: "Busca páginas no Notion da pessoa por palavras-chave e devolve até 5 resultados com título, link e trecho. Use para projetos, anotações e planos que estão lá.",
     inputSchema: { type: "object", properties: { consulta: { type: "string" } }, required: ["consulta"] },
     execute: async (inp, ctx) => { const res = await MCP.callTool("Notion", "notion-search", { query: String(inp.consulta).slice(0, 200), page_size: 5 }, { signal: ctx.signal }); const rs = (res.payload?.results || []).slice(0, 5).map(x => ({ titulo: x.title, link: x.url, trecho: trunc(String(x.highlight || "").replace(/\*\*/g, ""), 300) })); note("buscar_notion", `“${trunc(inp.consulta, 40)}” · ${rs.length} páginas`); return rs; } });
-  const out = def.tools ? def.tools(live, T) : def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T;
-  return TOOLS_MAX && TOOLS_MAX < out.length ? out.slice(0, TOOLS_MAX) : out;
+  /* ler_dados em todos: no fim da lista ou, se a visualização limita o número de ferramentas, na última vaga */
+  return iadCabe([...(def.tools ? def.tools(live, T) : def.jor ? jTools(mid, live, T) : def.lz ? lzTools(mid, live, T) : T), iadTool(note, () => live.ctx)]);
 }
 function mkProposal(inp) {
   const tipo = ["tarefa", "meta", "habito", "lembrete"].includes(inp.tipo) ? inp.tipo : "tarefa";
@@ -5320,7 +5320,8 @@ async function askMentor(mid, text, mode = "chat") {
   const hist = m.conversa.slice(-12).map(x => ({ role: x.role, content: x.role === "assistant" ? x.content + (x.uso?.length ? `\n\n[ações que você executou: ${x.uso.map(u => `${u.t} (${u.d})`).join("; ")}]` : "") + (x.acoes?.length ? `\n[propostas: ${x.acoes.map(a => `${a.tipo} "${a.titulo}" — ${a.status}`).join("; ")}]` : "") : x.content })).filter(x => x.content.trim());
   const lv = S.cfg.mentorNivel || "default", tier = mode === "chat" ? lv : lv === "quick" ? "default" : "complex";
   try {
-    const r = await aiCall(MENTOR_DEF[mid].nome, ctx => { live.ctx = ctx; return [{ role: "user", content: mentorPrompt(mid, fallback) }, ...hist, { role: "user", content: text }]; }, { signal: live.ctl.signal, modelTier: tier, cache: false, ...(fallback ? {} : { tools: mentorTools(mid, live) }), onText: ({ text: t }) => { live.text = t; paintLive(); } });
+    const r = await aiCall(MENTOR_DEF[mid].nome, ctx => { live.ctx = ctx; const base = mentorPrompt(mid, fallback), used = iadBytes(base) + iadBytes(JSON.stringify(hist)) + iadBytes(text);
+      return [{ role: "user", content: base + iadPromptMentor(mid, fallback, Math.min(150000, 240000 - used)) }, ...hist, { role: "user", content: text }]; }, { signal: live.ctl.signal, modelTier: tier, cache: false, ...(fallback ? {} : { tools: mentorTools(mid, live) }), onText: ({ text: t }) => { live.text = t; paintLive(); } });
     finishMentor(r.text, r.truncated);
   } catch (e) {
     const soft = ["tools_unavailable", "invalid_request", "upstream_error", "transform_error", "prompt_too_large", "empty_completion"].includes(e?.code) || !e?.code;
@@ -5358,7 +5359,7 @@ function paintLive() {
   scrollChat(true);
 }
 function scrollChat(soft) { const c = $("#mchat"); if (c && (!soft || c.scrollHeight - c.scrollTop - c.clientHeight < 160)) c.scrollTop = c.scrollHeight; }
-const USO_TXT = { ver_aba: ["eye", "Olhou a aba"], consultar_mentor: ["council", "Consultou o mentor"], levantar_conflito: ["flag", "Levou para você decidir"], salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"], ajustar_nivel: ["sprout", "Ajustou o nível"] };
+const USO_TXT = { ler_dados: ["table", "Leu os dados"], ver_aba: ["eye", "Olhou a aba"], consultar_mentor: ["council", "Consultou o mentor"], levantar_conflito: ["flag", "Levou para você decidir"], salvar_memoria: ["memory", "Guardou na memória"], atualizar_plano: ["flag", "Atualizou o plano"], propor: ["plus", "Propôs"], consultar: ["table", "Consultou"], cruzar: ["scatter", "Cruzou"], buscar_diario: ["pen", "Buscou no diário"], recado: ["link", "Deixou recado"], buscar_notion: ["search", "Buscou no Notion"], recomendar: ["book", "Recomendou"], ajustar_nivel: ["sprout", "Ajustou o nível"] };
 const usoHTML = us => (us || []).map(u => `<span class="uso">${ic(USO_TXT[u.t]?.[0] || "bolt")}<b>${USO_TXT[u.t]?.[1] || u.t}</b> ${esc(u.d)}</span>`).join("");
 function propHTML(mid, mi, p) {
   if (p.ck) return ckPropHTML(mid, mi, p);
@@ -6141,16 +6142,23 @@ const EXT_SERV = [["clima", "Clima", "Open-Meteo, no Hoje", "as coordenadas da c
 const extOk = k => S.cfg.ext?.[k] !== false;
 let IA_AVISO_DIA = null;
 /* porta única para a IA: monta o pedido com o filtro de privacidade, envia e registra */
-async function aiCall(recurso, build, { json = false, ctx: ext = null, ...sopts } = {}) {
+async function aiCall(recurso, build, { json = false, ctx: ext = null, dados = false, ...sopts } = {}) {
   if (!SAMPLE) throw { code: AI_OFF ? "not_granted" : "unavailable", message: "IA indisponível" };
   const av = +S.cfg.iaAviso || 0, nm = S.uso?.ia?.[TODAY.slice(0, 7)]?.n || 0;
   if (av && nm >= av && IA_AVISO_DIA !== TODAY) { IA_AVISO_DIA = TODAY; setTimeout(() => toast(`Aviso de uso: ${nm} chamadas de IA neste mês (seu limite de aviso é ${av}). Veja em Privacidade.`), 50); }
   const ctx = ext || aiCtx(recurso); let input;
-  AICTX = ctx; try { input = build(ctx); } finally { AICTX = null; }
+  AICTX = ctx; try { input = build(ctx);
+    /* dados: a IA pode ler qualquer conjunto do Atlas no detalhe (catálogo no pedido, ferramenta ler_dados) */
+    if (dados && TOOLS_MAX && !json) { const nota = iadNota(); input = typeof input === "string" ? input + nota : input.map((t, i) => i === 0 ? { ...t, content: t.content + nota } : t);
+      sopts = { ...sopts, cache: false, tools: iadCabe([...(sopts.tools || []), iadTool((t, d) => aiNote("ferr", `${t}: ${trunc(d, 60)}`, ctx), () => ctx)]) }; }
+  } finally { AICTX = null; }
   input = aiScrubInput(input);
   const bytes = ENC.encode(typeof input === "string" ? input : JSON.stringify(input)).length;
   try { const r = json ? await SAMPLE.json(input, sopts) : await SAMPLE(input, sopts); aiLog(ctx, bytes, "ok"); return r; }
-  catch (e) { aiLog(ctx, bytes, e?.code === "cancelled" ? "cancelada" : "erro: " + (e?.code || "desconhecido")); throw e; }
+  catch (e) { aiLog(ctx, bytes, e?.code === "cancelled" ? "cancelada" : "erro: " + (e?.code || "desconhecido"));
+    /* esta visualização não roda ferramentas: tenta uma vez sem elas */
+    if (dados && e?.code === "tools_unavailable" && TOOLS_MAX) { TOOLS_MAX = 0; const { tools, ...rest } = sopts; return aiCall(recurso, build, { json, ctx: ext, ...rest }); }
+    throw e; }
 }
 /* dados de um dia para a IA, sem nada dos setores bloqueados */
 function aiDayFacts(d) {
@@ -6804,7 +6812,7 @@ Próxima semana: ${(d.proximas || []).filter(Boolean).join("; ") || "ainda não 
 ${labFacts().join("\n")}
 Trechos do diário da semana${star.size ? " (os marcados com ★ a pessoa destacou)" : ""}:
 ${ents.map(e => `- ${fmtD(e.data)}${star.has(e.id) ? " ★" : ""}${mo ? ` (humor ${e.humor ?? "?"})` : ""}: ${snippet(e, 260)}`).join("\n") || "(nenhum)"}`; };
-  try { const r = await aiCall("Fechamento semanal", build, { signal: FS.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { const el = $("#fs_carta"); if (el) el.value = text; } }); fsSave({ carta: r.text.trim() }, "Carta da semana"); }
+  try { const r = await aiCall("Fechamento semanal", build, { dados: true, signal: FS.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { const el = $("#fs_carta"); if (el) el.value = text; } }); fsSave({ carta: r.text.trim() }, "Carta da semana"); }
   catch (e) { if (e?.text) fsSave({ carta: e.text }); if (e?.code !== "cancelled") aiError(e); }
   finally { FS.busy = false; render(); }
 }
@@ -7951,7 +7959,7 @@ Situação: """${String(dr.sit || "").slice(0, 2500)}"""
 Respostas dela às perguntas: ${BM_Q.filter(([k]) => dr.q[k]).map(([k, l]) => `${l}: ${String(dr.q[k]).slice(0, 400)}`).join(" | ") || "nenhuma"}
 Valores em jogo: ${dr.vals.map(id => bmV(id).nome).join(", ") || "não marcados"}
 Decisão que está considerando: ${dr.dec || "ainda nenhuma"}`;
-  try { const r = await aiCall("Bússola moral", build, { signal: BM.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { BM.ai = text; const el = $(".bmdec .semans .mdx"); if (el) el.innerHTML = md(text); else render(); } }); BM.ai = r.text.trim(); }
+  try { const r = await aiCall("Bússola moral", build, { dados: true, signal: BM.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { BM.ai = text; const el = $(".bmdec .semans .mdx"); if (el) el.innerHTML = md(text); else render(); } }); BM.ai = r.text.trim(); }
   catch (e) { if (e?.text) BM.ai = e.text; if (e?.code !== "cancelled") aiError(e); }
   finally { BM.busy = false; render(); }
 }
@@ -8126,7 +8134,7 @@ Etapas: ${(p.etapas || []).map(e => `${e.nome}${e.valor ? " " + eur(+e.valor) : 
 Finanças (médias de ${c.meses} meses): receitas ${eur(c.rec)}, despesas ${eur(c.desp)}, sobra ${eur(c.sobra)}. Reserva ${c.resMeses == null ? "?" : num(c.resMeses, 1)} meses (meta ${pjCfg().metaReserva}). Parcelas atuais e previstas ${eur(P.comprom)}/mês, teto ${eur(P.tetoParc)}.
 Outros projetos: ${pjs().filter(z => z.id !== p.id).map(z => `${z.nome} (${z.prio}, ${eur(+z.valor || 0)})`).join("; ") || "nenhum"}.
 Anotações anteriores: ${(p.mentor || []).slice(-3).map(m => trunc(m.texto, 200)).join(" | ") || "nenhuma"}`; };
-  try { const r = await aiCall(`Mentor · ${trunc(p.nome, 40)}`, build, { signal: PJ.ctl.signal, modelTier: "default", cache: false }); p.mentor = [...(p.mentor || []), { at: Date.now(), texto: r.text.trim(), origem: "ia" }]; touch("projetos", { label: "Orientação do mentor", noRender: true }); }
+  try { const r = await aiCall(`Mentor · ${trunc(p.nome, 40)}`, build, { dados: true, signal: PJ.ctl.signal, modelTier: "default", cache: false }); p.mentor = [...(p.mentor || []), { at: Date.now(), texto: r.text.trim(), origem: "ia" }]; touch("projetos", { label: "Orientação do mentor", noRender: true }); }
   catch (e) { if (e?.code !== "cancelled") aiError(e); }
   finally { PJ.busy = null; render(); }
 }
@@ -8781,7 +8789,7 @@ DADOS DA JORNADA:
 ${J_ORDER.map(p => `## ${J_PIL[p].nome}\n${jPilarFacts(p, false).join("\n")}`).join("\n")}
 ${jCommonFacts("todos").slice(1).join("\n")}`;
   try {
-    const r = await aiCall("Círculo dos mentores", build, { signal: K.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { K.txt = text; const el = $(".jcirc"); if (el) el.innerHTML = md(text); else render(); } });
+    const r = await aiCall("Círculo dos mentores", build, { dados: true, signal: K.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { K.txt = text; const el = $(".jcirc"); if (el) el.innerHTML = md(text); else render(); } });
     const texto = r.text.trim(), rec = { id: uid(), at: Date.now(), pergunta: q, quem, texto };
     jData().conf.circulos.push(rec); if (jData().conf.circulos.length > 30) jData().conf.circulos.shift();
     const conv = jSection(texto, "Onde convergem");
@@ -12443,7 +12451,7 @@ Regras:
 - Para montar o dia ou preencher a rotina, proponha um "bloco" por atividade, com data, inicio e fim em HH:MM (ex.: 09:00 e 10:30). Atividade com horário nunca é "tarefa": tarefa vai para o “dia todo” da Rotina. Antes, veja os horários livres com ver_aba(rotina).
 - Mentores: use "consultar_mentor" só para coletar informação sobre progresso, bloqueios e oportunidades de uma área. Os mentores não decidem nada e você não decide por eles.
 - Se houver prioridades conflitantes ou ambiguidade entre áreas (tempo, dinheiro, energia), NÃO escolha: use "levantar_conflito" com 2 a 4 opções claras e espere a decisão.
-- Use "ver_aba" para detalhes de uma área antes de afirmar algo sobre ela. Respeite setores privados.
+- Use "ver_aba" para o resumo de uma área e "ler_dados" para os registros um a um (lançamentos, check-ins, tarefas, contatos…), com filtro por período, texto ou campo e soma por mês ou campo. Confira os detalhes antes de afirmar algo. Respeite setores privados.\n- Dados do Atlas que você pode ler: ${iadCatalogo() || "nenhum"}.
 
 AGORA (${fmtDL(TODAY)}, ${nowHMs()}):
 ${its.join("\n") || "nada pendente"}
@@ -12464,14 +12472,15 @@ function secTools(live) {
       inputSchema: { type: "object", properties: { mentor: { type: "string", enum: mids }, pergunta: { type: "string" } }, required: ["mentor", "pergunta"] },
       execute: async (inp, ctx) => { const mid = String(inp.mentor); if (!MENTOR_DEF[mid] || blockedMentor(mid)) throw new Error("Mentor indisponível ou setor privado.");
         note("consultar_mentor", `${MENTOR_DEF[mid].nome}: ${trunc(inp.pergunta, 60)}`);
-        const r = await aiCall(`${MENTOR_DEF[mid].nome} (consultado pelo Secretário)`, () => [{ role: "user", content: mentorPrompt(mid, false) + `\n\nO Secretário da Vida, que coordena o app, pede um relatório para a pessoa. Responda só com informação, em até 120 palavras: progresso, bloqueios e oportunidades, com números. Não proponha registros, não decida nada e não use ferramentas.` }, { role: "user", content: String(inp.pergunta).slice(0, 600) }], { signal: ctx?.signal || live.ctl.signal, modelTier: "quick", cache: true });
+        const r = await aiCall(`${MENTOR_DEF[mid].nome} (consultado pelo Secretário)`, () => [{ role: "user", content: mentorPrompt(mid, false) + iadPromptMentor(mid, true, 120000) + `\n\nO Secretário da Vida, que coordena o app, pede um relatório para a pessoa. Responda só com informação, em até 120 palavras: progresso, bloqueios e oportunidades, com números. Não proponha registros, não decida nada e não use ferramentas.` }, { role: "user", content: String(inp.pergunta).slice(0, 600) }], { signal: ctx?.signal || live.ctl.signal, modelTier: "quick", cache: true });
         return String(r.text || "").replace(/```atlas[\s\S]*?```/g, "").trim().slice(0, 2500); } },
     { name: "propor", description: "Propõe uma ação que a pessoa confirma ou descarta num cartão. Tipos: tarefa (titulo, prazo, prioridade), lembrete (titulo, quando AAAA-MM-DDTHH:MM), adiar (tarefa_id, prazo), concluir (tarefa_id), bloco (titulo, data, inicio HH:MM, fim HH:MM ou duracao_min, categoria da rotina): use bloco para TODA atividade com horário (montar o dia, reunião, estudo, treino), um por atividade, e tarefa só para o que tem prazo sem hora marcada. Nada é feito sem confirmação.",
       inputSchema: { type: "object", properties: { tipo: { type: "string", enum: ["tarefa", "lembrete", "adiar", "concluir", "bloco"] }, titulo: { type: "string" }, prazo: { type: "string" }, prioridade: { type: "string", enum: ["Alta", "Média", "Baixa"] }, quando: { type: "string" }, tarefa_id: { type: "string" }, data: { type: "string" }, inicio: { type: "string" }, fim: { type: "string" }, categoria: { type: "string" }, duracao_min: { type: "number" }, motivo: { type: "string" } }, required: ["tipo"] },
       execute: inp => { const p = secMkProp(inp); if (p.erro) throw new Error(p.erro); live.acoes.push(p); note("propor", p.rotulo); return { ok: true, status: "aguardando confirmação da pessoa" }; } },
     { name: "levantar_conflito", description: "Leva à pessoa um conflito ou ambiguidade entre prioridades ou áreas, com 2 a 4 opções. Ela decide; você não escolhe. Retorna {ok}.",
       inputSchema: { type: "object", properties: { titulo: { type: "string" }, contexto: { type: "string" }, opcoes: { type: "array", items: { type: "string" } } }, required: ["titulo", "opcoes"] },
-      execute: inp => { const ops = (inp.opcoes || []).map(String).filter(Boolean).slice(0, 4); if (ops.length < 2) throw new Error("Dê pelo menos 2 opções."); live.conflitos.push({ id: uid(), titulo: String(inp.titulo).slice(0, 200), contexto: String(inp.contexto || "").slice(0, 400), ops, escolha: null }); note("levantar_conflito", trunc(inp.titulo, 60)); return { ok: true, status: "aguardando decisão" }; } }];
+      execute: inp => { const ops = (inp.opcoes || []).map(String).filter(Boolean).slice(0, 4); if (ops.length < 2) throw new Error("Dê pelo menos 2 opções."); live.conflitos.push({ id: uid(), titulo: String(inp.titulo).slice(0, 200), contexto: String(inp.contexto || "").slice(0, 400), ops, escolha: null }); note("levantar_conflito", trunc(inp.titulo, 60)); return { ok: true, status: "aguardando decisão" }; } },
+    iadTool(note, () => live.ctx)];
 }
 function secMkProp(inp) {
   const tipo = String(inp.tipo), id = uid(), t = S.tarefas.find(x => x.id === inp.tarefa_id) || (inp.titulo && S.tarefas.find(x => x.status !== "Concluída" && norm(x.tarefa) === norm(inp.titulo)));
@@ -12501,7 +12510,7 @@ async function secAsk(text) {
   SEC.input = ""; SEC.tab = "conversa"; secPaint();
   const hist = D.conversa.slice(-12).filter(x => !x.local).map(x => ({ role: x.role, content: x.role === "assistant" ? x.content + (x.acoes?.length ? `\n[propostas: ${x.acoes.map(a => `${a.rotulo} — ${a.status}`).join("; ")}]` : "") + (x.conflitos?.length ? `\n[conflitos: ${x.conflitos.map(c => `${c.titulo} — ${c.escolha ? "decidido: " + c.escolha : "sem decisão"}`).join("; ")}]` : "") : x.content })).filter(x => x.content.trim());
   try {
-    const r = await aiCall("Secretário da Vida", ctx => { live.ctx = ctx; return [{ role: "user", content: secPrompt() }, ...hist, { role: "user", content: text }]; }, { signal: live.ctl.signal, modelTier: "default", cache: false, ...(TOOLS_MAX ? { tools: secTools(live) } : {}), onText: ({ text: t }) => { live.text = t; secPaintLive(); } });
+    const r = await aiCall("Secretário da Vida", ctx => { live.ctx = ctx; return [{ role: "user", content: secPrompt() }, ...hist, { role: "user", content: text }]; }, { signal: live.ctl.signal, modelTier: "default", cache: false, ...(TOOLS_MAX ? { tools: iadCabe(secTools(live)) } : {}), onText: ({ text: t }) => { live.text = t; secPaintLive(); } });
     secFinish(r.text, r.truncated);
   } catch (e) { if (e?.text) secFinish(e.text, true); else { SEC.live = null; secPaint(); } if (e?.code !== "cancelled") aiError(e); }
 }
@@ -12881,7 +12890,7 @@ async function csMentor(mid, pergunta, resp) {
   const msg = csMsg(mid, "", { live: true, ...(resp ? { resp } : {}) }); CS.live = msg; render();
   csStatus(`${MENTOR_DEF[mid].nome} está falando…`);
   try {
-    const r = await csCall(MENTOR_DEF[mid].nome, () => csMentorPrompt(mid, pergunta), { modelTier: C.tierMentor, onText: ({ text }) => { msg.texto = text; csPaintLive(msg); } });
+    const r = await csCall(MENTOR_DEF[mid].nome, () => csMentorPrompt(mid, pergunta), { dados: true, modelTier: C.tierMentor, onText: ({ text }) => { msg.texto = text; csPaintLive(msg); } });
     msg.texto = csWords(r.text, Math.round(C.palavrasPorFala * 1.4)) || "Sem dados suficientes.";
   } catch (e) { if (e?.text) msg.texto = csWords(e.text, Math.round(C.palavrasPorFala * 1.4)) + " _(interrompida)_"; else s.msgs.splice(s.msgs.indexOf(msg), 1); throw e; }
   finally { delete msg.live; CS.live = null; }
@@ -13323,7 +13332,7 @@ DILEMA: """${q.slice(0, 2000)}"""${FIL.dsrc ? `\n(Vem de: ${FIL.dsrc.rot})` : ""
 DADOS DA PESSOA:
 ${filFactsAll().join("\n").slice(0, 60000)}`;
   try {
-    const r = await aiCall("Lentes sobre um dilema", build, { signal: FIL.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { FIL.txt = text; const el = $(".fillente"); if (el) el.innerHTML = md(text); else render(); } });
+    const r = await aiCall("Lentes sobre um dilema", build, { dados: true, signal: FIL.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { FIL.txt = text; const el = $(".fillente"); if (el) el.innerHTML = md(text); else render(); } });
     filD().lentes.push({ id: uid(), at: Date.now(), dilema: q, origem: FIL.dsrc ? { k: FIL.dsrc.k, id: FIL.dsrc.id, rot: FIL.dsrc.rot } : null, texto: r.text.trim() });
     if (filD().lentes.length > 30) filD().lentes.shift();
     FIL.txt = r.text.trim(); touch("filosofia", { label: "Lentes sobre um dilema" });
@@ -15052,7 +15061,7 @@ async function ckGerar(tipo, o = {}) {
   const titulo = tipo === "comunic" ? com.nome : tipo === "verbale" ? `Verbale · ${o.meet.titulo}` : tipo === "mensal" ? `Rapporto mensile · ${ckMeseIT(mk)}` : tipo === "periodo" ? `Rapporto di periodo · ${ckPerIT(rp.ini, rp.fim)}` : `${CK_GTIT[tipo]} · ${fmtD(TODAY)}`;
   CK.ger = { tipo, titulo, txt: "" }; CK.rel = "hist"; CK.relOpen = null; if (PAGE !== "trabalho" || SUB !== "relatorios") setHash("trabalho", "relatorios"); else render();
   try {
-    const r = await aiCall(`Cockpit · ${CK_GTIT[tipo]}`, () => `${ckEspec()}\n\n${ckContexto()}\n\nESTADO:\n${ckFacts().join("\n\n")}\n\n${tarefa}\nResponda só com o texto final, pronto para copiar.`, { modelTier: tipo === "mensal" || tipo === "periodo" ? "complex" : "default", cache: false, onText: ({ text }) => { if (CK.ger) { CK.ger.txt = text; const el = $("#ck_gerlive"); if (el) el.innerHTML = md(text); } } });
+    const r = await aiCall(`Cockpit · ${CK_GTIT[tipo]}`, () => `${ckEspec()}\n\n${ckContexto()}\n\nESTADO:\n${ckFacts().join("\n\n")}\n\n${tarefa}\nResponda só com o texto final, pronto para copiar.`, { dados: true, modelTier: tipo === "mensal" || tipo === "periodo" ? "complex" : "default", cache: false, onText: ({ text }) => { if (CK.ger) { CK.ger.txt = text; const el = $("#ck_gerlive"); if (el) el.innerHTML = md(text); } } });
     const x = { id: uid(), tipo, titulo, periodo: tipo === "mensal" ? mk : tipo === "periodo" ? `${rp.ini}/${rp.fim}` : TODAY, at: Date.now(), txt: String(r.text || "").trim(), ai: true, lingua: ["mensal", "periodo", "verbale", "comunic"].includes(tipo) ? "it" : "pt" };
     ckA("ckRel").unshift(x); if (ckA("ckRel").length > 80) S.ckRel.length = 80; CK.ger = null; CK.relOpen = x.id; touch("ckRel", { label: `${titulo} gerado` });
   } catch (e) { CK.ger = null; if (e?.code !== "cancelled") aiError(e); else render(); }
@@ -16346,10 +16355,11 @@ function nuTools(live, T) {
     { name: "salvar_plano_alimentar", description: "Propõe salvar um plano alimentar ou cardápio (texto em Markdown, com refeições, quantidades em gramas e o total de kcal e proteína) em Plano e perfil.",
       inputSchema: { type: "object", properties: { titulo: { type: "string" }, texto: { type: "string" } }, required: ["titulo", "texto"] },
       execute: inp => prop("salvar_plano_alimentar", inp, trunc(inp.titulo || "", 60)) },
+    ...T.filter(x => x.name === "salvar_memoria" || x.name === "recado"),
+    /* por último: se a visualização limita o número de ferramentas, cede a vaga ao ler_dados, que lê treinos e corridas no detalhe */
     { name: "consultar_treinos", description: "Resumo dos treinos (academia e corrida) dos últimos N dias (1–60), do Personal: datas, duração, tipo, km.",
       inputSchema: { type: "object", properties: { dias: { type: "number" } } },
-      execute: inp => { const n = clamp(Math.round(+inp.dias || 14), 1, 60); note("consultar_treinos", `${n} dias`); return typeof trDias === "function" ? trDias(n) : []; } },
-    ...T.filter(x => x.name === "salvar_memoria" || x.name === "recado")];
+      execute: inp => { const n = clamp(Math.round(+inp.dias || 14), 1, 60); note("consultar_treinos", `${n} dias`); return typeof trDias === "function" ? trDias(n) : []; } }];
   return out;
 }
 /* validação: é aqui que os limites de saúde valem de fato */
@@ -17587,6 +17597,160 @@ function rtcChange(t) {
     return true; }
   return false;
 }
+
+
+/* ================================================================ IA com acesso aos dados no detalhe
+   Os mentores recebem, no próprio pedido, os registros completos da área deles (linha por linha, do mais recente ao mais
+   antigo): centenas de lançamentos cabem com folga no limite de 256 KB do pedido. Todas as IAs ganham a ferramenta ler_dados, que
+   lê qualquer conjunto do Atlas: catálogo, filtro por período, texto e campo, paginação, e soma ou contagem por mês ou por
+   campo. Fica de fora só o que a pessoa deixou fora da IA em Privacidade (setor sem IA, entrada trancada, #privado). */
+const IAD_SKIP = new Set(["priv", "auditoria", "integ", "uso", "mentores", "secretario", "conselho", "hojeCtx", "ckSnap"]);
+const IAD_HIDE = new Set(["id", "upd", "at", "criado", "editado", "uid", "r", "cifra", "ok"]);
+const IAD_LBL = { orc: "Orçamento por categoria (teto mensal)", patr: "Patrimônio por mês", saldoConta: "Saldo da conta (série)", projetos: "Projetos e aquisições",
+  fut: "Futuro financeiro", importacoes: "Importações de extrato", cfg: "Ajustes e metas pessoais", listas: "Listas (categorias, contas, tipos)", marks: "Hábitos feitos (dia a dia)",
+  roda: "Roda da Vida (notas)", alvo: "Roda da Vida (alvos)", revisao: "Revisões mensais", prio: "Prioridades da semana", experimentos: "Experimentos", radar: "Radar",
+  fechamentos: "Fechamentos semanais", capitulos: "Capítulos da vida", resumos: "Resumos mensais", bussola: "Bússola moral", bmExames: "Exame da noite",
+  bmDecisoes: "Decisões (Bússola)", jornada: "Jornada existencial", carreira: "Carreira (hub)", lazerHub: "Lazer (hub)", idiomas: "Idiomas", jardim: "Jardim interior",
+  filosofia: "Filosofia", psique: "Psicologia", ck: "Cockpit (perfil e projetos)", ckTar: "Cockpit · tarefas", ckRisk: "Cockpit · riscos", ckIss: "Cockpit · problemas",
+  ckLog: "Cockpit · diário de bordo", ckDec: "Cockpit · decisões", ckMeet: "Cockpit · reuniões", ckBim: "Cockpit · tracker BIM", ckEl: "Cockpit · elaborati",
+  ckLic: "Cockpit · lições", ckRel: "Cockpit · relatórios", nutri: "Nutri (perfil e plano)", nutriLog: "Alimentação (registros)", treino: "Personal (perfil e plano)",
+  treinoLog: "Treinos (registros)", corridas: "Corridas", rotinaModelos: "Modelos de rotina", areasCfg: "Áreas (ajustes)", saude: "Check-ins diários (saúde)" };
+const IAD_AREA_OF = { lanc: "Finanças", orc: "Finanças", patr: "Finanças", saldoConta: "Finanças", projetos: "Finanças", fut: "Finanças", importacoes: "Finanças", assin: "Finanças",
+  regras: "Finanças", vidaItens: "Finanças", contasCasa: "Casa & organização", docs: "Casa & organização", rotinas: "Casa & organização", compras: "Casa & organização",
+  nutri: "Saúde física", nutriLog: "Saúde física", treino: "Saúde física", treinoLog: "Saúde física", corridas: "Saúde física", psique: "Saúde mental", estudo: "Aprendizado",
+  idiomas: "Aprendizado", cand: "Carreira", comp: "Carreira", oport: "Carreira", cadTec: "Carreira", carreira: "Carreira", lazer: "Lazer & criatividade", sonhos: "Lazer & criatividade",
+  lazerHub: "Lazer & criatividade", jornada: "Propósito & espiritualidade", bussola: "Propósito & espiritualidade", bmExames: "Propósito & espiritualidade",
+  bmDecisoes: "Propósito & espiritualidade", jardim: "Propósito & espiritualidade", filosofia: "Propósito & espiritualidade" };
+const iadArea = k => k.startsWith("ck") ? "Carreira" : IAD_AREA_OF[k] || null;
+/* o que é “da área” de cada mentor (spec “conjunto:filtro”: saude:fis, pessoas:Família, tarefas:<área>) */
+const IAD_MINE = {
+  "Finanças": ["orc", "assin", "saldoConta", "patr", "projetos", "fut", "vidaItens", "importacoes", "regras", "contasCasa", "lanc"],
+  "Saúde física": ["saude:fis", "treinoLog", "corridas", "nutriLog"], "Saúde mental": ["saude:men", "psique", "diario"],
+  "Carreira": ["cand", "comp", "oport", "carreira", "cadTec"], "Aprendizado": ["aprend", "estudo", "idiomas"],
+  "Família": ["pessoas:Família", "contatos:Família"], "Amor & parceria": ["pessoas:Parceria", "contatos:Parceria"], "Amizades & social": ["pessoas:Amizade", "contatos:Amizade"],
+  "Lazer & criatividade": ["lazer", "sonhos", "lazerHub"], "Propósito & espiritualidade": ["revisao", "bussola", "bmExames", "bmDecisoes", "jornada", "jardim", "filosofia"],
+  "Casa & organização": ["docs", "rotinas", "contasCasa", "compras", "eventos"] };
+const IAD_MID = { ck: ["ck", "ckTar", "ckRisk", "ckIss", "ckDec", "ckMeet", "ckBim", "ckEl", "ckLic", "ckLog"], nutri: ["nutri", "nutriLog", "saude:fis"],
+  personal: ["treino", "treinoLog", "corridas", "saude:fis"], psi: ["psique", "saude:men", "diario"], conselho: [] };
+const IAD_FIS = ["sono", "qual", "passos", "treino", "min", "peso", "km", "kcal", "prot"], IAD_MEN = ["humor", "energia", "estresse"];
+const iadMine = mid => { const d = MENTOR_DEF[mid]; if (!d) return []; if (IAD_MID[mid]) return IAD_MID[mid]; const a = d.area || d.gate; return a ? [...(IAD_MINE[a] || []), `tarefas:${a}`, `metas:${a}`, `habitos:${a}`] : []; };
+const iadLabel = k => DSETS[k] || IAD_LBL[k] || k;
+
+/* ---------------------------------------------------------------- linhas de um conjunto, já filtradas pela privacidade */
+function iadRaw(spec, ctx = AICTX) {
+  const [k, f] = String(spec).split(":"), area = iadArea(k);
+  if (IAD_SKIP.has(k) || !(k in S)) return null;
+  if (area && !aiAreaOk(area)) return { k, f, bloq: true };
+  if (area) aiNote("area", area, ctx);
+  let rows = null, obj = null;
+  if (k === "saude") { const okF = aiAreaOk("Saúde física"), okM = aiAreaOk("Saúde mental"), want = f === "fis" ? IAD_FIS : f === "men" ? IAD_MEN : [...IAD_FIS, ...IAD_MEN, "nota", "obs"];
+    if (okF && want.some(x => IAD_FIS.includes(x))) aiNote("area", "Saúde física", ctx); if (okM && want.some(x => IAD_MEN.includes(x))) aiNote("area", "Saúde mental", ctx);
+    rows = Object.entries(S.saude || {}).map(([d, e]) => { const o = { data: d }; for (const [x, v] of Object.entries(e || {})) { if (!want.includes(x) && f) continue; if (IAD_FIS.includes(x) && !okF) continue; if (IAD_MEN.includes(x) && !okM) continue; o[x] = v; } return o; }).filter(o => Object.keys(o).length > 1); }
+  else if (k === "diario") rows = aiEntries(S.diario || [], ctx).map(e => { const v = viewEntry(e) || e; return { data: e.data, hora: e.hora, titulo: v.titulo, humor: aiAreaOk("Saúde mental") ? e.humor : undefined, energia: aiAreaOk("Saúde mental") ? e.energia : undefined, texto: v.texto, fixado: e.fixado || undefined }; });
+  else if (k === "pessoas" || k === "contatos") { const rel = nome => S.pessoas.find(p => p.nome === nome)?.relacao, okR = r => aiAreaOk(relArea(r)) && (!f || r === f || (f === "Amizade" && r === "Comunidade"));
+    rows = k === "pessoas" ? S.pessoas.filter(p => okR(p.relacao)).map(p => ({ ...p, aniv: p.aniv ? (anivAno(p.aniv) ? p.aniv : "--" + p.aniv.slice(5)) : "" })) : S.contatos.filter(c => okR(rel(c.pessoa)));
+    (f ? [relArea(f)] : [...new Set(rows.map(p => relArea(p.relacao || rel(p.pessoa))))]).forEach(a => aiNote("area", a, ctx)); }
+  else if (k === "marks") { const hab = Object.fromEntries((S.habitos || []).map(h => [h.id, h]));
+    rows = Object.entries(S.marks || {}).filter(([, v]) => v).map(([key]) => { const [hid, d] = key.split("|"), h = hab[hid]; return h && aiAreaOk(h.area) ? { data: d, habito: h.nome, area: h.area } : null; }).filter(Boolean); }
+  else if (["tarefas", "metas", "habitos", "aprend"].includes(k)) rows = (S[k] || []).filter(x => aiAreaOk(x.area) && (!f || x.area === f));
+  else if (Array.isArray(S[k])) rows = S[k];
+  else obj = S[k];
+  return { k, f, rows, obj };
+}
+const iadDateCol = rows => ["data", "prazo", "inicio", "validade", "concluida"].find(c => rows.some(r => r && r[c]));
+function iadCols(k, rows) {
+  const pref = (typeof dsFields === "function" ? dsFields(k) : []).map(f => f[0]), cnt = {};
+  for (const r of rows) for (const [c, v] of Object.entries(r || {})) if (!IAD_HIDE.has(c) && v !== undefined && v !== null && v !== "" && !(Array.isArray(v) && !v.length)) cnt[c] = (cnt[c] || 0) + 1;
+  return [...pref.filter(c => cnt[c]), ...Object.keys(cnt).filter(c => !pref.includes(c)).sort((a, b) => cnt[b] - cnt[a])];
+}
+/* célula: aninhados (ex.: exercícios e séries de um treino) vão inteiros em JSON até 4.000 caracteres; o orçamento do bloco limita o total */
+const IAD_CEL = 4000;
+const iadVal = v => v == null || v === "" ? "" : typeof v === "number" ? String(Math.round(v * 100) / 100) : typeof v === "boolean" ? (v ? "sim" : "não")
+  : typeof v === "object" ? (j => (j.length > IAD_CEL ? j.slice(0, IAD_CEL) + "…" : j).replace(/\|/g, "/"))(JSON.stringify(v)) : String(v).replace(/\s*\n\s*/g, " ⏎ ").replace(/\|/g, "/");
+const iadBytes = s => ENC.encode(s).length;
+/* tabela: cabeçalho + linhas (mais recente primeiro), até caber em `max` bytes */
+function iadTable(rows, cols, max, skip = 0) {
+  const head = cols.join("|"), out = [head]; let used = iadBytes(head) + 1, n = 0;
+  for (let i = skip; i < rows.length; i++) { const ln = cols.map(c => iadVal(rows[i][c])).join("|"), b = iadBytes(ln) + 1; if (used + b > max) break; out.push(ln); used += b; n++; }
+  return { txt: out.join("\n"), n, resto: rows.length - skip - n };
+}
+const iadSort = rows => { const dc = iadDateCol(rows); return { dc, rows: dc ? [...rows].sort((a, b) => String(b[dc] || "").localeCompare(String(a[dc] || ""))) : rows }; };
+function iadRange(rows, dc) { const ds = rows.map(r => r[dc]).filter(Boolean).sort(); return ds.length ? `${ds[0]} a ${ds.at(-1)}` : ""; }
+
+/* ---------------------------------------------------------------- bloco “dados completos da área” para o pedido */
+function iadBloco(specs, maxBytes = 140000, ctx = AICTX) {
+  const parts = specs.map(s => ({ s, d: iadRaw(s, ctx) })).filter(x => x.d && !x.d.bloq && (x.d.obj != null ? Object.keys(x.d.obj || {}).length : x.d.rows?.length));
+  /* os pequenos primeiro: sempre cabem; o maior (ex.: lançamentos) usa o que sobra */
+  parts.forEach(p => p.sz = p.d.obj != null ? iadBytes(JSON.stringify(p.d.obj)) : p.d.rows.length * 60);
+  parts.sort((a, b) => a.sz - b.sz);
+  const out = []; let left = maxBytes;
+  for (const { s, d } of parts) {
+    const k = d.k, nome = iadLabel(k) + (d.f ? ` (${d.f === "fis" ? "corpo" : d.f === "men" ? "mente" : d.f})` : "");
+    if (left < 400) { out.push(`### ${nome}: não coube aqui; use ler_dados com conjunto "${s}".`); continue; }
+    if (d.obj != null) { let js = JSON.stringify(d.obj); if (iadBytes(js) > left - 200) js = js.slice(0, Math.max(0, left - 300)) + "…(cortado: use ler_dados)"; const t = `### ${nome} (JSON)\n${js}`; out.push(t); left -= iadBytes(t) + 2; continue; }
+    const { dc, rows } = iadSort(d.rows), cols = iadCols(k, rows), T = iadTable(rows, cols, left - 200);
+    const t = `### ${nome}: ${plural(rows.length, "registro", "registros")}${dc ? `, ${iadRange(rows, dc)}` : ""}${T.resto ? ` (aqui os ${T.n} mais recentes; os outros ${T.resto} pelo ler_dados)` : ""}\n${T.txt}`;
+    out.push(t); left -= iadBytes(t) + 2;
+  }
+  return out.join("\n\n");
+}
+/* catálogo: todos os conjuntos com dados que a IA pode ler */
+function iadCatalogo() {
+  const L = [];
+  for (const k of Object.keys(S)) { if (IAD_SKIP.has(k)) continue; const a = iadArea(k); if (a && !aiAreaOk(a)) continue;
+    const v = S[k], n = k === "saude" ? Object.keys(v || {}).length : Array.isArray(v) ? v.length : v && typeof v === "object" ? Object.keys(v).length : 0; if (!n) continue;
+    L.push(`${k} (${iadLabel(k)}, ${Array.isArray(v) || k === "saude" ? n + " registros" : "objeto"})`); }
+  return L.join("; ");
+}
+function iadPromptMentor(mid, fallback, maxBytes) {
+  const mine = iadMine(mid), bloco = mine.length && maxBytes > 2000 ? iadBloco(mine, maxBytes) : "";
+  return `\n\n${bloco ? `DADOS COMPLETOS DA SUA ÁREA (registro por registro, do mais recente ao mais antigo; campos separados por |). Analise no detalhe: some, compare períodos, ache padrões e exceções, cite datas, descrições e valores exatos.\n${bloco}\n\n` : ""}${fallback ? `OUTROS DADOS DO ATLAS (não vêm neste pedido; se precisar de algum, diga qual): ${iadCatalogo() || "nenhum"}.` : `OUTROS DADOS DO ATLAS (você pode ler todos): ${iadCatalogo() || "nenhum"}. Use a ferramenta ler_dados para ver qualquer um deles registro por registro, filtrar por período, texto ou campo, e somar ou contar por mês ou por campo. Não narre a consulta.`}`;
+}
+
+/* ---------------------------------------------------------------- ferramenta ler_dados */
+function iadQuery(inp, ctx) {
+  const lim = 30000, sp = String(inp?.conjunto || "").trim();
+  if (!sp) return `Catálogo (conjunto: rótulo, tamanho): ${iadCatalogo()}.\nFiltros por conjunto: "saude:fis" ou "saude:men", "pessoas:Família", "tarefas:<área>".`;
+  const [k0, f] = sp.split(":"), k = k0 in S ? k0 : Object.keys(S).find(x => norm(iadLabel(x)) === norm(k0) || norm(x) === norm(k0));
+  if (!k || IAD_SKIP.has(k)) throw new Error(`Conjunto desconhecido: ${sp}. Chame sem "conjunto" para ver o catálogo.`);
+  const d = iadRaw(f ? `${k}:${f}` : k, ctx);
+  if (!d) throw new Error(`Conjunto desconhecido: ${sp}.`);
+  if (d.bloq) throw new Error("A pessoa deixou esse setor fora da IA em Privacidade. Não use.");
+  if (d.obj != null) { const js = JSON.stringify(d.obj); return js.length > lim ? js.slice(0, lim) + "…(cortado)" : js; }
+  let { dc, rows } = iadSort(d.rows);
+  const de = /^\d{4}-\d{2}(-\d{2})?$/.test(inp.de || "") ? inp.de : "", ate = /^\d{4}-\d{2}(-\d{2})?$/.test(inp.ate || "") ? inp.ate : "";
+  if (dc && de) rows = rows.filter(r => String(r[dc] || "") >= de);
+  if (dc && ate) rows = rows.filter(r => String(r[dc] || "").slice(0, ate.length) <= ate);
+  const q = norm(inp.busca || ""); if (q) rows = rows.filter(r => norm(Object.values(r).map(iadVal).join(" ")).includes(q));
+  if (inp.campo) { const c = String(inp.campo), v = norm(String(inp.valor ?? "")); rows = rows.filter(r => norm(iadVal(r[c])) === v || (v && norm(iadVal(r[c])).includes(v))); }
+  const cols = iadCols(k, rows);
+  if (inp.agrupar) {
+    const g = String(inp.agrupar), sv = inp.somar ? String(inp.somar) : "", G = {};
+    for (const r of rows) { const key = g === "mes" ? String(r[dc] || "").slice(0, 7) : g === "ano" ? String(r[dc] || "").slice(0, 4) : iadVal(r[g]) || "(vazio)"; const x = G[key] ||= { s: 0, n: 0 }; x.n++; if (sv && isNum(+r[sv])) x.s += +r[sv]; }
+    const ks = Object.keys(G).sort((a, b) => ["mes", "ano"].includes(g) ? b.localeCompare(a) : sv ? G[b].s - G[a].s : G[b].n - G[a].n);
+    return `${iadLabel(k)}: ${rows.length} registros${de || ate ? ` (${de || "início"} a ${ate || "hoje"})` : ""}${q ? `, busca "${inp.busca}"` : ""}${inp.campo ? `, ${inp.campo}=${inp.valor}` : ""}, agrupado por ${g}\n${g}|${sv ? "soma de " + sv + "|" : ""}registros\n` + ks.map(x => `${x}|${sv ? Math.round(G[x].s * 100) / 100 + "|" : ""}${G[x].n}`).join("\n").slice(0, lim);
+  }
+  const skip = clamp(+inp.pular || 0, 0, 1e6), take = clamp(+inp.limite || 300, 1, 2000);
+  const T = iadTable(rows.slice(0, skip + take), cols, lim, skip);
+  return `${iadLabel(k)}: ${rows.length} registros${de || ate ? ` (${de || "início"} a ${ate || "hoje"})` : ""}${q ? `, busca "${inp.busca}"` : ""}; mostrando ${T.n} a partir do ${skip + 1}º (mais recente primeiro)${rows.length - skip - T.n > 0 ? `; faltam ${rows.length - skip - T.n}: use pular=${skip + T.n}` : ""}.\n${T.txt}`;
+}
+function iadTool(note, getCtx) {
+  return { name: "ler_dados",
+    description: "Lê qualquer conjunto de dados do Atlas registro por registro. Sem 'conjunto': devolve o catálogo. Com 'conjunto': filtra por período (de/ate), texto (busca) e campo=valor; com 'agrupar' (mes, ano ou um campo) soma 'somar' ou conta; sem 'agrupar' devolve as linhas (mais recentes primeiro), com 'limite' e 'pular' para paginar. Retorna texto em tabela, campos separados por |.",
+    inputSchema: { type: "object", properties: { conjunto: { type: "string", description: "chave do catálogo, ex.: lanc, saude:fis, tarefas, pessoas:Família" }, de: { type: "string", description: "AAAA-MM-DD ou AAAA-MM" }, ate: { type: "string", description: "AAAA-MM-DD ou AAAA-MM" },
+      busca: { type: "string", description: "texto em qualquer campo" }, campo: { type: "string" }, valor: { type: "string" }, agrupar: { type: "string", description: "mes, ano ou nome de um campo" }, somar: { type: "string", description: "campo numérico a somar, ex.: valor" },
+      limite: { type: "number", description: "linhas (padrão 300)" }, pular: { type: "number" } } },
+    execute: inp => { const ctx = getCtx?.(); const r = iadQuery(inp || {}, ctx); note?.("ler_dados", [inp?.conjunto || "catálogo", inp?.de && `de ${inp.de}`, inp?.ate && `até ${inp.ate}`, inp?.busca && `“${inp.busca}”`, inp?.campo && `${inp.campo}=${inp.valor}`, inp?.agrupar && `por ${inp.agrupar}`].filter(Boolean).join(" · ")); return r; } };
+}
+/* lista final de ferramentas: ler_dados entra no fim e, se a visualização aceita menos ferramentas, ocupa a última vaga
+   (sai a última do agente: a ordem de cada agente é a prioridade dele) */
+function iadCabe(lista) {
+  const t = lista.find(x => x.name === "ler_dados"), L = lista.filter(x => x.name !== "ler_dados");
+  if (!t) return TOOLS_MAX && L.length > TOOLS_MAX ? L.slice(0, TOOLS_MAX) : L;
+  return TOOLS_MAX && L.length + 1 > TOOLS_MAX ? [...L.slice(0, TOOLS_MAX - 1), t] : [...L, t];
+}
+/* para as IAs de tarefa única: o catálogo no pedido e a ferramenta, quando a visualização permite ferramentas */
+const iadNota = () => `\n\nDADOS DO ATLAS: você pode ler todos, registro por registro, com a ferramenta ler_dados (catálogo: ${iadCatalogo() || "vazio"}). Use-a para conferir detalhes antes de afirmar algo. Não narre a consulta: o texto que você escrever é a resposta final, sem frases como "vou consultar os dados".`;
 
 
 /* ================================================================ render */

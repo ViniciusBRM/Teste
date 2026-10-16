@@ -134,7 +134,7 @@ Regras:
 - Para montar o dia ou preencher a rotina, proponha um "bloco" por atividade, com data, inicio e fim em HH:MM (ex.: 09:00 e 10:30). Atividade com horário nunca é "tarefa": tarefa vai para o “dia todo” da Rotina. Antes, veja os horários livres com ver_aba(rotina).
 - Mentores: use "consultar_mentor" só para coletar informação sobre progresso, bloqueios e oportunidades de uma área. Os mentores não decidem nada e você não decide por eles.
 - Se houver prioridades conflitantes ou ambiguidade entre áreas (tempo, dinheiro, energia), NÃO escolha: use "levantar_conflito" com 2 a 4 opções claras e espere a decisão.
-- Use "ver_aba" para detalhes de uma área antes de afirmar algo sobre ela. Respeite setores privados.
+- Use "ver_aba" para o resumo de uma área e "ler_dados" para os registros um a um (lançamentos, check-ins, tarefas, contatos…), com filtro por período, texto ou campo e soma por mês ou campo. Confira os detalhes antes de afirmar algo. Respeite setores privados.\n- Dados do Atlas que você pode ler: ${iadCatalogo() || "nenhum"}.
 
 AGORA (${fmtDL(TODAY)}, ${nowHMs()}):
 ${its.join("\n") || "nada pendente"}
@@ -155,14 +155,15 @@ function secTools(live) {
       inputSchema: { type: "object", properties: { mentor: { type: "string", enum: mids }, pergunta: { type: "string" } }, required: ["mentor", "pergunta"] },
       execute: async (inp, ctx) => { const mid = String(inp.mentor); if (!MENTOR_DEF[mid] || blockedMentor(mid)) throw new Error("Mentor indisponível ou setor privado.");
         note("consultar_mentor", `${MENTOR_DEF[mid].nome}: ${trunc(inp.pergunta, 60)}`);
-        const r = await aiCall(`${MENTOR_DEF[mid].nome} (consultado pelo Secretário)`, () => [{ role: "user", content: mentorPrompt(mid, false) + `\n\nO Secretário da Vida, que coordena o app, pede um relatório para a pessoa. Responda só com informação, em até 120 palavras: progresso, bloqueios e oportunidades, com números. Não proponha registros, não decida nada e não use ferramentas.` }, { role: "user", content: String(inp.pergunta).slice(0, 600) }], { signal: ctx?.signal || live.ctl.signal, modelTier: "quick", cache: true });
+        const r = await aiCall(`${MENTOR_DEF[mid].nome} (consultado pelo Secretário)`, () => [{ role: "user", content: mentorPrompt(mid, false) + iadPromptMentor(mid, true, 120000) + `\n\nO Secretário da Vida, que coordena o app, pede um relatório para a pessoa. Responda só com informação, em até 120 palavras: progresso, bloqueios e oportunidades, com números. Não proponha registros, não decida nada e não use ferramentas.` }, { role: "user", content: String(inp.pergunta).slice(0, 600) }], { signal: ctx?.signal || live.ctl.signal, modelTier: "quick", cache: true });
         return String(r.text || "").replace(/```atlas[\s\S]*?```/g, "").trim().slice(0, 2500); } },
     { name: "propor", description: "Propõe uma ação que a pessoa confirma ou descarta num cartão. Tipos: tarefa (titulo, prazo, prioridade), lembrete (titulo, quando AAAA-MM-DDTHH:MM), adiar (tarefa_id, prazo), concluir (tarefa_id), bloco (titulo, data, inicio HH:MM, fim HH:MM ou duracao_min, categoria da rotina): use bloco para TODA atividade com horário (montar o dia, reunião, estudo, treino), um por atividade, e tarefa só para o que tem prazo sem hora marcada. Nada é feito sem confirmação.",
       inputSchema: { type: "object", properties: { tipo: { type: "string", enum: ["tarefa", "lembrete", "adiar", "concluir", "bloco"] }, titulo: { type: "string" }, prazo: { type: "string" }, prioridade: { type: "string", enum: ["Alta", "Média", "Baixa"] }, quando: { type: "string" }, tarefa_id: { type: "string" }, data: { type: "string" }, inicio: { type: "string" }, fim: { type: "string" }, categoria: { type: "string" }, duracao_min: { type: "number" }, motivo: { type: "string" } }, required: ["tipo"] },
       execute: inp => { const p = secMkProp(inp); if (p.erro) throw new Error(p.erro); live.acoes.push(p); note("propor", p.rotulo); return { ok: true, status: "aguardando confirmação da pessoa" }; } },
     { name: "levantar_conflito", description: "Leva à pessoa um conflito ou ambiguidade entre prioridades ou áreas, com 2 a 4 opções. Ela decide; você não escolhe. Retorna {ok}.",
       inputSchema: { type: "object", properties: { titulo: { type: "string" }, contexto: { type: "string" }, opcoes: { type: "array", items: { type: "string" } } }, required: ["titulo", "opcoes"] },
-      execute: inp => { const ops = (inp.opcoes || []).map(String).filter(Boolean).slice(0, 4); if (ops.length < 2) throw new Error("Dê pelo menos 2 opções."); live.conflitos.push({ id: uid(), titulo: String(inp.titulo).slice(0, 200), contexto: String(inp.contexto || "").slice(0, 400), ops, escolha: null }); note("levantar_conflito", trunc(inp.titulo, 60)); return { ok: true, status: "aguardando decisão" }; } }];
+      execute: inp => { const ops = (inp.opcoes || []).map(String).filter(Boolean).slice(0, 4); if (ops.length < 2) throw new Error("Dê pelo menos 2 opções."); live.conflitos.push({ id: uid(), titulo: String(inp.titulo).slice(0, 200), contexto: String(inp.contexto || "").slice(0, 400), ops, escolha: null }); note("levantar_conflito", trunc(inp.titulo, 60)); return { ok: true, status: "aguardando decisão" }; } },
+    iadTool(note, () => live.ctx)];
 }
 function secMkProp(inp) {
   const tipo = String(inp.tipo), id = uid(), t = S.tarefas.find(x => x.id === inp.tarefa_id) || (inp.titulo && S.tarefas.find(x => x.status !== "Concluída" && norm(x.tarefa) === norm(inp.titulo)));
@@ -192,7 +193,7 @@ async function secAsk(text) {
   SEC.input = ""; SEC.tab = "conversa"; secPaint();
   const hist = D.conversa.slice(-12).filter(x => !x.local).map(x => ({ role: x.role, content: x.role === "assistant" ? x.content + (x.acoes?.length ? `\n[propostas: ${x.acoes.map(a => `${a.rotulo} — ${a.status}`).join("; ")}]` : "") + (x.conflitos?.length ? `\n[conflitos: ${x.conflitos.map(c => `${c.titulo} — ${c.escolha ? "decidido: " + c.escolha : "sem decisão"}`).join("; ")}]` : "") : x.content })).filter(x => x.content.trim());
   try {
-    const r = await aiCall("Secretário da Vida", ctx => { live.ctx = ctx; return [{ role: "user", content: secPrompt() }, ...hist, { role: "user", content: text }]; }, { signal: live.ctl.signal, modelTier: "default", cache: false, ...(TOOLS_MAX ? { tools: secTools(live) } : {}), onText: ({ text: t }) => { live.text = t; secPaintLive(); } });
+    const r = await aiCall("Secretário da Vida", ctx => { live.ctx = ctx; return [{ role: "user", content: secPrompt() }, ...hist, { role: "user", content: text }]; }, { signal: live.ctl.signal, modelTier: "default", cache: false, ...(TOOLS_MAX ? { tools: iadCabe(secTools(live)) } : {}), onText: ({ text: t }) => { live.text = t; secPaintLive(); } });
     secFinish(r.text, r.truncated);
   } catch (e) { if (e?.text) secFinish(e.text, true); else { SEC.live = null; secPaint(); } if (e?.code !== "cancelled") aiError(e); }
 }

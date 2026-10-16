@@ -318,7 +318,7 @@ Situação: """${String(dr.sit || "").slice(0, 2500)}"""
 Respostas dela às perguntas: ${BM_Q.filter(([k]) => dr.q[k]).map(([k, l]) => `${l}: ${String(dr.q[k]).slice(0, 400)}`).join(" | ") || "nenhuma"}
 Valores em jogo: ${dr.vals.map(id => bmV(id).nome).join(", ") || "não marcados"}
 Decisão que está considerando: ${dr.dec || "ainda nenhuma"}`;
-  try { const r = await aiCall("Bússola moral", build, { signal: BM.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { BM.ai = text; const el = $(".bmdec .semans .mdx"); if (el) el.innerHTML = md(text); else render(); } }); BM.ai = r.text.trim(); }
+  try { const r = await aiCall("Bússola moral", build, { dados: true, signal: BM.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { BM.ai = text; const el = $(".bmdec .semans .mdx"); if (el) el.innerHTML = md(text); else render(); } }); BM.ai = r.text.trim(); }
   catch (e) { if (e?.text) BM.ai = e.text; if (e?.code !== "cancelled") aiError(e); }
   finally { BM.busy = false; render(); }
 }

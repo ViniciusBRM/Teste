@@ -60,7 +60,7 @@ Próxima semana: ${(d.proximas || []).filter(Boolean).join("; ") || "ainda não 
 ${labFacts().join("\n")}
 Trechos do diário da semana${star.size ? " (os marcados com ★ a pessoa destacou)" : ""}:
 ${ents.map(e => `- ${fmtD(e.data)}${star.has(e.id) ? " ★" : ""}${mo ? ` (humor ${e.humor ?? "?"})` : ""}: ${snippet(e, 260)}`).join("\n") || "(nenhum)"}`; };
-  try { const r = await aiCall("Fechamento semanal", build, { signal: FS.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { const el = $("#fs_carta"); if (el) el.value = text; } }); fsSave({ carta: r.text.trim() }, "Carta da semana"); }
+  try { const r = await aiCall("Fechamento semanal", build, { dados: true, signal: FS.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { const el = $("#fs_carta"); if (el) el.value = text; } }); fsSave({ carta: r.text.trim() }, "Carta da semana"); }
   catch (e) { if (e?.text) fsSave({ carta: e.text }); if (e?.code !== "cancelled") aiError(e); }
   finally { FS.busy = false; render(); }
 }

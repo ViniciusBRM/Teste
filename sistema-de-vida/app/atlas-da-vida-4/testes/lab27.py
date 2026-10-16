@@ -132,12 +132,12 @@ async def main():
             await ask(pg, "Comi pizza no jantar. Revise as minhas metas?")
             R = await pg.evaluate("""(() => { const c = mget('nutri').conversa, m = c.at(-1), calls = window.__calls; const t = n => calls.filter(x => x.kind === 'tool' && x.name === n).at(-1)?.r;
               return { acoes: (m.acoes || []).map(p => [p.tipo, p.status, p.erro]), tools: calls.filter(x => x.kind === 'sample').at(-1).tools, cons: t('consultar_alimentacao'), tend: t('tendencia_peso'), busca: t('buscar_alimento'), bad: t('metas_bad'), ok1: t('refeicao_ok'), trein: t('nu_treinos'), prompt: window.__nuPrompt || '', piso: nuMetas().piso }; })()""")
-            chk(len(R["tools"]) == 10 and {"salvar_memoria", "recado", "registrar_refeicao", "ajustar_metas", "definir_objetivo", "consultar_treinos"} <= set(R["tools"]), f"o Nutri leva 10 ferramentas, as dele mais memória e recado ({R['tools']})")
+            chk(len(R["tools"]) == 10 and {"salvar_memoria", "recado", "registrar_refeicao", "ajustar_metas", "definir_objetivo", "ler_dados"} <= set(R["tools"]) and R["tools"][-1] == "ler_dados", f"o Nutri leva 10 ferramentas: as dele, memória, recado e ler_dados na última vaga (que lê os treinos no lugar de consultar_treinos) ({R['tools']})")
             chk([a[:2] for a in R["acoes"]] == [["ajustar_metas", "descartada"], ["registrar_refeicao", "pendente"], ["ajustar_metas", "pendente"]] and "piso" in R["acoes"][0][2] and "piso" in (R["bad"] or {}).get("erro", ""),
                 f"1.100 kcal é recusado pela validação (abaixo do piso) e o agente recebe o motivo; refeição e metas válidas ficam esperando ({R['acoes']})")
             pw = await pg.evaluate("Object.entries(S.saude).filter(([d, e]) => d >= addDays(TODAY, -29) && d <= TODAY && isNum(e.peso) && +e.peso > 0).map(([d, e]) => [d, +e.peso]).sort()")
             u = pw[-1][0]; ult = [kg for d, kg in pw if d > add(u, -7)]; atual = jr(sum(ult) / len(ult) * 10) / 10
-            chk(len(R["cons"]) == 7 and R["tend"]["atual_kg"] == atual and R["busca"][0]["nome"] == "Pizza margherita" and isinstance(R["trein"], list) and len(R["trein"]) > 0,
+            chk(len(R["cons"]) == 7 and R["tend"]["atual_kg"] == atual and R["busca"][0]["nome"] == "Pizza margherita" and ((isinstance(R["trein"], list) and len(R["trein"]) > 0) or (isinstance(R["trein"], str) and R["trein"].startswith("Treinos (registros):") and R["trein"].count("\n") >= 2)),
                 "ferramentas de leitura: 7 dias de totais, o peso de hoje, a base de alimentos e os treinos do Personal")
             chk("LINHAS VERMELHAS" in R["prompt"] and f"{R['piso']} kcal para esta pessoa" in R["prompt"] and "Foco: Esportivo" in R["prompt"] and "TREINOS (do Personal)" in R["prompt"], "o prompt do Nutri traz o foco, o compromisso, o piso desta pessoa e o resumo dos treinos")
             await ask(pg, "ok")
@@ -265,7 +265,7 @@ async def main():
             await ask(pg, "Posso subir o supino? Corri 6,2 km hoje.")
             Q = await pg.evaluate("""(() => { const m = mget('personal').conversa.at(-1), calls = window.__calls, t = n => calls.filter(x => x.kind === 'tool' && x.name === n).at(-1)?.r;
               return { acoes: (m.acoes || []).map(p => [p.tipo, p.status, p.erro, p.id]), mi: mget('personal').conversa.length - 1, tools: calls.filter(x => x.kind === 'sample').at(-1).tools, prog: t('progresso_exercicio'), vol: t('volume_semanal'), lis: t('listar_exercicios'), b1: t('ficha_bad'), b2: t('plano_bad'), prompt: window.__trPrompt || '' }; })()""")
-            chk(len(Q["tools"]) == 10 and {"criar_ficha", "registrar_treino", "registrar_corrida", "planejar_corrida", "salvar_memoria", "recado"} <= set(Q["tools"]), f"o Personal leva 10 ferramentas ({Q['tools']})")
+            chk(len(Q["tools"]) == 10 and {"criar_ficha", "registrar_treino", "registrar_corrida", "planejar_corrida", "salvar_memoria", "ler_dados"} <= set(Q["tools"]) and Q["tools"][-1] == "ler_dados", f"o Personal leva 10 ferramentas: as dele, memória e ler_dados na última vaga ({Q['tools']})")
             chk([a[:2] for a in Q["acoes"]] == [["criar_ficha", "descartada"], ["planejar_corrida", "descartada"], ["criar_ficha", "pendente"], ["registrar_corrida", "pendente"]] and "10%" in Q["acoes"][0][2] and "semana 1" in Q["acoes"][1][2],
                 f"carga de 200 kg no supino (mais de 10% acima do recorde) e 30 km na 1ª semana são recusados; ficha e corrida válidas esperam ({[a[:3] for a in Q['acoes'][:2]]})")
             chk(Q["prog"]["proxima"] and Q["prog"]["maior_carga_kg"] >= 60 and Q["vol"]["faixa_series_por_grupo"] == [10, 15] and len(Q["vol"]["semanas"]) == 2 and all(x["grupo"] == "gluteos" or "gluteos" in x["secundarios"] for x in Q["lis"]) and len(Q["lis"]) >= 4,

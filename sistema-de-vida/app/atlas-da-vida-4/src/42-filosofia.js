@@ -130,7 +130,7 @@ DILEMA: """${q.slice(0, 2000)}"""${FIL.dsrc ? `\n(Vem de: ${FIL.dsrc.rot})` : ""
 DADOS DA PESSOA:
 ${filFactsAll().join("\n").slice(0, 60000)}`;
   try {
-    const r = await aiCall("Lentes sobre um dilema", build, { signal: FIL.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { FIL.txt = text; const el = $(".fillente"); if (el) el.innerHTML = md(text); else render(); } });
+    const r = await aiCall("Lentes sobre um dilema", build, { dados: true, signal: FIL.ctl.signal, modelTier: "default", cache: false, onText: ({ text }) => { FIL.txt = text; const el = $(".fillente"); if (el) el.innerHTML = md(text); else render(); } });
     filD().lentes.push({ id: uid(), at: Date.now(), dilema: q, origem: FIL.dsrc ? { k: FIL.dsrc.k, id: FIL.dsrc.id, rot: FIL.dsrc.rot } : null, texto: r.text.trim() });
     if (filD().lentes.length > 30) filD().lentes.shift();
     FIL.txt = r.text.trim(); touch("filosofia", { label: "Lentes sobre um dilema" });

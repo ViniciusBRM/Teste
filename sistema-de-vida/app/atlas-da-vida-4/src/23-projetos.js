@@ -132,7 +132,7 @@ Etapas: ${(p.etapas || []).map(e => `${e.nome}${e.valor ? " " + eur(+e.valor) : 
 Finanças (médias de ${c.meses} meses): receitas ${eur(c.rec)}, despesas ${eur(c.desp)}, sobra ${eur(c.sobra)}. Reserva ${c.resMeses == null ? "?" : num(c.resMeses, 1)} meses (meta ${pjCfg().metaReserva}). Parcelas atuais e previstas ${eur(P.comprom)}/mês, teto ${eur(P.tetoParc)}.
 Outros projetos: ${pjs().filter(z => z.id !== p.id).map(z => `${z.nome} (${z.prio}, ${eur(+z.valor || 0)})`).join("; ") || "nenhum"}.
 Anotações anteriores: ${(p.mentor || []).slice(-3).map(m => trunc(m.texto, 200)).join(" | ") || "nenhuma"}`; };
-  try { const r = await aiCall(`Mentor · ${trunc(p.nome, 40)}`, build, { signal: PJ.ctl.signal, modelTier: "default", cache: false }); p.mentor = [...(p.mentor || []), { at: Date.now(), texto: r.text.trim(), origem: "ia" }]; touch("projetos", { label: "Orientação do mentor", noRender: true }); }
+  try { const r = await aiCall(`Mentor · ${trunc(p.nome, 40)}`, build, { dados: true, signal: PJ.ctl.signal, modelTier: "default", cache: false }); p.mentor = [...(p.mentor || []), { at: Date.now(), texto: r.text.trim(), origem: "ia" }]; touch("projetos", { label: "Orientação do mentor", noRender: true }); }
   catch (e) { if (e?.code !== "cancelled") aiError(e); }
   finally { PJ.busy = null; render(); }
 }
