@@ -396,13 +396,17 @@ function watchRevs() {
       e => { WATCH = null; if (e?.code !== "revoked") setTimeout(watchRevs, 30000); });
   } catch (e) { WATCH = null; }
 }
-async function pullRemote() {
+/* no modo exemplo a releitura espera (S é o exemplo): as chaves ficam na fila e entram nos seus dados quando ele desligar */
+let PULLING = null;
+function pullRemote() { if (EX_MODE) return; return PULLING ||= pullRemote0().finally(() => { PULLING = null; }); }
+async function pullRemote0() {
   if (FLUSHING) await FLUSHING.catch(() => {});
   const ks = [...PULL]; PULL.clear(); let n = 0;
   for (const k of ks) {
     if (dirty.has(k)) continue;   /* edição pendente aqui: a gravação junta as duas versões */
     try {
       const { m, v } = await readRemote(k); const rr = revOf(m);
+      if (EX_MODE) { PULL.add(k); continue; }
       if (!m || rr === REV[k] || dirty.has(k)) continue;
       S[k] = v; BASE[k] = SNAP[k] = JSON.stringify(v ?? null); REV[k] = rr; PARTS[k] = partsOf(m); dropUndo(k); n++;
       if (k === "listas") applyLists();

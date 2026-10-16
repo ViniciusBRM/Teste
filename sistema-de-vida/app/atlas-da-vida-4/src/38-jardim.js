@@ -418,9 +418,11 @@ function jdScene() {
     <linearGradient id="jdmtn" gradientUnits="userSpaceOnUse" x1="0" y1="300" x2="0" y2="610"><stop offset="0" stop-color="${INK}" stop-opacity=".62"/><stop offset=".45" stop-color="#7a6542" stop-opacity=".34"/><stop offset="1" stop-color="#7a6542" stop-opacity="0"/></linearGradient>
     <linearGradient id="jdmtn2" gradientUnits="userSpaceOnUse" x1="0" y1="456" x2="0" y2="612"><stop offset="0" stop-color="${INK}" stop-opacity=".55"/><stop offset=".5" stop-color="#7a6542" stop-opacity=".28"/><stop offset="1" stop-color="#7a6542" stop-opacity="0"/></linearGradient>
     <linearGradient id="jdfar" gradientUnits="userSpaceOnUse" x1="0" y1="372" x2="0" y2="600"><stop offset="0" stop-color="#4c6276" stop-opacity=".38"/><stop offset="1" stop-color="#4c6276" stop-opacity="0"/></linearGradient>
+    <radialGradient id="jdflyg" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="#fff3a0" stop-opacity=".75"/><stop offset="1" stop-color="#fff3a0" stop-opacity="0"/></radialGradient>
+    <filter id="jdshadow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="14.5"/></filter>
     <radialGradient id="jdyinfade" cx="50%" cy="50%" r="50%"><stop offset=".72" stop-color="${PAPER}" stop-opacity="0"/><stop offset="1" stop-color="${PAPER}" stop-opacity=".38"/></radialGradient></defs>`;
   /* o leque: papel, fibras, borda envelhecida e moldura */
-  g += `<circle cx="500" cy="500" r="472" class="jd-mount"/><circle cx="500" cy="500" r="460" fill="${PAPER}"/><g clip-path="url(#jdclip)"><rect width="1000" height="1000" filter="url(#jdgrain)"/><rect width="1000" height="1000" filter="url(#jdfiber)"/>`;
+  g += `<circle cx="500" cy="513" r="472" fill="#000" fill-opacity=".28" filter="url(#jdshadow)" pointer-events="none"/><circle cx="500" cy="500" r="472" class="jd-mount"/><circle cx="500" cy="500" r="460" fill="${PAPER}"/><g clip-path="url(#jdclip)"><rect width="1000" height="1000" filter="url(#jdgrain)"/><rect width="1000" height="1000" filter="url(#jdfiber)"/>`;
   /* yin: aguada de tinta, mais escura junto ao S, abrindo em névoa perto da borda */
   g += `<path d="M${dark}Z" fill="${INK}" fill-opacity=".74" filter="url(#jdwash)" class="jd-yin"/><g clip-path="url(#jdyinclip)"><path d="${JD_RIVER}" fill="none" stroke="${INK}" stroke-width="150" stroke-opacity=".3" filter="url(#jdblur)"/></g><clipPath id="jdyinclip"><path d="M${dark}Z"/></clipPath><circle cx="500" cy="500" r="460" fill="url(#jdyinfade)"/>`;
   /* o rio no S: papel reservado, linhas de água (shuiwen) correndo da fonte ao mar */
@@ -463,7 +465,7 @@ function jdScene() {
   /* noite, entardecer, vagalumes ou borboletas (as noites de exame da semana) */
   if (night) g += `<rect width="1000" height="1000" class="jd-nightveil"/>` + jdMoonSVG();
   if (sky === "entardecer") g += `<rect width="1000" height="1000" class="jd-duskveil"/>`;
-  g += Array.from({ length: jdVaga() }, (_, i) => { const a = jdR(i, 11) * 6.283, r = 140 + jdR(i, 12) * 220, x = 500 + Math.cos(a) * r, y = 500 + Math.sin(a) * r; return night || sky === "entardecer" ? `<circle cx="${jf(x)}" cy="${jf(y)}" r="2.8" class="jd-fly" style="animation-delay:${(i * .7).toFixed(1)}s"/>` : `<g class="jd-bfly" style="animation-delay:${(i * .9).toFixed(1)}s"><path d="M${jf(x)} ${jf(y)}c-4-7-12-6-9 1c-5 2-2 7 3 4l6-5c-2 6 3 9 6 4c4 1 6-4 1-5c4-6-3-9-7-4Z" fill="${jdIsDark(x, y) ? PALE : INK}" fill-opacity=".22" stroke="${jdIsDark(x, y) ? PALE : INK}" stroke-opacity=".8" stroke-width=".8" transform="scale(.8)" transform-origin="${jf(x)} ${jf(y)}"/></g>`; }).join("");
+  g += Array.from({ length: jdVaga() }, (_, i) => { const a = jdR(i, 11) * 6.283, r = 140 + jdR(i, 12) * 220, x = 500 + Math.cos(a) * r, y = 500 + Math.sin(a) * r; return night || sky === "entardecer" ? `<g class="jd-fly" style="animation-delay:${(i * .7).toFixed(1)}s"><circle cx="${jf(x)}" cy="${jf(y)}" r="9" fill="url(#jdflyg)"/><circle cx="${jf(x)}" cy="${jf(y)}" r="2.8"/></g>` : `<g class="jd-bfly" style="animation-delay:${(i * .9).toFixed(1)}s"><path d="M${jf(x)} ${jf(y)}c-4-7-12-6-9 1c-5 2-2 7 3 4l6-5c-2 6 3 9 6 4c4 1 6-4 1-5c4-6-3-9-7-4Z" fill="${jdIsDark(x, y) ? PALE : INK}" fill-opacity=".22" stroke="${jdIsDark(x, y) ? PALE : INK}" stroke-opacity=".8" stroke-width=".8" transform="scale(.8)" transform-origin="${jf(x)} ${jf(y)}"/></g>`; }).join("");
   g += `<circle cx="500" cy="500" r="460" fill="url(#jdage)" pointer-events="none"/></g><circle cx="500" cy="500" r="460" fill="none" stroke="${INK}" stroke-width="1.6" stroke-opacity=".7" pointer-events="none"/>`;
   return `<div class="jdscene">${svgWrap(1000, 1000, g, `Jardim interior em yin-yang: ${J_ORDER.map(p => `${JD_ARV[p].nome} (${J_PIL[p].nome}) ${T[p].nome}`).join(", ")}; rio ${R.st}; templo com ${JD_TEMPLO.filter(t => D.templo[t.id]).length} de ${JD_TEMPLO.length} partes`, "chart jdsvg sky-" + sky)}</div>`;
 }
@@ -584,6 +586,7 @@ function pJardim() {
   const places = [["portao", "Portão da lua", "sprout"], ...J_ORDER.map(p => ["arv:" + p, JD_ARV[p].nome, J_PIL[p].ico]), ["rio", "Rio", "wave"], ["lago", "Lótus", "lotus"], ["praca", "Bússola", "compass"], ["pedreira", "Pedreira", "box"], ["oficina", "Oficina", "brief"], ["templo", "Templo", "house"], ["mirante", "Mirante", "eye"]];
   setTimeout(() => { const sc = $(".jdscene"); if (sc && sc.scrollWidth > sc.clientWidth) { sc.scrollLeft = JD.sx ?? (sc.scrollWidth - sc.clientWidth) / 2; sc.addEventListener("scroll", () => { JD.sx = sc.scrollLeft; }, { passive: true });
     if (JD.center) { const el = sc.querySelector(`[data-k="${JD.sel}"]`); if (el) { const r = el.getBoundingClientRect(), rs = sc.getBoundingClientRect(); sc.scrollLeft += r.left + r.width / 2 - (rs.left + rs.width / 2); JD.sx = sc.scrollLeft; } } } JD.center = false; }, 0);
+  setTimeout(jdBakeSoon, 0);
   setTimeout(() => { if (JD.fx && Date.now() - JD.fx.at > 200) JD.fx = null; if (JD.scroll && innerWidth < 1100) { JD.scroll = false; $(".jdaside")?.scrollIntoView({ block: "start", behavior: "smooth" }); } }, 2200);
   return `<p class="lead">Saúde espiritual: o jardim é o próprio yin-yang, pintado a tinta num leque redondo. O rio é o S: nasce junto ao Espiritismo, no norte, e chega ao mar junto ao Budismo, no sul. No olho do yang fica a pedra das imperfeições; no olho do yin, o lago de lótus; no centro, onde as forças se tocam, o templo sobre a Bússola. Cada pilar ocupa o seu ponto cardeal, como na mandala, pintado no seu próprio gênero. É ${est}; à noite os vagalumes aparecem e a lua é a de hoje.</p>
     ${kpiRow([kmini("var(--jp-tao)", "Árvores", `${sum(T.map(t => t.s))} de 20`, `estágios somados · ${T.filter(t => t.dorm).length ? `${T.filter(t => t.dorm).length} dormindo` : "todas acordadas"}`), kmini("#4f9fd8", "Rio", R.st, `${R.n} de 14 noites de exame`), kmini("var(--jp-bud)", "Templo", `${nb} de ${JD_TEMPLO.length}`, `${plural(Math.max(0, st.pedras), "pedra", "pedras")} e ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")} no estoque`), kmini("var(--jp-med)", "Caminhos", `${nc} de ${JD_CAM.length}`, JD_CAM.some(c => !jdCamOpen(c.id) && jdCamReady(c)) ? "há um pronto para abrir" : "abrem com marcos da jornada")])}
@@ -598,6 +601,105 @@ function pJardim() {
       <tr><td><b>Oficina</b><br><small>nordeste, no yin</small></td><td>cabana do eremita</td><td>${esc(JD_SIMB.oficina)}</td><td>sessões de prática (toras)</td><td class="num">${st.toras} toras</td></tr>
       <tr><td><b>Vagalumes</b></td><td>pontos de luz</td><td>a consciência que acende à noite</td><td>exames, 7 dias</td><td class="num">${jdVaga()}</td></tr></tbody></table>`)}</div>`;
 }
+
+/* ---------------------------------------------------------------- desempenho: filtros assados
+   Os filtros de tinta (turbulência, deslocamento, desfoque) são caros, e cada quadro de uma animação (o rio, a névoa, as
+   pétalas) obrigava o navegador a refazer os que ficam por baixo: o jardim engasgava (~35 quadros por segundo no teste).
+   Depois de desenhar, cada elemento com filtro vira uma imagem pronta, no mesmo lugar e na mesma ordem: o desenho fica igual
+   (diferença média de ~2/255 por pixel, só na suavização das bordas) e o que se mexe passa a redesenhar imagens prontas.
+   O original fica invisível, para o toque e o foco. Se algo falhar, fica o desenho com filtros, como antes. As imagens ficam
+   guardadas: redesenhar o jardim depois (trocar o lugar, registrar) é imediato. */
+const JDB = { cache: new Map(), ger: 0, esc: 0, svg: null };
+const JDB_SMIL = "animate, animateMotion, animateTransform, set", JDB_DEFS = "defs, clipPath, mask, linearGradient, radialGradient, pattern, filter";
+const JDB_PROPS = ["fill", "fill-opacity", "fill-rule", "stroke", "stroke-width", "stroke-opacity", "stroke-dasharray", "stroke-dashoffset", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "opacity", "visibility", "color", "paint-order", "mix-blend-mode"];
+const jdbAnim = e => e.matches(JDB_SMIL) || getComputedStyle(e).animationName !== "none";
+const jdbVivo = e => jdbAnim(e) || [...e.children].some(x => x.matches(JDB_SMIL));
+/* o clone leva os estilos calculados (a imagem não enxerga o CSS da página); quem continua animado sai com opacidade 1 */
+function jdbInline(src, dst, solta) {
+  const cs = getComputedStyle(src); let st = "";
+  for (const p of JDB_PROPS) { let v = cs.getPropertyValue(p); if (!v) continue; if (solta && p === "opacity") v = "1"; st += `${p}:${v.replace(/url\("?(#[^")]+)"?\)/g, "url($1)")};`; }
+  dst.setAttribute("style", st); dst.removeAttribute("class");
+  const a = [...src.children], b = [...dst.children]; for (let i = 0; i < a.length; i++) if (b[i] && !a[i].matches(JDB_SMIL)) jdbInline(a[i], b[i], false);
+}
+const jdbNum = (v, d) => v == null ? d : /%$/.test(v) ? parseFloat(v) / 100 : +v;
+/* região do filtro (no sistema do próprio elemento) e se ele é só desfoque largo: aí meia resolução basta */
+function jdbFiltro(svg, fid) { const f = svg.querySelector(fid), fe = f ? [...f.children] : [], sd = Math.max(0, ...fe.filter(x => x.tagName === "feGaussianBlur").map(x => parseFloat(x.getAttribute("stdDeviation")) || 0));
+  return { u: f?.getAttribute("filterUnits") === "userSpaceOnUse", x: jdbNum(f?.getAttribute("x"), -.1), y: jdbNum(f?.getAttribute("y"), -.1), w: jdbNum(f?.getAttribute("width"), 1.2), h: jdbNum(f?.getAttribute("height"), 1.2),
+    meia: fe.length > 0 && fe.every(x => x.tagName === "feGaussianBlur") && sd >= 6 }; }
+function jdbRaster(str, W, H) {
+  let p = JDB.cache.get(str); if (p) { JDB.cache.delete(str); JDB.cache.set(str, p); return p; }
+  p = (async () => { const u = URL.createObjectURL(new Blob([str], { type: "image/svg+xml" })), im = new Image();
+    try { await new Promise((ok, no) => { im.onload = ok; im.onerror = no; im.src = u; }); const c = document.createElement("canvas"); c.width = W; c.height = H; c.getContext("2d").drawImage(im, 0, 0, W, H);
+      const b = await new Promise(ok => c.toBlob(ok)); if (!b) throw new Error("toBlob"); return URL.createObjectURL(b); } finally { URL.revokeObjectURL(u); } })();
+  p.catch(() => JDB.cache.delete(str));
+  JDB.cache.set(str, p);
+  while (JDB.cache.size > 400) { const [k, v] = JDB.cache.entries().next().value; JDB.cache.delete(k); v.then(x => URL.revokeObjectURL(x), () => {}); }
+  return p;
+}
+function jdBakeSoon() { const svg = $(".jdsvg"); if (!svg || svg.dataset.bk) return; svg.dataset.bk = "1"; jdBake(svg).catch(e => console.warn("jardim: filtros", e)); }
+async function jdBake(svg) {
+  if (!window.Blob || !URL.createObjectURL || !HTMLCanvasElement.prototype.toBlob) return;
+  const ger = ++JDB.ger, larg = svg.getBoundingClientRect().width; if (!larg) return;
+  const esc = JDB.esc = Math.round(Math.min(1.5, larg / 1000 * (devicePixelRatio || 1)) * 100) / 100, raiz = svg.getScreenCTM()?.inverse();
+  const defs = [...svg.querySelectorAll(JDB_DEFS)].filter(e => !e.parentElement.closest(JDB_DEFS)).map(e => e.outerHTML).join("");
+  /* animação dentro (fora as do próprio elemento, que vão junto para a imagem) */
+  const animDentro = el => [...el.querySelectorAll("*")].some(x => jdbAnim(x) && !(x.parentElement === el && x.matches(JDB_SMIL)));
+  /* no sistema da raiz: a imagem pode ser cortada no limite do desenho (0–1000) */
+  const naRaiz = el => { const m = raiz && el.getScreenCTM() ? raiz.multiply(el.getScreenCTM()) : null; return !!m && Math.abs(m.a - 1) < 1e-6 && Math.abs(m.d - 1) < 1e-6 && !m.b && !m.c && Math.abs(m.e) < 1e-6 && Math.abs(m.f) < 1e-6; };
+  const regiao = (el, F, m) => { const b = el.getBBox(); let R = m != null ? { x: b.x - m, y: b.y - m, w: b.width + 2 * m, h: b.height + 2 * m } : { x: b.x + F.x * b.width, y: b.y + F.y * b.height, w: F.w * b.width, h: F.h * b.height };
+    if (naRaiz(el)) { const x0 = Math.max(0, R.x), y0 = Math.max(0, R.y), x1 = Math.min(1000, R.x + R.w), y1 = Math.min(1000, R.y + R.h); R = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 }; }
+    return R; };
+  /* o elemento com filtro mais externo que dá para assar inteiro; se não dá (texto, animação dentro), os de dentro são vistos um a um */
+  const tarefas = [], aceitos = [], manter = new Map();
+  for (const el of svg.querySelectorAll("[filter]")) {
+    if (el.closest(JDB_DEFS) || aceitos.some(v => v.contains(el))) continue;
+    if (el.querySelector("text") || getComputedStyle(el).display === "none") continue;
+    const fid = (el.getAttribute("filter").match(/#[^)"']+/) || [])[0]; if (!fid) continue;
+    const F = jdbFiltro(svg, fid); if (F.u) continue;
+    if (!jdbVivo(el) && animDentro(el)) {   /* grupo com filtro e filhos animados (a névoa, o templo com a fumaça): um por filho, com o filtro do grupo;
+                                               o filho que tem animação dentro fica vivo, com o filtro só nele (um pedaço pequeno) */
+      const g = el.getBBox(), m = Math.max(-F.x * g.width, -F.y * g.height, 4), fil = [...el.children].filter(ch => ch instanceof SVGGraphicsElement);
+      if (fil.some(ch => ch.querySelector("text"))) continue;
+      aceitos.push(el); manter.set(el, fil.filter(ch => animDentro(ch)));
+      for (const ch of fil) if (!animDentro(ch)) tarefas.push({ els: [ch], fid, F, pai: el, m, vivo: jdbVivo(ch) });
+      continue; }
+    if (animDentro(el)) continue;
+    aceitos.push(el);
+    /* vizinhos estáticos seguidos, no mesmo sistema e com a mesma resolução, viram uma imagem só (ex.: grão + fibra do papel) */
+    const ult = tarefas.at(-1), vivo = jdbVivo(el);
+    if (ult && !ult.pai && !ult.vivo && !vivo && ult.els.at(-1).nextElementSibling === el && !el.getAttribute("transform") && !ult.els[0].getAttribute("transform") && ult.F.meia === F.meia) ult.els.push(el);
+    else tarefas.push({ els: [el], fid, F, vivo });
+  }
+  const prontas = await Promise.all(tarefas.map(async t => {
+    try {
+      const Rs = t.els.map(el => { const fa = el.getAttribute("filter"); return regiao(el, fa ? jdbFiltro(svg, (fa.match(/#[^)"']+/) || [])[0] || t.fid) : t.F, t.pai ? t.m : null); });
+      const x0 = Math.min(...Rs.map(r => r.x)), y0 = Math.min(...Rs.map(r => r.y)), R = { x: x0, y: y0, w: Math.max(...Rs.map(r => r.x + r.w)) - x0, h: Math.max(...Rs.map(r => r.y + r.h)) - y0 };
+      if (!(R.w > 0 && R.h > 0)) return null;
+      const e2 = esc * (t.F.meia ? .5 : 1), W = Math.max(1, Math.ceil(R.w * e2)), H = Math.max(1, Math.ceil(R.h * e2));
+      const corpo = t.els.map(el => { const cl = el.cloneNode(true); jdbInline(el, cl, t.vivo); cl.querySelectorAll(JDB_SMIL).forEach(x => x.remove()); for (const x of [...cl.children]) if (x.matches(JDB_SMIL)) x.remove(); cl.removeAttribute("transform"); return cl.outerHTML; }).join("");
+      const str = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="${R.x} ${R.y} ${R.w} ${R.h}">${defs}${t.pai ? `<g filter="url(${t.fid})">${corpo}</g>` : corpo}</svg>`;
+      return { t, R, url: await jdbRaster(str, W, H) };
+    } catch (e) { console.warn("jardim: não assou", t.els[0]?.tagName, e?.message || e); return null; }
+  }));
+  if (ger !== JDB.ger || !svg.isConnected) return;
+  const ns = "http://www.w3.org/2000/svg", pais = new Set([...tarefas.filter(t => t.pai).map(t => t.pai), ...manter.keys()]);
+  /* grupo com filtro e filhos animados: só troca se todos os filhos viraram imagem (senão o desfoque do grupo cairia duas vezes) */
+  const completos = new Set([...pais].filter(pai => tarefas.filter(t => t.pai === pai).every(t => prontas.some(d => d?.t === t))));
+  for (const d of prontas) { if (!d || !d.t.els.every(el => el.isConnected) || (d.t.pai && !completos.has(d.t.pai))) continue;
+    const { t, R, url } = d, el = t.els[0], im = document.createElementNS(ns, "image");
+    for (const [k, v] of [["x", R.x], ["y", R.y], ["width", R.w], ["height", R.h], ["preserveAspectRatio", "none"], ["href", url], ["aria-hidden", "true"]]) im.setAttribute(k, v);
+    if (el.getAttribute("transform")) im.setAttribute("transform", el.getAttribute("transform"));
+    if (t.vivo) { im.setAttribute("class", ((el.getAttribute("class") || "") + " jd-bk").trim()); for (const k of ["style", "opacity"]) if (el.hasAttribute(k)) im.setAttribute(k, el.getAttribute(k)); for (const s of [...el.children].filter(x => x.matches(JDB_SMIL))) im.append(s); el.style.animation = "none"; el.removeAttribute("class"); }
+    else im.setAttribute("class", "jd-bk");
+    el.before(im);
+    for (const o of t.els) { o.style.setProperty("opacity", "0", "important"); o.removeAttribute("filter"); } }
+  for (const pai of completos) { const f = pai.getAttribute("filter");
+    for (const ch of manter.get(pai) || []) if (ch.isConnected) { const w = document.createElementNS(ns, "g"); w.setAttribute("filter", f); ch.before(w); w.append(ch); }
+    pai.removeAttribute("filter"); }
+  svg.classList.add("jd-assado");
+}
+/* a tela mudou muito de tamanho: redesenha, para as imagens não ficarem borradas */
+addEventListener("resize", debounce(() => { const svg = $(".jdsvg"); if (!svg || !JDB.esc) return; const e = Math.min(1.5, svg.getBoundingClientRect().width / 1000 * (devicePixelRatio || 1)); if (Math.abs(e - JDB.esc) / JDB.esc > .25) render(); }, 400), { passive: true });
 
 /* ---------------------------------------------------------------- ações */
 function jdFolhaAnim() {

@@ -118,7 +118,10 @@ const EXT_SERV = [["clima", "Clima", "Open-Meteo, no Hoje", "as coordenadas da c
 const extOk = k => S.cfg.ext?.[k] !== false;
 let IA_AVISO_DIA = null;
 /* porta única para a IA: monta o pedido com o filtro de privacidade, envia e registra */
-async function aiCall(recurso, build, { json = false, ctx: ext = null, dados = false, ...sopts } = {}) {
+/* chamadas de IA em andamento: o modo exemplo não troca os dados no meio de uma (a resposta cairia no conjunto errado) */
+let AI_VIVO = 0;
+async function aiCall(...a) { AI_VIVO++; try { return await aiCall0(...a); } finally { AI_VIVO--; } }
+async function aiCall0(recurso, build, { json = false, ctx: ext = null, dados = false, ...sopts } = {}) {
   if (!SAMPLE) throw { code: AI_OFF ? "not_granted" : "unavailable", message: "IA indisponível" };
   const av = +S.cfg.iaAviso || 0, nm = S.uso?.ia?.[TODAY.slice(0, 7)]?.n || 0;
   if (av && nm >= av && IA_AVISO_DIA !== TODAY) { IA_AVISO_DIA = TODAY; setTimeout(() => toast(`Aviso de uso: ${nm} chamadas de IA neste mês (seu limite de aviso é ${av}). Veja em Privacidade.`), 50); }
@@ -133,7 +136,7 @@ async function aiCall(recurso, build, { json = false, ctx: ext = null, dados = f
   try { const r = json ? await SAMPLE.json(input, sopts) : await SAMPLE(input, sopts); aiLog(ctx, bytes, "ok"); return r; }
   catch (e) { aiLog(ctx, bytes, e?.code === "cancelled" ? "cancelada" : "erro: " + (e?.code || "desconhecido"));
     /* esta visualização não roda ferramentas: tenta uma vez sem elas */
-    if (dados && e?.code === "tools_unavailable" && TOOLS_MAX) { TOOLS_MAX = 0; const { tools, ...rest } = sopts; return aiCall(recurso, build, { json, ctx: ext, ...rest }); }
+    if (dados && e?.code === "tools_unavailable" && TOOLS_MAX) { TOOLS_MAX = 0; const { tools, ...rest } = sopts; return aiCall0(recurso, build, { json, ctx: ext, ...rest }); }
     throw e; }
 }
 /* dados de um dia para a IA, sem nada dos setores bloqueados */

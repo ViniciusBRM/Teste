@@ -200,6 +200,7 @@ document.addEventListener("click", e => {
   if (a === "qtar") { const i = t.closest(".pn,.tcol")?.querySelector(".quick input") || $("#qt_in") || $("#hj_tar"); if (i) { quickTask(i.value); i.value = ""; } return; }
   if (a === "qlanc") { const i = $("#ql_in"); if (i) { quickLanc(i.value); i.value = ""; } return; }
   if (a === "extog") { exToggle(); return; }
+  if (a === "exoff") { exOff(); return; }
   if ((t.id === "startEmpty" || t.id === "wipe") && EX_MODE) { toast("Desligue o modo exemplo antes."); return; }
   if (t.id === "startEmpty" || t.id === "wipe") { if (t.id === "wipe" && !t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar: apagar tudo"; return; } S = EMPTY(); VER++; IS_EXAMPLE = false; applyLists(); KEYS.forEach(k => dirty.add(k)); snapAll(); UNDO.length = 0; REDO.length = 0; flushSoon(0); render(); toast("Tudo vazio. Comece por Ajustes, Metas e o Diário."); return; }
   if (t.id === "loadEx") { exOn(); return; }

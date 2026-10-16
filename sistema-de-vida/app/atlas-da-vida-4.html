@@ -1372,7 +1372,7 @@ tr.dim td{opacity:.5}
 /* modo exemplo */
 .exbtn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);padding:7px 10px;border-radius:9px;cursor:pointer;font-weight:600;font-size:13px}
 .exbtn .ico{width:15px;height:15px}.exsw{width:26px;height:15px;border-radius:99px;background:var(--surface-3);position:relative;transition:background .15s}.exsw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:var(--muted);transition:all .15s}
-.exbtn.on{border-color:var(--warn);color:var(--ink)}.exbtn.on .exsw{background:color-mix(in srgb,var(--warn) 55%,var(--surface-3))}.exbtn.on .exsw::after{left:13px;background:var(--warn)}
+.exbtn.busy{opacity:.7;cursor:progress}.exbtn.on{border-color:var(--warn);color:var(--ink)}.exbtn.on .exsw{background:color-mix(in srgb,var(--warn) 55%,var(--surface-3))}.exbtn.on .exsw::after{left:13px;background:var(--warn)}
 .banner.exb{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
 @media (max-width:640px){.exbtn span{display:none}}
 
@@ -1493,7 +1493,7 @@ button.rtad:hover,button.rtad:focus-visible{outline:2px solid var(--accent);outl
 .jdparts small{color:var(--muted)}.jdaxes{display:grid;gap:4px;margin:8px 0}.jdaxes>div{display:grid;grid-template-columns:52px 1fr 40px;gap:8px;align-items:center;font-size:12.5px}.jdaxes .jdbar{margin:0}
 .jdsvg .jd-hot{cursor:pointer;outline:none}.jdsvg .jd-hot:focus-visible{outline:none}.jdsvg .jd-hot:focus-visible>*:not(text){filter:drop-shadow(0 0 4px var(--accent))}
 .jdsvg .jd-hot.on{filter:drop-shadow(0 0 6px rgba(176,53,42,.65))}.jdsvg .jd-hot:hover{filter:drop-shadow(0 0 4px rgba(176,53,42,.4))}
-.jdsvg{filter:drop-shadow(0 10px 22px rgba(0,0,0,.28))}.jd-mount{fill:#d8c39c;stroke:#6b5236;stroke-width:2.5}
+.jdsvg image.jd-bk{pointer-events:none}.jd-mount{fill:#d8c39c;stroke:#6b5236;stroke-width:2.5}
 .jd-moondisc{fill:#fbf5e6;stroke:#1d1915;stroke-opacity:.22;stroke-width:.8}.jd-unlit{fill:#1d1915;fill-opacity:.2}
 .jd-it{font:600 11.5px/1 var(--f-ui),system-ui,sans-serif;letter-spacing:.26em}.jd-il{font:italic 14.5px/1 var(--f-display),Georgia,serif}.jd-is{font:italic 11.5px/1 var(--f-display),Georgia,serif;opacity:.72}
 .jd-seal-c{display:none;font:21px/1 "Ma Shan Zheng",serif;fill:#f1e6cf}.jd-cjk .jd-seal-c{display:inline}.jd-cjk .jd-seal-s{display:none}.jd-gseal .jd-seal-c{font-size:17px}
@@ -1523,7 +1523,7 @@ button.rtad:hover,button.rtad:focus-visible{outline:2px solid var(--accent);outl
 .jd-cairn{fill:#d6cdbb;stroke:#1d1915;stroke-width:.9}.jd-ready-ring{fill:none;stroke:#b0352a;stroke-width:1.6;stroke-dasharray:3 4;animation:jdready 1.6s ease-in-out infinite}
 .jd-hit path,.jd-shop.jd-hit .jd-slips{animation:jdshake .45s ease-in-out 2}
 .jd-fog{fill:#f1e6cf;opacity:.74;animation:jdfog 9s ease-in-out infinite alternate}.jd-fogg{pointer-events:none}
-.jd-fly{fill:#fff3a0;filter:drop-shadow(0 0 5px #fff3a0);animation:jdfly 4s ease-in-out infinite alternate}.jd-bfly{animation:jdfly 5s ease-in-out infinite alternate}.jd-crane{animation:jdfly 7s ease-in-out infinite alternate}
+.jd-fly{fill:#fff3a0;animation:jdfly 4s ease-in-out infinite alternate}.jd-bfly{animation:jdfly 5s ease-in-out infinite alternate}.jd-crane{animation:jdfly 7s ease-in-out infinite alternate}
 .jd-nightveil{fill:#0c1322;opacity:.5;pointer-events:none}.jd-duskveil{fill:#c8743a;opacity:.1;pointer-events:none}.jd-leaf{pointer-events:none}
 .jd-seal,.jd-gseal,.jd-bagua{pointer-events:none}
 .jdproj td{vertical-align:top;font-size:12.5px}.jdproj td:nth-child(3){min-width:220px}
@@ -2401,13 +2401,17 @@ function watchRevs() {
       e => { WATCH = null; if (e?.code !== "revoked") setTimeout(watchRevs, 30000); });
   } catch (e) { WATCH = null; }
 }
-async function pullRemote() {
+/* no modo exemplo a releitura espera (S é o exemplo): as chaves ficam na fila e entram nos seus dados quando ele desligar */
+let PULLING = null;
+function pullRemote() { if (EX_MODE) return; return PULLING ||= pullRemote0().finally(() => { PULLING = null; }); }
+async function pullRemote0() {
   if (FLUSHING) await FLUSHING.catch(() => {});
   const ks = [...PULL]; PULL.clear(); let n = 0;
   for (const k of ks) {
     if (dirty.has(k)) continue;   /* edição pendente aqui: a gravação junta as duas versões */
     try {
       const { m, v } = await readRemote(k); const rr = revOf(m);
+      if (EX_MODE) { PULL.add(k); continue; }
       if (!m || rr === REV[k] || dirty.has(k)) continue;
       S[k] = v; BASE[k] = SNAP[k] = JSON.stringify(v ?? null); REV[k] = rr; PARTS[k] = partsOf(m); dropUndo(k); n++;
       if (k === "listas") applyLists();
@@ -3935,7 +3939,7 @@ function topbar(R, title, sub) {
   const crumb = PAGE === "mentor" ? `<a href="#mentores">Mentores</a> / ${esc(MENTOR_DEF[SUB]?.nome || "")}` : SUBS[PAGE] ? `${esc(pageTitle())} / ${esc(SUBS[PAGE].find(x => x[0] === SUB)?.[1] || "")}` : "Atlas da Vida";
   return `<header class="top"><button type="button" class="iconbtn menu" data-act="menu" aria-label="Abrir menu">${ic("menu")}</button>
     <div class="ttl"><div class="crumb">${crumb}</div><h1>${title}</h1>${sub ? `<div class="sub">${sub}</div>` : ""}</div>
-    <div class="tools"><button type="button" class="exbtn${EX_MODE ? " on" : ""}" data-act="extog" aria-pressed="${EX_MODE}" title="Liga e desliga dados fictícios em todas as abas; nada é salvo enquanto estiver ligado">${ic("eye")}<span>Exemplo</span><i class="exsw" aria-hidden="true"></i></button><button type="button" class="capbtn" data-act="cap" title="Capturar: escreva ou dite o que aconteceu" aria-label="Capturar">${ic("bolt")}<span>Capturar</span></button><button type="button" class="srch" data-act="pal" aria-label="Buscar">${ic("search")}<span>Buscar</span></button>
+    <div class="tools"><button type="button" class="exbtn${EX_MODE ? " on" : ""}${EX_BUSY ? " busy" : ""}" data-act="extog" aria-pressed="${EX_MODE}" aria-busy="${EX_BUSY}" title="Liga e desliga dados fictícios em todas as abas; nada é salvo enquanto estiver ligado">${ic("eye")}<span>Exemplo</span><i class="exsw" aria-hidden="true"></i></button><button type="button" class="capbtn" data-act="cap" title="Capturar: escreva ou dite o que aconteceu" aria-label="Capturar">${ic("bolt")}<span>Capturar</span></button><button type="button" class="srch" data-act="pal" aria-label="Buscar">${ic("search")}<span>Buscar</span></button>
       <div class="monthpick" aria-label="Mês de referência"><button type="button" data-act="mprev" aria-label="Mês anterior">‹</button><span>${mlabel(REF)}</span><button type="button" data-act="mnext" aria-label="Próximo mês">›</button>${+TODAY.slice(8) <= 7 && REF === addMonth(mkey(TODAY), -1) ? `<small class="mfecha" title="Nos dias 1 a 7, as telas mensais abrem no mês que acabou de fechar, para você conferir e revisar. Toque em Hoje para ver ${mlabel(mkey(TODAY))}.">mês fechando</small>` : ""}${REF !== mkey(TODAY) ? `<button type="button" class="mnow" data-act="mnow">Hoje</button>` : ""}</div>
       <button type="button" class="iconbtn" data-act="undo" title="Desfazer (Ctrl+Z)" aria-label="Desfazer"${UNDO.length ? "" : " disabled"}>${ic("undo")}</button><button type="button" class="iconbtn" data-act="redo" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer"${REDO.length ? "" : " disabled"}>${ic("redo")}</button></div></header>`;
 }
@@ -4824,7 +4828,7 @@ const TEMPLATES = {
   conversa: ["Conversa importante", "Conversa com @\n\n**O que foi dito:**\n\n**O que eu senti:**\n\n**Próximo passo:**\n- [ ] "],
 };
 function loadDraft() { try { const v = localStorage.getItem("atlas_draft"); return v ? JSON.parse(v) : null; } catch { return null; } }
-const storeDraft = debounce(() => { try { DIA.draft ? localStorage.setItem("atlas_draft", JSON.stringify(DIA.draft)) : localStorage.removeItem("atlas_draft"); } catch {} }, 400);
+const storeDraft = debounce(() => { if (EX_MODE) return; try { DIA.draft ? localStorage.setItem("atlas_draft", JSON.stringify(DIA.draft)) : localStorage.removeItem("atlas_draft"); } catch {} }, 400);
 function openComposer(edit, preset = {}) {
   const e = edit ? S.diario.find(x => x.id === edit) : null, v = e ? viewEntry(e) : null;
   if (e && !v) { toast("Esta entrada está trancada. Destranque o cofre em Privacidade para editar."); setHash("privacidade"); return; }
@@ -6143,7 +6147,10 @@ const EXT_SERV = [["clima", "Clima", "Open-Meteo, no Hoje", "as coordenadas da c
 const extOk = k => S.cfg.ext?.[k] !== false;
 let IA_AVISO_DIA = null;
 /* porta única para a IA: monta o pedido com o filtro de privacidade, envia e registra */
-async function aiCall(recurso, build, { json = false, ctx: ext = null, dados = false, ...sopts } = {}) {
+/* chamadas de IA em andamento: o modo exemplo não troca os dados no meio de uma (a resposta cairia no conjunto errado) */
+let AI_VIVO = 0;
+async function aiCall(...a) { AI_VIVO++; try { return await aiCall0(...a); } finally { AI_VIVO--; } }
+async function aiCall0(recurso, build, { json = false, ctx: ext = null, dados = false, ...sopts } = {}) {
   if (!SAMPLE) throw { code: AI_OFF ? "not_granted" : "unavailable", message: "IA indisponível" };
   const av = +S.cfg.iaAviso || 0, nm = S.uso?.ia?.[TODAY.slice(0, 7)]?.n || 0;
   if (av && nm >= av && IA_AVISO_DIA !== TODAY) { IA_AVISO_DIA = TODAY; setTimeout(() => toast(`Aviso de uso: ${nm} chamadas de IA neste mês (seu limite de aviso é ${av}). Veja em Privacidade.`), 50); }
@@ -6158,7 +6165,7 @@ async function aiCall(recurso, build, { json = false, ctx: ext = null, dados = f
   try { const r = json ? await SAMPLE.json(input, sopts) : await SAMPLE(input, sopts); aiLog(ctx, bytes, "ok"); return r; }
   catch (e) { aiLog(ctx, bytes, e?.code === "cancelled" ? "cancelada" : "erro: " + (e?.code || "desconhecido"));
     /* esta visualização não roda ferramentas: tenta uma vez sem elas */
-    if (dados && e?.code === "tools_unavailable" && TOOLS_MAX) { TOOLS_MAX = 0; const { tools, ...rest } = sopts; return aiCall(recurso, build, { json, ctx: ext, ...rest }); }
+    if (dados && e?.code === "tools_unavailable" && TOOLS_MAX) { TOOLS_MAX = 0; const { tools, ...rest } = sopts; return aiCall0(recurso, build, { json, ctx: ext, ...rest }); }
     throw e; }
 }
 /* dados de um dia para a IA, sem nada dos setores bloqueados */
@@ -10977,28 +10984,59 @@ function cr2Click(t) {
 const cadDeb = debounce(() => render(), 220);
 function cr2Input(t) { if (t.id === "cad_q") { CAD.q = t.value; cadDeb(); return true; } return false; }
 
+
 /* ================================================================ modo exemplo: liga e desliga dados fictícios em todas as abas
    Os dados reais ficam guardados na memória e no banco, intactos. Enquanto o exemplo está ligado nada é gravado,
-   o Notion fica desligado e o espaço a dois não escreve. Desligar devolve exatamente o estado anterior, com o seu histórico de desfazer. */
-let EX_MODE = false, EX_REAL = null;
+   o Notion fica desligado e o espaço a dois não escreve. Desligar devolve exatamente o estado anterior, com o seu histórico de desfazer.
+   A troca é atômica: espera a gravação e a releitura do banco em andamento (as duas leem S depois de esperar a rede), não
+   aceita um segundo toque enquanto troca nem logo depois (duplo toque não desliga e liga de novo), não troca antes de os
+   dados abrirem nem com a IA respondendo (a resposta cairia no conjunto errado). O estado de tela que guarda cópia de dados
+   (rascunhos, buscas, textos da IA, avisos) é guardado ao ligar e devolvido ao desligar: nada do exemplo sobra. */
+let EX_MODE = false, EX_REAL = null, EX_BUSY = false, EX_T = 0;
 const EX_TXT = "Dormi 7 e meia, humor 4, corri 30 min, gastei 12,50 no almoço e 32,40 no mercado, meditei 15 min. Preciso ligar para o comune até sexta";
+/* estado de tela com cópia de dados: [objeto, valores enquanto o exemplo está ligado] */
+const EX_TELA = () => [[DIA, { draft: null, focus: null, day: null, ai: null }], [SEM, { res: null, sim: null }], [CH, { sel: null, ai: {} }], [BM, { sel: null, dia: null, draft: null, ai: "" }],
+  [FIL, { tri: null, dil: "", dsrc: null, txt: "" }], [J, { dr: {}, cot: {}, rev: "" }], [J.circ, { q: "", txt: "" }], [PJ, { edit: null, open: null, f: {} }], [CK, { ger: null, relOpen: null }],
+  [TRV, { draft: null }], [SEC, { nudge: null }], [EXP, { sel: null }]];
+const exTelaGuarda = () => EX_TELA().map(([o, d]) => [o, Object.fromEntries(Object.keys(d).map(k => [k, o[k]]))]);
+const exTelaZera = () => { for (const [o, d] of EX_TELA()) for (const k in d) o[k] = structuredClone(d[k]); DG.sel.clear(); };
+/* “uso” é só contagem de abas: não segura a troca; fica pendente e vai junto quando o exemplo desligar */
+const exPendente = () => [...dirty].some(k => k !== "uso");
+const exOcupado = () => AI_VIVO > 0 || !!GCAL.busy;
+function exBtnPaint() { for (const b of $$(".exbtn")) { b.classList.toggle("busy", EX_BUSY); b.setAttribute("aria-busy", String(EX_BUSY)); const s = b.querySelector("span:not(.ico)"); if (s) s.textContent = EX_BUSY ? "Ligando…" : "Exemplo"; } }
 async function exOn() {
-  if (EX_MODE) return;
-  /* o modo exemplo não grava nada: se as últimas mudanças não foram salvas, entrar agora arriscaria perdê-las ao fechar a aba */
-  if (STORE && dirty.size) { clearTimeout(saveTimer); for (let i = 0; i < 2 && dirty.size; i++) { try { await (FLUSHING || flush()); } catch (e) { console.warn("salvar", e); } }
-    if (dirty.size) { toast("Não consegui salvar as últimas mudanças, então o modo exemplo não foi ligado. Tente de novo em instantes."); return; } }
-  EX_REAL = { S, IS_EXAMPLE, undo: UNDO.splice(0), redo: REDO.splice(0), PD, MCP, NOTION_OK, ref: REF };
-  EX_MODE = true; S = exampleData(); IS_EXAMPLE = false; MCP = null; NOTION_OK = false; REF = mkey(TODAY);
-  PD = pdNew(); PD.text = EX_TXT; pdParse();
+  if (EX_MODE || EX_BUSY) return;
+  if (!LOADED) { toast("Espere os seus dados terminarem de abrir."); return; }
+  if (exOcupado()) { toast("Espere a IA terminar (ou toque em Parar) antes de ligar o modo exemplo."); return; }
+  EX_BUSY = true; EX_T = Date.now(); exBtnPaint();
+  try {
+    /* o modo exemplo não grava nada: o que falta salvar vai antes, senão fechar a aba agora perderia */
+    if (STORE && exPendente()) { clearTimeout(saveTimer); for (let i = 0; i < 2 && exPendente(); i++) { try { await (FLUSHING || flush()); } catch (e) { console.warn("salvar", e); } }
+      if (exPendente()) { toast("Não consegui salvar as últimas mudanças, então o modo exemplo não foi ligado. Tente de novo em instantes."); return; } }
+    while (FLUSHING || PULLING) await (FLUSHING || PULLING).catch(() => {});
+    if (EX_MODE || exOcupado()) return;
+    clearTimeout(saveTimer);
+    EX_REAL = { S, IS_EXAMPLE, undo: UNDO.splice(0), redo: REDO.splice(0), PD, MCP, NOTION_OK, ref: REF, pend: [...dirty], tela: exTelaGuarda() };
+    dirty.clear(); exTelaZera();
+    EX_MODE = true; S = exampleData(); IS_EXAMPLE = false; MCP = null; NOTION_OK = false; REF = mkey(TODAY);
+    PD = pdNew(); PD.text = EX_TXT; pdParse();
+  } finally { EX_BUSY = false; EX_T = Date.now(); exBtnPaint(); }
+  if (!EX_MODE) return;
   applyLists(); VER++; snapAll(); render(); toast("Modo exemplo ligado: dados fictícios, nada é salvo.");
 }
 function exOff() {
-  if (!EX_MODE) return; const R0 = EX_REAL; EX_MODE = false; EX_REAL = null;
+  if (!EX_MODE || EX_BUSY) return;
+  if (exOcupado()) { toast("Espere a IA terminar (ou toque em Parar) antes de desligar o modo exemplo."); return; }
+  const R0 = EX_REAL; EX_MODE = false; EX_REAL = null; EX_T = Date.now();
   S = R0.S; IS_EXAMPLE = R0.IS_EXAMPLE; UNDO.splice(0, UNDO.length, ...R0.undo); REDO.splice(0, REDO.length, ...R0.redo); PD = R0.PD; MCP = R0.MCP; NOTION_OK = R0.NOTION_OK; REF = R0.ref;
-  dirty.clear(); applyLists(); VER++; snapAll(); render(); toast("Modo exemplo desligado: de volta aos seus dados.");
+  exTelaZera(); for (const [o, v] of R0.tela) Object.assign(o, v);
+  dirty.clear(); for (const k of R0.pend) dirty.add(k);
+  applyLists(); VER++; snapAll(); render(); toast("Modo exemplo desligado: de volta aos seus dados.");
+  if (dirty.size) flushSoon(); if (PULL.size) pullRemote();   /* o que chegou de outro aparelho durante o exemplo entra agora, nos seus dados */
 }
-const exToggle = () => EX_MODE ? exOff() : exOn();
-const exBanner = () => EX_MODE ? `<div class="banner exb">${ic("eye")}<span><b>Modo exemplo.</b> Todas as abas estão preenchidas com dados fictícios para mostrar como funcionam. Pode clicar e editar à vontade: nada é salvo, e os seus dados continuam guardados.</span><button type="button" class="btn sm primary" data-act="extog">Desligar o exemplo</button></div>` : "";
+/* toque duplo (ou dois toques seguidos) não desliga e liga de novo: a próxima troca só depois de 0,7 s */
+const exToggle = () => { if (EX_BUSY || Date.now() - EX_T < 700) return; EX_MODE ? exOff() : exOn(); };
+const exBanner = () => EX_MODE ? `<div class="banner exb">${ic("eye")}<span><b>Modo exemplo.</b> Todas as abas estão preenchidas com dados fictícios para mostrar como funcionam. Pode clicar e editar à vontade: nada é salvo, e os seus dados continuam guardados.</span><button type="button" class="btn sm primary" data-act="exoff">Desligar o exemplo</button></div>` : "";
 
 /* ================================================================ Painel do dia, parte 2: o resto das abas do dia num formulário só
    Tarefas (concluir e criar), pessoas, estudo e idiomas, leitura, casa (limpeza feita, conta paga), peso, receitas e aportes.
@@ -12022,9 +12060,11 @@ function jdScene() {
     <linearGradient id="jdmtn" gradientUnits="userSpaceOnUse" x1="0" y1="300" x2="0" y2="610"><stop offset="0" stop-color="${INK}" stop-opacity=".62"/><stop offset=".45" stop-color="#7a6542" stop-opacity=".34"/><stop offset="1" stop-color="#7a6542" stop-opacity="0"/></linearGradient>
     <linearGradient id="jdmtn2" gradientUnits="userSpaceOnUse" x1="0" y1="456" x2="0" y2="612"><stop offset="0" stop-color="${INK}" stop-opacity=".55"/><stop offset=".5" stop-color="#7a6542" stop-opacity=".28"/><stop offset="1" stop-color="#7a6542" stop-opacity="0"/></linearGradient>
     <linearGradient id="jdfar" gradientUnits="userSpaceOnUse" x1="0" y1="372" x2="0" y2="600"><stop offset="0" stop-color="#4c6276" stop-opacity=".38"/><stop offset="1" stop-color="#4c6276" stop-opacity="0"/></linearGradient>
+    <radialGradient id="jdflyg" cx="50%" cy="50%" r="50%"><stop offset=".3" stop-color="#fff3a0" stop-opacity=".75"/><stop offset="1" stop-color="#fff3a0" stop-opacity="0"/></radialGradient>
+    <filter id="jdshadow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="14.5"/></filter>
     <radialGradient id="jdyinfade" cx="50%" cy="50%" r="50%"><stop offset=".72" stop-color="${PAPER}" stop-opacity="0"/><stop offset="1" stop-color="${PAPER}" stop-opacity=".38"/></radialGradient></defs>`;
   /* o leque: papel, fibras, borda envelhecida e moldura */
-  g += `<circle cx="500" cy="500" r="472" class="jd-mount"/><circle cx="500" cy="500" r="460" fill="${PAPER}"/><g clip-path="url(#jdclip)"><rect width="1000" height="1000" filter="url(#jdgrain)"/><rect width="1000" height="1000" filter="url(#jdfiber)"/>`;
+  g += `<circle cx="500" cy="513" r="472" fill="#000" fill-opacity=".28" filter="url(#jdshadow)" pointer-events="none"/><circle cx="500" cy="500" r="472" class="jd-mount"/><circle cx="500" cy="500" r="460" fill="${PAPER}"/><g clip-path="url(#jdclip)"><rect width="1000" height="1000" filter="url(#jdgrain)"/><rect width="1000" height="1000" filter="url(#jdfiber)"/>`;
   /* yin: aguada de tinta, mais escura junto ao S, abrindo em névoa perto da borda */
   g += `<path d="M${dark}Z" fill="${INK}" fill-opacity=".74" filter="url(#jdwash)" class="jd-yin"/><g clip-path="url(#jdyinclip)"><path d="${JD_RIVER}" fill="none" stroke="${INK}" stroke-width="150" stroke-opacity=".3" filter="url(#jdblur)"/></g><clipPath id="jdyinclip"><path d="M${dark}Z"/></clipPath><circle cx="500" cy="500" r="460" fill="url(#jdyinfade)"/>`;
   /* o rio no S: papel reservado, linhas de água (shuiwen) correndo da fonte ao mar */
@@ -12067,7 +12107,7 @@ function jdScene() {
   /* noite, entardecer, vagalumes ou borboletas (as noites de exame da semana) */
   if (night) g += `<rect width="1000" height="1000" class="jd-nightveil"/>` + jdMoonSVG();
   if (sky === "entardecer") g += `<rect width="1000" height="1000" class="jd-duskveil"/>`;
-  g += Array.from({ length: jdVaga() }, (_, i) => { const a = jdR(i, 11) * 6.283, r = 140 + jdR(i, 12) * 220, x = 500 + Math.cos(a) * r, y = 500 + Math.sin(a) * r; return night || sky === "entardecer" ? `<circle cx="${jf(x)}" cy="${jf(y)}" r="2.8" class="jd-fly" style="animation-delay:${(i * .7).toFixed(1)}s"/>` : `<g class="jd-bfly" style="animation-delay:${(i * .9).toFixed(1)}s"><path d="M${jf(x)} ${jf(y)}c-4-7-12-6-9 1c-5 2-2 7 3 4l6-5c-2 6 3 9 6 4c4 1 6-4 1-5c4-6-3-9-7-4Z" fill="${jdIsDark(x, y) ? PALE : INK}" fill-opacity=".22" stroke="${jdIsDark(x, y) ? PALE : INK}" stroke-opacity=".8" stroke-width=".8" transform="scale(.8)" transform-origin="${jf(x)} ${jf(y)}"/></g>`; }).join("");
+  g += Array.from({ length: jdVaga() }, (_, i) => { const a = jdR(i, 11) * 6.283, r = 140 + jdR(i, 12) * 220, x = 500 + Math.cos(a) * r, y = 500 + Math.sin(a) * r; return night || sky === "entardecer" ? `<g class="jd-fly" style="animation-delay:${(i * .7).toFixed(1)}s"><circle cx="${jf(x)}" cy="${jf(y)}" r="9" fill="url(#jdflyg)"/><circle cx="${jf(x)}" cy="${jf(y)}" r="2.8"/></g>` : `<g class="jd-bfly" style="animation-delay:${(i * .9).toFixed(1)}s"><path d="M${jf(x)} ${jf(y)}c-4-7-12-6-9 1c-5 2-2 7 3 4l6-5c-2 6 3 9 6 4c4 1 6-4 1-5c4-6-3-9-7-4Z" fill="${jdIsDark(x, y) ? PALE : INK}" fill-opacity=".22" stroke="${jdIsDark(x, y) ? PALE : INK}" stroke-opacity=".8" stroke-width=".8" transform="scale(.8)" transform-origin="${jf(x)} ${jf(y)}"/></g>`; }).join("");
   g += `<circle cx="500" cy="500" r="460" fill="url(#jdage)" pointer-events="none"/></g><circle cx="500" cy="500" r="460" fill="none" stroke="${INK}" stroke-width="1.6" stroke-opacity=".7" pointer-events="none"/>`;
   return `<div class="jdscene">${svgWrap(1000, 1000, g, `Jardim interior em yin-yang: ${J_ORDER.map(p => `${JD_ARV[p].nome} (${J_PIL[p].nome}) ${T[p].nome}`).join(", ")}; rio ${R.st}; templo com ${JD_TEMPLO.filter(t => D.templo[t.id]).length} de ${JD_TEMPLO.length} partes`, "chart jdsvg sky-" + sky)}</div>`;
 }
@@ -12188,6 +12228,7 @@ function pJardim() {
   const places = [["portao", "Portão da lua", "sprout"], ...J_ORDER.map(p => ["arv:" + p, JD_ARV[p].nome, J_PIL[p].ico]), ["rio", "Rio", "wave"], ["lago", "Lótus", "lotus"], ["praca", "Bússola", "compass"], ["pedreira", "Pedreira", "box"], ["oficina", "Oficina", "brief"], ["templo", "Templo", "house"], ["mirante", "Mirante", "eye"]];
   setTimeout(() => { const sc = $(".jdscene"); if (sc && sc.scrollWidth > sc.clientWidth) { sc.scrollLeft = JD.sx ?? (sc.scrollWidth - sc.clientWidth) / 2; sc.addEventListener("scroll", () => { JD.sx = sc.scrollLeft; }, { passive: true });
     if (JD.center) { const el = sc.querySelector(`[data-k="${JD.sel}"]`); if (el) { const r = el.getBoundingClientRect(), rs = sc.getBoundingClientRect(); sc.scrollLeft += r.left + r.width / 2 - (rs.left + rs.width / 2); JD.sx = sc.scrollLeft; } } } JD.center = false; }, 0);
+  setTimeout(jdBakeSoon, 0);
   setTimeout(() => { if (JD.fx && Date.now() - JD.fx.at > 200) JD.fx = null; if (JD.scroll && innerWidth < 1100) { JD.scroll = false; $(".jdaside")?.scrollIntoView({ block: "start", behavior: "smooth" }); } }, 2200);
   return `<p class="lead">Saúde espiritual: o jardim é o próprio yin-yang, pintado a tinta num leque redondo. O rio é o S: nasce junto ao Espiritismo, no norte, e chega ao mar junto ao Budismo, no sul. No olho do yang fica a pedra das imperfeições; no olho do yin, o lago de lótus; no centro, onde as forças se tocam, o templo sobre a Bússola. Cada pilar ocupa o seu ponto cardeal, como na mandala, pintado no seu próprio gênero. É ${est}; à noite os vagalumes aparecem e a lua é a de hoje.</p>
     ${kpiRow([kmini("var(--jp-tao)", "Árvores", `${sum(T.map(t => t.s))} de 20`, `estágios somados · ${T.filter(t => t.dorm).length ? `${T.filter(t => t.dorm).length} dormindo` : "todas acordadas"}`), kmini("#4f9fd8", "Rio", R.st, `${R.n} de 14 noites de exame`), kmini("var(--jp-bud)", "Templo", `${nb} de ${JD_TEMPLO.length}`, `${plural(Math.max(0, st.pedras), "pedra", "pedras")} e ${plural(Math.max(0, st.tabuas), "tábua", "tábuas")} no estoque`), kmini("var(--jp-med)", "Caminhos", `${nc} de ${JD_CAM.length}`, JD_CAM.some(c => !jdCamOpen(c.id) && jdCamReady(c)) ? "há um pronto para abrir" : "abrem com marcos da jornada")])}
@@ -12202,6 +12243,105 @@ function pJardim() {
       <tr><td><b>Oficina</b><br><small>nordeste, no yin</small></td><td>cabana do eremita</td><td>${esc(JD_SIMB.oficina)}</td><td>sessões de prática (toras)</td><td class="num">${st.toras} toras</td></tr>
       <tr><td><b>Vagalumes</b></td><td>pontos de luz</td><td>a consciência que acende à noite</td><td>exames, 7 dias</td><td class="num">${jdVaga()}</td></tr></tbody></table>`)}</div>`;
 }
+
+/* ---------------------------------------------------------------- desempenho: filtros assados
+   Os filtros de tinta (turbulência, deslocamento, desfoque) são caros, e cada quadro de uma animação (o rio, a névoa, as
+   pétalas) obrigava o navegador a refazer os que ficam por baixo: o jardim engasgava (~35 quadros por segundo no teste).
+   Depois de desenhar, cada elemento com filtro vira uma imagem pronta, no mesmo lugar e na mesma ordem: o desenho fica igual
+   (diferença média de ~2/255 por pixel, só na suavização das bordas) e o que se mexe passa a redesenhar imagens prontas.
+   O original fica invisível, para o toque e o foco. Se algo falhar, fica o desenho com filtros, como antes. As imagens ficam
+   guardadas: redesenhar o jardim depois (trocar o lugar, registrar) é imediato. */
+const JDB = { cache: new Map(), ger: 0, esc: 0, svg: null };
+const JDB_SMIL = "animate, animateMotion, animateTransform, set", JDB_DEFS = "defs, clipPath, mask, linearGradient, radialGradient, pattern, filter";
+const JDB_PROPS = ["fill", "fill-opacity", "fill-rule", "stroke", "stroke-width", "stroke-opacity", "stroke-dasharray", "stroke-dashoffset", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "opacity", "visibility", "color", "paint-order", "mix-blend-mode"];
+const jdbAnim = e => e.matches(JDB_SMIL) || getComputedStyle(e).animationName !== "none";
+const jdbVivo = e => jdbAnim(e) || [...e.children].some(x => x.matches(JDB_SMIL));
+/* o clone leva os estilos calculados (a imagem não enxerga o CSS da página); quem continua animado sai com opacidade 1 */
+function jdbInline(src, dst, solta) {
+  const cs = getComputedStyle(src); let st = "";
+  for (const p of JDB_PROPS) { let v = cs.getPropertyValue(p); if (!v) continue; if (solta && p === "opacity") v = "1"; st += `${p}:${v.replace(/url\("?(#[^")]+)"?\)/g, "url($1)")};`; }
+  dst.setAttribute("style", st); dst.removeAttribute("class");
+  const a = [...src.children], b = [...dst.children]; for (let i = 0; i < a.length; i++) if (b[i] && !a[i].matches(JDB_SMIL)) jdbInline(a[i], b[i], false);
+}
+const jdbNum = (v, d) => v == null ? d : /%$/.test(v) ? parseFloat(v) / 100 : +v;
+/* região do filtro (no sistema do próprio elemento) e se ele é só desfoque largo: aí meia resolução basta */
+function jdbFiltro(svg, fid) { const f = svg.querySelector(fid), fe = f ? [...f.children] : [], sd = Math.max(0, ...fe.filter(x => x.tagName === "feGaussianBlur").map(x => parseFloat(x.getAttribute("stdDeviation")) || 0));
+  return { u: f?.getAttribute("filterUnits") === "userSpaceOnUse", x: jdbNum(f?.getAttribute("x"), -.1), y: jdbNum(f?.getAttribute("y"), -.1), w: jdbNum(f?.getAttribute("width"), 1.2), h: jdbNum(f?.getAttribute("height"), 1.2),
+    meia: fe.length > 0 && fe.every(x => x.tagName === "feGaussianBlur") && sd >= 6 }; }
+function jdbRaster(str, W, H) {
+  let p = JDB.cache.get(str); if (p) { JDB.cache.delete(str); JDB.cache.set(str, p); return p; }
+  p = (async () => { const u = URL.createObjectURL(new Blob([str], { type: "image/svg+xml" })), im = new Image();
+    try { await new Promise((ok, no) => { im.onload = ok; im.onerror = no; im.src = u; }); const c = document.createElement("canvas"); c.width = W; c.height = H; c.getContext("2d").drawImage(im, 0, 0, W, H);
+      const b = await new Promise(ok => c.toBlob(ok)); if (!b) throw new Error("toBlob"); return URL.createObjectURL(b); } finally { URL.revokeObjectURL(u); } })();
+  p.catch(() => JDB.cache.delete(str));
+  JDB.cache.set(str, p);
+  while (JDB.cache.size > 400) { const [k, v] = JDB.cache.entries().next().value; JDB.cache.delete(k); v.then(x => URL.revokeObjectURL(x), () => {}); }
+  return p;
+}
+function jdBakeSoon() { const svg = $(".jdsvg"); if (!svg || svg.dataset.bk) return; svg.dataset.bk = "1"; jdBake(svg).catch(e => console.warn("jardim: filtros", e)); }
+async function jdBake(svg) {
+  if (!window.Blob || !URL.createObjectURL || !HTMLCanvasElement.prototype.toBlob) return;
+  const ger = ++JDB.ger, larg = svg.getBoundingClientRect().width; if (!larg) return;
+  const esc = JDB.esc = Math.round(Math.min(1.5, larg / 1000 * (devicePixelRatio || 1)) * 100) / 100, raiz = svg.getScreenCTM()?.inverse();
+  const defs = [...svg.querySelectorAll(JDB_DEFS)].filter(e => !e.parentElement.closest(JDB_DEFS)).map(e => e.outerHTML).join("");
+  /* animação dentro (fora as do próprio elemento, que vão junto para a imagem) */
+  const animDentro = el => [...el.querySelectorAll("*")].some(x => jdbAnim(x) && !(x.parentElement === el && x.matches(JDB_SMIL)));
+  /* no sistema da raiz: a imagem pode ser cortada no limite do desenho (0–1000) */
+  const naRaiz = el => { const m = raiz && el.getScreenCTM() ? raiz.multiply(el.getScreenCTM()) : null; return !!m && Math.abs(m.a - 1) < 1e-6 && Math.abs(m.d - 1) < 1e-6 && !m.b && !m.c && Math.abs(m.e) < 1e-6 && Math.abs(m.f) < 1e-6; };
+  const regiao = (el, F, m) => { const b = el.getBBox(); let R = m != null ? { x: b.x - m, y: b.y - m, w: b.width + 2 * m, h: b.height + 2 * m } : { x: b.x + F.x * b.width, y: b.y + F.y * b.height, w: F.w * b.width, h: F.h * b.height };
+    if (naRaiz(el)) { const x0 = Math.max(0, R.x), y0 = Math.max(0, R.y), x1 = Math.min(1000, R.x + R.w), y1 = Math.min(1000, R.y + R.h); R = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 }; }
+    return R; };
+  /* o elemento com filtro mais externo que dá para assar inteiro; se não dá (texto, animação dentro), os de dentro são vistos um a um */
+  const tarefas = [], aceitos = [], manter = new Map();
+  for (const el of svg.querySelectorAll("[filter]")) {
+    if (el.closest(JDB_DEFS) || aceitos.some(v => v.contains(el))) continue;
+    if (el.querySelector("text") || getComputedStyle(el).display === "none") continue;
+    const fid = (el.getAttribute("filter").match(/#[^)"']+/) || [])[0]; if (!fid) continue;
+    const F = jdbFiltro(svg, fid); if (F.u) continue;
+    if (!jdbVivo(el) && animDentro(el)) {   /* grupo com filtro e filhos animados (a névoa, o templo com a fumaça): um por filho, com o filtro do grupo;
+                                               o filho que tem animação dentro fica vivo, com o filtro só nele (um pedaço pequeno) */
+      const g = el.getBBox(), m = Math.max(-F.x * g.width, -F.y * g.height, 4), fil = [...el.children].filter(ch => ch instanceof SVGGraphicsElement);
+      if (fil.some(ch => ch.querySelector("text"))) continue;
+      aceitos.push(el); manter.set(el, fil.filter(ch => animDentro(ch)));
+      for (const ch of fil) if (!animDentro(ch)) tarefas.push({ els: [ch], fid, F, pai: el, m, vivo: jdbVivo(ch) });
+      continue; }
+    if (animDentro(el)) continue;
+    aceitos.push(el);
+    /* vizinhos estáticos seguidos, no mesmo sistema e com a mesma resolução, viram uma imagem só (ex.: grão + fibra do papel) */
+    const ult = tarefas.at(-1), vivo = jdbVivo(el);
+    if (ult && !ult.pai && !ult.vivo && !vivo && ult.els.at(-1).nextElementSibling === el && !el.getAttribute("transform") && !ult.els[0].getAttribute("transform") && ult.F.meia === F.meia) ult.els.push(el);
+    else tarefas.push({ els: [el], fid, F, vivo });
+  }
+  const prontas = await Promise.all(tarefas.map(async t => {
+    try {
+      const Rs = t.els.map(el => { const fa = el.getAttribute("filter"); return regiao(el, fa ? jdbFiltro(svg, (fa.match(/#[^)"']+/) || [])[0] || t.fid) : t.F, t.pai ? t.m : null); });
+      const x0 = Math.min(...Rs.map(r => r.x)), y0 = Math.min(...Rs.map(r => r.y)), R = { x: x0, y: y0, w: Math.max(...Rs.map(r => r.x + r.w)) - x0, h: Math.max(...Rs.map(r => r.y + r.h)) - y0 };
+      if (!(R.w > 0 && R.h > 0)) return null;
+      const e2 = esc * (t.F.meia ? .5 : 1), W = Math.max(1, Math.ceil(R.w * e2)), H = Math.max(1, Math.ceil(R.h * e2));
+      const corpo = t.els.map(el => { const cl = el.cloneNode(true); jdbInline(el, cl, t.vivo); cl.querySelectorAll(JDB_SMIL).forEach(x => x.remove()); for (const x of [...cl.children]) if (x.matches(JDB_SMIL)) x.remove(); cl.removeAttribute("transform"); return cl.outerHTML; }).join("");
+      const str = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="${R.x} ${R.y} ${R.w} ${R.h}">${defs}${t.pai ? `<g filter="url(${t.fid})">${corpo}</g>` : corpo}</svg>`;
+      return { t, R, url: await jdbRaster(str, W, H) };
+    } catch (e) { console.warn("jardim: não assou", t.els[0]?.tagName, e?.message || e); return null; }
+  }));
+  if (ger !== JDB.ger || !svg.isConnected) return;
+  const ns = "http://www.w3.org/2000/svg", pais = new Set([...tarefas.filter(t => t.pai).map(t => t.pai), ...manter.keys()]);
+  /* grupo com filtro e filhos animados: só troca se todos os filhos viraram imagem (senão o desfoque do grupo cairia duas vezes) */
+  const completos = new Set([...pais].filter(pai => tarefas.filter(t => t.pai === pai).every(t => prontas.some(d => d?.t === t))));
+  for (const d of prontas) { if (!d || !d.t.els.every(el => el.isConnected) || (d.t.pai && !completos.has(d.t.pai))) continue;
+    const { t, R, url } = d, el = t.els[0], im = document.createElementNS(ns, "image");
+    for (const [k, v] of [["x", R.x], ["y", R.y], ["width", R.w], ["height", R.h], ["preserveAspectRatio", "none"], ["href", url], ["aria-hidden", "true"]]) im.setAttribute(k, v);
+    if (el.getAttribute("transform")) im.setAttribute("transform", el.getAttribute("transform"));
+    if (t.vivo) { im.setAttribute("class", ((el.getAttribute("class") || "") + " jd-bk").trim()); for (const k of ["style", "opacity"]) if (el.hasAttribute(k)) im.setAttribute(k, el.getAttribute(k)); for (const s of [...el.children].filter(x => x.matches(JDB_SMIL))) im.append(s); el.style.animation = "none"; el.removeAttribute("class"); }
+    else im.setAttribute("class", "jd-bk");
+    el.before(im);
+    for (const o of t.els) { o.style.setProperty("opacity", "0", "important"); o.removeAttribute("filter"); } }
+  for (const pai of completos) { const f = pai.getAttribute("filter");
+    for (const ch of manter.get(pai) || []) if (ch.isConnected) { const w = document.createElementNS(ns, "g"); w.setAttribute("filter", f); ch.before(w); w.append(ch); }
+    pai.removeAttribute("filter"); }
+  svg.classList.add("jd-assado");
+}
+/* a tela mudou muito de tamanho: redesenha, para as imagens não ficarem borradas */
+addEventListener("resize", debounce(() => { const svg = $(".jdsvg"); if (!svg || !JDB.esc) return; const e = Math.min(1.5, svg.getBoundingClientRect().width / 1000 * (devicePixelRatio || 1)); if (Math.abs(e - JDB.esc) / JDB.esc > .25) render(); }, 400), { passive: true });
 
 /* ---------------------------------------------------------------- ações */
 function jdFolhaAnim() {
@@ -16770,7 +16910,7 @@ function trFichaDlg(id) {
 }
 /* treino em andamento: fica neste aparelho até salvar ou descartar */
 const trDraft = () => { if (TRV.draft === undefined) { try { TRV.draft = JSON.parse(sdLS("trdraft") || "null"); } catch { TRV.draft = null; } } return TRV.draft; };
-const trDraftSave = () => sdLS("trdraft", TRV.draft ? JSON.stringify(TRV.draft) : "");
+const trDraftSave = () => { if (!EX_MODE) sdLS("trdraft", TRV.draft ? JSON.stringify(TRV.draft) : ""); };
 function trNovoDraft(fid) {
   const f = trD().fichas.find(x => x.id === fid);
   TRV.draft = { data: TODAY, ficha: f?.id || "", nome: f?.nome || "Treino livre", dur: "", rpe: "", obs: "", ini: Date.now(),
@@ -18000,6 +18140,7 @@ document.addEventListener("click", e => {
   if (a === "qtar") { const i = t.closest(".pn,.tcol")?.querySelector(".quick input") || $("#qt_in") || $("#hj_tar"); if (i) { quickTask(i.value); i.value = ""; } return; }
   if (a === "qlanc") { const i = $("#ql_in"); if (i) { quickLanc(i.value); i.value = ""; } return; }
   if (a === "extog") { exToggle(); return; }
+  if (a === "exoff") { exOff(); return; }
   if ((t.id === "startEmpty" || t.id === "wipe") && EX_MODE) { toast("Desligue o modo exemplo antes."); return; }
   if (t.id === "startEmpty" || t.id === "wipe") { if (t.id === "wipe" && !t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar: apagar tudo"; return; } S = EMPTY(); VER++; IS_EXAMPLE = false; applyLists(); KEYS.forEach(k => dirty.add(k)); snapAll(); UNDO.length = 0; REDO.length = 0; flushSoon(0); render(); toast("Tudo vazio. Comece por Ajustes, Metas e o Diário."); return; }
   if (t.id === "loadEx") { exOn(); return; }

@@ -230,7 +230,7 @@ const TEMPLATES = {
   conversa: ["Conversa importante", "Conversa com @\n\n**O que foi dito:**\n\n**O que eu senti:**\n\n**Próximo passo:**\n- [ ] "],
 };
 function loadDraft() { try { const v = localStorage.getItem("atlas_draft"); return v ? JSON.parse(v) : null; } catch { return null; } }
-const storeDraft = debounce(() => { try { DIA.draft ? localStorage.setItem("atlas_draft", JSON.stringify(DIA.draft)) : localStorage.removeItem("atlas_draft"); } catch {} }, 400);
+const storeDraft = debounce(() => { if (EX_MODE) return; try { DIA.draft ? localStorage.setItem("atlas_draft", JSON.stringify(DIA.draft)) : localStorage.removeItem("atlas_draft"); } catch {} }, 400);
 function openComposer(edit, preset = {}) {
   const e = edit ? S.diario.find(x => x.id === edit) : null, v = e ? viewEntry(e) : null;
   if (e && !v) { toast("Esta entrada está trancada. Destranque o cofre em Privacidade para editar."); setHash("privacidade"); return; }

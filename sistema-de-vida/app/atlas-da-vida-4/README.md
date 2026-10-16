@@ -160,6 +160,30 @@ Os chakras lidos à luz da Doutrina Espírita, dentro do pilar Espiritismo (nave
 - **Companheiro de terapia** (antes, O Terapeuta): agente com memória que muda de forma (profundo, escuta, direto, acolhimento, socrático). Em Automático, ele lê os sinais do que você escreve; uma forma tocada fica fixa. Não substitui a terapia e tem protocolo de segurança.
 - **Fios**: um registro de pensamento vira triagem estoica; uma triagem pode ir para a pauta da terapia; os padrões aparecem na Filosofia; sessões e processos se ligam a pilares e valores; os mentores da Jornada e o Mentor do Equilíbrio leem um resumo (nada marcado como só seu, e nada se a Saúde mental estiver fora da IA).
 
+## Modo exemplo (`src/34-exemplo.js`)
+
+- Ligar guarda os seus dados na memória e mostra os fictícios; desligar devolve exatamente o estado anterior. A troca é atômica:
+  espera a gravação e a releitura do banco que estiverem em andamento (as duas leem os dados depois de esperar a rede); não
+  aceita um segundo toque enquanto troca nem nos 0,7 s seguintes (duplo toque não desliga e liga de novo); não troca antes de
+  os dados abrirem nem com a IA respondendo (a resposta cairia no conjunto errado). Só a contagem de uso pendente não segura a
+  troca: ela fica guardada e é gravada quando o exemplo desliga.
+- O que outro aparelho grava durante o exemplo fica na fila e entra nos seus dados quando ele desliga.
+- Rascunhos (diário, treino), resultados de busca, textos da IA e o aviso do Secretário são guardados ao ligar e devolvidos ao
+  desligar; os do exemplo somem, e rascunhos não são gravados no aparelho enquanto o exemplo está ligado.
+
+## Jardim interior: animação fluida (`src/38-jardim.js`)
+
+- Os filtros de tinta (turbulência, deslocamento, desfoque) eram refeitos a cada quadro das animações que passam por cima deles
+  (o rio, a névoa, as pétalas), e a sombra do leque era um filtro CSS sobre o SVG inteiro: ~35 quadros por segundo no teste.
+- Depois de desenhar, cada elemento com filtro vira uma imagem pronta, no mesmo lugar e na mesma ordem (vizinhos estáticos viram
+  uma imagem só, cortada no limite do desenho; camadas só de desfoque em meia resolução). O original fica invisível, para o
+  toque, o realce e o foco. Quem continua animado (névoa, pérola do qi) leva a animação para a imagem; o filho que tem animação
+  dentro de um grupo com filtro (a chama do incenso no templo) fica vivo, com o filtro só nele. A sombra do leque é um círculo
+  desfocado dentro do desenho; os vagalumes ganham um halo em gradiente em vez de sombra CSS animada.
+- Resultado no teste: 60 quadros por segundo de dia, à noite com névoa e no celular; o desenho difere em média ~2/255 por pixel
+  (só a suavização das bordas). As imagens ficam guardadas: redesenhar depois é imediato. Se o navegador não conseguir gerar as
+  imagens, o jardim aparece como antes, com os filtros.
+
 ## IA com acesso aos dados no detalhe (`src/56-ia-dados.js`)
 
 - **Mentores (todos, inclusive Nutri, Personal, PMO, Companheiro, Jornada e Lazer):** além dos resumos de antes, o pedido leva
@@ -261,6 +285,8 @@ O relógio do navegador fica fixo em 09/10/2026, 10:00 (sexta), para os testes n
 | `lab35.py` | Atlas 4 · modelo com as cores da planilha (não se aplica sozinho, lista com o tamanho, aplicado no dia da semana certo, fundo e letra na grade e no mês, copiar, duplicar e salvar como modelo mantêm a cor, bloco sem cor segue a categoria) e compromisso anual (todo ano desde a data, 29/02, dia todo na Rotina, ano seguinte, cartão, formulário, edição mantém, mês, Visão geral sem repetir o aniversário da ficha) e aniversário na pessoa (cartão, ficha com idade ou “ano não informado”, formulário com ano opcional, 31/02 recusado, nome e ano novos, calendário que acompanha a ficha, tocar abre a ficha, tirar a data tira do calendário) |
 | `lab36.py` | Atlas 4 · IA com os dados no detalhe: o Mentor do Dinheiro recebe todos os lançamentos (um por linha, do mais recente), orçamento e assinaturas, e `ler_dados` no fim da lista (com limite 3, as duas primeiras do agente e `ler_dados`; com limite 10, o Nutri cede `consultar_treinos` e o PMO mantém a ordem da configuração); dados aninhados inteiros (séries do último treino); a soma por mês da ferramenta bate com a conta direta; a conversa e o registro de Privacidade anotam a leitura; os 29 mentores têm `ler_dados` e os das áreas recebem seus dados, todos abaixo de 256 KB; Secretário, Conselho e IAs de tarefa única com catálogo e ferramenta (e sem ferramentas, como antes); catálogo, paginação, período, busca, soma por campo, JSON, check-ins por setor, 32 KB; privacidade (setor sem IA, `#privado`, campos de setor privado) |
 | `lab37.py` | Atlas 4 · Rotina › Limpar: um botão na barra nas três vistas (dia, semana, mês); o diálogo conta os blocos, a tarefa com horário (marcada) e o que fica, abre com o foco em Cancelar, e nada muda antes de confirmar; Cancelar e Esc não mexem em nada; o dia, os 7 dias e o mês ficam vazios na conta e na tela, com os vizinhos intactos; avulsos apagados, repetições só no período (as séries continuam); tarefa com horário sai (ou fica, com a caixa desmarcada) e a sem horário fica; agenda, aniversários e Cockpit intactos; Ctrl+Z desfaz num passo só; período vazio só avisa; celular sem rolagem lateral |
+| `lab38.py` | Atlas 4 · modo exemplo sem sobras: dois toques com gravação pendente (os seus dados ficam intactos); toque no meio de uma gravação em andamento (o botão mostra “Ligando…”, a gravação termina com os seus dados e nenhum do exemplo no banco); duplo toque em “Desligar” e no botão do topo; IA respondendo e dados abrindo não trocam; o que outro aparelho grava durante o exemplo entra nos seus dados ao desligar; rascunhos, textos da IA e o aviso “14 coisas” voltam aos seus; contagem de uso não segura a troca e é gravada depois; 14 telas sem nenhum texto do exemplo depois de desligar |
+| `lab39.py` | Atlas 4 · jardim fluido: filtros viram imagens (só a chama do incenso fica viva), sombra do leque sem filtro CSS, 60 quadros por segundo de dia, à noite com névoa e no celular, as mesmas animações antes e depois, desenho igual (diferença média abaixo de 3/255, menos de 1% dos pixels acima de 24), realce ao passar o mouse, toque e teclado, redesenho rápido, refaz ao mudar muito de tamanho, e sem canvas aparece como antes |
 | `flows.py`, `edge.py`, `sjflows.py` | fluxos herdados do Atlas original |
 | `smoke.py 390 dark`, `holes.py 1024` | todas as páginas numa largura/tema; buracos entre cartões |
 

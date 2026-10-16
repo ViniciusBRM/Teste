@@ -289,7 +289,7 @@ function trFichaDlg(id) {
 }
 /* treino em andamento: fica neste aparelho até salvar ou descartar */
 const trDraft = () => { if (TRV.draft === undefined) { try { TRV.draft = JSON.parse(sdLS("trdraft") || "null"); } catch { TRV.draft = null; } } return TRV.draft; };
-const trDraftSave = () => sdLS("trdraft", TRV.draft ? JSON.stringify(TRV.draft) : "");
+const trDraftSave = () => { if (!EX_MODE) sdLS("trdraft", TRV.draft ? JSON.stringify(TRV.draft) : ""); };
 function trNovoDraft(fid) {
   const f = trD().fichas.find(x => x.id === fid);
   TRV.draft = { data: TODAY, ficha: f?.id || "", nome: f?.nome || "Treino livre", dur: "", rpe: "", obs: "", ini: Date.now(),

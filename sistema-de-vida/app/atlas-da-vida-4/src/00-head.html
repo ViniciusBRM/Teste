@@ -1372,7 +1372,7 @@ tr.dim td{opacity:.5}
 /* modo exemplo */
 .exbtn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);padding:7px 10px;border-radius:9px;cursor:pointer;font-weight:600;font-size:13px}
 .exbtn .ico{width:15px;height:15px}.exsw{width:26px;height:15px;border-radius:99px;background:var(--surface-3);position:relative;transition:background .15s}.exsw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:var(--muted);transition:all .15s}
-.exbtn.on{border-color:var(--warn);color:var(--ink)}.exbtn.on .exsw{background:color-mix(in srgb,var(--warn) 55%,var(--surface-3))}.exbtn.on .exsw::after{left:13px;background:var(--warn)}
+.exbtn.busy{opacity:.7;cursor:progress}.exbtn.on{border-color:var(--warn);color:var(--ink)}.exbtn.on .exsw{background:color-mix(in srgb,var(--warn) 55%,var(--surface-3))}.exbtn.on .exsw::after{left:13px;background:var(--warn)}
 .banner.exb{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
 @media (max-width:640px){.exbtn span{display:none}}
 
@@ -1493,7 +1493,7 @@ button.rtad:hover,button.rtad:focus-visible{outline:2px solid var(--accent);outl
 .jdparts small{color:var(--muted)}.jdaxes{display:grid;gap:4px;margin:8px 0}.jdaxes>div{display:grid;grid-template-columns:52px 1fr 40px;gap:8px;align-items:center;font-size:12.5px}.jdaxes .jdbar{margin:0}
 .jdsvg .jd-hot{cursor:pointer;outline:none}.jdsvg .jd-hot:focus-visible{outline:none}.jdsvg .jd-hot:focus-visible>*:not(text){filter:drop-shadow(0 0 4px var(--accent))}
 .jdsvg .jd-hot.on{filter:drop-shadow(0 0 6px rgba(176,53,42,.65))}.jdsvg .jd-hot:hover{filter:drop-shadow(0 0 4px rgba(176,53,42,.4))}
-.jdsvg{filter:drop-shadow(0 10px 22px rgba(0,0,0,.28))}.jd-mount{fill:#d8c39c;stroke:#6b5236;stroke-width:2.5}
+.jdsvg image.jd-bk{pointer-events:none}.jd-mount{fill:#d8c39c;stroke:#6b5236;stroke-width:2.5}
 .jd-moondisc{fill:#fbf5e6;stroke:#1d1915;stroke-opacity:.22;stroke-width:.8}.jd-unlit{fill:#1d1915;fill-opacity:.2}
 .jd-it{font:600 11.5px/1 var(--f-ui),system-ui,sans-serif;letter-spacing:.26em}.jd-il{font:italic 14.5px/1 var(--f-display),Georgia,serif}.jd-is{font:italic 11.5px/1 var(--f-display),Georgia,serif;opacity:.72}
 .jd-seal-c{display:none;font:21px/1 "Ma Shan Zheng",serif;fill:#f1e6cf}.jd-cjk .jd-seal-c{display:inline}.jd-cjk .jd-seal-s{display:none}.jd-gseal .jd-seal-c{font-size:17px}
@@ -1523,7 +1523,7 @@ button.rtad:hover,button.rtad:focus-visible{outline:2px solid var(--accent);outl
 .jd-cairn{fill:#d6cdbb;stroke:#1d1915;stroke-width:.9}.jd-ready-ring{fill:none;stroke:#b0352a;stroke-width:1.6;stroke-dasharray:3 4;animation:jdready 1.6s ease-in-out infinite}
 .jd-hit path,.jd-shop.jd-hit .jd-slips{animation:jdshake .45s ease-in-out 2}
 .jd-fog{fill:#f1e6cf;opacity:.74;animation:jdfog 9s ease-in-out infinite alternate}.jd-fogg{pointer-events:none}
-.jd-fly{fill:#fff3a0;filter:drop-shadow(0 0 5px #fff3a0);animation:jdfly 4s ease-in-out infinite alternate}.jd-bfly{animation:jdfly 5s ease-in-out infinite alternate}.jd-crane{animation:jdfly 7s ease-in-out infinite alternate}
+.jd-fly{fill:#fff3a0;animation:jdfly 4s ease-in-out infinite alternate}.jd-bfly{animation:jdfly 5s ease-in-out infinite alternate}.jd-crane{animation:jdfly 7s ease-in-out infinite alternate}
 .jd-nightveil{fill:#0c1322;opacity:.5;pointer-events:none}.jd-duskveil{fill:#c8743a;opacity:.1;pointer-events:none}.jd-leaf{pointer-events:none}
 .jd-seal,.jd-gseal,.jd-bagua{pointer-events:none}
 .jdproj td{vertical-align:top;font-size:12.5px}.jdproj td:nth-child(3){min-width:220px}
