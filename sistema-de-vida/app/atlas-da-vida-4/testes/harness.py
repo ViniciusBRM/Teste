@@ -37,7 +37,7 @@ MOCK = r"""
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const promptOf = input => Array.isArray(input) ? input.map(t => t.content).join("\n") : String(input);
   async function sample(input, opts = {}) {
-    window.__calls.push({ kind: "sample", input, tools: (opts.tools || []).map(t => t.name), tier: opts.modelTier, cache: opts.cache });
+    window.__calls.push({ kind: "sample", input, tools: (opts.tools || []).map(t => t.name), tier: opts.modelTier, cache: opts.cache, imgs: [].concat(opts.images || []).length });
     if (Array.isArray(input)) { if (input[0].role !== "user" || input.at(-1).role !== "user") throw { code: "invalid_request", message: "turns must start/end with user" }; }
     if (cfg.sampleError) throw { code: cfg.sampleError, message: "mock" };
     const T = Object.fromEntries((opts.tools || []).map(t => [t.name, t]));
@@ -122,8 +122,9 @@ MOCK = r"""
     if (!opts.tools) await emit('\n```atlas\n{"memorias":[{"tipo":"ideia","texto":"Fallback: ideia salva"}],"propostas":[{"tipo":"habito","titulo":"Cozinhar domingo","vezes_por_semana":1}]}\n```');
     return { text, truncated: false, modelTierApplied: opts.modelTier || "default" };
   }
-  sample.limits = async () => cfg.noTools ? { maxPromptBytes: 262144 } : { maxPromptBytes: 262144, tools: { maxCount: 10 } };
+  sample.limits = async () => ({ ...(cfg.noTools ? { maxPromptBytes: 262144 } : { maxPromptBytes: 262144, tools: { maxCount: 10 } }), ...(cfg.sampleImages ? { images: { maxCount: 4, maxBytes: 20e6, mediaTypes: ["image/png", "image/jpeg", "image/webp"] } } : {}) });
   sample.json = async (input, opts = {}) => {
+    if (/ficha de inspiração/.test(promptOf(input))) { window.__calls.push({ kind: "sample-json", tier: opts.modelTier }); return { texto: "Texto de inspiração gerado no teste.", aquec: ["passo 1 teste", "passo 2 teste", "passo 3 teste"], desafios: ["desafio A teste", "desafio B teste"], perguntas: ["pergunta teste?"], videos: [["vídeo teste", "busca teste"]] }; }
     window.__calls.push({ kind: "json", input, tier: opts.modelTier });
     if (cfg.sampleError) throw { code: cfg.sampleError, message: "mock" };
     const P = promptOf(input); await sleep(10);

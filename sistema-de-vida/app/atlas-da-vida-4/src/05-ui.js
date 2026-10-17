@@ -100,7 +100,7 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 
 /* ================================================================ navegação */
 const NAV = [
-  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["trabalho", "Cockpit de Trabalho", "gauge"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"]]],
+  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["inspira", "Inspiração", "spark"], ["trabalho", "Cockpit de Trabalho", "gauge"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["idiomas", "Idiomas", "globe"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["cruz", "Cruzamentos", "scatter"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["mapa", "Mapa do Atlas", "compass"], ["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
@@ -157,7 +157,7 @@ function route() {
 }
 /* menu enxuto: 8 abas fixas à mostra; as outras ficam em “Mais”, nos mesmos grupos, e continuam a um toque e no Ctrl K.
    Quais ficam fixas se escolhe em Ajustes › Menu, com o número de vezes que cada aba foi aberta ao lado. */
-const MENU_PAD = ["visao", "hoje", "painel", "rotina", "trabalho", "diario", "fin", "saude"];
+const MENU_PAD = ["visao", "hoje", "painel", "rotina", "inspira", "trabalho", "diario", "fin", "saude"];
 let NAVMAIS = (() => { try { return localStorage.getItem("atlas4_navmais") === "1"; } catch { return false; } })();
 const menuFixos = () => Array.isArray(S.cfg.menu) && S.cfg.menu.length ? S.cfg.menu.filter(k => NAV.some(g => g[1].some(x => x[0] === k))) : MENU_PAD;
 function navHTML(R) {
@@ -388,6 +388,7 @@ function palItems(q) {
   add("Ações", "Conversar com o Personal", "Personal trainer virtual: fichas, cargas e plano de corrida", "dumbbell", () => { sdLS("chat_personal", "1"); setHash("saude", "treinos"); setTimeout(() => $("#m_in")?.focus(), 80); }, "personal treinador academia corrida");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");
   add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
+  add("Ações", "Guia do Atlas", "O que preencher em cada aba, aberto ao lado no Secretário", "compass", () => guAbrir(guAtual()), "guia tutorial manual ajuda preencher como usar");
   add("Ações", "Secretário da Vida", "Abre a janela do secretário: agora, lembretes e conversa", "brief", () => secToggle(true), "secretario assistente lembrete agenda resumo");
   add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("jornada", "exame"), "bussola moral exame consciencia valores");
   add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("jornada", "decidir"), "dilema decisao etica moral");

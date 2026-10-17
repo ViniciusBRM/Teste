@@ -79,7 +79,7 @@ async def exemplo(p):
         # menu: 8 fixas e “Mais”
         await pg.evaluate("location.hash = 'visao'"); await pg.wait_for_timeout(300)
         r = await pg.evaluate("[[...document.querySelectorAll('#nav > a.nv')].length, document.querySelector('#nav [data-act=navmais]')?.textContent.trim(), document.querySelector('#navrest').hidden, document.querySelectorAll('#nav a.nv').length]")
-        chk(r[0] == 8 and r[1].startswith("Mais 24 abas") and r[2] is True and r[3] == 32, f"menu: 8 fixas, 24 em “Mais”, todas no DOM ({r})")
+        chk(r[0] == 9 and r[1].startswith("Mais 24 abas") and r[2] is True and r[3] == 33, f"menu: 9 fixas (com a Inspiração), 24 em “Mais”, todas no DOM ({r})")
         await pg.evaluate("location.hash = 'radar'"); await pg.wait_for_timeout(300)
         r = await pg.evaluate("[document.querySelector('#navrest').hidden, document.querySelector('#nav a[href=\"#radar\"]').getAttribute('aria-current')]")
         chk(r == [False, "page"], f"numa aba de “Mais”, o grupo abre e marca a aba ({r})")
@@ -101,7 +101,7 @@ async def real(p):
         r = await pg.evaluate("[document.querySelector('[data-menufix=visao] ~ small')?.textContent, document.querySelector('[data-menufix=radar]').checked]")
         await pg.evaluate("const c = document.querySelector('[data-menufix=radar]'); c.checked = true; c.dispatchEvent(new Event('change', { bubbles: true }))"); await pg.wait_for_timeout(300)
         r2 = await pg.evaluate("[S.cfg.menu.includes('radar'), [...document.querySelectorAll('#nav > a.nv')].length]")
-        chk(r[0] and int(r[0]) >= 2 and r[1] is False and r2 == [True, 9], f"Ajustes › Menu: contagem ao lado e fixar uma aba ({r}, {r2})")
+        chk(r[0] and int(r[0]) >= 2 and r[1] is False and r2 == [True, 10], f"Ajustes › Menu: contagem ao lado e fixar uma aba ({r}, {r2})")
         # KPIs sem registro (sem treinos nem estudo)
         await pg.evaluate("location.hash = 'visao'"); await pg.wait_for_timeout(300)
         r = await pg.evaluate("[...document.querySelectorAll('#main .km')].map(k => k.innerText.replace(/\\s+/g, ' ')).filter(t => /TREINOS|ESTUDO/i.test(t))")

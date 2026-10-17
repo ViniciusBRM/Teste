@@ -33,7 +33,7 @@ function lsTick() {
   for (const x of novos) vis[x.k] = Date.now();
   for (const k in vis) if (Date.now() - vis[k] > 3 * 86400e3) delete vis[k];
   try { localStorage.setItem("atlas_lsem", JSON.stringify(vis)); } catch {}
-  const um = x => `${x.falta > 0 ? `Em ${x.falta} min` : "Agora"}: ${x.b.titulo} (${x.b.ini}–${x.b.fim})`;
+  const um = x => `${x.falta > 0 ? `Em ${x.falta} min` : "Agora"}: ${x.b.titulo} (${x.b.ini}–${x.b.fim})${x.r.nota ? ` · ${x.r.nota}` : ""}`;
   const txt = novos.length === 1 ? um(novos[0]) : `${novos.length} atividades: ${novos.map(x => `${x.b.titulo} ${x.b.ini}`).join(", ")}`;
   SEC.nudge = { txt, crit: true, at: Date.now() }; SEC.tab = "lembretes"; SEC.open = true; secLS("open", true); toast(txt); secPaint();
   lsNotifica(txt); if (secData().lsSom) lsSom();
@@ -127,7 +127,7 @@ const LS = { dias: [], busy: "" };
 function lsPanel() {
   const L = lsData(), A = lsAtividades(), D = secData();
   const item = r => { const px = lsProximas(r), des = lsGcDesatual(r);
-    return `<div class="lsit${r.on === false ? " off" : ""}"><div><b>${ic("clock")}${esc(r.titulo)}</b><small>${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próximas: ${esc(px.join(", "))}` : " · não aparece nos próximos 14 dias"}${r.gcal?.on ? ` · ${des ? "<span class=\"st-warn\">Google desatualizado</span>" : "no Google Agenda"}` : ""}</small></div>
+    return `<div class="lsit${r.on === false ? " off" : ""}"><div><b>${ic("clock")}${esc(r.titulo)}</b><small>${r.nota ? `${esc(r.nota)} · ` : ""}${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próximas: ${esc(px.join(", "))}` : " · não aparece nos próximos 14 dias"}${r.gcal?.on ? ` · ${des ? "<span class=\"st-warn\">Google desatualizado</span>" : "no Google Agenda"}` : ""}</small></div>
       <div class="row wrap">${LS.busy === r.id ? `<span class="muted small">Google Agenda…</span>` : `<button type="button" class="btn sm ghost" data-lsgc="${r.id}">${r.gcal?.on ? (des ? "Atualizar no Google" : "Tirar do Google") : "Pôr no Google Agenda"}</button>`}<button type="button" class="btn sm ghost" data-lson="${r.id}">${r.on === false ? "Retomar" : "Pausar"}</button><button type="button" class="btn sm ghost" data-lsdel="${r.id}" aria-label="Apagar o lembrete de ${esc(r.titulo)}">${ic("trash")}</button></div></div>`; };
   return panel(`${ic("clock")}Lembretes <small>${L.length ? plural(L.filter(r => r.on !== false).length, "ativo", "ativos") : "nenhum"}</small>`, `${L.map(item).join("") || `<p class="muted small">Escolha uma atividade da rotina para ser avisado antes dela, toda semana.</p>`}
     <details class="lsnew"${L.length ? "" : " open"}><summary>${ic("plus")}Novo lembrete</summary><div class="form f1">
@@ -140,7 +140,7 @@ function lsPanel() {
 }
 function lsSecHTML() {
   const L = lsData(); if (!L.length) return `<div class="secsec">${ic("clock")}Toda semana</div><small class="muted">Nenhum lembrete semanal. Crie na <a href="#rotina.semana">Rotina › Lembretes</a> ou no cartão de qualquer bloco.</small>`;
-  return `<div class="secsec">${ic("clock")}Toda semana<small>${L.length}</small></div>${L.map(r => { const px = lsProximas(r, 1); return `<div class="secit${r.on === false ? " done" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(r.titulo)}</b><small>${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próxima: ${esc(px[0])}` : ""}${r.gcal?.on ? " · Google" : ""}${r.on === false ? " · pausado" : ""}</small></div></div>`; }).join("")}<a class="lnk small" href="#rotina.semana">gerenciar na Rotina</a>`;
+  return `<div class="secsec">${ic("clock")}Toda semana<small>${L.length}</small></div>${L.map(r => { const px = lsProximas(r, 1); return `<div class="secit${r.on === false ? " done" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(r.titulo)}</b><small>${r.nota ? `${esc(r.nota)} · ` : ""}${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próxima: ${esc(px[0])}` : ""}${r.gcal?.on ? " · Google" : ""}${r.on === false ? " · pausado" : ""}</small></div></div>`; }).join("")}<a class="lnk small" href="#rotina.semana">gerenciar na Rotina</a>`;
 }
 function lsClick(t) {
   const ds = t.dataset;

@@ -891,6 +891,26 @@ button.mrow{cursor:pointer}button.mrow:hover span{color:var(--ink)}
 .lsbox{margin-top:10px}.lsrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 4px}.lsrow select{min-width:150px}
 .lsit{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line)}.lsit>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 200px}.lsit b{display:flex;align-items:center;gap:6px}.lsit small{color:var(--muted)}.lsit.off{opacity:.6}
 .lsnew{margin:10px 0}.lsnew summary{cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px}.lsdias{display:flex;flex-wrap:wrap;gap:4px;align-items:center}.lsdias small{flex-basis:100%}.lscfg{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0}
+.gutop{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}.gutop input[type=search]{flex:1 1 160px;min-width:0}
+.gusec{border:1px solid var(--line);border-radius:10px;margin:6px 0;background:var(--surface)}.gusec>summary{cursor:pointer;padding:8px 10px;display:flex;flex-direction:column;gap:1px;list-style:none}.gusec>summary::-webkit-details-marker{display:none}.gusec>summary small{color:var(--muted);font-size:12px}
+.gusec[open]>summary{border-bottom:1px solid var(--line)}.gusec>:not(summary){margin-left:10px;margin-right:10px}.gusec ul{margin:4px 0 6px;padding-left:18px}.gusec li{margin:2px 0;font-size:13px}.gusec p{margin:4px 0 6px;font-size:13px}.gusec>a{display:inline-block;margin-bottom:8px}
+.gumis{color:var(--ink-2);font-style:italic}.gulbl{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:8px}.gupl{list-style:none;padding-left:0!important}.gupl li{padding:4px 0;border-bottom:1px dashed var(--line)}.gupl li span{color:var(--ink-2)}
+.cofab{position:fixed;right:18px;bottom:136px;z-index:60;display:inline-flex;align-items:center;gap:7px;padding:9px 14px 9px 11px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c,var(--accent)) 60%,var(--line-2));background:color-mix(in srgb,var(--c,var(--accent)) 14%,var(--surface));color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer;font:600 13px var(--f-ui);max-width:240px}
+.cofab .ico svg{width:17px;height:17px;color:var(--c,var(--accent))}.cofab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cofab[hidden]{display:none}body.co-on .secnudge{bottom:188px}
+.cow{z-index:71}.co-h{background:linear-gradient(180deg,color-mix(in srgb,var(--c,var(--accent)) 16%,var(--surface)),var(--surface))}.co-av{color:var(--c,var(--accent));background:color-mix(in srgb,var(--c,var(--accent)) 22%,transparent)}
+.cobar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:7px 12px;border-bottom:1px solid var(--line);font-size:12.5px}.cobar label{display:inline-flex;gap:6px;align-items:center}.cobar select{font-size:12.5px;padding:3px 6px}
+.coxtra{padding:6px 12px;border-bottom:1px solid var(--line);font-size:12.5px}.coxtra summary{cursor:pointer;font-weight:600;display:flex;gap:6px;align-items:center}.coxtra[open]{display:grid;gap:7px;max-height:44vh;overflow:auto}.coxtra textarea{width:100%;font-size:12.5px}.coxtra label.small{display:grid;gap:3px;color:var(--muted)}
+.cotag{display:block;margin-top:3px;font-size:10.5px;opacity:.75}.conotas{margin:0;padding-left:16px;display:grid;gap:3px}.conotas small{color:var(--muted)}
+@media (max-width:640px){.cofab{right:12px;bottom:128px;padding:9px 11px}.cofab span{display:none}body.co-on .secnudge{bottom:180px}}
+@media print{.cofab,.cow{display:none!important}}
+.insnow{display:flex;gap:8px;align-items:center;padding:10px 12px;margin-bottom:12px;border-color:color-mix(in srgb,var(--warn) 50%,var(--line))}.insbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}.insbar input{flex:1 1 180px;min-width:0}.insbar .seg-g{flex-wrap:wrap}
+.insgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:14px}
+.inscard{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;padding:12px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 12%,var(--surface)),var(--surface) 70%);cursor:pointer;color:var(--ink);font:inherit;position:relative}
+.inscard:hover,.inscard.on{border-color:var(--c)}.inscard.on{box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 40%,transparent)}.inscard small{color:var(--muted);font-size:12px;line-height:1.35}.inscard i{position:absolute;top:10px;right:10px;font-style:normal;font-size:11px;color:var(--muted)}
+.insico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 18%,transparent)}.insico.big{width:46px;height:46px}.insico svg{width:19px;height:19px}.insico.big svg{width:24px;height:24px}
+.insdet{border-color:color-mix(in srgb,var(--c) 45%,var(--line));scroll-margin-top:12px}.insh{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}.insh>div:nth-child(2){flex:1 1 220px}.insh h2{margin:0 0 2px}
+.instx{font-size:15px;line-height:1.55;margin:12px 0}.insblk{margin:12px 0}.insaq{margin:6px 0 8px;padding-left:20px;display:grid;gap:4px}.insaq li.on{font-weight:700;color:var(--c)}.insaq li.ok{color:var(--muted);text-decoration:line-through}
+.insdes{font-size:15px;font-weight:600;margin:4px 0 8px}.insmid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}.insmid ul{margin:4px 0;padding-left:18px;display:grid;gap:3px;font-size:13px}
 .rtpref h3{margin-bottom:2px}.rtpref p{margin:6px 0}.rtprl{display:flex;flex-direction:column;gap:8px;margin:10px 0;max-height:min(52vh,460px);overflow:auto;padding:2px}
 .rtpro{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer;background:var(--surface)}.rtpro:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
 .rtpro>span{display:flex;flex-direction:column;gap:2px;min-width:0}.rtpro small{font-size:12px;line-height:1.35}.rtpro input{margin-top:3px;flex:0 0 auto}
@@ -2184,13 +2204,13 @@ function applyLists() {
 const relArea = r => ({ "Família": "Família", "Parceria": "Amor & parceria", "Amizade": "Amizades & social", "Trabalho": "Carreira", "Mentoria": "Carreira", "Comunidade": "Propósito & espiritualidade" }[r] || "Amizades & social");
 
 /* ================================================================ estado */
-const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx", "rotina", "rotinaModelos", "jardim", "secretario", "conselho", "filosofia", "psique", "ck", "ckTar", "ckRisk", "ckIss", "ckLog", "ckDec", "ckMeet", "ckBim", "ckEl", "ckLic", "ckRel", "ckSnap", "nutri", "nutriLog", "treino", "treinoLog", "corridas", "uso"];
+const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx", "rotina", "rotinaModelos", "jardim", "secretario", "conselho", "filosofia", "psique", "ck", "ckTar", "ckRisk", "ckIss", "ckLog", "ckDec", "ckMeet", "ckBim", "ckEl", "ckLic", "ckRel", "ckSnap", "nutri", "nutriLog", "treino", "treinoLog", "corridas", "uso", "guia", "inspira"];
 const EMPTY = () => ({
   cfg: { nome: "", moeda: "€", metaPoup: .2, metaReserva: 6, usoSobra: .7, maxParcela: .3, metaSono: 7.5, metaTreinos: 4, metaPassos: 8000, metaEstudo: 24, metaLivros: 12, metaLazer: 6, alertaDocs: 90, alertaAniv: 30, mentorNivel: "default", mentorTom: "Direto e caloroso", mentorNotion: true },
   lanc: [], orc: {}, patr: {}, saude: {}, habitos: [], marks: {}, roda: {}, alvo: {}, revisao: {}, metas: [], tarefas: [],
   pessoas: [], contatos: [], aprend: [], estudo: [], lazer: [], sonhos: [], docs: [], rotinas: [], assin: [], comp: [], cand: [], prio: ["", "", ""],
   diario: [], mentores: {}, listas: DEFAULT_LISTS(), regras: [], areasCfg: {}, integ: { notion: { pai: null, hist: [], tarefas: null } },
-  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {}, rotina: [], rotinaModelos: [], jardim: { pedras: [], talhos: [], templo: {}, folhas: [], cam: {} }, secretario: { modo: "acao", perfis: {}, conversa: [], lembretes: [], decisoes: [] }, conselho: { cfg: {}, atas: [], sessao: null }, filosofia: { triagens: [], lentes: [] }, psique: { cfg: {}, sessoes: [], processos: [], padroes: [], reflexoes: [], pauta: [], modo: { fixo: "auto", atual: "escuta", motivo: "" } }, ck: {}, ckTar: [], ckRisk: [], ckIss: [], ckLog: [], ckDec: [], ckMeet: [], ckBim: [], ckEl: [], ckLic: [], ckRel: [], ckSnap: [], nutri: {}, nutriLog: [], treino: {}, treinoLog: [], corridas: [], uso: { desde: null, r: {}, a: {}, ia: {} }
+  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {}, rotina: [], rotinaModelos: [], guia: { plano: null, segue: true }, inspira: { ativo: "", esforco: "medio", tela: false, ativs: {}, minhas: [] }, jardim: { pedras: [], talhos: [], templo: {}, folhas: [], cam: {} }, secretario: { modo: "acao", perfis: {}, conversa: [], lembretes: [], decisoes: [] }, conselho: { cfg: {}, atas: [], sessao: null }, filosofia: { triagens: [], lentes: [] }, psique: { cfg: {}, sessoes: [], processos: [], padroes: [], reflexoes: [], pauta: [], modo: { fixo: "auto", atual: "escuta", motivo: "" } }, ck: {}, ckTar: [], ckRisk: [], ckIss: [], ckLog: [], ckDec: [], ckMeet: [], ckBim: [], ckEl: [], ckLic: [], ckRel: [], ckSnap: [], nutri: {}, nutriLog: [], treino: {}, treinoLog: [], corridas: [], uso: { desde: null, r: {}, a: {}, ia: {} }
 });
 let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0, DBH = null;
 applyLists();
@@ -3876,7 +3896,7 @@ const MARK = `<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient 
 
 /* ================================================================ navegação */
 const NAV = [
-  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["trabalho", "Cockpit de Trabalho", "gauge"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"]]],
+  [null, [["visao", "Visão geral", "grid"], ["hoje", "Hoje", "sun"], ["painel", "Painel do dia", "mic"], ["rotina", "Rotina", "cal"], ["inspira", "Inspiração", "spark"], ["trabalho", "Cockpit de Trabalho", "gauge"], ["diario", "Diário", "pen"], ["jornada", "Jornada existencial", "lotus"], ["psi", "Psicologia", "brain"], ["mentores", "Mentores", "spark"], ["admin", "Administração Pessoal", "council"]]],
   ["Áreas", [["fin", "Finanças", "coins"], ["saude", "Saúde", "pulse"], ["hab", "Hábitos", "repeat"], ["metas", "Metas & tarefas", "target"], ["pessoas", "Relações", "users"], ["cresc", "Crescimento", "sprout"], ["carreira", "Carreira", "brief"], ["idiomas", "Idiomas", "globe"], ["lazer", "Lazer", "palette"], ["casa", "Casa & docs", "house"], ["roda", "Roda da Vida", "wheel"]]],
   ["Laboratório", [["semana", "Fechamento da semana", "week"], ["radar", "Radar", "radar"], ["cruz", "Cruzamentos", "scatter"], ["exp", "Experimentos", "flask"], ["capitulos", "Capítulos", "chapters"], ["dupla", "A dois", "duo"]]],
   ["Sistema", [["mapa", "Mapa do Atlas", "compass"], ["dados", "Dados", "table"], ["integ", "Integrações", "plug"], ["privacidade", "Privacidade", "shield"], ["ajustes", "Ajustes", "sliders"]]],
@@ -3933,7 +3953,7 @@ function route() {
 }
 /* menu enxuto: 8 abas fixas à mostra; as outras ficam em “Mais”, nos mesmos grupos, e continuam a um toque e no Ctrl K.
    Quais ficam fixas se escolhe em Ajustes › Menu, com o número de vezes que cada aba foi aberta ao lado. */
-const MENU_PAD = ["visao", "hoje", "painel", "rotina", "trabalho", "diario", "fin", "saude"];
+const MENU_PAD = ["visao", "hoje", "painel", "rotina", "inspira", "trabalho", "diario", "fin", "saude"];
 let NAVMAIS = (() => { try { return localStorage.getItem("atlas4_navmais") === "1"; } catch { return false; } })();
 const menuFixos = () => Array.isArray(S.cfg.menu) && S.cfg.menu.length ? S.cfg.menu.filter(k => NAV.some(g => g[1].some(x => x[0] === k))) : MENU_PAD;
 function navHTML(R) {
@@ -4164,6 +4184,7 @@ function palItems(q) {
   add("Ações", "Conversar com o Personal", "Personal trainer virtual: fichas, cargas e plano de corrida", "dumbbell", () => { sdLS("chat_personal", "1"); setHash("saude", "treinos"); setTimeout(() => $("#m_in")?.focus(), 80); }, "personal treinador academia corrida");
   add("Ações", "Nova entrada no diário", "Escrever agora", "pen", () => { setHash("diario", "feed"); setTimeout(() => openComposer(), 60); }, "diario escrever");
   add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
+  add("Ações", "Guia do Atlas", "O que preencher em cada aba, aberto ao lado no Secretário", "compass", () => guAbrir(guAtual()), "guia tutorial manual ajuda preencher como usar");
   add("Ações", "Secretário da Vida", "Abre a janela do secretário: agora, lembretes e conversa", "brief", () => secToggle(true), "secretario assistente lembrete agenda resumo");
   add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("jornada", "exame"), "bussola moral exame consciencia valores");
   add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("jornada", "decidir"), "dilema decisao etica moral");
@@ -10340,9 +10361,10 @@ function pdClick(t) {
    Cada aba tem: cor, cena, missão (por que existe), o que resolve, de onde vêm e para onde vão os dados, e um manual curto. */
 const TAB_INFO = {
   visao: { cor: "var(--accent)", cena: "constel", foto: "Céu ao entardecer com constelações ligadas por linhas finas", missao: "O retrato do mês em uma tela: cada área da vida com nota, tendência e o que pede atenção.", resolve: "Saber em 30 segundos se o mês vai bem, sem abrir dez abas.", entra: "Tudo o que você registra nas outras abas.", sai: "Atalhos para a área que mais precisa de você.", manual: ["Escolha o mês no topo (‹ ›) para ver meses passados.", "Clique numa área para abrir o relatório dela.", "Os números vêm dos registros; a Roda da Vida mostra a sua percepção ao lado."] },
-  hoje: { cor: "var(--warn)", cena: "sunrise", foto: "Janela com luz da manhã sobre telhados de Turim e os Alpes ao fundo", missao: "Um resumo do momento: tempo lá fora, uma frase que conversa com o seu dia real, ideias para sair da rotina e o que vence hoje.", resolve: "Começar o dia sabendo o que vestir, o que importa e uma coisa boa para fazer, sem ler dez aplicativos.", entra: "Clima da sua cidade, notícias positivas, seu humor, energia, tempo livre e orçamento.", sai: "Tarefas do dia, Painel do dia para registrar, Lazer para as ideias.", manual: ["Responda as 4 perguntas rápidas em “Como você está agora?”; tudo abaixo se ajusta.", "O clima vem da internet para a cidade escolhida; sem conexão, marque o tempo à mão.", "As ideias mudam com clima, energia, tempo e dinheiro. “Outra ideia” troca uma de cada vez.", "Para registrar sono, humor, gastos e hábitos, use o Painel do dia."] },
+  hoje: { cor: "var(--warn)", cena: "sunrise", foto: "Janela com luz da manhã sobre telhados de Turim e os Alpes ao fundo", missao: "Um resumo do momento: tempo lá fora, uma frase que conversa com o seu dia real, ideias para sair da rotina e o que vence hoje.", resolve: "Começar o dia sabendo o que vestir, o que importa e uma coisa boa para fazer, sem ler dez aplicativos.", entra: "Previsão hora a hora da sua cidade (gravada no Atlas), notícias positivas, seu humor, energia, tempo livre e orçamento.", sai: "Tarefas do dia, Painel do dia para registrar, Lazer para as ideias.", manual: ["Responda as 4 perguntas rápidas em “Como você está agora?”; tudo abaixo se ajusta.", "O clima chega sozinho: a previsão hora a hora da cidade escolhida é gravada no Atlas às 6h e às 13h (hora de Roma). “trocar cidade” muda a cidade.", "As ideias mudam com clima, energia, tempo e dinheiro. “Outra ideia” troca uma de cada vez.", "Para registrar sono, humor, gastos e hábitos, use o Painel do dia."] },
   painel: { cor: "var(--accent)", cena: "waves", foto: "Microfone de mesa ao lado de um caderno aberto", missao: "Registrar o essencial do dia em um minuto, por texto ou voz, e conferir antes que vá para as abas.", resolve: "Registro diário que não acontece porque dá trabalho.", entra: "O que você fala ou escreve.", sai: "Saúde, Finanças, Hábitos, Jornada, Lazer, Diário e Tarefas.", manual: ["Fale ou escreva o dia no campo grande; os campos se preenchem sozinhos.", "Use o microfone de um campo para ditar só aquele valor.", "“Revisar e salvar” mostra o que é novo, o que substitui e o que parece repetido.", "Um único Desfazer volta tudo o que o painel salvou."] },
-  rotina: { cor: "var(--a-car)", cena: "calendar", foto: "Agenda de papel aberta na semana, com blocos coloridos de meia hora e uma xícara de café", missao: "Desenhar o dia em blocos de 30 minutos: o que você planeja, o que já está na agenda e o que de fato fez.", resolve: "Dias que somem em tarefas soltas e planos que não cabem no relógio.", entra: "Seus blocos, a Agenda (e o Google Calendar) e as tarefas com prazo.", sai: "Idiomas (o plano desconta os blocos), Hoje (a rotina do dia).", manual: ["Escolha Dia, Semana ou Mês no topo; ‹ › mudam o período e Hoje volta para hoje.", "No calendário pequeno, clique num dia para ver as horas dele, ou no número da semana para ver a semana inteira.", "Clique numa meia hora para criar um bloco de 30 min; arraste por várias para criar um bloco maior.", "Clique num bloco para editar, marcar como feito ou excluir. “Repetir” cria rotinas diárias, de dias úteis ou semanais.", "Os compromissos da Agenda e do Google aparecem tracejados: são editados na Agenda."] },
+  rotina: { cor: "var(--a-car)", cena: "calendar", foto: "Agenda de papel aberta na semana, com blocos coloridos de meia hora e uma xícara de café", missao: "Desenhar o dia em blocos de 30 minutos: o que você planeja, o que já está na agenda e o que de fato fez.", resolve: "Dias que somem em tarefas soltas e planos que não cabem no relógio.", entra: "Seus blocos, a Agenda (e o Google Calendar) e as tarefas com prazo.", sai: "Idiomas (o plano desconta os blocos), Hoje (a rotina do dia).", manual: ["Escolha Dia, Semana ou Mês no topo; ‹ › mudam o período e Hoje volta para hoje.", "No calendário pequeno, clique num dia para ver as horas dele, ou no número da semana para ver a semana inteira.", "Clique numa meia hora para criar um bloco de 30 min; arraste por várias para criar um bloco maior.", "Clique num bloco para editar, marcar como feito ou excluir. “Repetir” cria rotinas diárias, de dias úteis ou semanais.", "Os compromissos da Agenda e do Google aparecem tracejados: são editados na Agenda.", "“Preencher” aplica um modelo pronto (Básica, Intermediária, Avançada ou outro) no dia, na semana ou no mês.", "Lembretes: escolha uma atividade e quantos minutos antes avisar, toda semana; dá para levar ao Google Agenda para tocar no celular."] },
+  inspira: { cor: "var(--warn)", cena: "spark", foto: "Mesa de trabalho com um caderno aberto, uma xícara de café e a luz da manhã", missao: "Ligar a cabeça antes de começar uma atividade: um texto curto, um aquecimento de 5 minutos, o primeiro passo do dia, frases, vídeos e música, e uma IA que acompanha a atividade em todas as abas.", resolve: "A inércia do começo: sentar para estudar, ler ou criar e não engrenar.", entra: "As atividades do seu Lazer e da sua rotina, as que você criar e o próximo bloco da Rotina.", sai: "Começos registrados, a IA de acompanhamento e atalhos para a aba de cada atividade.", manual: ["O topo mostra a atividade que combina com o próximo bloco da sua Rotina.", "Escolha a atividade, toque em Começar o aquecimento e siga os 3 passos (5 minutos).", "“Comecei” registra o começo; “outro desafio” troca o primeiro passo.", "Ativar acompanhamento chama a IA com o perfil da atividade; ela fica num botão lateral em todas as abas."] },
   diario: { cor: "var(--a-men)", cena: "notebook", foto: "Caderno de capa de couro aberto, caneta tinteiro e xícara de café", missao: "O lugar das palavras: o que aconteceu, o que você sentiu e o que aprendeu, ligado às pessoas, temas e metas.", resolve: "Memória do que viveu e padrões que só aparecem escritos.", entra: "Seus textos, @pessoas, #temas e comandos “/”.", sai: "Cruzamentos, Capítulos, mentores (se você permitir).", manual: ["@ menciona uma pessoa, # marca um tema, [[ liga a uma meta ou tarefa.", "Linhas começando com / registram dados (ex.: /gasto 12 almoço).", "Em Perguntar, busque por significado: “quando me senti sozinho?”."] },
   jornada: { cor: "var(--jp-med)", cena: "lotus", foto: "Flor de lótus num lago parado ao amanhecer", missao: "Cultivar a vida interior em quatro caminhos (Espiritismo, meditação, Taoísmo e Budismo) e a bússola moral que orienta as decisões.", resolve: "Prática espiritual que fica solta, sem continuidade nem reflexão.", entra: "Sessões de prática, reflexões, exame da noite, decisões.", sai: "Métricas de prática nos Cruzamentos e o Hoje.", manual: ["Comece pela aba de um pilar e registre a estação em que você está.", "Saúde espiritual é o jardim: cada árvore cresce com um pilar, o rio com o exame da noite, e o templo com as inclinações que você trabalha.", "Na mandala, toque numa pétala para explorar; as camadas mostram ritmo e evolução.", "Práticas guarda programas guiados e sessões (com estado antes e depois).", "A Bússola moral tem o exame da noite e as oito perguntas antes de decidir."] },
   mentores: { cor: "var(--accent)", cena: "spark", foto: "Mesa de conversa com duas cadeiras e luz suave", missao: "Um conselheiro por área, que lê os seus dados (só os que você liberar) e lembra do que vocês combinaram.", resolve: "Conselho genérico que ignora a sua situação real.", entra: "Os dados das áreas liberadas em Privacidade.", sai: "Tarefas, metas e hábitos que você aceitar.", manual: ["Escolha o mentor da área; o Mentor do Equilíbrio vê todas.", "As propostas só viram tarefa quando você aceita.", "Privacidade controla o que cada mentor pode ler."] },
@@ -12787,6 +12809,9 @@ function secTools(live) {
     { name: "levantar_conflito", description: "Leva à pessoa um conflito ou ambiguidade entre prioridades ou áreas, com 2 a 4 opções. Ela decide; você não escolhe. Retorna {ok}.",
       inputSchema: { type: "object", properties: { titulo: { type: "string" }, contexto: { type: "string" }, opcoes: { type: "array", items: { type: "string" } } }, required: ["titulo", "opcoes"] },
       execute: inp => { const ops = (inp.opcoes || []).map(String).filter(Boolean).slice(0, 4); if (ops.length < 2) throw new Error("Dê pelo menos 2 opções."); live.conflitos.push({ id: uid(), titulo: String(inp.titulo).slice(0, 200), contexto: String(inp.contexto || "").slice(0, 400), ops, escolha: null }); note("levantar_conflito", trunc(inp.titulo, 60)); return { ok: true, status: "aguardando decisão" }; } },
+    { name: "abrir_guia", description: "Abre o Guia do Atlas ao lado da conversa, na seção de uma aba: o que preencher, o mínimo que já vale, o jeito rápido e, se houver, o plano de preenchimento da pessoa (quando e com que frequência). Use quando a pessoa pedir tutorial, guia, manual ou ajuda para preencher ou usar uma aba. Devolve o conteúdo da seção para você responder junto.",
+      inputSchema: { type: "object", properties: { aba: { type: "string", enum: Object.keys(GUIA), description: "a aba; vazio abre na aba atual" } } },
+      execute: inp => { const k = GUIA[inp?.aba] ? inp.aba : guAtual(); live.guia = k; note("Guia", k ? GUIA[k].t : "índice"); const g = GUIA[k]; return g ? { secao: g.t, preencher: g.o, minimo: g.min, rapido: g.rap, frequencia: g.freq, plano: guItensDe(k).map(i => ({ quando: i.quando, freq: i.freq, como: i.como })) } : { secoes: GUIA_ORD.map(x => GUIA[x].t) }; } },
     iadTool(note, () => live.ctx)];
 }
 function secMkProp(inp) {
@@ -12826,12 +12851,14 @@ function secFinish(text, cut) {
   D.conversa.push(live.user, { role: "assistant", content: (String(text || "").trim() || "(sem texto)") + (cut ? "\n\n_(resposta interrompida)_" : ""), at: Date.now(), uso: live.uso, acoes: live.acoes, conflitos: live.conflitos });
   if (D.conversa.length > 60) D.conversa = D.conversa.slice(-60);
   SEC.live = null; touch("secretario", { noUndo: true, noRender: true }); secPaint(); secSpeak(text);
+  if (live.guia != null) guAbrir(live.guia);   /* a IA pediu para abrir o guia: abre depois da resposta, para não esconder a conversa */
 }
 function secSpeak(text) { if (!secData().tts || !window.speechSynthesis) return; try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(String(text || "").replace(/[*_#`>\[\]]/g, "").slice(0, 900)); u.lang = pdLang(); speechSynthesis.speak(u); } catch {} }
 /* comandos que funcionam sem IA */
 const SEC_GO = [[/financ|dinheiro|gasto/, "fin.lanc"], [/tarefa/, "metas.tarefas"], [/rotina|agenda/, "rotina.dia"], [/painel/, "painel"], [/jardim/, "jornada.jardim"], [/bussola|exame/, "jornada.exame"], [/jornada/, "jornada.inicio"], [/saude/, "saude.checkin"], [/habito/, "hab.marcar"], [/casa|conta|document/, "casa"], [/idioma|ingles|italiano/, "idiomas"], [/carreira/, "carreira"], [/diario/, "diario"], [/hoje/, "hoje"], [/lazer/, "lazer.inicio"], [/pessoa|relac|famil/, "pessoas.lista"]];
 function secLocal(text) {
   const F = fold(text), D = secData(), say = (c) => { D.conversa.push({ role: "user", content: text, at: Date.now() }, { role: "assistant", local: true, content: c, at: Date.now() }); touch("secretario", { noUndo: true, noRender: true }); SEC.input = ""; secPaint(); secSpeak(c); return true; };
+  const gu = guLocal(F); if (gu) return say(gu);
   const mm = F.match(/\bmodo\s+(enfoque|foco|acao|reflexao|relaxo|relax|descanso)\b/);
   if (mm) { const m = { foco: "enfoque", relax: "relaxo", descanso: "relaxo" }[mm[1]] || mm[1]; D.modo = m; touch("secretario", { noUndo: true, noRender: true }); return say(`Modo **${SEC_MODOS[m].nome}**: ${SEC_MODOS[m].desc}`); }
   if (/^\s*(secretario,?\s*)?(me\s+)?(lembr|cria(r)?\s+(um\s+)?lembrete|lembrete)/.test(F)) { const l = secParseLembrete(text); if (!l) return say("Lembrar de quê? Ex.: “me lembre de ligar para o banco amanhã às 10”."); if (!l.quando) return say(`Para quando é “${l.texto}”? Diga, por exemplo, “hoje às 18h”, “amanhã às 9” ou “em 30 minutos”.`);
@@ -12920,8 +12947,8 @@ function secCfgHTML() {
 }
 function secHTML() {
   const D = secData(), pf = secPerfil(), n = secFilt(secItems()).filter(i => i.st !== "info").length, nl = D.lembretes.filter(l => !l.feito && l.quando && new Date(l.quando) <= new Date()).length, ai = !!SAMPLE && !AI_OFF;
-  const tabs = [["agora", "Agora", n], ["conversa", "Conversa", 0], ["lembretes", "Lembretes", nl]];
-  const body = SEC.cfg ? secCfgHTML() : SEC.tab === "conversa" ? secChatHTML() : SEC.tab === "lembretes" ? secLembHTML() : secAgoraHTML();
+  const tabs = [["agora", "Agora", n], ["conversa", "Conversa", 0], ["lembretes", "Lembretes", nl], ["guia", "Guia", 0]];
+  const body = SEC.cfg ? secCfgHTML() : SEC.tab === "conversa" ? secChatHTML() : SEC.tab === "lembretes" ? secLembHTML() : SEC.tab === "guia" ? guHTML() : secAgoraHTML();
   return `<header class="sech" data-secdrag="1"><span class="secav">${ic("brief")}</span><div class="sect"><b>Secretário da Vida</b><small>${esc(pf.nome)} · ${ai ? "IA pronta" : "sem IA: modo local"}</small></div>
       <button type="button" class="iconbtn${SEC.cfg ? " on" : ""}" data-act="seccfg" aria-label="Ajustar perfis" title="Perfis e ajustes">${ic("sliders")}</button><button type="button" class="iconbtn" data-act="secclose" aria-label="Fechar o Secretário">${ic("x")}</button></header>
     <div class="secmodes" role="group" aria-label="Modo">${Object.entries(SEC_MODOS).map(([k]) => { const p = secPerfil(k); return `<button type="button" class="seg" data-act="secmodo" data-m="${k}" aria-pressed="${D.modo === k}" title="${esc(p.desc)}">${ic(p.ico)}${esc(p.nome)}</button>`; }).join("")}</div>
@@ -12951,7 +12978,7 @@ function secPlace() {
   const p = secLS("pos") || {}, W = clamp(+p.w || 390, 300, innerWidth - 16), H = clamp(+p.h || 600, 340, innerHeight - 16), x = clamp(p.x ?? innerWidth - W - 20, 8, innerWidth - W - 8), y = clamp(p.y ?? innerHeight - H - 20, 8, innerHeight - H - 8);
   Object.assign(w.style, { left: x + "px", top: y + "px", width: W + "px", height: H + "px" });
 }
-function secToggle(on = !SEC.open) { SEC.open = on; secLS("open", on); if (on) { SEC.nudge = null; secPlace(); } secPaint(); if (on) setTimeout(() => $("#sec_in")?.focus({ preventScroll: true }), 30); }
+function secToggle(on = !SEC.open) { SEC.open = on; secLS("open", on); if (on && innerWidth <= 640 && typeof CO !== "undefined" && CO.open) { CO.open = false; coPaint(); }   /* no celular, uma janela de cada vez */ if (on) { SEC.nudge = null; secPlace(); } secPaint(); if (on) setTimeout(() => $("#sec_in")?.focus({ preventScroll: true }), 30); }
 function secAfterRender() { if (!$("#sec")) return; if (SEC.open && !SEC.live && document.activeElement?.closest?.("#sec") == null) secPaint(); else secFab(); }
 
 /* ---------------------------------------------------------------- voz */
@@ -17922,7 +17949,7 @@ const IAD_LBL = { orc: "Orçamento por categoria (teto mensal)", patr: "Patrimô
   filosofia: "Filosofia", psique: "Psicologia", ck: "Cockpit (perfil e projetos)", ckTar: "Cockpit · tarefas", ckRisk: "Cockpit · riscos", ckIss: "Cockpit · problemas",
   ckLog: "Cockpit · diário de bordo", ckDec: "Cockpit · decisões", ckMeet: "Cockpit · reuniões", ckBim: "Cockpit · tracker BIM", ckEl: "Cockpit · elaborati",
   ckLic: "Cockpit · lições", ckRel: "Cockpit · relatórios", nutri: "Nutri (perfil e plano)", nutriLog: "Alimentação (registros)", treino: "Personal (perfil e plano)",
-  treinoLog: "Treinos (registros)", corridas: "Corridas", rotinaModelos: "Modelos de rotina", areasCfg: "Áreas (ajustes)", saude: "Check-ins diários (saúde)" };
+  treinoLog: "Treinos (registros)", corridas: "Corridas", rotinaModelos: "Modelos de rotina", guia: "Plano de preenchimento do Atlas", inspira: "Inspiração (atividades e acompanhamento)", areasCfg: "Áreas (ajustes)", saude: "Check-ins diários (saúde)" };
 const IAD_AREA_OF = { lanc: "Finanças", orc: "Finanças", patr: "Finanças", saldoConta: "Finanças", projetos: "Finanças", fut: "Finanças", importacoes: "Finanças", assin: "Finanças",
   regras: "Finanças", vidaItens: "Finanças", contasCasa: "Casa & organização", docs: "Casa & organização", rotinas: "Casa & organização", compras: "Casa & organização",
   nutri: "Saúde física", nutriLog: "Saúde física", treino: "Saúde física", treinoLog: "Saúde física", corridas: "Saúde física", psique: "Saúde mental", estudo: "Aprendizado",
@@ -18095,7 +18122,7 @@ function lsTick() {
   for (const x of novos) vis[x.k] = Date.now();
   for (const k in vis) if (Date.now() - vis[k] > 3 * 86400e3) delete vis[k];
   try { localStorage.setItem("atlas_lsem", JSON.stringify(vis)); } catch {}
-  const um = x => `${x.falta > 0 ? `Em ${x.falta} min` : "Agora"}: ${x.b.titulo} (${x.b.ini}–${x.b.fim})`;
+  const um = x => `${x.falta > 0 ? `Em ${x.falta} min` : "Agora"}: ${x.b.titulo} (${x.b.ini}–${x.b.fim})${x.r.nota ? ` · ${x.r.nota}` : ""}`;
   const txt = novos.length === 1 ? um(novos[0]) : `${novos.length} atividades: ${novos.map(x => `${x.b.titulo} ${x.b.ini}`).join(", ")}`;
   SEC.nudge = { txt, crit: true, at: Date.now() }; SEC.tab = "lembretes"; SEC.open = true; secLS("open", true); toast(txt); secPaint();
   lsNotifica(txt); if (secData().lsSom) lsSom();
@@ -18189,7 +18216,7 @@ const LS = { dias: [], busy: "" };
 function lsPanel() {
   const L = lsData(), A = lsAtividades(), D = secData();
   const item = r => { const px = lsProximas(r), des = lsGcDesatual(r);
-    return `<div class="lsit${r.on === false ? " off" : ""}"><div><b>${ic("clock")}${esc(r.titulo)}</b><small>${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próximas: ${esc(px.join(", "))}` : " · não aparece nos próximos 14 dias"}${r.gcal?.on ? ` · ${des ? "<span class=\"st-warn\">Google desatualizado</span>" : "no Google Agenda"}` : ""}</small></div>
+    return `<div class="lsit${r.on === false ? " off" : ""}"><div><b>${ic("clock")}${esc(r.titulo)}</b><small>${r.nota ? `${esc(r.nota)} · ` : ""}${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próximas: ${esc(px.join(", "))}` : " · não aparece nos próximos 14 dias"}${r.gcal?.on ? ` · ${des ? "<span class=\"st-warn\">Google desatualizado</span>" : "no Google Agenda"}` : ""}</small></div>
       <div class="row wrap">${LS.busy === r.id ? `<span class="muted small">Google Agenda…</span>` : `<button type="button" class="btn sm ghost" data-lsgc="${r.id}">${r.gcal?.on ? (des ? "Atualizar no Google" : "Tirar do Google") : "Pôr no Google Agenda"}</button>`}<button type="button" class="btn sm ghost" data-lson="${r.id}">${r.on === false ? "Retomar" : "Pausar"}</button><button type="button" class="btn sm ghost" data-lsdel="${r.id}" aria-label="Apagar o lembrete de ${esc(r.titulo)}">${ic("trash")}</button></div></div>`; };
   return panel(`${ic("clock")}Lembretes <small>${L.length ? plural(L.filter(r => r.on !== false).length, "ativo", "ativos") : "nenhum"}</small>`, `${L.map(item).join("") || `<p class="muted small">Escolha uma atividade da rotina para ser avisado antes dela, toda semana.</p>`}
     <details class="lsnew"${L.length ? "" : " open"}><summary>${ic("plus")}Novo lembrete</summary><div class="form f1">
@@ -18202,7 +18229,7 @@ function lsPanel() {
 }
 function lsSecHTML() {
   const L = lsData(); if (!L.length) return `<div class="secsec">${ic("clock")}Toda semana</div><small class="muted">Nenhum lembrete semanal. Crie na <a href="#rotina.semana">Rotina › Lembretes</a> ou no cartão de qualquer bloco.</small>`;
-  return `<div class="secsec">${ic("clock")}Toda semana<small>${L.length}</small></div>${L.map(r => { const px = lsProximas(r, 1); return `<div class="secit${r.on === false ? " done" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(r.titulo)}</b><small>${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próxima: ${esc(px[0])}` : ""}${r.gcal?.on ? " · Google" : ""}${r.on === false ? " · pausado" : ""}</small></div></div>`; }).join("")}<a class="lnk small" href="#rotina.semana">gerenciar na Rotina</a>`;
+  return `<div class="secsec">${ic("clock")}Toda semana<small>${L.length}</small></div>${L.map(r => { const px = lsProximas(r, 1); return `<div class="secit${r.on === false ? " done" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(r.titulo)}</b><small>${r.nota ? `${esc(r.nota)} · ` : ""}${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próxima: ${esc(px[0])}` : ""}${r.gcal?.on ? " · Google" : ""}${r.on === false ? " · pausado" : ""}</small></div></div>`; }).join("")}<a class="lnk small" href="#rotina.semana">gerenciar na Rotina</a>`;
 }
 function lsClick(t) {
   const ds = t.dataset;
@@ -18229,6 +18256,603 @@ function lsChange(t) {
 function lsCartaoRepinta(t, titulo, dow) { const box = t.closest(".lsbox"); if (!box) return; const b = { titulo }, d = rtWeek(TODAY).find(x => parse(x).getDay() === dow) || TODAY; box.innerHTML = lsCartaoHTML(b, d); }
 
 
+/* ================================================================ Guia do Atlas: o que preencher em cada área, no painel do Secretário
+   Pedido ao Secretário (“abre o guia”, “como preencho finanças?”, ou pela IA com a ferramenta abrir_guia) ou pela aba Guia da janela
+   dele, que fica aberta enquanto você navega. “Acompanhar a aba” faz o guia mostrar a seção da aba em que você está.
+   O conteúdo de cada área é genérico (está no código). O plano pessoal (quando e com que frequência preencher, encaixado na rotina de
+   cada um) fica só no banco da pessoa: S.guia.plano = { base, atualizado, resumo: {dia, semana, mes}, itens: [{ id, aba, titulo,
+   quando, freq, min, como, gatilho: { titulo, dias, min } }] }. “Criar os lembretes do plano” transforma os gatilhos em lembretes
+   semanais (Rotina › Lembretes), com o que fazer na nota. */
+const GUIA = {
+  hoje: { t: "Hoje", o: ["As 4 perguntas de “Como você está agora?”: humor, energia, tempo livre e dinheiro para lazer.", "Nada mais: clima, notícias, frase, ideias e o que vence hoje vêm sozinhos."], min: "Humor e energia (2 toques).", rap: "Abra de manhã, toque nas 4 respostas e leia o resumo do topo.", freq: "Todo dia, de manhã", tempo: 1 },
+  painel: { t: "Painel do dia", o: ["Sono, humor, energia e estresse.", "Treino, passos e peso (quando tiver).", "Gastos e receitas do dia (“gastei 12,50 no almoço”).", "Hábitos feitos, contatos com pessoas, estudo, leitura e lazer.", "Uma frase do dia, que vai para o Diário.", "Tarefas novas e contas pagas."], min: "Sono, humor e os gastos.", rap: "Fale o dia de uma vez no campo grande (ou pelo microfone), confira em “Revisar e salvar”. Tudo vai para as abas certas.", freq: "Todo dia, à noite", tempo: 3 },
+  rotina: { t: "Rotina", o: ["A semana em blocos de 30 min: aplique um modelo com “Preencher” (Básica, Intermediária ou Avançada).", "Durante ou no fim do dia, marque os blocos como feito, parcial ou pulado (ou “Capturar o dia” por voz).", "Lembretes das atividades que você não quer esquecer."], min: "Preencher a semana com um modelo, uma vez por semana.", rap: "Domingo ou segunda: Preencher › escolha o nível › Preencher. À noite: Capturar o dia, por voz.", freq: "Semanal (montar) e diária (marcar)", tempo: 2 },
+  inspira: { t: "Inspiração", o: ["Escolha a atividade que vai começar e use o aquecimento de 5 minutos.", "Se quiser companhia, ative a IA de acompanhamento da atividade.", "Suas atividades próprias em “Minhas atividades”."], min: "Nada obrigatório: é para usar antes de começar algo.", rap: "Antes do bloco de estudo, leitura ou projeto: abra a atividade, leia o texto curto e faça o primeiro passo do desafio.", freq: "Quando for começar uma atividade", tempo: 5 },
+  trabalho: { t: "Cockpit de Trabalho", o: ["Contexto (uma vez): seu perfil, a equipe e os projetos com marcos.", "Tarefas com prazo, estimativa e projeto; status ao longo do dia.", "Diário de bordo: o que aconteceu, riscos (r:), problemas (p:) e decisões (d:).", "Reuniões e entregas quando houver."], min: "Atualizar o status das tarefas do dia.", rap: "Alt+Shift+N de qualquer aba: “t: revisar prancha 12 sex @Ana [Projeto]”. No fim do dia, Hoje › marque o que andou.", freq: "Todo dia útil (início e fim do expediente)", tempo: 5 },
+  diario: { t: "Diário", o: ["O que aconteceu, o que sentiu, o que aprendeu.", "@pessoa, #tema e [[meta]] ligam o texto ao resto do Atlas.", "Linhas com / registram dados (“/gasto 12 almoço”)."], min: "A frase do dia no Painel já entra aqui.", rap: "Uma entrada mais longa por semana; no dia a dia, a frase do Painel basta.", freq: "Semanal (texto longo)", tempo: 10 },
+  jornada: { t: "Jornada existencial", o: ["Sessões de prática (meditação, estudo espírita, leitura) em Práticas, com o estado antes e depois.", "Exame da noite na Bússola moral.", "Uma vez por semana, a autoavaliação dos Centros de força.", "A estação de cada pilar, quando mudar."], min: "O exame da noite (1 a 2 min).", rap: "Depois de meditar, registre a sessão em Práticas (1 toque); antes de dormir, o exame da noite.", freq: "Diária (exame) e semanal (centros)", tempo: 3 },
+  psi: { t: "Psicologia", o: ["Logo depois de cada sessão: temas, um insight e o combinado.", "Entre sessões: a pergunta do dia ou um registro de pensamento quando algo pesar.", "Padrões que se repetem, com nome."], min: "A sessão, no mesmo dia.", rap: "Sessões › nova sessão: três linhas (tema, insight, combinado).", freq: "A cada sessão", tempo: 5 },
+  mentores: { t: "Mentores", o: ["Nada para preencher: converse quando precisar de um olhar de fora sobre uma área.", "Aceite (ou não) as propostas: só viram tarefa, meta ou hábito com o seu ok."], min: "—", rap: "Uma pergunta concreta ao mentor da área que mais pesou na semana.", freq: "Semanal, se quiser", tempo: 5 },
+  admin: { t: "Administração Pessoal", o: ["Uma sessão do Conselho por mês: escolha o tipo e, se quiser, um foco.", "Marque as ações da ata como feitas ao longo do mês."], min: "A sessão mensal.", rap: "Primeira semana do mês: Iniciar sessão e responder quando o Intermediador chamar.", freq: "Mensal", tempo: 25 },
+  fin: { t: "Finanças", o: ["Lançamentos: gastos e receitas (pelo Painel do dia, por voz, ou importando o extrato).", "Orçamento & patrimônio: teto por categoria, assinaturas e o patrimônio no fim do mês.", "Futuro financeiro: reserva, TFR e previdência (revisar de vez em quando).", "Itália & Brasil: prazos de documentos e custo de cada lado.", "Projetos & aquisições: o que você quer comprar ou financiar."], min: "Os gastos do dia no Painel e o patrimônio no fim do mês.", rap: "No dia: fale os gastos no Painel. Na semana: importe o extrato e confira as categorias. No mês: patrimônio e orçamento.", freq: "Diária (gastos), semanal (conferir), mensal (fechar)", tempo: 10 },
+  saude: { t: "Saúde", o: ["Check-in: sono, humor, energia, estresse, passos, peso (pelo Painel; aqui só para corrigir).", "Treinos: a ficha e as séries na hora do treino; corridas.", "Alimentação: refeições e água, se estiver seguindo um plano com o Nutri."], min: "Sono e humor pelo Painel; o treino quando houver.", rap: "Na academia: Treinos › Treinar e marque as séries. Peso de manhã, 2 a 4 vezes por semana.", freq: "Diária (check-in) e a cada treino", tempo: 2 },
+  hab: { t: "Hábitos", o: ["Poucos hábitos (3 a 5), cada um com meta de dias por semana.", "Marcar os feitos (pelo Painel do dia)."], min: "Marcar no Painel.", rap: "Fale “meditei, alonguei” no Painel; aqui só para criar e corrigir.", freq: "Diária (marcar) e mensal (rever a lista)", tempo: 1 },
+  metas: { t: "Metas & tarefas", o: ["Metas com número e prazo.", "Tarefas com prazo (e prioridade quando importar), ligadas a uma meta.", "Concluir ao fazer."], min: "Capturar a tarefa na hora (botão Capturar).", rap: "Capturar (raio no topo): “Pagar o seguro até sexta !alta”. Na revisão da semana, ligue tarefas às metas.", freq: "Quando surgir (tarefas) e semanal (revisão)", tempo: 3 },
+  pessoas: { t: "Relações", o: ["As pessoas importantes com a cadência de contato (de quanto em quanto tempo quer falar).", "Contatos: ligação, encontro, mensagem (pelo Painel)."], min: "Os contatos pelo Painel (“liguei para a mãe 20 min”).", rap: "Uma vez por semana, olhe quem está ficando distante e mande uma mensagem.", freq: "Diária (contatos) e semanal (quem está distante)", tempo: 2 },
+  cresc: { t: "Crescimento", o: ["Aprendizado: o que você está estudando ou lendo, com o total de páginas ou aulas.", "Horas de estudo e páginas lidas (pelo Painel).", "Lazer & sonhos: experiências que quer viver."], min: "Estudo e leitura pelo Painel.", rap: "Ao começar um livro ou curso, cadastre uma vez; depois só o Painel.", freq: "Diária (horas) e mensal (sonhos)", tempo: 2 },
+  carreira: { t: "Carreira", o: ["Perfil, cargo e avaliação atual (uma vez, revisar a cada trimestre).", "Objetivos e plano de ação: cada gap vira ação com prazo.", "Caderno técnico: fórmulas, normas e lições de obra.", "Rede profissional: contatos de trabalho com cadência.", "Decisões e mercado quando houver."], min: "Uma nota no Caderno técnico depois de estudar.", rap: "Depois de cada estudo técnico, 2 min no Caderno; uma vez por mês, o Plano de ação.", freq: "Semanal (caderno) e mensal (plano)", tempo: 5 },
+  idiomas: { t: "Idiomas", o: ["Nível atual e meta de cada idioma (uma vez).", "Minutos por dia e janela de estudo.", "Cada sessão de estudo (pelo Painel ou aqui)."], min: "As sessões pelo Painel (“estudei 1 h de inglês”).", rap: "Na revisão da semana, olhe o plano; no dia, só a sessão.", freq: "A cada sessão", tempo: 1 },
+  lazer: { t: "Lazer", o: ["Seus gostos em cada tema (uma vez).", "Registros: livro terminado, filme ou série, jogo, viagem, café novo, voo simulado.", "Conversas com o mentor do tema quando quiser ideias."], min: "Registrar quando terminar algo.", rap: "Ao fim de um livro ou filme: um registro com nota e uma frase.", freq: "Quando terminar algo", tempo: 1 },
+  casa: { t: "Casa & docs", o: ["Limpeza: rotinas do leve ao pesado; marcar ao fazer.", "Compras: a lista (itens fixos voltam sozinhos).", "Contas: vencimentos; “Paguei” lança em Finanças.", "Documentos: onde estão e quando vencem."], min: "Marcar as contas pagas.", rap: "Uma vez por semana: limpeza feita, lista de compras e contas da semana.", freq: "Semanal", tempo: 5 },
+  roda: { t: "Roda da Vida", o: ["Uma nota de 0 a 10 para cada área: como você sente que ela vai.", "A revisão do mês: o que funcionou e o que mudar."], min: "As notas.", rap: "Último fim de semana do mês, 10 minutos.", freq: "Mensal", tempo: 10 },
+  semana: { t: "Fechamento da semana", o: ["Siga os passos: números, destaques, o que foi cumprido.", "As 3 prioridades da semana seguinte."], min: "As 3 prioridades.", rap: "Domingo à noite ou segunda: 15 minutos, de cima para baixo.", freq: "Semanal", tempo: 15 },
+  radar: { t: "Radar", o: ["Marcar cada alerta como útil ou alarme falso (o Radar aprende)."], min: "—", rap: "Olhe no fechamento da semana.", freq: "Semanal", tempo: 1 },
+  cruz: { t: "Cruzamentos", o: ["Nada para preencher: escolha uma pergunta (humor, sono, energia…) e leia as pistas.", "Uma pista forte pode virar experimento."], min: "—", rap: "Uma vez por mês, depois de pelo menos 20 dias de registros.", freq: "Mensal", tempo: 5 },
+  exp: { t: "Experimentos", o: ["A hipótese, a métrica e o desenho (antes e depois, ou dias alternados).", "Nos dias do teste, seguir o que o Hoje indica e registrar normalmente."], min: "—", rap: "Crie a partir de uma pista dos Cruzamentos.", freq: "Quando houver um teste", tempo: 3 },
+  capitulos: { t: "Capítulos", o: ["Dar nome às fases que o Atlas detecta.", "No fim do ano, gerar o livro em PDF."], min: "—", rap: "Uma vez por trimestre, 5 minutos.", freq: "Trimestral", tempo: 5 },
+  dupla: { t: "A dois", o: ["O convite e o que compartilhar (uma vez).", "O que vocês decidirem registrar juntos: diário, orçamento comum, metas."], min: "—", rap: "Combine com a pessoa um momento fixo por semana.", freq: "Semanal, se usar", tempo: 5 },
+  visao: { t: "Visão geral", o: ["Nada para preencher: é o retrato do mês com o que você registrou."], min: "—", rap: "Olhe no fechamento da semana e no do mês; toque no mês do gráfico para comparar.", freq: "Semanal (olhar)", tempo: 2 },
+  mapa: { t: "Mapa do Atlas", o: ["Nada para preencher: índice de todas as abas e de para onde vão os dados."], min: "—", rap: "Use quando não lembrar onde algo fica.", freq: "Quando precisar", tempo: 0 },
+  dados: { t: "Dados", o: ["Corrigir registros em massa, filtrar e exportar."], min: "—", rap: "Use para arrumar, não para registrar.", freq: "Quando precisar", tempo: 0 },
+  integ: { t: "Integrações", o: ["Google Calendar (sincroniza sozinho depois de ligado), Notion, extratos.", "Backup completo."], min: "O backup do mês.", rap: "Primeira semana do mês: Exportar › Backup completo.", freq: "Mensal (backup)", tempo: 1 },
+  privacidade: { t: "Privacidade", o: ["Setores que a IA não lê e o cofre com senha (uma vez)."], min: "—", rap: "Revise quando mudar o que quer compartilhar com a IA.", freq: "Uma vez", tempo: 3 },
+  ajustes: { t: "Ajustes", o: ["As metas (sono, poupança, passos, estudo, lazer, livros, treinos), as listas e a aparência (uma vez)."], min: "—", rap: "Comece pelas metas: os relatórios passam a comparar com elas.", freq: "Uma vez (revisar a cada trimestre)", tempo: 5 },
+};
+/* ordem do índice: o que se preenche todo dia primeiro */
+const GUIA_ORD = ["hoje", "painel", "rotina", "inspira", "trabalho", "saude", "fin", "jornada", "psi", "hab", "metas", "pessoas", "cresc", "idiomas", "carreira", "lazer", "casa", "diario", "semana", "roda", "admin", "mentores", "visao", "radar", "cruz", "exp", "capitulos", "dupla", "integ", "ajustes", "privacidade", "dados", "mapa"];
+const GU = { sec: "", q: "" };
+const guData = () => { const g = (S.guia ||= {}); g.segue ??= true; return g; };
+const guAtual = () => GUIA[PAGE] ? PAGE : "";
+/* quando a pessoa tem plano: itens do plano para esta aba (e para o dia/hora de agora) */
+const guItensDe = aba => (guData().plano?.itens || []).filter(i => i.aba === aba || i.aba?.split(".")[0] === aba);
+function guProximo(now = new Date()) {
+  const P = guData().plano; if (!P?.itens?.length) return null;
+  const dow = now.getDay(), m = now.getHours() * 60 + now.getMinutes(), cands = [];
+  for (let k = 0; k < 8; k++) { const d = (dow + k) % 7, dia = addDays(TODAY, k);
+    for (const i of P.itens) { const g = i.gatilho; if (!g?.titulo) continue; if (g.dias?.length && !g.dias.includes(d)) continue;
+      for (const b of rtOcc(dia)) if (normNome(b.titulo) === normNome(g.titulo)) { const a = hm2min(b.ini) - (+g.min || 0) + k * 1440; if (a >= m - 20) cands.push({ i, dia, ini: b.ini, a }); } } }
+  return cands.sort((x, y) => x.a - y.a)[0] || null;
+}
+function guSecaoHTML(k, aberta) {
+  const g = GUIA[k]; if (!g) return ""; const pl = guItensDe(k), info = TAB_INFO[k] || {};
+  return `<details class="gusec" data-gu="${k}"${aberta ? " open" : ""}><summary><b>${esc(g.t)}</b><small>${esc(pl.length ? pl.map(i => i.freq).filter((x, j, a) => a.indexOf(x) === j).join(" · ") : g.freq)}${g.tempo ? ` · ~${g.tempo} min` : ""}</small></summary>
+    ${info.missao ? `<p class="gumis">${esc(info.missao)}</p>` : ""}
+    <div class="gulbl">O que preencher</div><ul>${g.o.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+    ${g.min && g.min !== "—" ? `<div class="gulbl">O mínimo que já vale</div><p>${esc(g.min)}</p>` : ""}
+    <div class="gulbl">Jeito rápido</div><p>${esc(g.rap)}</p>
+    ${pl.length ? `<div class="gulbl">No seu plano</div><ul class="gupl">${pl.map(i => `<li><b>${esc(i.quando)}</b> · ${esc(i.freq)}${i.min ? ` · ${i.min} min` : ""}<br><span>${esc(i.como)}</span></li>`).join("")}</ul>` : ""}
+    <a class="lnk small" href="#${k}">abrir ${esc(g.t)}</a></details>`;
+}
+function guPlanoHTML() {
+  const P = guData().plano; if (!P?.itens?.length) return `<div class="secsec">${ic("cal")}Seu plano</div><small class="muted">Ainda sem plano pessoal de preenchimento. O guia abaixo traz a frequência sugerida de cada área.</small>`;
+  const nx = guProximo(), R = P.resumo || {}, ls = lsData(), criados = P.itens.filter(i => i.gatilho?.titulo && guTemLeb(i.id)).length, comG = P.itens.filter(i => i.gatilho?.titulo).length;
+  const grupos = [["diária", "Todo dia"], ["semanal", "Toda semana"], ["mensal", "Todo mês"], ["tri", "A cada trimestre"], ["outra", "Quando acontecer"]];
+  const grupo = i => /di[aá]ria|todo dia|dias úteis/i.test(i.freq) ? "diária" : /seman/i.test(i.freq) ? "semanal" : /mens/i.test(i.freq) ? "mensal" : /trimes/i.test(i.freq) ? "tri" : "outra";
+  return `<div class="secsec">${ic("cal")}Seu plano<small>${esc(P.base || "")}</small></div>
+    ${nx ? `<div class="secfoco"><small>PRÓXIMO PREENCHIMENTO</small><b>${esc(nx.i.titulo)}</b><span>${nx.dia === TODAY ? "hoje" : fmtDL(nx.dia)} · ${esc(nx.i.quando)}${nx.i.min ? ` · ${nx.i.min} min` : ""}</span><a class="lnk small" href="#${esc(nx.i.aba)}">abrir</a></div>` : ""}
+    ${R.dia || R.semana || R.mes ? `<p class="small muted">Tempo: ${[R.dia && `~${R.dia} min por dia`, R.semana && `~${R.semana} min por semana`, R.mes && `~${R.mes} min por mês`].filter(Boolean).join(" · ")}.</p>` : ""}
+    ${grupos.map(([g, l]) => { const its = P.itens.filter(i => grupo(i) === g); return its.length ? `<div class="gulbl">${l}</div><ul class="gupl">${its.map(i => `<li><b>${esc(i.titulo)}</b> · ${esc(i.quando)}${i.min ? ` · ${i.min} min` : ""}<br><span>${esc(i.como)}</span></li>`).join("")}</ul>` : ""; }).join("")}
+    ${comG ? `<div class="row wrap">${criados < comG ? `<button type="button" class="btn sm primary" data-act="guleb">${ic("clock")}Criar os lembretes do plano (${comG - criados})</button>` : `<span class="pill good">Lembretes do plano criados</span>`}${criados ? `<button type="button" class="btn sm ghost" data-act="gulebx">Tirar os lembretes do plano</button>` : ""}</div><small class="muted">Viram lembretes semanais na Rotina, ligados à atividade de cada momento, com o que fazer na nota.</small>` : ""}`;
+}
+function guHTML() {
+  const G = guData(), q = normNome(GU.q), cur = guAtual(), sec = G.segue && cur ? cur : GU.sec;
+  const ks = GUIA_ORD.filter(k => GUIA[k] && (!q || normNome(`${GUIA[k].t} ${GUIA[k].o.join(" ")} ${GUIA[k].rap}`).includes(q)));
+  return `<div class="gutop"><input type="search" id="gu_q" value="${esc(GU.q)}" placeholder="Buscar no guia (ex.: gastos, treino)" aria-label="Buscar no guia"><label class="chk"><input type="checkbox" data-act="guseg"${G.segue ? " checked" : ""}><span>Acompanhar a aba</span></label></div>
+    ${q ? "" : guPlanoHTML()}
+    ${sec && GUIA[sec] && !q ? `<div class="secsec">${ic("compass")}${cur === sec ? "Nesta aba" : "Seção aberta"}</div>${guSecaoHTML(sec, true)}` : ""}
+    <div class="secsec">${ic("list")}${q ? `Resultado (${ks.length})` : "Todas as áreas"}</div>${ks.filter(k => q || k !== sec).map(k => guSecaoHTML(k, !!q && ks.length <= 3)).join("") || `<div class="secempty">Nada encontrado para “${esc(GU.q)}”.</div>`}`;
+}
+/* abrir o guia numa seção (pedido em texto, pela IA ou pela paleta) */
+function guAbrir(aba) { const k = GUIA[aba] ? aba : GUIA[String(aba || "").split(".")[0]] ? String(aba).split(".")[0] : ""; GU.sec = k; GU.q = ""; if (k && k !== guAtual()) guData().segue = false; SEC.tab = "guia"; SEC.cfg = false; if (!SEC.open) secToggle(true); else secPaint(); }
+const GU_PEDE = /\b(tutorial|guia|manual|como (?:eu )?(?:preencho|preencher|uso|usar|registro|registrar)|o que (?:eu )?(?:preencho|preencher|registro|registrar))\b/;
+function guLocal(F) {
+  if (!GU_PEDE.test(F)) return null;
+  const chave = k => { const w = normNome(GUIA[k].t).split(" ").filter(x => x.length >= 4); return w[0] || normNome(GUIA[k].t); };
+  const alvo = Object.keys(GUIA).find(k => new RegExp(`\\b${chave(k)}`).test(F)) || (SEC_GO.find(([rx]) => rx.test(F)) || [])[1]?.split(".")[0];
+  guAbrir(alvo || guAtual());
+  return alvo && GUIA[alvo] ? `Abri o guia em **${GUIA[alvo].t}**, aqui ao lado. Ele fica aberto enquanto você navega.` : `Abri o guia aqui ao lado${guAtual() ? `, na seção de **${GUIA[guAtual()].t}**` : ""}. Ele fica aberto enquanto você navega.`;
+}
+/* lembretes do plano: um por gatilho, com a nota do que fazer e o id do item do plano (para tirar depois). Se a pessoa já tem um
+   lembrete da mesma atividade nos mesmos dias, a nota do plano entra nele (dois lembretes da mesma atividade não tocam: vale o primeiro);
+   tirar o plano devolve a nota original e mantém o lembrete. */
+const guTemLeb = id => lsData().some(r => r.plano === id || r.planoNota === id);
+function guLembretes(criar) {
+  const P = guData().plano; if (!P?.itens) return;
+  if (!criar) { let n = 0; for (const r of lsData()) if (r.planoNota) { r.nota = r.notaOrig || ""; delete r.notaOrig; delete r.planoNota; n++; }
+    n += lsData().filter(r => r.plano).length; secData().semanais = lsData().filter(r => !r.plano); touch("secretario", { label: "Lembretes do plano" }); undoToast(`${plural(n, "lembrete do plano saiu", "lembretes do plano saíram")}`); return; }
+  let n = 0, j = 0; for (const i of P.itens) { const g = i.gatilho; if (!g?.titulo || guTemLeb(i.id)) continue;
+    const dias = lsOrdDow(g.dias || []), nota = `${i.titulo}${i.min ? `, ${i.min} min` : ""}`;
+    const ex = lsData().find(r => !r.plano && !r.planoNota && normNome(r.titulo) === normNome(g.titulo) && (!r.dias?.length || !dias.length || r.dias.some(d => dias.includes(d))));
+    if (ex) { ex.notaOrig = ex.nota || ""; ex.nota = ex.nota ? `${ex.nota} · ${nota}` : nota; ex.planoNota = i.id; j++; continue; }
+    lsData().push({ id: uid(), titulo: g.titulo, dias, min: +g.min || 0, on: true, nota, plano: i.id }); n++; }
+  touch("secretario", { label: "Lembretes do plano" }); undoToast(`${plural(n, "lembrete criado", "lembretes criados")} a partir do plano${j ? ` · ${j} juntado(s) a lembrete(s) que você já tinha` : ""}`);
+}
+function guClick(t) {
+  const ds = t.dataset;
+  if (ds.act === "guseg") { guData().segue = t.checked; touch("guia", { noUndo: true, noRender: true }); secPaint(); return true; }
+  if (ds.act === "guleb") { guLembretes(true); secPaint(); return true; }
+  if (ds.act === "gulebx") { guLembretes(false); secPaint(); return true; }
+  return false;
+}
+function guInput(t) { if (t.id !== "gu_q") return false; GU.q = t.value; const p = t.selectionStart; secPaint(); const n = $("#gu_q"); if (n) { n.focus({ preventScroll: true }); n.setSelectionRange(p, p); } return true; }
+
+
+/* ================================================================ Inspiração: aquecer o cérebro para começar uma atividade
+   Cada atividade traz: por que vale, um texto curto, um aquecimento de 5 minutos em 3 passos, desafios pequenos para o primeiro
+   passo, perguntas para pensar, frases (só com autor e obra conferidos), vídeos e músicas (links de busca: não quebram quando um
+   vídeo sai do ar) e recursos. A base são os gostos do Lazer e as atividades da rotina; as “sugeridas” são vizinhas delas.
+   Atividades próprias ficam em S.inspira.minhas; o que foi começado, em S.inspira.ativs[id] = { n, ultima, desafios }.
+   A IA de acompanhamento (src/60-coach.js) é ativada daqui e assume o perfil da atividade. */
+const YT = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+const INSP_GRUPOS = [["estudo", "Estudo"], ["criar", "Criar e construir"], ["corpo", "Corpo e mente"], ["espirito", "Espírito"], ["lazer", "Lazer"], ["sugeridas", "Sugeridas"], ["minhas", "Minhas"]];
+const INSP = [
+  { id: "ingles", nome: "Inglês", g: "estudo", ico: "globe", cor: "var(--a-car)", aba: "idiomas", rot: /english|ingl[eê]s|inglese/i,
+    por: "O idioma que abre a maior parte da ciência, da engenharia e do cinema que você gosta.",
+    texto: "Fluência é volume de contato com atenção. Trinta minutos de inglês que você entende quase tudo valem mais que duas horas de algo difícil demais. Hoje, escolha uma coisa que você leria ou veria de qualquer jeito e faça em inglês.",
+    aquec: ["Leia em voz alta um parágrafo curto (notícia, letra de música, legenda).", "Anote 3 palavras ou expressões novas com uma frase sua para cada uma.", "Diga em inglês, em 3 frases, o que vai estudar agora e por quê."],
+    desafios: ["Assista a 6 minutos do 6 Minute English sem legenda; depois com legenda.", "Escreva 5 linhas sobre o seu dia, sem tradutor.", "Explique em inglês um conceito de engenharia que você domina."],
+    perguntas: ["Em que situação real você quer estar à vontade em inglês daqui a 6 meses?", "Qual tipo de conteúdo você consome em português que poderia trocar por inglês?"],
+    frases: [["Os limites da minha linguagem significam os limites do meu mundo.", "Ludwig Wittgenstein, Tractatus Logico-Philosophicus, 5.6"]],
+    videos: [["BBC Learning English: 6 Minute English", "BBC 6 Minute English"], ["Engenharia explicada em inglês", "Practical Engineering"]],
+    musicas: [["The Beatles: Abbey Road (cante junto com a letra)", "The Beatles Abbey Road full album"]],
+    recursos: [["BBC Learning English", "https://www.bbc.co.uk/learningenglish"], ["Anki (repetição espaçada)", "https://apps.ankiweb.net"]] },
+  { id: "italiano", nome: "Italiano", g: "estudo", ico: "globe", cor: "#3fae6a", aba: "idiomas", rot: /italian/i,
+    por: "A língua da casa, do trabalho e das pessoas em volta: cada avanço aparece no mesmo dia.",
+    texto: "Você vive dentro do italiano: o ganho está em transformar o que já ouve em algo que você usa de propósito. Hoje, pegue uma situação do dia (uma reunião, uma conversa no mercado) e treine as frases que faltaram.",
+    aquec: ["Lembre de uma frase que você ouviu hoje e não soube responder; escreva como diria agora.", "Leia uma manchete do dia em voz alta e explique com as suas palavras.", "Escolha 3 pronomes ou preposições que confundem e faça uma frase com cada."],
+    desafios: ["Escreva um e-mail curto de trabalho sem tradutor e revise com o dicionário Treccani.", "Assista 10 minutos de um programa da RaiPlay e anote 5 expressões.", "Grave um áudio de 1 minuto contando o seu fim de semana."],
+    perguntas: ["Que conversa você evita por causa do italiano?", "Qual registro falta mais: o técnico do trabalho ou o do dia a dia?"],
+    frases: [["Fatti non foste a viver come bruti, / ma per seguir virtute e canoscenza.", "Dante Alighieri, Inferno, canto XXVI, 119–120"], ["Quem não conhece línguas estrangeiras nada sabe da sua própria.", "Goethe, Máximas e reflexões"]],
+    videos: [["Italiano Automatico", "Italiano Automatico"], ["Easy Italian (entrevistas na rua)", "Easy Italian street interviews"]],
+    musicas: [["Lucio Dalla: Caruso", "Lucio Dalla Caruso"], ["Paolo Conte: Azzurro", "Paolo Conte Azzurro"]],
+    recursos: [["RaiPlay", "https://www.raiplay.it"], ["Vocabolario Treccani", "https://www.treccani.it/vocabolario/"]] },
+  { id: "engenharia", nome: "Engenharia e estudo técnico", g: "estudo", ico: "column", cor: "var(--a-car)", aba: "carreira.caderno", rot: /t[eé]cnic|bim|geotec|engenhar|ingegner/i,
+    por: "Engenharia civil, BIM, geotecnia e megaconstruções: o que você estuda e o que faz no trabalho.",
+    texto: "Toda obra grande começa como uma pergunta pequena e bem feita: por que esta solução e não outra? Hoje, escolha um elemento (uma fundação, um muro de contenção, um modelo BIM) e entenda uma decisão de projeto até o fim.",
+    aquec: ["Escreva no topo de uma folha a pergunta técnica que você quer responder hoje.", "Desenhe à mão, em 2 minutos, o esquema do problema (cargas, solo, apoios).", "Liste o que você já sabe e o que precisa procurar (norma, livro, modelo)."],
+    desafios: ["Resolva um exercício de mecânica dos solos sem olhar a resposta e confira.", "Abra um modelo BIM e explique a um colega imaginário a lógica de um elemento.", "Leia uma seção do Eurocódigo 7 e anote no Caderno técnico o que mudaria na sua prática."],
+    perguntas: ["Que decisão técnica do seu trabalho você aceita sem entender por completo?", "O que você gostaria de saber fazer melhor que todos na equipe?"],
+    frases: [["Toda obra deve atender à solidez, à utilidade e à beleza.", "Vitrúvio, De Architectura, livro I, cap. 3 (firmitas, utilitas, venustas)"]],
+    videos: [["Practical Engineering", "Practical Engineering Grady"], ["Megaconstruções e como foram feitas", "Real Engineering megaproject"]],
+    musicas: [["Bach: Variações Goldberg (Glenn Gould, 1981)", "Glenn Gould Goldberg Variations 1981"], ["Philip Glass: Koyaanisqatsi", "Philip Glass Koyaanisqatsi"]],
+    recursos: [["Eurocódigos (JRC)", "https://eurocodes.jrc.ec.europa.eu"], ["buildingSMART (IFC, openBIM)", "https://www.buildingsmart.org"]] },
+  { id: "ciencia", nome: "Astronomia e física", g: "estudo", ico: "atom", cor: "var(--a-pro)", aba: "lazer.estudos", rot: /astro|f[ií]sica|ci[eê]ncia/i, mentor: "lzest",
+    por: "Buracos negros, relatividade, gravitação, cordas: as perguntas grandes que você gosta de perseguir.",
+    texto: "A física moderna é feita de ideias que pareceram absurdas antes de parecer óbvias. Hoje, pegue uma delas (a curvatura do espaço-tempo, o horizonte de eventos) e tente explicá-la com um desenho, sem fórmula.",
+    aquec: ["Escreva a pergunta que você quer entender, do jeito mais ingênuo possível.", "Desenhe a situação (um corpo, uma luz, um observador).", "Anote o que você acha que acontece antes de ler a resposta."],
+    desafios: ["Explique em 5 linhas por que nada escapa de um buraco negro.", "Assista a um vídeo e escreva a dúvida que ficou.", "Abra o Stellarium e encontre a constelação que está no céu de Turim agora."],
+    perguntas: ["Que ideia da física mudou o jeito como você vê o mundo?", "Se pudesse fazer uma pergunta a Einstein, qual seria?"],
+    frases: [["Nós somos uma maneira de o cosmos conhecer a si mesmo.", "Carl Sagan, Cosmos (1980)"], ["A imaginação é mais importante que o conhecimento.", "Albert Einstein, entrevista ao Saturday Evening Post (1929)"]],
+    videos: [["Kurzgesagt: buracos negros", "Kurzgesagt black holes"], ["Relatividade explicada", "relatividade geral explicada"]],
+    musicas: [["Hans Zimmer: Interstellar", "Hans Zimmer Interstellar soundtrack"], ["Holst: Os Planetas", "Holst The Planets"]],
+    recursos: [["NASA: imagem astronômica do dia", "https://apod.nasa.gov/apod/"], ["Stellarium Web (o céu agora)", "https://stellarium-web.org"]] },
+  { id: "filosofia", nome: "Filosofia", g: "estudo", ico: "chapters", cor: "var(--a-men)", aba: "jornada.filosofia", rot: /filosof/i,
+    por: "O estoicismo já está na sua Jornada; a filosofia dá as perguntas certas para o resto.",
+    texto: "Filosofar é parar uma ideia no meio do caminho e perguntar se ela se sustenta. Hoje, escolha uma frase em que você acredita e procure o melhor argumento contra ela.",
+    aquec: ["Escreva uma crença sua em uma frase.", "Escreva o argumento mais forte contra ela.", "Diga o que mudaria na sua semana se o argumento contrário estivesse certo."],
+    desafios: ["Leia um verbete da Stanford Encyclopedia e resuma em 5 linhas.", "Aplique a dicotomia do controle a um problema real de hoje.", "Escreva um diálogo curto entre Sêneca e você sobre o seu tempo."],
+    perguntas: ["O que você faz por hábito e nunca questionou?", "Que virtude falta mais nesta semana?"],
+    frases: [["Não é que tenhamos pouco tempo, mas desperdiçamos muito.", "Sêneca, Sobre a brevidade da vida, I"], ["Não são as coisas que perturbam os homens, mas as opiniões sobre as coisas.", "Epicteto, Manual, 5"]],
+    videos: [["Clóvis de Barros Filho", "Clóvis de Barros Filho palestra"], ["Estoicismo, introdução", "estoicismo introdução Sêneca Epicteto"]],
+    musicas: [["Arvo Pärt: Spiegel im Spiegel", "Arvo Pärt Spiegel im Spiegel"]],
+    recursos: [["Stanford Encyclopedia of Philosophy", "https://plato.stanford.edu"]] },
+  { id: "leitura", nome: "Leitura", g: "lazer", ico: "book", cor: "var(--a-apr)", aba: "lazer.leitura", rot: /lettura|leitura|reading|livro|libro/i, mentor: "lzlei",
+    por: "Ficção científica, mistério, espiritismo e filosofia: os livros que você já escolheu.",
+    texto: "Ler bem é ler devagar o suficiente para que o livro converse com você. Hoje, antes de abrir, lembre onde a história parou e o que você espera do próximo capítulo.",
+    aquec: ["Lembre em uma frase onde a leitura parou.", "Escreva uma previsão para o próximo capítulo.", "Desligue as notificações por 30 minutos."],
+    desafios: ["Leia 20 páginas e anote uma frase que valha guardar.", "Ao terminar, registre no Lazer com nota e uma linha.", "Leia um conto de Sherlock Holmes no original, no Project Gutenberg."],
+    perguntas: ["Que personagem você seria nesta história?", "O que este livro está te ensinando sem dizer?"],
+    frases: [["Um leitor vive mil vidas antes de morrer. O homem que nunca lê vive apenas uma.", "George R. R. Martin, A Dança dos Dragões (2011)"], ["Sempre imaginei que o Paraíso fosse uma espécie de biblioteca.", "Jorge Luis Borges, Poema dos dons (1960)"]],
+    videos: [["Resenhas de ficção científica", "melhores livros ficção científica"]],
+    musicas: [["Erik Satie: Gymnopédies", "Erik Satie Gymnopédies"], ["Max Richter: Sleep", "Max Richter Sleep"]],
+    recursos: [["Project Gutenberg (clássicos grátis)", "https://www.gutenberg.org"]] },
+  { id: "cinema", nome: "Filmes e séries", g: "lazer", ico: "film", cor: "var(--a-amo)", aba: "lazer.filmes", mentor: "lzfil",
+    por: "Ficção científica, velho oeste e clássicos de qualidade: assistir como quem lê.",
+    texto: "Um bom filme pede atenção inteira. Hoje, escolha um título que alguém que você respeita considera obra-prima e assista sem celular por perto.",
+    aquec: ["Leia só a sinopse, sem spoilers.", "Descubra quem dirigiu e o que mais fez.", "Escolha um detalhe para observar: a luz, a trilha ou a montagem."],
+    desafios: ["Assista e escreva 3 linhas: o que funcionou, o que não, uma cena.", "Reveja uma cena favorita e observe como foi filmada.", "Registre no Lazer e peça ao mentor um próximo título no mesmo nível."],
+    perguntas: ["Que filme mudou o seu jeito de ver alguma coisa?", "O que um clássico tem que um filme comum não tem?"],
+    frases: [["Tudo o que temos de decidir é o que fazer com o tempo que nos é dado.", "Gandalf, em J. R. R. Tolkien, A Sociedade do Anel"], ["Existe uma diferença entre conhecer o caminho e percorrer o caminho.", "Morpheus, em Matrix (1999)"]],
+    videos: [["Análises de cinema", "film analysis cinematography"]],
+    musicas: [["Ennio Morricone: Il buono, il brutto, il cattivo", "Ennio Morricone Il buono il brutto il cattivo"], ["Howard Shore: O Senhor dos Anéis", "Howard Shore Lord of the Rings soundtrack"]],
+    recursos: [["Letterboxd", "https://letterboxd.com"]] },
+  { id: "jogos", nome: "Jogos de estratégia", g: "lazer", ico: "gamepad", cor: "var(--a-laz)", aba: "lazer.jogos", rot: /jogo|gioc|game|fortnite|minecraft/i, mentor: "lzjog",
+    por: "Fortnite, Minecraft, Pokémon TCG e The Settlers: jogos que pedem planejamento.",
+    texto: "Jogar bem é aprender um sistema. Hoje, escolha uma mecânica que você ainda faz no automático e jogue uma partida só para entendê-la.",
+    aquec: ["Defina um objetivo para a partida que não seja só vencer.", "Revise uma estratégia ou um deck por 2 minutos.", "Combine com você mesmo a hora de parar."],
+    desafios: ["Monte um deck de Pokémon TCG com um tema e teste 3 partidas.", "Construa no Minecraft uma estrutura de engenharia real (uma ponte, um arco).", "Termine uma partida de Settlers anotando a sua economia a cada 10 min."],
+    perguntas: ["O que este jogo te ensina sobre decisões?", "Quando jogar descansa e quando cansa?"],
+    frases: [["Jogar um jogo é a tentativa voluntária de superar obstáculos desnecessários.", "Bernard Suits, A Cigarra (1978)"]],
+    videos: [["Estratégia de Pokémon TCG", "Pokemon TCG deck building strategy"], ["Engenharia no Minecraft", "Minecraft engineering build"]],
+    musicas: [["C418: Minecraft Volume Alpha", "C418 Minecraft Volume Alpha"]],
+    recursos: [["BoardGameGeek", "https://boardgamegeek.com"]] },
+  { id: "viagens", nome: "Planejar uma viagem", g: "lazer", ico: "globe", cor: "var(--a-car)", aba: "lazer.viagens", mentor: "lzvia",
+    por: "Arredores de Turim, Itália, Europa, Japão e Brasil: planejar já é metade da viagem.",
+    texto: "Uma boa viagem começa com uma pergunta: o que eu quero sentir lá? Hoje, escolha um destino e desenhe um dia perfeito nele, hora a hora.",
+    aquec: ["Escolha o destino e a estação do ano.", "Escreva o que quer viver lá (não só ver).", "Descubra como chegar de trem ou avião saindo de Turim."],
+    desafios: ["Monte um bate-volta de trem a partir de Turim para o próximo sábado livre.", "Faça o orçamento de uma viagem e coloque em Finanças › Projetos.", "Peça ao mentor de Viagens um roteiro de 3 dias."],
+    perguntas: ["Que lugar você adia há anos?", "Viajar sozinho, a dois ou com a família: o que muda o roteiro?"],
+    frases: [["Viajar é fatal para o preconceito, a intolerância e a estreiteza de espírito.", "Mark Twain, A Viagem dos Inocentes (1869)"]],
+    videos: [["Roteiros pelo Piemonte", "Piemonte cosa vedere"], ["Japão para quem vai pela primeira vez", "Japan first time travel guide"]],
+    musicas: [["Ludovico Einaudi (nascido em Turim): Experience", "Ludovico Einaudi Experience"]],
+    recursos: [["Rome2Rio (como chegar)", "https://www.rome2rio.com"], ["Trenitalia", "https://www.trenitalia.com"]] },
+  { id: "cafe", nome: "Café de especialidade", g: "criar", ico: "coffee", cor: "#c08552", aba: "lazer.cafe", mentor: "lzcaf",
+    por: "Torra, moagem, espresso e V60: o seu laboratório de precisão em casa.",
+    texto: "Uma xícara boa é uma receita controlada: proporção, moagem, temperatura e tempo. Hoje, mude uma variável só e prove a diferença.",
+    aquec: ["Anote a receita de sempre (gramas, água, tempo).", "Escolha uma única variável para mudar.", "Prepare duas xícaras lado a lado e prove em silêncio."],
+    desafios: ["V60: teste a técnica de James Hoffmann e compare com a sua.", "Ajuste o espresso para 1:2 em 28 a 30 s e anote o sabor.", "Torre um lote pequeno e registre a curva e o resultado no Lazer."],
+    perguntas: ["Que sabor você está tentando encontrar?", "O que a sua melhor xícara do mês tinha de diferente?"],
+    frases: [["…as ideias se põem em marcha como os batalhões do Grande Exército no campo de batalha.", "Honoré de Balzac, Tratado dos excitantes modernos (1839), sobre o café"]],
+    videos: [["James Hoffmann: V60", "James Hoffmann ultimate V60 technique"], ["Espresso: como regular", "espresso dial in guide"]],
+    musicas: [["João Gilberto: Chega de Saudade", "João Gilberto Chega de Saudade"]],
+    recursos: [["Barista Hustle", "https://www.baristahustle.com"]] },
+  { id: "aviacao", nome: "Aviação e simulação de voo", g: "criar", ico: "plane", cor: "#4fa3e3", aba: "lazer.aviacao", mentor: "lzavi",
+    por: "Estudo de aeronaves, X-Plane e Microsoft Flight Simulator: engenharia que voa.",
+    texto: "Voar no simulador é treinar procedimento: checklist, briefing, decisão. Hoje, planeje um voo real, com rota, combustível e meteorologia, e voe como se houvesse passageiros.",
+    aquec: ["Escolha a rota (sugestão: Turim–Nice ou Turim–Roma).", "Gere o plano no SimBrief e leia o briefing.", "Revise o checklist de partida da aeronave."],
+    desafios: ["Faça uma aproximação ILS manual até o pouso.", "Simule uma falha de motor na decolagem e siga o procedimento.", "Assista a um episódio do Aviões e Músicas sobre a aeronave que você voa."],
+    perguntas: ["Que procedimento você ainda faz sem entender?", "Que aeronave você quer dominar até o fim do ano?"],
+    frases: [["O avião é uma máquina, sem dúvida, mas que instrumento de análise!", "Antoine de Saint-Exupéry, Terra dos Homens (1939)"]],
+    videos: [["Aviões e Músicas (Lito Sousa)", "Aviões e Músicas Lito Sousa"], ["MSFS: aproximação ILS", "MSFS ILS approach tutorial"]],
+    musicas: [["John Williams: Flying Theme (E.T.)", "John Williams E.T. Flying Theme"]],
+    recursos: [["SimBrief (plano de voo)", "https://www.simbrief.com"], ["SKYbrary (segurança de voo)", "https://skybrary.aero"]] },
+  { id: "treino", nome: "Treino", g: "corpo", ico: "dumbbell", cor: "var(--a-sau)", aba: "saude.treinos", rot: /palestra|treino|academia|gym|stretching|alongamento/i,
+    por: "A academia da semana: força que sustenta o resto.",
+    texto: "O treino que conta é o que acontece. Hoje, entre com um objetivo pequeno e claro para uma série só, e cumpra.",
+    aquec: ["Abra a ficha e veja a carga sugerida para hoje.", "Escolha o exercício em que quer progredir.", "5 minutos de mobilidade antes de começar."],
+    desafios: ["Bata a carga ou as repetições sugeridas no exercício principal.", "Registre todas as séries de trabalho na hora.", "Termine com 5 minutos de alongamento."],
+    perguntas: ["Como está a energia hoje, de 1 a 5?", "O que o corpo pediu nesta semana?"],
+    frases: [["Mente sã em corpo são.", "Juvenal, Sátiras, X, 356"]],
+    videos: [["Execução correta", "Jeff Nippard technique"], ["Treino explicado em português", "Renato Cariani treino"]],
+    musicas: [["AC/DC: Back in Black", "AC/DC Back in Black album"]],
+    recursos: [["ExRx (biblioteca de exercícios)", "https://exrx.net"]] },
+  { id: "meditacao", nome: "Meditação", g: "espirito", ico: "lotus", cor: "var(--jp-med)", aba: "jornada.meditacao", rot: /medita/i,
+    por: "Poucos minutos por dia que sustentam todo o resto.",
+    texto: "Meditar não é esvaziar a mente, é perceber para onde ela vai e voltar. Hoje, conte quantas vezes você volta: cada volta é uma repetição do treino.",
+    aquec: ["Sente-se e deixe o celular longe.", "Três respirações lentas, contando 4 para entrar e 6 para sair.", "Escolha a âncora: respiração, sons ou corpo."],
+    desafios: ["10 minutos contando as voltas para a âncora.", "Uma caminhada de 10 minutos prestando atenção nos passos.", "Registre a sessão na Jornada com o estado antes e depois."],
+    perguntas: ["Para onde a mente foi mais vezes hoje?", "O que mudou depois de meditar?"],
+    frases: [["O milagre não é andar sobre a água, é andar sobre a terra verde, no momento presente.", "Thich Nhat Hanh, Touching Peace (1992)"], ["Uma jornada de mil li começa sob os pés.", "Lao-Tsé, Tao Te Ching, 64"]],
+    videos: [["Meditação guiada (Monja Coen)", "Monja Coen meditação guiada"]],
+    musicas: [["Hiroshi Yoshimura: Music for Nine Postcards", "Hiroshi Yoshimura Music for Nine Postcards"]],
+    recursos: [["Plum Village (meditações guiadas)", "https://plumvillage.app"]] },
+  { id: "espiritismo", nome: "Estudo espírita", g: "espirito", ico: "book", cor: "var(--jp-esp, var(--accent))", aba: "jornada.espiritismo", rot: /spirit|esp[ií]rit|vangelo|evangelho|kardec/i,
+    por: "Leitura espírita, Evangelho no Lar e o estudo da doutrina: fé que pede razão.",
+    texto: "O estudo espírita pede as duas coisas: o coração aberto e o raciocínio desperto. Hoje, leia um trecho curto e pergunte como ele se aplica a uma situação concreta da sua semana.",
+    aquec: ["Uma prece curta, com as suas palavras.", "Leia um item de O Evangelho segundo o Espiritismo.", "Escreva em uma frase o que o trecho pede de você."],
+    desafios: ["Leia um capítulo e anote uma dúvida para levar ao grupo.", "Aplique o trecho a uma relação difícil desta semana.", "Registre a leitura como prática na Jornada."],
+    perguntas: ["Que inclinação você está trabalhando agora?", "Onde a caridade coube nesta semana?"],
+    frases: [["Reconhece-se o verdadeiro espírita pela sua transformação moral e pelos esforços que emprega para domar suas más inclinações.", "Allan Kardec, O Evangelho segundo o Espiritismo, cap. XVII, item 4"], ["Fé inabalável só o é a que pode encarar frente a frente a razão, em todas as épocas da Humanidade.", "Allan Kardec, O Evangelho segundo o Espiritismo, cap. XIX, item 7"]],
+    videos: [["Haroldo Dutra Dias", "Haroldo Dutra Dias palestra"], ["Divaldo Franco", "Divaldo Franco palestra"]],
+    musicas: [["Bach: Ária na corda Sol", "Bach Air on the G String"]],
+    recursos: [["Kardecpedia (obras de Kardec)", "https://kardecpedia.com"], ["Federação Espírita Brasileira", "https://www.febnet.org.br"]] },
+  { id: "tao", nome: "Taoísmo e Budismo", g: "espirito", ico: "yinyang", cor: "var(--jp-tao, var(--accent))", aba: "jornada.taoismo",
+    por: "Os outros dois pilares da sua Jornada: o caminho do equilíbrio e o da atenção.",
+    texto: "O Tao fala de agir sem forçar; o Buda, de ver as coisas como são. Hoje, escolha uma situação em que você está forçando e experimente ceder um pouco.",
+    aquec: ["Leia um capítulo curto do Tao Te Ching.", "Releia uma frase em voz baixa, devagar.", "Escreva onde ela toca a sua semana."],
+    desafios: ["Escolha um capítulo e viva a frase dele por um dia.", "Faça uma tarefa do dia sem pressa, como prática.", "Registre a reflexão na Jornada."],
+    perguntas: ["Onde você está forçando o que não precisa?", "O que você precisa soltar?"],
+    frases: [["Quem conhece os outros é inteligente; quem conhece a si mesmo é iluminado.", "Lao-Tsé, Tao Te Ching, 33"], ["Tudo o que somos é resultado do que pensamos.", "Dhammapada, verso 1"]],
+    videos: [["Alan Watts sobre o Tao", "Alan Watts Tao"]],
+    musicas: [["Guqin: música chinesa tradicional", "guqin traditional chinese music"]],
+    recursos: [["Tao Te Ching no Project Gutenberg", "https://www.gutenberg.org/ebooks/search/?query=tao+te+ching"]] },
+  /* sugeridas: vizinhas das de cima */
+  { id: "escrita", nome: "Escrever (ensaio, diário longo)", g: "sugeridas", ico: "pen", cor: "var(--a-men)", aba: "diario",
+    por: "Liga a filosofia, a leitura e o Diário: escrever é pensar com mais nitidez.",
+    texto: "Você não escreve o que pensa, descobre o que pensa ao escrever. Hoje, escolha uma pergunta da semana e escreva 15 minutos sem parar e sem corrigir.",
+    aquec: ["Escreva a pergunta no topo.", "Programe 15 minutos.", "Comece com “O que eu sei é…”."],
+    desafios: ["Um ensaio de 300 palavras sobre uma ideia de filosofia.", "Uma carta para você daqui a um ano.", "Reescreva a entrada do Diário mais importante do mês."],
+    perguntas: ["O que você ainda não disse a si mesmo?", "Que ideia você repete e nunca escreveu?"],
+    frases: [["Escrevo inteiramente para descobrir o que estou pensando.", "Joan Didion, Por que escrevo (1976)"]],
+    videos: [["Como escrever ensaios", "how to write an essay clearly"]],
+    musicas: [["Nils Frahm: Says", "Nils Frahm Says"]], recursos: [] },
+  { id: "ceu", nome: "Observar o céu", g: "sugeridas", ico: "star", cor: "var(--a-pro)", aba: "lazer.estudos",
+    por: "A astronomia que você estuda, vista a olho nu ou com binóculo, na varanda.",
+    texto: "Depois de ler sobre galáxias, ver Júpiter com um binóculo muda tudo. Hoje, confira o céu e encontre um objeto: uma constelação, um planeta, a Lua.",
+    aquec: ["Veja a previsão de nuvens para a noite.", "Abra o Stellarium e escolha um alvo.", "Desligue as luzes 10 minutos antes para os olhos se acostumarem."],
+    desafios: ["Ache Júpiter ou Saturno e anote a hora.", "Desenhe a Lua como você vê, com as crateras.", "Fotografe uma constelação com o celular em modo noturno."],
+    perguntas: ["Quanto tempo a luz daquela estrela levou para chegar até você?", "O que muda quando você olha para cima?"],
+    frases: [["Olhe de novo para esse ponto. É aqui. É a nossa casa.", "Carl Sagan, Pálido Ponto Azul (1994)"]],
+    videos: [["Astronomia para iniciantes", "stargazing for beginners"]],
+    musicas: [["Vangelis: Heaven and Hell (abertura de Cosmos)", "Vangelis Heaven and Hell Cosmos"]],
+    recursos: [["Stellarium Web", "https://stellarium-web.org"], ["Clear Outside (nuvens)", "https://clearoutside.com"]] },
+  { id: "esboco", nome: "Esboço à mão", g: "sugeridas", ico: "edit", cor: "var(--a-laz)", aba: "lazer",
+    por: "Desenhar estruturas e lugares treina o olho do engenheiro e acalma a mente.",
+    texto: "Desenhar é olhar com o lápis. Hoje, sente-se diante de uma ponte, um prédio ou um objeto e desenhe por 10 minutos, sem apagar.",
+    aquec: ["Escolha o que vai desenhar.", "Olhe 1 minuto sem desenhar.", "Comece pelas linhas principais, como um esquema estrutural."],
+    desafios: ["Um esboço de uma ponte de Turim.", "O mesmo objeto em 3 minutos, depois em 10.", "Desenhe o corte de um muro de contenção de cabeça."],
+    perguntas: ["O que você viu desenhando que não tinha visto antes?"],
+    frases: [["Um desenho é uma linha que saiu para passear.", "Paul Klee, Caderno de esboços pedagógico (1925), em paráfrase"]],
+    videos: [["Urban sketching para iniciantes", "urban sketching for beginners"]],
+    musicas: [["Lo-fi para desenhar", "lofi hip hop drawing"]],
+    recursos: [["Urban Sketchers", "https://urbansketchers.org"]] },
+  { id: "construir", nome: "Montar e construir", g: "sugeridas", ico: "box", cor: "var(--a-car)", aba: "lazer",
+    por: "LEGO Technic, maquetes de aviões ou pontes: engenharia com as mãos, por prazer.",
+    texto: "Montar à mão devolve o que o computador tira: a sensação do material. Hoje, monte algo pequeno e entenda por que cada peça está ali.",
+    aquec: ["Separe as peças por tipo.", "Leia o manual até a primeira etapa difícil.", "Combine com você um tempo, sem pressa de terminar."],
+    desafios: ["Monte um mecanismo (engrenagem, alavanca) e explique a transmissão.", "Faça a maquete de uma treliça com palitos e teste a carga.", "Monte um avião em escala e estude a aerodinâmica dele."],
+    perguntas: ["Que mecanismo você gostaria de entender de verdade?"],
+    frases: [], videos: [["LEGO Technic: mecanismos", "LEGO Technic mechanisms explained"]], musicas: [["Daft Punk: Random Access Memories", "Daft Punk Random Access Memories"]],
+    recursos: [["LEGO Technic", "https://www.lego.com/themes/technic"]] },
+  { id: "programar", nome: "Programar para a engenharia", g: "sugeridas", ico: "layers", cor: "var(--a-apr)", aba: "carreira.plano",
+    por: "Python e Dynamo automatizam o BIM e os cálculos repetitivos: tempo devolvido.",
+    texto: "Toda tarefa repetida três vezes merece um script. Hoje, escolha uma conta ou um passo do BIM que você faz sempre à mão e automatize uma parte dele.",
+    aquec: ["Escreva a tarefa em passos, como uma receita.", "Marque o passo mais chato.", "Procure um exemplo pronto parecido."],
+    desafios: ["Um script em Python que calcula um empuxo de terra.", "Um gráfico do Dynamo que renomeia elementos em lote.", "Uma planilha que confere uma verificação de norma."],
+    perguntas: ["Que tarefa do trabalho você gostaria de nunca mais fazer à mão?"],
+    frases: [["O programador, como o poeta, trabalha só um pouco afastado do puro material do pensamento.", "Fred Brooks, O Mítico Homem-Mês (1975)"]],
+    videos: [["Python para engenheiros civis", "Python for civil engineers"], ["Dynamo para Revit", "Dynamo Revit tutorial beginner"]],
+    musicas: [["Tycho: Dive", "Tycho Dive album"]],
+    recursos: [["Dynamo BIM", "https://dynamobim.org"], ["Documentação do Python", "https://docs.python.org/3/"]] },
+  { id: "cozinha", nome: "Cozinhar com método", g: "sugeridas", ico: "flame", cor: "#d9783a", aba: "saude.alimentacao",
+    por: "A mesma precisão do café, aplicada à comida, e um jeito de cuidar da alimentação.",
+    texto: "Cozinhar bem é entender três ou quatro técnicas e repetir. Hoje, escolha uma técnica (selar, emulsionar, assar) e faça um prato só para praticá-la.",
+    aquec: ["Escolha a técnica do dia.", "Separe e pese os ingredientes antes de ligar o fogo.", "Leia a receita inteira uma vez."],
+    desafios: ["Um risotto piemontês do começo ao fim.", "Um molho emulsionado sem talhar.", "Um prato com proteína que caiba na meta do Nutri."],
+    perguntas: ["Que prato da infância você gostaria de saber fazer?"],
+    frases: [["Diz-me o que comes e te direi quem és.", "Brillat-Savarin, A fisiologia do gosto (1825), aforismo IV"]],
+    videos: [["Técnica de cozinha", "Ethan Chlebowski technique"], ["Paola Carosella", "Paola Carosella receita"]],
+    musicas: [["Paolo Conte (de Asti)", "Paolo Conte best songs"]],
+    recursos: [["Serious Eats", "https://www.seriouseats.com"]] },
+  { id: "escuta", nome: "Ouvir um álbum inteiro", g: "sugeridas", ico: "wave", cor: "var(--a-amo)", aba: "lazer",
+    por: "Escuta atenta, como ler um livro: descanso que não é rolagem de tela.",
+    texto: "Um álbum foi pensado como uma obra, do começo ao fim. Hoje, escolha um disco inteiro e ouça sem fazer outra coisa.",
+    aquec: ["Escolha o álbum e o lugar.", "Leia 2 minutos sobre como foi gravado.", "Fones, luz baixa, celular longe."],
+    desafios: ["Ouça The Dark Side of the Moon inteiro.", "Ouça Kind of Blue e repare no silêncio entre as notas.", "Escreva 3 linhas sobre o que sentiu."],
+    perguntas: ["Que música marcou cada fase da sua vida?"],
+    frases: [["Sem música, a vida seria um erro.", "Friedrich Nietzsche, Crepúsculo dos ídolos, Máximas e flechas, 33"]],
+    videos: [["Como um álbum clássico foi feito", "making of classic album documentary"]],
+    musicas: [["Pink Floyd: The Dark Side of the Moon", "Pink Floyd The Dark Side of the Moon full album"], ["Miles Davis: Kind of Blue", "Miles Davis Kind of Blue full album"]], recursos: [] },
+  { id: "caminhada", nome: "Caminhada sem destino", g: "sugeridas", ico: "leaf", cor: "var(--a-sau)", aba: "hoje",
+    por: "Junta movimento, Taoísmo e os passeios: as melhores ideias vêm andando.",
+    texto: "Caminhar sem destino é deixar o pensamento andar no ritmo das pernas. Hoje, saia 20 minutos sem fone e sem rota.",
+    aquec: ["Veja o tempo no Hoje.", "Deixe o fone em casa.", "Leve uma pergunta para pensar no caminho."],
+    desafios: ["20 minutos por uma rua que você nunca andou.", "Suba ao Monte dei Cappuccini no fim da tarde.", "Ao voltar, escreva a ideia que apareceu."],
+    perguntas: ["Que pergunta você vai levar para a caminhada?"],
+    frases: [["Só têm valor os pensamentos que nos vêm ao caminhar.", "Friedrich Nietzsche, Crepúsculo dos ídolos, Máximas e flechas, 34"]],
+    videos: [["Meditação andando", "Thich Nhat Hanh walking meditation"]], musicas: [], recursos: [] },
+  { id: "ensinar", nome: "Explicar o que aprendeu", g: "sugeridas", ico: "brain", cor: "var(--a-pro)", aba: "carreira.caderno",
+    por: "O jeito mais rápido de fixar o estudo técnico e os idiomas: explicar para alguém.",
+    texto: "Se você não consegue explicar de forma simples, ainda não entendeu. Hoje, escolha o que estudou nesta semana e explique como se fosse para um colega júnior.",
+    aquec: ["Escolha um conceito.", "Escreva a explicação em palavras simples, sem jargão.", "Marque onde travou: é ali que falta estudo."],
+    desafios: ["Explique um conceito de geotecnia em 5 frases para um leigo.", "Grave um áudio de 2 minutos explicando em inglês.", "Ensine a um colega da equipe numa conversa de café."],
+    perguntas: ["O que você entendeu de verdade nesta semana?"],
+    frases: [["O que eu não consigo criar, eu não entendo.", "Richard Feynman, no quadro-negro em 1988"]],
+    videos: [["A técnica Feynman", "Feynman technique explained"]], musicas: [], recursos: [] },
+  { id: "bem", nome: "Fazer o bem", g: "sugeridas", ico: "heart", cor: "var(--a-amo)", aba: "jornada.espiritismo",
+    por: "A caridade que o estudo espírita pede, em uma ação concreta por semana.",
+    texto: "Um gesto pequeno e certo vale mais que uma intenção grande. Hoje, escolha uma pessoa ou causa e faça uma coisa por ela.",
+    aquec: ["Pense em quem precisa de algo que você pode dar (tempo, atenção, ajuda).", "Escolha uma ação de até 30 minutos.", "Marque na Rotina quando vai fazer."],
+    desafios: ["Ligue para alguém que está sozinho.", "Procure um voluntariado em Turim para um sábado.", "Ajude um colega júnior sem que ele peça."],
+    perguntas: ["Quem precisaria de você nesta semana?"],
+    frases: [["Fora da caridade não há salvação.", "Allan Kardec, O Evangelho segundo o Espiritismo, cap. XV"]],
+    videos: [], musicas: [], recursos: [["Volontariato em Turim (busca)", "https://www.google.com/search?q=volontariato+Torino"]] },
+];
+const INS = { sel: "", grupo: "", q: "", t0: 0, passo: -1, des: {} };
+const insData = () => { const d = (S.inspira ||= {}); d.ativs ||= {}; d.minhas ||= []; d.esforco ||= "medio"; return d; };
+const insTodas = () => [...INSP, ...insData().minhas.map(m => ({ g: "minhas", ico: "spark", cor: "var(--accent)", aquec: [], desafios: [], perguntas: [], frases: [], videos: [], musicas: [], recursos: [], ...m }))];
+const insAtv = id => insTodas().find(a => a.id === id);
+/* o próximo bloco da rotina que combina com uma atividade (para “para começar agora”) */
+function insDaRotina() {
+  /* um título pode casar com mais de uma (“leitura espírita”): a leitura genérica fica por último */
+  const m = nowMin(); for (const b of rtOcc(TODAY).sort((x, y) => x.a - y.a)) { if (b.z <= m) continue; const c = INSP.filter(x => x.rot?.test(b.titulo)), a = c.find(x => x.id !== "leitura") || c[0]; if (a) return { a, b }; }
+  return null;
+}
+function insCard(a) {
+  const st = insData().ativs[a.id];
+  return `<button type="button" class="inscard${INS.sel === a.id ? " on" : ""}" data-insa="${esc(a.id)}" style="--c:${a.cor}" aria-pressed="${INS.sel === a.id}"><span class="insico">${ic(a.ico)}</span><b>${esc(a.nome)}</b><small>${esc(a.por || "")}</small>${st?.n ? `<i>${plural(st.n, "começo", "começos")}</i>` : ""}</button>`;
+}
+function insDetalhe(a) {
+  const st = insData().ativs[a.id] || {}, co = typeof coAtivo === "function" && coAtivo() === a.id, d = INS.des[a.id] ?? 0, link = (l, u) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(l)}</a>`;
+  const passo = INS.t0 && INS.sel === a.id ? Math.min(2, Math.floor((Date.now() - INS.t0) / 100e3)) : -1;
+  return `<section class="pn insdet" style="--c:${a.cor}" aria-label="${esc(a.nome)}"><header class="insh"><span class="insico big">${ic(a.ico)}</span><div><h2>${esc(a.nome)}</h2>${a.por ? `<p class="muted">${esc(a.por)}</p>` : ""}</div>
+      <div class="row wrap"><button type="button" class="btn sm${co ? "" : " primary"}" data-act="coon" data-a="${esc(a.id)}">${ic("spark")}${co ? "Acompanhamento ativo" : "Ativar acompanhamento"}</button>${a.aba ? `<a class="btn sm ghost" href="#${esc(a.aba)}">abrir no Atlas</a>` : ""}${a.g === "minhas" ? `<button type="button" class="btn sm ghost" data-insdel="${esc(a.id)}" aria-label="Apagar ${esc(a.nome)}">${ic("trash")}</button>` : ""}</div></header>
+    ${a.texto ? `<p class="instx">${esc(a.texto)}</p>` : ""}
+    ${a.aquec?.length ? `<div class="insblk"><div class="flbl">Aquecimento de 5 minutos</div><ol class="insaq">${a.aquec.map((x, i) => `<li class="${passo === i ? "on" : passo > i ? "ok" : ""}">${esc(x)}</li>`).join("")}</ol>
+      <button type="button" class="btn sm" data-act="insgo" data-a="${esc(a.id)}">${ic("clock")}${INS.t0 && INS.sel === a.id ? "Recomeçar o aquecimento" : "Começar o aquecimento"}</button>${INS.t0 && INS.sel === a.id ? `<span class="muted small" id="insclk"></span>` : ""}</div>` : ""}
+    ${a.desafios?.length ? `<div class="insblk"><div class="flbl">Primeiro passo de hoje</div><p class="insdes">${esc(a.desafios[d % a.desafios.length])}</p><div class="row wrap"><button type="button" class="btn sm primary" data-act="insfeito" data-a="${esc(a.id)}">${ic("check")}Comecei</button><button type="button" class="lnk" data-act="insoutro" data-a="${esc(a.id)}">outro desafio</button></div>${st.n ? `<small class="muted">${plural(st.n, "vez", "vezes")} começada, a última em ${fmtDL(st.ultima)}.</small>` : ""}</div>` : ""}
+    ${a.frases?.length ? `<div class="insblk">${a.frases.map(([f, s]) => `<blockquote class="hjq1"><p>${esc(f)}</p><cite>${esc(s)}</cite></blockquote>`).join("")}</div>` : ""}
+    ${a.perguntas?.length ? `<div class="insblk"><div class="flbl">Para pensar</div><ul>${a.perguntas.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
+    <div class="insmid">${a.videos?.length ? `<div><div class="flbl">${ic("film")}Vídeos</div><ul>${a.videos.map(([l, q]) => `<li>${link(l, YT(q))}</li>`).join("")}</ul></div>` : ""}${a.musicas?.length ? `<div><div class="flbl">${ic("wave")}Música para o clima</div><ul>${a.musicas.map(([l, q]) => `<li>${link(l, YT(q))}</li>`).join("")}</ul></div>` : ""}${a.recursos?.length ? `<div><div class="flbl">${ic("link")}Recursos</div><ul>${a.recursos.map(([l, u]) => `<li>${link(l, u)}</li>`).join("")}</ul></div>` : ""}</div>
+    ${a.videos?.length || a.musicas?.length ? `<p class="muted small">Vídeos e músicas abrem uma busca no YouTube numa aba nova: o link não quebra quando um vídeo sai do ar.</p>` : ""}
+    ${a.g === "minhas" && !a.texto ? `<div class="insblk"><button type="button" class="btn sm" data-act="insgera" data-a="${esc(a.id)}"${SAMPLE && !AI_OFF ? "" : " disabled"}>${ic("spark")}Montar a inspiração com a IA</button>${INS.gerando === a.id ? `<span class="muted small">montando…</span>` : ""}</div>` : ""}
+  </section>`;
+}
+function pInspira() {
+  const D = insData(), q = normNome(INS.q), lista = insTodas().filter(a => (!INS.grupo || a.g === INS.grupo) && (!q || normNome(`${a.nome} ${a.por || ""}`).includes(q)));
+  const agora = insDaRotina(), sel = insAtv(INS.sel) || (agora?.a) || null;
+  if (sel && !INS.sel) INS.sel = sel.id;
+  return `${agora ? `<div class="pn insnow">${ic("clock")}<span>Próximo na sua rotina: <b>${esc(agora.b.titulo)}</b> às ${agora.b.ini} → <button type="button" class="lnk" data-insa="${esc(agora.a.id)}">${esc(agora.a.nome)}</button></span></div>` : ""}
+    <div class="insbar"><div class="seg-g" role="group" aria-label="Grupos"><button type="button" class="seg" data-insg="" aria-pressed="${!INS.grupo}">Todas</button>${INSP_GRUPOS.filter(([k]) => k !== "minhas" || D.minhas.length).map(([k, l]) => `<button type="button" class="seg" data-insg="${k}" aria-pressed="${INS.grupo === k}">${l}</button>`).join("")}</div>
+      <input type="search" id="ins_q" value="${esc(INS.q)}" placeholder="Buscar atividade" aria-label="Buscar atividade"></div>
+    <div class="insgrid">${lista.map(insCard).join("") || `<div class="empty">Nenhuma atividade com esse nome.</div>`}</div>
+    ${sel ? insDetalhe(sel) : ""}
+    ${panel(`${ic("plus")}Minhas atividades`, `<p class="muted small">Uma atividade que não está na lista. Dá para montar a inspiração com a IA (texto, aquecimento, desafios e perguntas).</p><div class="form f2"><label>Nome<input type="text" id="ins_nn" placeholder="Ex.: Violão"></label><label>Por que ela importa<input type="text" id="ins_np" placeholder="Ex.: tocar com a família no domingo"></label></div><button type="button" class="btn sm primary" data-act="insadd">${ic("plus")}Adicionar</button>`)}`;
+}
+function insTick() { const el = $("#insclk"); if (!el || !INS.t0) return; const s = Math.max(0, 300 - Math.floor((Date.now() - INS.t0) / 1000)); el.textContent = s ? `${Math.floor(s / 60)}:${pad(s % 60)} restantes` : "pronto: hora de começar"; const p = Math.min(2, Math.floor((Date.now() - INS.t0) / 100e3)); $$(".insaq li").forEach((li, i) => { li.classList.toggle("on", i === p && s > 0); li.classList.toggle("ok", i < p || !s); }); if (!s) INS.t0 = 0; }
+setInterval(() => { if (PAGE === "inspira") insTick(); }, 1000);
+async function insGerar(a) {
+  if (!SAMPLE || AI_OFF) return; INS.gerando = a.id; render();
+  try { const r = await aiCall("Inspiração", () => [{ role: "user", content: `Monte uma ficha de inspiração em português do Brasil para começar a atividade “${a.nome}”${a.por ? ` (por que importa: ${a.por})` : ""}. Responda só JSON: {"texto": "3 a 4 frases que animam e dizem como começar hoje", "aquec": ["3 passos de um aquecimento de 5 minutos"], "desafios": ["3 primeiros passos pequenos e concretos"], "perguntas": ["2 perguntas para pensar"], "videos": [["rótulo", "termos de busca no YouTube"]]}. Não invente citações.` }], { json: true, modelTier: "default" });
+    const j = r && typeof r === "object" ? r : {}, m = insData().minhas.find(x => x.id === a.id); if (m && j.texto) { Object.assign(m, { texto: String(j.texto).slice(0, 600), aquec: (j.aquec || []).slice(0, 3).map(String), desafios: (j.desafios || []).slice(0, 3).map(String), perguntas: (j.perguntas || []).slice(0, 3).map(String), videos: (j.videos || []).slice(0, 3).filter(v => Array.isArray(v) && v.length === 2).map(v => v.map(String)) }); touch("inspira", { label: "Inspiração montada" }); }
+  } catch (e) { aiError(e); } finally { INS.gerando = ""; render(); }
+}
+function insClick(t) {
+  const ds = t.dataset;
+  if (ds.insa != null) { INS.sel = ds.insa; INS.t0 = 0; render(); setTimeout(() => $(".insdet")?.scrollIntoView({ block: "start", behavior: "smooth" }), 30); return true; }
+  if (ds.insg != null) { INS.grupo = ds.insg; render(); return true; }
+  if (ds.act === "insgo") { INS.sel = ds.a; INS.t0 = Date.now(); render(); insTick(); return true; }
+  if (ds.act === "insoutro") { INS.des[ds.a] = (INS.des[ds.a] ?? 0) + 1; render(); return true; }
+  if (ds.act === "insfeito") { const a = insAtv(ds.a), s = (insData().ativs[ds.a] ||= { n: 0, desafios: [] }); s.n++; s.ultima = TODAY; const dz = a?.desafios?.[(INS.des[ds.a] ?? 0) % (a.desafios.length || 1)]; if (dz) s.desafios = [...(s.desafios || []), { data: TODAY, txt: dz }].slice(-30); touch("inspira", { label: "Atividade começada" }); undoToast(`Boa: ${a?.nome || "atividade"} começada.`); return true; }
+  if (ds.act === "insadd") { const n = $("#ins_nn")?.value.trim().slice(0, 60), p = $("#ins_np")?.value.trim().slice(0, 160); if (!n) { toast("Dê um nome à atividade."); return true; } const id = "m_" + uid(); insData().minhas.push({ id, nome: n, por: p || "" }); INS.sel = id; INS.grupo = ""; touch("inspira", { label: "Atividade nova" }); return true; }
+  if (ds.insdel) { insData().minhas = insData().minhas.filter(m => m.id !== ds.insdel); if (INS.sel === ds.insdel) INS.sel = ""; touch("inspira", { label: "Atividade apagada" }); undoToast("Atividade apagada"); return true; }
+  if (ds.act === "insgera") { const a = insAtv(ds.a); if (a) insGerar(a); return true; }
+  return false;
+}
+function insInput(t) { if (t.id !== "ins_q") return false; INS.q = t.value; const p = t.selectionStart; render(); const n = $("#ins_q"); if (n) { n.focus({ preventScroll: true }); n.setSelectionRange(p, p); } return true; }
+
+
+/* ================================================================ IA de acompanhamento da atividade
+   Ativada na aba Inspiração, assume o perfil da atividade escolhida e passa a viver num botão lateral, em todas as abas (como o
+   Secretário). Motor: o Claude da página (a mesma IA dos mentores), no nível de esforço escolhido: Baixo (rápido), Médio, Alto e
+   Máximo (o modelo mais capaz, lendo os dados antes de responder). Dá para: conversar e compartilhar informações (o contexto fica
+   guardado por atividade); pedir que avalie o que você faz numa aba (o Atlas abre a aba e manda o que está nela); e compartilhar a
+   tela: o texto da aba aberta vai junto de cada mensagem, e uma imagem (captura da tela, quando o navegador deixa, ou um print anexado)
+   vai junto da próxima, quando esta visualização aceita imagens. Ferramentas da IA: ler_dados (todo o Atlas), ver_aba e
+   anotar_progresso. Dados: S.inspira.ativo, .esforco, .tela e .ativs[id] = { conversa, notas, contexto, n, ultima }. */
+const CO_ESF = {
+  baixo: { nome: "Baixo", tier: "quick", txt: "respostas curtas e diretas (até 80 palavras), uma sugestão por vez" },
+  medio: { nome: "Médio", tier: "default", txt: "respostas objetivas (até 200 palavras), com uma sugestão concreta e o próximo passo" },
+  alto: { nome: "Alto", tier: "complex", txt: "pense com calma e estruture: o que está bom, o que corrigir e por quê, e o próximo passo (até 350 palavras)" },
+  max: { nome: "Máximo", tier: "complex", txt: "análise profunda: antes de responder, leia com ler_dados o que for relevante; compare alternativas, aponte riscos e proponha um plano em passos, sem enrolação" },
+};
+const CO_PAPEL = { ingles: "um professor de inglês experiente, paciente e exigente, que corrige com explicações curtas e propõe prática real", italiano: "uma professora de italiano de Turim, que ensina a língua do dia a dia e a do trabalho e corrige com gentileza",
+  engenharia: "um engenheiro geotécnico sênior e especialista em BIM, que orienta a carreira e o estudo técnico com rigor e exemplos de obra", filosofia: "um professor de filosofia que domina o estoicismo e provoca com boas perguntas",
+  treino: "um treinador de força experiente, prudente com lesões e preciso com a progressão de carga", meditacao: "um instrutor de meditação sereno e prático", espiritismo: "um estudioso espírita sereno, fiel às obras de Allan Kardec, que une fé e razão",
+  tao: "um praticante de longa data do Taoísmo e do Budismo, que fala com simplicidade", escrita: "um editor exigente e generoso, que ajuda a pensar escrevendo", ceu: "um astrônomo amador que ensina a observar o céu de cidade",
+  esboco: "um arquiteto e desenhista de croquis urbanos", construir: "um engenheiro mecânico que adora montar e explicar mecanismos", programar: "um engenheiro de software especializado em automação para engenharia civil (Python, Dynamo, IFC)",
+  cozinha: "um chef que ensina técnica antes de receita", escuta: "um crítico musical que ensina a ouvir", caminhada: "um caminhante filósofo, atento ao corpo e às ideias", ensinar: "um professor que usa a técnica Feynman", bem: "um coordenador de voluntariado prático e caloroso" };
+const CO = { open: false, live: null, img: null, lim: null, aval: "" };
+const coData = () => insData();
+const coAtivo = () => { const id = coData().ativo; return id && insAtv(id) ? id : ""; };
+const coAtv = () => insAtv(coAtivo());
+const coSt = id => { const s = (coData().ativs[id] ||= { n: 0 }); s.conversa ||= []; s.notas ||= []; s.contexto ??= ""; return s; };
+const coPersona = a => { const m = a.mentor && MENTOR_DEF[a.mentor]; return m ? `${m.nome}, ${m.arq}. ${m.voz || ""}` : CO_PAPEL[a.id] || `um mentor experiente em ${a.nome}, prático e encorajador`; };
+/* o que está na aba aberta, em texto: títulos, números e o que está escrito nos campos */
+function coTela() {
+  const m = $("#main"); if (!m) return "";
+  const campos = [...m.querySelectorAll("input:not([type=hidden]):not([type=checkbox]):not([type=radio]), textarea, select")].filter(e => e.value && String(e.value).trim()).slice(0, 60)
+    .map(e => `${(e.labels?.[0]?.innerText || e.getAttribute("aria-label") || e.placeholder || e.id || "campo").trim().slice(0, 50)}: ${String(e.value).trim().slice(0, 300)}`);
+  const txt = (m.innerText || "").replace(/[ \t]+/g, " ").replace(/\n{2,}/g, "\n").trim();
+  return `ABA: ${pageTitle()}${SUB ? " › " + SUB : ""} (#${PAGE}${SUB ? "." + SUB : ""})\n${trunc(txt, 6000)}${campos.length ? `\nCAMPOS PREENCHIDOS:\n${campos.join("\n")}` : ""}`;
+}
+function coPrompt(a, s) {
+  const ef = CO_ESF[coData().esforco] || CO_ESF.medio;
+  return `Você é ${coPersona(a)}
+Você acompanha a pessoa no desenvolvimento da atividade “${a.nome}”${a.por ? ` (${a.por})` : ""}. Seu papel: acompanhar de perto, dar sugestões e feedback honesto, propor correções, melhorias e caminhos melhores, e dar todo o suporte para que ela desenvolva a atividade da melhor forma. Seja específico: cite o que ela fez, diga o que mudar e por quê.
+NÍVEL DE ESFORÇO: ${ef.nome} — ${ef.txt}.
+${s.contexto ? `O QUE A PESSOA COMPARTILHOU (contexto guardado):\n${trunc(s.contexto, 3000)}\n` : ""}${s.notas.length ? `NOTAS DE PROGRESSO (mais recentes primeiro):\n${s.notas.slice(-12).reverse().map(n => `- ${n.data}: ${n.txt}`).join("\n")}\n` : ""}${s.n ? `COMEÇOS REGISTRADOS NA INSPIRAÇÃO: ${s.n}, o último em ${s.ultima}.\n` : ""}${a.desafios?.length ? `DESAFIOS SUGERIDOS PARA A ATIVIDADE: ${a.desafios.join(" | ")}\n` : ""}HOJE: ${fmtDL(TODAY)}, ${new Date().toTimeString().slice(0, 5)}.
+FERRAMENTAS: ler_dados lê qualquer parte do Atlas no detalhe (rotina, estudo, diário, saúde…); ver_aba resume uma aba; anotar_progresso guarda uma nota curta no histórico desta atividade (use quando houver um avanço, uma decisão ou um combinado). Não narre as consultas.
+Responda em português do Brasil, em markdown simples. Não invente dados nem citações; quando não souber, diga.`;
+}
+function coTools(live) {
+  const note = (t, d) => { live.uso.push({ t, d }); coPaintLive(); };
+  return [
+    { name: "anotar_progresso", description: "Guarda uma nota curta (até 200 caracteres) no histórico desta atividade: um avanço, uma decisão ou um combinado. Aparece nas próximas conversas.", inputSchema: { type: "object", properties: { nota: { type: "string" } }, required: ["nota"] },
+      execute: inp => { const t = String(inp?.nota || "").trim().slice(0, 200); if (!t) return { erro: "nota vazia" }; coSt(live.a.id).notas.push({ data: TODAY, txt: t }); live.notou = true; note("Nota", t); return { ok: true }; } },
+    { name: "ver_aba", description: "Lê o estado atual de uma aba do Atlas em texto. Abas: agora, tarefas, rotina, lembretes, saude, financas, carreira, aprendizado, relacoes, lazer, proposito, casa, jornada.", inputSchema: { type: "object", properties: { aba: { type: "string" } }, required: ["aba"] },
+      execute: inp => { note("ver_aba", String(inp?.aba)); return secAbaFacts(String(inp?.aba), live.ctx); } },
+  ];
+}
+async function coEnviar(texto, extra = "") {
+  const a = coAtv(); if (!a) return; texto = String(texto || "").trim(); if (!texto) return;
+  if (CO.live) { toast("Espere a resposta terminar ou toque em Parar."); return; }
+  if (!SAMPLE || AI_OFF) { toast(`A IA não está disponível nesta visualização${AI_OFF ? ` (${AI_OFF})` : ""}.`); return; }
+  const s = coSt(a.id), D = coData(), tela = extra || (D.tela ? coTela() : ""), img = CO.img && CO.lim?.images ? CO.img : null;
+  const user = { role: "user", content: texto, at: Date.now(), ...(tela ? { tela: true } : {}), ...(img ? { img: true } : {}) };
+  const live = CO.live = { a, user, text: "", uso: [], ctl: new AbortController() }; CO.img = null; coPaint();
+  const hist = s.conversa.slice(-12).map(x => ({ role: x.role, content: x.content }));
+  const ultimo = `${texto}${tela ? `\n\n[O QUE ESTÁ NA TELA AGORA]\n${tela}` : ""}${img ? "\n\n[IMAGEM ANEXADA: a tela da pessoa, capturada ou em print. Leia o que estiver nela e use na resposta.]" : ""}`;
+  try {
+    const r = await aiCall(`Acompanhamento: ${a.nome}`, ctx => { live.ctx = ctx; return [{ role: "user", content: coPrompt(a, s) }, { role: "assistant", content: "Entendido. Estou acompanhando." }, ...hist, { role: "user", content: ultimo }]; },
+      { dados: true, signal: live.ctl.signal, modelTier: (CO_ESF[D.esforco] || CO_ESF.medio).tier, cache: false, ...(TOOLS_MAX ? { tools: coTools(live) } : {}), ...(img ? { images: [img] } : {}), onText: ({ text: t }) => { live.text = t; coPaintLive(); } });
+    coFim(r.text, r.truncated);
+  } catch (e) { if (e?.text) coFim(e.text, true); else { CO.live = null; coPaint(); } if (e?.code !== "cancelled") aiError(e); }
+}
+function coFim(text, cut) {
+  const L = CO.live; if (!L) return; const s = coSt(L.a.id);
+  s.conversa.push(L.user, { role: "assistant", content: (String(text || "").trim() || "(sem texto)") + (cut ? "\n\n_(resposta interrompida)_" : ""), at: Date.now(), uso: L.uso });
+  if (s.conversa.length > 60) s.conversa = s.conversa.slice(-60);
+  CO.live = null; touch("inspira", { noUndo: true, noRender: true }); coPaint();
+}
+/* avaliar uma aba: abre a aba, espera desenhar e manda o que está nela */
+function coAvaliar(hash) {
+  const [p, s] = String(hash || "").split("."); if (!p) return;
+  if (p !== PAGE || (s || "") !== (SUB || "")) setHash(p, s);
+  setTimeout(() => coEnviar(`Avalie o que estou fazendo na aba ${pageTitle(p)}${s ? " › " + s : ""}, pensando na atividade. O que está bom, o que corrigir e qual o próximo passo?`, coTela()), 450);
+}
+async function coCapturar() {
+  try { const st = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false }), v = document.createElement("video"); v.srcObject = st; v.muted = true; await v.play(); await new Promise(r => setTimeout(r, 350));
+    const c = document.createElement("canvas"), k = Math.min(1, 1600 / (v.videoWidth || 1600)); c.width = Math.round(v.videoWidth * k); c.height = Math.round(v.videoHeight * k); c.getContext("2d").drawImage(v, 0, 0, c.width, c.height); st.getTracks().forEach(t => t.stop());
+    CO.img = await new Promise(r => c.toBlob(r, "image/jpeg", .85)); toast("Tela capturada: vai junto com a próxima mensagem."); }
+  catch { toast("Este navegador ou esta visualização não deixa capturar a tela. Tire um print e use “Anexar imagem”."); }
+  coPaint();
+}
+/* ---------------------------------------------------------------- janela e botão lateral */
+const CO_PEDIDOS = ["Estou começando agora: o que faço primeiro?", "Avalie o que fiz até aqui", "Monte um plano de 4 semanas", "Quero um desafio para hoje"];
+function coHTML() {
+  const a = coAtv(); if (!a) return ""; const s = coSt(a.id), D = coData(), L = CO.live, ai = !!SAMPLE && !AI_OFF, img = !!CO.lim?.images;
+  const msgs = s.conversa.slice(-30).map(x => x.role === "user" ? `<div class="msg me"><div class="bub">${esc(x.content)}${x.tela || x.img ? `<small class="cotag">${x.tela ? "com a tela" : ""}${x.tela && x.img ? " e " : ""}${x.img ? "com imagem" : ""}</small>` : ""}</div></div>` : `<div class="msg ai"><div class="bub"><div class="mdx">${md(x.content)}</div>${x.uso?.length ? `<div class="usos">${usoHTML(x.uso)}</div>` : ""}</div></div>`).join("");
+  const live = L ? `<div class="msg me"><div class="bub">${esc(L.user.content)}</div></div><div class="msg ai" id="colive"><div class="bub"><div class="lb-text mdx">${L.text ? md(L.text) : `<div class="thinking">${ic("spark")}Pensando…</div>`}</div><div class="lb-uso usos">${usoHTML(L.uso)}</div></div></div>` : "";
+  const abas = NAV.flatMap(g => g[1]).map(([k, l]) => [k, l]);
+  return `<header class="sech co-h" data-codrag="1" style="--c:${a.cor}"><span class="secav co-av">${ic(a.ico)}</span><div class="sect"><b>${esc(a.nome)}</b><small>Acompanhamento · Claude, esforço ${esc((CO_ESF[D.esforco] || CO_ESF.medio).nome)}${ai ? "" : " · IA indisponível aqui"}</small></div>
+      <a class="iconbtn" href="#inspira" aria-label="Trocar de atividade" title="Trocar de atividade">${ic("refresh")}</a><button type="button" class="iconbtn" data-act="cooff" aria-label="Desativar o acompanhamento" title="Desativar">${ic("stop")}</button><button type="button" class="iconbtn" data-act="coclose" aria-label="Fechar a janela">${ic("x")}</button></header>
+    <div class="cobar"><label>Esforço<select id="co_esf" aria-label="Nível de esforço">${Object.entries(CO_ESF).map(([k, e]) => `<option value="${k}"${D.esforco === k ? " selected" : ""}>${e.nome}</option>`).join("")}</select></label>
+      <label class="chk"><input type="checkbox" id="co_tela"${D.tela ? " checked" : ""}><span>Compartilhar a tela</span></label></div>
+    <details class="coxtra"${CO.xtra ? " open" : ""}><summary>${ic("plus")}Compartilhar e avaliar</summary>
+      <label class="small">O que você quer que eu saiba (fica guardado nesta atividade)<textarea id="co_ctx" rows="3" placeholder="Objetivo, nível, material que está usando, o que já tentou…">${esc(s.contexto)}</textarea></label>
+      <div class="row wrap"><select id="co_aba" aria-label="Aba para avaliar">${abas.map(([k, l]) => `<option value="${k}"${k === PAGE ? " selected" : ""}>${esc(l)}</option>`).join("")}</select><button type="button" class="btn sm" data-act="coaval">${ic("eye")}Avaliar esta aba</button></div>
+      ${img ? `<div class="row wrap"><button type="button" class="btn sm ghost" data-act="cocap">${ic("expand")}Capturar a tela</button><label class="btn sm ghost">${ic("upload")}Anexar imagem<input type="file" id="co_file" accept="image/*" hidden></label>${CO.img ? `<span class="pill good">imagem pronta</span><button type="button" class="lnk" data-act="coimgx">tirar</button>` : ""}</div>` : `<small class="muted">Imagens não estão disponíveis nesta visualização; com “Compartilhar a tela”, vai o texto da aba.</small>`}
+      ${s.notas.length ? `<div class="secsec">Progresso<small>${s.notas.length}</small></div><ul class="conotas">${s.notas.slice(-6).reverse().map(n => `<li><small>${fmtDY(n.data)}</small> ${esc(n.txt)}</li>`).join("")}</ul>` : ""}</details>
+    <div class="secbody" id="cobody"><div class="secchat" id="cochat">${msgs || `<div class="secempty">${ic(a.ico)}Estou com você em <b>${esc(a.nome)}</b>. Conte o que está fazendo, peça um plano ou um desafio, ou ligue “Compartilhar a tela” para eu ver a aba aberta.</div>`}${live}</div>
+      ${!s.conversa.length && !L ? `<div class="secquick">${CO_PEDIDOS.map(q => `<button type="button" class="qchip" data-coq="${esc(q)}"${ai ? "" : " disabled"}>${esc(q)}</button>`).join("")}</div>` : ""}</div>
+    <footer class="secf"><textarea id="co_in" rows="1" placeholder="Fale com o acompanhamento${D.tela ? " (a tela vai junto)" : ""}" aria-label="Mensagem para o acompanhamento">${esc(CO.input || "")}</textarea>${L ? `<button type="button" class="btn sm" data-act="costop">${ic("stop")}Parar</button>` : `<button type="button" class="btn sm primary" data-act="cosend" aria-label="Enviar"${ai ? "" : " disabled"}>${ic("send")}</button>`}</footer><i class="secgrip" aria-hidden="true"></i>`;
+}
+function coFab() {
+  const f = $("#cofab"); if (!f) return; const a = LOADED ? coAtv() : null;
+  f.hidden = !a || CO.open; document.body.classList.toggle("co-on", !!a);
+  if (a) { f.style.setProperty("--c", a.cor); f.innerHTML = `${ic(a.ico)}<span>${esc(trunc(a.nome, 22))}</span>`; f.setAttribute("aria-label", `Abrir o acompanhamento de ${a.nome}`); }
+}
+function coPaint() {
+  const w = $("#co"); if (!w) return; coFab(); const a = coAtv(); w.hidden = !CO.open || !a; if (w.hidden) return;
+  const ae = document.activeElement, keep = ae?.id === "co_in", ctxF = ae?.id === "co_ctx", pos = ae?.selectionStart; CO.xtra = !!$("#co .coxtra")?.open || CO.xtra;
+  w.innerHTML = coHTML();
+  if (keep) { const t = $("#co_in"); t?.focus({ preventScroll: true }); t?.setSelectionRange(t.value.length, t.value.length); }
+  if (ctxF) { const t = $("#co_ctx"); t?.focus({ preventScroll: true }); if (pos != null) t?.setSelectionRange(pos, pos); }
+  const b = $("#cobody"); if (b) b.scrollTop = b.scrollHeight;
+}
+function coPaintLive() { const el = $("#colive"), L = CO.live; if (!el || !L) { coPaint(); return; } $(".lb-text", el).innerHTML = L.text ? md(L.text) : `<div class="thinking">${ic("spark")}Pensando…</div>`; $(".lb-uso", el).innerHTML = usoHTML(L.uso); const b = $("#cobody"); if (b) b.scrollTop = b.scrollHeight; }
+/* no computador, a janela fica ao lado da do Secretário quando as duas estão abertas; no celular, uma de cada vez */
+function coPlace() {
+  const w = $("#co"); if (!w) return; if (innerWidth <= 640) { w.style.cssText = ""; return; }
+  const W = Math.min(390, innerWidth - 16), H = Math.min(600, innerHeight - 16), dx = SEC.open && $("#sec") && !$("#sec").hidden ? ($("#sec").getBoundingClientRect().width || 390) + 16 : 0;
+  Object.assign(w.style, { width: W + "px", height: H + "px", top: Math.max(8, innerHeight - H - 20) + "px", left: Math.max(8, innerWidth - W - 20 - dx) + "px" });
+}
+/* a posição só é calculada ao abrir e quando a tela muda de tamanho: redesenhar não desfaz o tamanho que a pessoa ajustou */
+const coLimites = () => { if (!CO.lim && SAMPLE?.limits) SAMPLE.limits().then(l => { CO.lim = l || {}; coPaint(); }, () => { CO.lim = {}; }); };
+function coToggle(on = !CO.open) { CO.open = on && !!coAtv(); if (CO.open && innerWidth <= 640 && SEC.open) secToggle(false); coPaint(); if (CO.open) { coPlace(); coLimites(); setTimeout(() => $("#co_in")?.focus({ preventScroll: true }), 30); } }
+function coAtivar(id) { const D = coData(); D.ativo = id; coSt(id); touch("inspira", { label: "Acompanhamento ativado", noRender: true }); if (innerWidth <= 640 && SEC.open) secToggle(false); CO.open = true; render(); coPaint(); coPlace(); coLimites(); }
+function coClick(t) {
+  const ds = t.dataset, a = ds.act;
+  if (a === "coon") { coAtivar(ds.a); return true; }
+  if (t.id === "cofab" || t.closest?.("#cofab")) { coToggle(true); return true; }
+  if (a === "coclose") { coToggle(false); return true; }
+  if (a === "cooff") { const n = coAtv()?.nome; coData().ativo = ""; CO.open = false; touch("inspira", { label: "Acompanhamento desativado" }); coPaint(); undoToast(`Acompanhamento de ${n} desativado. A conversa fica guardada.`); return true; }
+  if (a === "cosend") { const v = $("#co_in")?.value || ""; CO.input = ""; coEnviar(v); return true; }
+  if (a === "costop") { CO.live?.ctl.abort(); return true; }
+  if (ds.coq) { coEnviar(ds.coq); return true; }
+  if (a === "coaval") { coAvaliar($("#co_aba")?.value); return true; }
+  if (a === "cocap") { coCapturar(); return true; }
+  if (a === "coimgx") { CO.img = null; coPaint(); return true; }
+  return false;
+}
+function coChange(t) {
+  if (t.id === "co_esf") { coData().esforco = t.value; touch("inspira", { noUndo: true, noRender: true }); coPaint(); return true; }
+  if (t.id === "co_tela") { coData().tela = t.checked; touch("inspira", { noUndo: true, noRender: true }); coPaint(); return true; }
+  if (t.id === "co_ctx") { const a = coAtv(); if (a) { coSt(a.id).contexto = t.value.slice(0, 4000); touch("inspira", { label: "Contexto do acompanhamento", noRender: true }); toast("Guardado: o acompanhamento vai levar isso em conta."); } return true; }
+  if (t.id === "co_file") { const f = t.files?.[0]; if (f) { CO.img = f; toast("Imagem pronta: vai junto com a próxima mensagem."); coPaint(); } return true; }
+  return false;
+}
+function coInput(t) { if (t.id !== "co_in") return false; CO.input = t.value; return true; }
+function coKey(e) { if (e.target?.id === "co_in" && e.key === "Enter" && !e.shiftKey) { e.preventDefault(); const v = e.target.value; CO.input = ""; e.target.value = ""; coEnviar(v); return true; } return false; }
+function coInit() {
+  document.body.insertAdjacentHTML("beforeend", `<button type="button" id="cofab" class="cofab" hidden></button><div id="co" class="secw cow" role="dialog" aria-label="Acompanhamento da atividade" hidden></div>`);
+  addEventListener("resize", () => { if (CO.open) coPlace(); });
+  document.addEventListener("keydown", e => { if (!e.isComposing) coKey(e); });
+  coFab();
+}
+
+
 /* ================================================================ render */
 let RELAYOUT = false;
 function greet() { const h = new Date().getHours(); return h < 5 ? "Boa noite" : h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"; }
@@ -18241,6 +18865,7 @@ function render() {
     visao: () => [nm ? `Olá, ${nm}` : "Visão geral", `Como a vida está indo em ${mlabel(REF)}${R.corte ? ` · dados até ${fmtD(R.corte)}` : ""}`, rOverview],
     painel: () => ["Painel do dia", "Os essenciais do dia em um minuto, por texto ou voz. Você revisa antes de ir para as abas.", pPainel],
     rotina: () => ["Rotina", "Planeje e registre o dia em blocos de 30 minutos", pRotina],
+    inspira: () => ["Inspiração", "Antes de começar: aquecer a cabeça, escolher o primeiro passo e, se quiser, chamar a IA de acompanhamento", pInspira],
     hoje: () => [`${greet()}${nm ? ", " + nm : ""}`, fmtDL(TODAY)[0].toUpperCase() + fmtDL(TODAY).slice(1), pHoje2],
     diario: () => ["Diário", "Escreva, marque pessoas e temas, registre dados e veja o que se repete", pDiario],
     psi: () => ["Psicologia", { inicio: "O trabalho terapêutico, ligado à sua jornada", sessoes: "O que acontece nas sessões", processos: "Os temas que você trabalha ao longo do tempo", entre: "O trabalho entre as sessões", padroes: "O que se repete, e o que ajuda", terapeuta: "Um apoio entre sessões que muda de forma conforme o que você precisa" }[SUB] || "", pPsique],
@@ -18280,6 +18905,8 @@ function render() {
   const ae = document.activeElement, focusSel = !ae?.id && ae && ae !== document.body ? a11ySel(ae) : null, focusId = ae?.id, selS = ae?.selectionStart, selE = ae?.selectionEnd, scT = ae?.scrollTop, chat = $("#mchat"), chatTop = chat ? chat.scrollTop : null, chatBottom = chat ? chat.scrollHeight - chat.scrollTop - chat.clientHeight < 40 : true;
   $("#nav").innerHTML = navHTML(R);
   $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}${csStrip()}${isReport() && LOADED && REF !== mkey(TODAY) ? refBar() : ""}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
+  if (SEC.open && SEC.tab === "guia" && guData().segue) secPaint();   /* o guia acompanha a aba */
+  coFab();
   $("#drawerwrap").innerHTML = drawerHTML(R);
   if (PAGE !== "saude" || !["alimentacao", "treinos"].includes(SUB)) document.body.classList.remove("sdside-on");
   if (PAGE !== "trabalho") { document.body.classList.remove("ckside-on", "ckdmeet-on"); if (CK.dash) CK.dash.reuniao = false; }
@@ -18413,7 +19040,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || lsClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || guClick(t) || coClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || lsClick(t) || insClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -18486,7 +19113,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (nuInput(t) || trInput(t) || cfInput(t) || ckInput(t) || secInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtcInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
+  if (nuInput(t) || trInput(t) || cfInput(t) || ckInput(t) || secInput(t) || guInput(t) || insInput(t) || coInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtcInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -18501,7 +19128,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || lsChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || coChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || lsChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }
@@ -18578,7 +19205,7 @@ document.addEventListener("focusout", () => setTimeout(diaVirou, 250));
   try { radarSync(); } catch (e) { console.warn("radar", e); }
   try { ckSnapTake(); } catch (e) { console.warn("ckSnap", e); }
   render();
-  secBoot();
+  secBoot(); coInit();
 })();
 
 </script>

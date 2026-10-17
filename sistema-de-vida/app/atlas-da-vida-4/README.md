@@ -57,7 +57,7 @@ e, no Atlas 4, em Integrações → Importar → Restaurar backup. O espaço A d
   vazio atrás de qualquer texto que só exista nos dados de exemplo.
 
 - `python3 build.py` monta o HTML e, se o Node estiver instalado, confere a sintaxe do JavaScript.
-- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `57` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro; `25-carreira.js` é o hub de Carreira; `26-lazer.js` é o Lazer, com oito divisões e seus mentores; `27-painel.js` é o Painel do dia; `28-capas.js` as capas, missões, manuais e o Mapa do Atlas; `29-hoje2.js` o Hoje; `30-casa.js` a Casa; `31-futuro.js` Futuro financeiro e Itália & Brasil; `32-idiomas.js` Idiomas; `33-carreira2.js` Caderno técnico e Rede profissional; `34-exemplo.js` o modo exemplo; `35-painel2.js` as demais abas no Painel do dia; `36-gcal.js` o Google Calendar; `37-rotina.js` a Rotina em blocos de 30 minutos; `38-jardim.js` o jardim interior da Saúde espiritual; `39-roteiro.js` o roteiro de áudio do Painel do dia; `40-secretario.js` o Secretário da Vida, a janela flutuante que junta as abas; `41-conselho.js` a Administração Pessoal, o Conselho de Administração da vida; `42-filosofia.js` a Filosofia (estoicismo) dentro da Jornada; `43-psique.js` a aba Psicologia e o Terapeuta; `44-cockpit-config.js` a configuração versionada do agente PMO; `45-cockpit.js` o motor do Cockpit de Trabalho (calendário de dias úteis, caminho crítico, prioridade, carga, delegação, alertas, propostas e ferramentas do agente); `46-cockpit-ui.js` as telas de tarefas, equipe e contexto; `47-cockpit-reg.js` riscos, problemas, diário de bordo, decisões, lições e reuniões; `48-cockpit-rel.js` Gantt, tracker BIM, elaborati, briefing, relatórios, blocos de foco e o exemplo; `49-cockpit-agg.js` a camada de agregação pura do Dashboard (e dos KPIs do Hoje, do mapa de riscos e dos relatórios); `50-cockpit-dash.js` o Dashboard; `51-saude-ag.js` o que o Nutri e o Personal têm em comum (propostas, aprovação, painel); `52-nutri.js` a Alimentação e o Nutri; `53-treino.js` os Treinos, o Personal e o exemplo dos dois; `54-centros.js` os centros de força, dentro do Espiritismo na Jornada; `55-rotina-voz.js` o Capturar do dia na Rotina; `56-ia-dados.js` o acesso das IAs aos dados no detalhe).
+- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `60` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro; `25-carreira.js` é o hub de Carreira; `26-lazer.js` é o Lazer, com oito divisões e seus mentores; `27-painel.js` é o Painel do dia; `28-capas.js` as capas, missões, manuais e o Mapa do Atlas; `29-hoje2.js` o Hoje; `30-casa.js` a Casa; `31-futuro.js` Futuro financeiro e Itália & Brasil; `32-idiomas.js` Idiomas; `33-carreira2.js` Caderno técnico e Rede profissional; `34-exemplo.js` o modo exemplo; `35-painel2.js` as demais abas no Painel do dia; `36-gcal.js` o Google Calendar; `37-rotina.js` a Rotina em blocos de 30 minutos; `38-jardim.js` o jardim interior da Saúde espiritual; `39-roteiro.js` o roteiro de áudio do Painel do dia; `40-secretario.js` o Secretário da Vida, a janela flutuante que junta as abas; `41-conselho.js` a Administração Pessoal, o Conselho de Administração da vida; `42-filosofia.js` a Filosofia (estoicismo) dentro da Jornada; `43-psique.js` a aba Psicologia e o Terapeuta; `44-cockpit-config.js` a configuração versionada do agente PMO; `45-cockpit.js` o motor do Cockpit de Trabalho (calendário de dias úteis, caminho crítico, prioridade, carga, delegação, alertas, propostas e ferramentas do agente); `46-cockpit-ui.js` as telas de tarefas, equipe e contexto; `47-cockpit-reg.js` riscos, problemas, diário de bordo, decisões, lições e reuniões; `48-cockpit-rel.js` Gantt, tracker BIM, elaborati, briefing, relatórios, blocos de foco e o exemplo; `49-cockpit-agg.js` a camada de agregação pura do Dashboard (e dos KPIs do Hoje, do mapa de riscos e dos relatórios); `50-cockpit-dash.js` o Dashboard; `51-saude-ag.js` o que o Nutri e o Personal têm em comum (propostas, aprovação, painel); `52-nutri.js` a Alimentação e o Nutri; `53-treino.js` os Treinos, o Personal e o exemplo dos dois; `54-centros.js` os centros de força, dentro do Espiritismo na Jornada; `55-rotina-voz.js` o Capturar do dia na Rotina; `56-ia-dados.js` o acesso das IAs aos dados no detalhe).
 
 ## Administração Pessoal (o Conselho)
 
@@ -269,6 +269,44 @@ cidade não usa internet: lista pronta de cidades da Itália, do Brasil e da Eur
 livre, que a tarefa localiza. Aberto fora do claude.ai, com internet, a página ainda busca o Open-Meteo direto quando o feed não
 cobre a hora.
 
+## Guia do Atlas e plano de preenchimento (`src/58-guia.js`)
+
+A quarta aba da janela do Secretário. Para cada área: para que serve (a missão da capa), o que preencher, o mínimo que já vale, o
+jeito rápido e a frequência sugerida, com busca. “Acompanhar a aba” faz o guia mostrar a seção da aba em que você está enquanto
+navega. Abre por pedido em texto ao Secretário, sem IA (“como preencho os gastos?”, “abre o tutorial da rotina”), pela IA (ferramenta
+`abrir_guia`, que devolve a seção para a resposta e abre o guia quando a resposta termina, para não esconder a conversa) e pela
+busca do Atlas (“Guia do Atlas”). O conteúdo é genérico e está no código.
+
+O plano pessoal de preenchimento fica só no banco da pessoa (`S.guia.plano`: base, tempo por dia, semana e mês, e itens com aba,
+quando, frequência, minutos, como fazer e, se houver, o gatilho: a atividade da rotina em que o preenchimento se encaixa). O guia
+mostra o próximo preenchimento (pela rotina dos próximos dias), o plano por frequência e, na seção de cada área, os itens dela.
+“Criar os lembretes do plano” transforma cada gatilho num lembrete semanal com o que fazer na nota; se a pessoa já tem um lembrete
+da mesma atividade nos mesmos dias, a nota entra nele (dois lembretes da mesma atividade não tocam juntos), e tirar o plano devolve
+a nota original sem apagar o lembrete dela.
+
+## Inspiração (`src/59-inspira.js`)
+
+Aba logo depois da Rotina, para começar uma atividade com a cabeça ligada. As atividades da base vêm dos gostos do Lazer e das
+atividades de uma rotina comum (idiomas, estudo técnico, leitura, treino, meditação, estudo espírita…); as sugeridas são vizinhas
+delas (escrever, observar o céu, esboço à mão, montar, programar para a engenharia, cozinhar, ouvir um álbum, caminhar, ensinar,
+fazer o bem). Cada uma tem: por que vale, um texto curto, um aquecimento de 5 minutos em 3 passos com relógio, o primeiro passo do
+dia (com “outro desafio” e “Comecei”, que conta os começos e se desfaz), perguntas, frases (só com autor e obra conferidos), vídeos e
+músicas como busca no YouTube (o link não quebra quando um vídeo sai do ar), recursos e o atalho para a aba dela. O topo liga o
+próximo bloco da Rotina à atividade dele (pelo título, com palavras genéricas). Atividades próprias ficam em `S.inspira.minhas`, e a
+IA pode montar a ficha delas (texto, aquecimento, desafios e perguntas).
+
+## IA de acompanhamento (`src/60-coach.js`)
+
+Ativada na Inspiração, assume o perfil da atividade (o mentor do Lazer quando existe; senão, um perfil próprio, como “engenheiro
+geotécnico sênior e especialista em BIM”) e passa a viver num botão lateral em todas as abas, acima do Secretário. Motor: o Claude da
+página (a mesma IA dos mentores), no nível de esforço escolhido: Baixo (`quick`, respostas curtas), Médio (`default`), Alto
+(`complex`, resposta estruturada) e Máximo (`complex`, lendo os dados antes de responder). Ferramentas: `ler_dados`, `ver_aba` e
+`anotar_progresso` (notas que voltam nos próximos pedidos). O que a pessoa compartilha fica guardado por atividade e vai em todo
+pedido. “Compartilhar a tela” manda junto de cada mensagem o texto da aba aberta e o que está escrito nos campos; “Avaliar esta aba”
+abre a aba escolhida e manda o que está nela; onde a visualização aceita imagens, “Capturar a tela” (quando o navegador deixa) ou
+“Anexar imagem” manda uma imagem junto da próxima mensagem. A conversa fica guardada por atividade (`S.inspira.ativs[id]`).
+No computador, a janela fica ao lado da do Secretário; no celular, abrir uma fecha a outra. No modo exemplo, o acompanhamento some.
+
 ## Relatórios: do passado ao presente
 
 Tocar num mês de um gráfico leva a análise para ele, e os gráficos clicáveis (Índice de vida e a matriz das áreas na Visão
@@ -334,6 +372,9 @@ O relógio do navegador fica fixo em 09/10/2026, 10:00 (sexta), para os testes n
 | `lab41.py` | Atlas 4 · Índice de vida do passado ao presente: tocar num mês mantém o gráfico até o mês atual, faixa “Voltar para…” fixa ao rolar, voltar pelo gráfico, pela faixa e pelo topo, mês mais antigo que a janela, Finanças, Relações e Crescimento, números do mês analisado, dias 1 a 7, celular |
 | `lab42.py` | Atlas 4 · Rotina › Preencher: ordem Básica, Intermediária, Avançada e depois os outros, horas por categoria, substituir a semana (avulso sai, tarefa fica, repetição sai só da semana), sem substituir (conflitos pulados), dia, mês (agenda fica e o bloco que bate é pulado), um passo de desfazer, seletor do painel, celular |
 | `lab43.py` | Atlas 4 · lembretes semanais: criar no painel e no cartão (“só às sextas”), desfazer, aviso na hora certa e uma vez, bloco marcado e regra pausada não avisam, Secretário lista os semanais, Google Agenda (3 eventos semanais com aviso, sincronização os ignora, atualizar, tirar, apagar a regra, resposta sem id), modo exemplo não avisa |
+| `lab44.py` | Atlas 4 · Guia no Secretário: aba Guia, todas as áreas do menu, acompanhar a aba, busca, pedido em texto (“como preencho os gastos?”), ferramenta abrir_guia depois da resposta, busca do Atlas, plano fictício (próximo preenchimento, por frequência, itens na seção), lembretes do plano com nota (juntando ao lembrete que a pessoa já tinha), aviso com a nota, tirar sem levar os da pessoa, celular |
+| `lab45.py` | Atlas 4 · Inspiração: lugar no menu, catálogo conferido (frases com fonte, links, aquecimento, desafios), grupos e busca, próximo bloco da rotina, detalhe com links em aba nova, relógio do aquecimento, outro desafio, Comecei e desfazer, atividade própria com ficha da IA, celular |
+| `lab46.py` | Atlas 4 · IA de acompanhamento: ativar, perfil e esforço no pedido (quick/default/complex), ferramentas, contexto guardado, tela compartilhada (texto da aba e campos), avaliar outra aba, imagem anexada só onde há imagens, notas de progresso, ao lado do Secretário, desativar e reativar com a conversa, outra atividade com outro perfil, celular (uma janela de cada vez), modo exemplo |
 | `flows.py`, `edge.py`, `sjflows.py` | fluxos herdados do Atlas original |
 | `smoke.py 390 dark`, `holes.py 1024` | todas as páginas numa largura/tema; buracos entre cartões |
 

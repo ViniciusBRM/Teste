@@ -163,6 +163,9 @@ function secTools(live) {
     { name: "levantar_conflito", description: "Leva à pessoa um conflito ou ambiguidade entre prioridades ou áreas, com 2 a 4 opções. Ela decide; você não escolhe. Retorna {ok}.",
       inputSchema: { type: "object", properties: { titulo: { type: "string" }, contexto: { type: "string" }, opcoes: { type: "array", items: { type: "string" } } }, required: ["titulo", "opcoes"] },
       execute: inp => { const ops = (inp.opcoes || []).map(String).filter(Boolean).slice(0, 4); if (ops.length < 2) throw new Error("Dê pelo menos 2 opções."); live.conflitos.push({ id: uid(), titulo: String(inp.titulo).slice(0, 200), contexto: String(inp.contexto || "").slice(0, 400), ops, escolha: null }); note("levantar_conflito", trunc(inp.titulo, 60)); return { ok: true, status: "aguardando decisão" }; } },
+    { name: "abrir_guia", description: "Abre o Guia do Atlas ao lado da conversa, na seção de uma aba: o que preencher, o mínimo que já vale, o jeito rápido e, se houver, o plano de preenchimento da pessoa (quando e com que frequência). Use quando a pessoa pedir tutorial, guia, manual ou ajuda para preencher ou usar uma aba. Devolve o conteúdo da seção para você responder junto.",
+      inputSchema: { type: "object", properties: { aba: { type: "string", enum: Object.keys(GUIA), description: "a aba; vazio abre na aba atual" } } },
+      execute: inp => { const k = GUIA[inp?.aba] ? inp.aba : guAtual(); live.guia = k; note("Guia", k ? GUIA[k].t : "índice"); const g = GUIA[k]; return g ? { secao: g.t, preencher: g.o, minimo: g.min, rapido: g.rap, frequencia: g.freq, plano: guItensDe(k).map(i => ({ quando: i.quando, freq: i.freq, como: i.como })) } : { secoes: GUIA_ORD.map(x => GUIA[x].t) }; } },
     iadTool(note, () => live.ctx)];
 }
 function secMkProp(inp) {
@@ -202,12 +205,14 @@ function secFinish(text, cut) {
   D.conversa.push(live.user, { role: "assistant", content: (String(text || "").trim() || "(sem texto)") + (cut ? "\n\n_(resposta interrompida)_" : ""), at: Date.now(), uso: live.uso, acoes: live.acoes, conflitos: live.conflitos });
   if (D.conversa.length > 60) D.conversa = D.conversa.slice(-60);
   SEC.live = null; touch("secretario", { noUndo: true, noRender: true }); secPaint(); secSpeak(text);
+  if (live.guia != null) guAbrir(live.guia);   /* a IA pediu para abrir o guia: abre depois da resposta, para não esconder a conversa */
 }
 function secSpeak(text) { if (!secData().tts || !window.speechSynthesis) return; try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(String(text || "").replace(/[*_#`>\[\]]/g, "").slice(0, 900)); u.lang = pdLang(); speechSynthesis.speak(u); } catch {} }
 /* comandos que funcionam sem IA */
 const SEC_GO = [[/financ|dinheiro|gasto/, "fin.lanc"], [/tarefa/, "metas.tarefas"], [/rotina|agenda/, "rotina.dia"], [/painel/, "painel"], [/jardim/, "jornada.jardim"], [/bussola|exame/, "jornada.exame"], [/jornada/, "jornada.inicio"], [/saude/, "saude.checkin"], [/habito/, "hab.marcar"], [/casa|conta|document/, "casa"], [/idioma|ingles|italiano/, "idiomas"], [/carreira/, "carreira"], [/diario/, "diario"], [/hoje/, "hoje"], [/lazer/, "lazer.inicio"], [/pessoa|relac|famil/, "pessoas.lista"]];
 function secLocal(text) {
   const F = fold(text), D = secData(), say = (c) => { D.conversa.push({ role: "user", content: text, at: Date.now() }, { role: "assistant", local: true, content: c, at: Date.now() }); touch("secretario", { noUndo: true, noRender: true }); SEC.input = ""; secPaint(); secSpeak(c); return true; };
+  const gu = guLocal(F); if (gu) return say(gu);
   const mm = F.match(/\bmodo\s+(enfoque|foco|acao|reflexao|relaxo|relax|descanso)\b/);
   if (mm) { const m = { foco: "enfoque", relax: "relaxo", descanso: "relaxo" }[mm[1]] || mm[1]; D.modo = m; touch("secretario", { noUndo: true, noRender: true }); return say(`Modo **${SEC_MODOS[m].nome}**: ${SEC_MODOS[m].desc}`); }
   if (/^\s*(secretario,?\s*)?(me\s+)?(lembr|cria(r)?\s+(um\s+)?lembrete|lembrete)/.test(F)) { const l = secParseLembrete(text); if (!l) return say("Lembrar de quê? Ex.: “me lembre de ligar para o banco amanhã às 10”."); if (!l.quando) return say(`Para quando é “${l.texto}”? Diga, por exemplo, “hoje às 18h”, “amanhã às 9” ou “em 30 minutos”.`);
@@ -296,8 +301,8 @@ function secCfgHTML() {
 }
 function secHTML() {
   const D = secData(), pf = secPerfil(), n = secFilt(secItems()).filter(i => i.st !== "info").length, nl = D.lembretes.filter(l => !l.feito && l.quando && new Date(l.quando) <= new Date()).length, ai = !!SAMPLE && !AI_OFF;
-  const tabs = [["agora", "Agora", n], ["conversa", "Conversa", 0], ["lembretes", "Lembretes", nl]];
-  const body = SEC.cfg ? secCfgHTML() : SEC.tab === "conversa" ? secChatHTML() : SEC.tab === "lembretes" ? secLembHTML() : secAgoraHTML();
+  const tabs = [["agora", "Agora", n], ["conversa", "Conversa", 0], ["lembretes", "Lembretes", nl], ["guia", "Guia", 0]];
+  const body = SEC.cfg ? secCfgHTML() : SEC.tab === "conversa" ? secChatHTML() : SEC.tab === "lembretes" ? secLembHTML() : SEC.tab === "guia" ? guHTML() : secAgoraHTML();
   return `<header class="sech" data-secdrag="1"><span class="secav">${ic("brief")}</span><div class="sect"><b>Secretário da Vida</b><small>${esc(pf.nome)} · ${ai ? "IA pronta" : "sem IA: modo local"}</small></div>
       <button type="button" class="iconbtn${SEC.cfg ? " on" : ""}" data-act="seccfg" aria-label="Ajustar perfis" title="Perfis e ajustes">${ic("sliders")}</button><button type="button" class="iconbtn" data-act="secclose" aria-label="Fechar o Secretário">${ic("x")}</button></header>
     <div class="secmodes" role="group" aria-label="Modo">${Object.entries(SEC_MODOS).map(([k]) => { const p = secPerfil(k); return `<button type="button" class="seg" data-act="secmodo" data-m="${k}" aria-pressed="${D.modo === k}" title="${esc(p.desc)}">${ic(p.ico)}${esc(p.nome)}</button>`; }).join("")}</div>
@@ -327,7 +332,7 @@ function secPlace() {
   const p = secLS("pos") || {}, W = clamp(+p.w || 390, 300, innerWidth - 16), H = clamp(+p.h || 600, 340, innerHeight - 16), x = clamp(p.x ?? innerWidth - W - 20, 8, innerWidth - W - 8), y = clamp(p.y ?? innerHeight - H - 20, 8, innerHeight - H - 8);
   Object.assign(w.style, { left: x + "px", top: y + "px", width: W + "px", height: H + "px" });
 }
-function secToggle(on = !SEC.open) { SEC.open = on; secLS("open", on); if (on) { SEC.nudge = null; secPlace(); } secPaint(); if (on) setTimeout(() => $("#sec_in")?.focus({ preventScroll: true }), 30); }
+function secToggle(on = !SEC.open) { SEC.open = on; secLS("open", on); if (on && innerWidth <= 640 && typeof CO !== "undefined" && CO.open) { CO.open = false; coPaint(); }   /* no celular, uma janela de cada vez */ if (on) { SEC.nudge = null; secPlace(); } secPaint(); if (on) setTimeout(() => $("#sec_in")?.focus({ preventScroll: true }), 30); }
 function secAfterRender() { if (!$("#sec")) return; if (SEC.open && !SEC.live && document.activeElement?.closest?.("#sec") == null) secPaint(); else secFab(); }
 
 /* ---------------------------------------------------------------- voz */

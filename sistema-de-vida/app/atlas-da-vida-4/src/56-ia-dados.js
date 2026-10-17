@@ -14,7 +14,7 @@ const IAD_LBL = { orc: "Orçamento por categoria (teto mensal)", patr: "Patrimô
   filosofia: "Filosofia", psique: "Psicologia", ck: "Cockpit (perfil e projetos)", ckTar: "Cockpit · tarefas", ckRisk: "Cockpit · riscos", ckIss: "Cockpit · problemas",
   ckLog: "Cockpit · diário de bordo", ckDec: "Cockpit · decisões", ckMeet: "Cockpit · reuniões", ckBim: "Cockpit · tracker BIM", ckEl: "Cockpit · elaborati",
   ckLic: "Cockpit · lições", ckRel: "Cockpit · relatórios", nutri: "Nutri (perfil e plano)", nutriLog: "Alimentação (registros)", treino: "Personal (perfil e plano)",
-  treinoLog: "Treinos (registros)", corridas: "Corridas", rotinaModelos: "Modelos de rotina", areasCfg: "Áreas (ajustes)", saude: "Check-ins diários (saúde)" };
+  treinoLog: "Treinos (registros)", corridas: "Corridas", rotinaModelos: "Modelos de rotina", guia: "Plano de preenchimento do Atlas", inspira: "Inspiração (atividades e acompanhamento)", areasCfg: "Áreas (ajustes)", saude: "Check-ins diários (saúde)" };
 const IAD_AREA_OF = { lanc: "Finanças", orc: "Finanças", patr: "Finanças", saldoConta: "Finanças", projetos: "Finanças", fut: "Finanças", importacoes: "Finanças", assin: "Finanças",
   regras: "Finanças", vidaItens: "Finanças", contasCasa: "Casa & organização", docs: "Casa & organização", rotinas: "Casa & organização", compras: "Casa & organização",
   nutri: "Saúde física", nutriLog: "Saúde física", treino: "Saúde física", treinoLog: "Saúde física", corridas: "Saúde física", psique: "Saúde mental", estudo: "Aprendizado",
