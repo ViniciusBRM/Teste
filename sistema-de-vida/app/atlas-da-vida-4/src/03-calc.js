@@ -152,6 +152,10 @@ function calc() {
 }
 function calcAt(mk) { return memo("calc:" + mk, () => { const keep = REF; REF = mk; try { return calc(); } finally { REF = keep; } }); }
 function history(n) { const v = []; for (let k = n - 1; k >= 0; k--) v.push(calcAt(addMonth(REF, -k))); return v; }
+/* janela dos gráficos em que se toca num mês para analisá-lo: vai até o mês atual sempre que o mês analisado cabe nela, para que
+   dê para voltar ao presente pelo próprio gráfico; um mês mais antigo que a janela fica no começo dela (os seguintes à direita) */
+const fimJanela = n => { const hoje = mkey(TODAY), lim = addMonth(REF, n - 1); return REF >= hoje ? REF : lim < hoje ? lim : hoje; };
+function historyNav(n) { const fim = fimJanela(n), v = []; for (let k = n - 1; k >= 0; k--) v.push(calcAt(addMonth(fim, -k))); return v; }
 /* base de comparação escolhida no filtro: mês anterior, média de 3 meses ou mesmo mês do ano anterior */
 function cmpBase(get) {
   if (CMP === "ano") return get(calcAt(addMonth(REF, -12)));

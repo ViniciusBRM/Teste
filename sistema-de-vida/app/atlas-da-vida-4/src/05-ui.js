@@ -129,6 +129,9 @@ const REPORT_TABS = [["visao", "Visão geral"], ["fin.rel", "Finanças"], ["saud
 const PAGE_AREAS = { fin: ["Finanças"], saude: ["Saúde física", "Saúde mental"], hab: ["Saúde física", "Saúde mental"], metas: ["Carreira", "Casa & organização"], pessoas: ["Família", "Amor & parceria", "Amizades & social"], cresc: ["Carreira", "Aprendizado", "Lazer & criatividade"], casa: ["Casa & organização"] };
 let PAGE = "visao", SUB = null, NAVOPEN = false;
 const pageTitle = (p = PAGE) => p === "mentor" ? "Mentor" : NAV.flatMap(g => g[1]).find(x => x[0] === p)?.[1] || "Atlas";
+/* relatório olhando outro mês: uma faixa visível com o caminho de volta ao mês atual (além do “Hoje” do topo) */
+const refBar = () => { const hoje = mkey(TODAY), fecha = +TODAY.slice(8) <= 7 && REF === addMonth(hoje, -1);
+  return `<div class="refbar" role="status">${ic("cal")}<span>Analisando <b>${mlabel(REF)}</b>${fecha ? ", o mês que acabou de fechar (nos dias 1 a 7 os relatórios abrem nele)" : REF < hoje ? "" : ", um mês que ainda não chegou"}. ${REF < hoje ? `Os gráficos vão até ${mlabel(fimJanela(PER))}: toque em outro mês para trocar.` : ""}</span><button type="button" class="btn sm primary" data-act="mnow">Voltar para ${mlabel(hoje)}</button></div>`; };
 const isReport = () => PAGE === "visao" || PAGE === "cruz" || (SUBS[PAGE] && (SUB || SUBS[PAGE][0][0]) === "rel");
 function setHash(p, s) { const h = s ? `${p}.${s}` : p; if (location.hash.slice(1) !== h) location.hash = h; else route(); }
 function route() {

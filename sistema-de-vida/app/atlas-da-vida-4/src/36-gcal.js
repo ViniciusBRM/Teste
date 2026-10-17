@@ -3,6 +3,8 @@
    os blocos de estudo do plano de Idiomas. A primeira chamada pede a sua permissão no próprio Claude. */
 const GCAL = { st: "", msg: "", busy: false };
 const GC_SRV = "Google Calendar";
+/* eventos semanais que o Atlas cria para os lembretes levam esta marca na descrição: a sincronização não os traz como compromissos */
+const GC_LEMB = "atlas-lemb:";
 const gcInteg = () => { S.integ ||= {}; return (S.integ.gcal ||= {}); };
 const gcErr = e => ({ not_granted: "Você não liberou o Google Calendar para esta página.", needs_reauth: "O Google Calendar precisa ser reconectado nas configurações do Claude.", server_not_connected: "O Google Calendar não está conectado na sua conta Claude.", not_in_manifest: "Esta versão da página não tem acesso ao Google Calendar.", blocked_by_policy: "A sua organização bloqueou este conector.", cancelled: "Cancelado.", formato: e?.message }[e?.code] || `Não consegui falar com o Google Calendar (${e?.code || "erro"}).`);
 /* o conector pede a hora local sem fuso nem “Z” (o fuso vai à parte, em timeZone) */
@@ -24,7 +26,7 @@ async function gcSync(o = {}) {
       /* formato da resposta conferido só em simulação: aceita as variações comuns e, se não reconhecer nenhuma, para sem apagar nada */
       const pl = r?.payload ?? {}, lista = Array.isArray(pl) ? pl : pl.events ?? pl.items ?? pl.result?.events ?? pl.data?.events;
       if (!Array.isArray(lista)) throw { code: "formato", message: `O Google Agenda respondeu num formato que o Atlas não reconhece (${Object.keys(pl || {}).slice(0, 6).join(", ") || "vazio"}). Nada foi alterado.` };
-      for (const ev of lista) if (ev && ev.status !== "cancelled" && ev.id) evs.push(ev); tok = (Array.isArray(pl) ? "" : pl.nextPageToken || pl.next_page_token) || ""; if (!tok) break; }
+      for (const ev of lista) if (ev && ev.status !== "cancelled" && ev.id && !String(ev.description || "").includes(GC_LEMB)) evs.push(ev); tok = (Array.isArray(pl) ? "" : pl.nextPageToken || pl.next_page_token) || ""; if (!tok) break; }
     const keep = (S.eventos || []).filter(e => e.origem !== "gcal" || e.data < de || e.data > ate), novos = evs.map(ev => { const m = gcMap(ev); return { id: "gc_" + ev.id, uid: "gcal:" + ev.id, ...m, titulo: String(ev.summary || "(sem título)").slice(0, 200), local: String(ev.location || "").slice(0, 200), link: ev.htmlLink || "", origem: "gcal" }; }).filter(e => e.data);
     S.eventos = [...keep, ...novos]; const G = gcInteg(); G.on = true; G.last = Date.now(); G.n = novos.length;
     GCAL.st = "ok"; GCAL.msg = ""; touch("eventos", "integ", { label: "Google Calendar", noUndo: true }); if (!o.silent) toast(`${plural(novos.length, "compromisso", "compromissos")} do Google Calendar nos próximos 30 dias`);

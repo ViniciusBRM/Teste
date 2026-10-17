@@ -101,7 +101,7 @@ function secParseLembrete(txt) {
 }
 function secLembrar(l) { secData().lembretes.push({ id: uid(), texto: l.texto.slice(0, 200), quando: l.quando, feito: false, avisado: false, at: Date.now(), origem: l.origem || "você" }); touch("secretario", { label: "Lembrete criado" }); }
 function secTick() {
-  if (!LOADED) return; const L = secData().lembretes, now = new Date(), due = L.filter(l => !l.feito && !l.avisado && l.quando && new Date(l.quando) <= now);
+  if (!LOADED) return; if (lsTick()) return; const L = secData().lembretes, now = new Date(), due = L.filter(l => !l.feito && !l.avisado && l.quando && new Date(l.quando) <= now);
   if (due.length) { for (const l of due) l.avisado = true; touch("secretario", { noUndo: true, noRender: true }); SEC.nudge = { txt: due.length === 1 ? `Lembrete: ${due[0].texto}` : `${due.length} lembretes agora`, crit: true, at: Date.now() }; SEC.tab = "lembretes"; SEC.open = true; secLS("open", true); toast(SEC.nudge.txt); secPaint(); return; }
   /* proatividade: avisa uma vez por dia o que é novo, conforme o perfil */
   const pf = secPerfil(); if (SEC.open || pf.pro === "baixa" || pf.pro === "minima") { secFab(); return; }
@@ -265,6 +265,7 @@ function secLembHTML() {
   const L = secData().lembretes.filter(l => !l.feito).sort((a, b) => (a.quando || "9").localeCompare(b.quando || "9")), F = secData().lembretes.filter(l => l.feito).slice(-5).reverse(), now = new Date();
   return `<div class="secnew"><input type="text" id="sec_lem" placeholder="Ligar para o banco amanhã às 10" aria-label="Novo lembrete"><button type="button" class="btn sm primary" data-act="seclemadd">${ic("plus")}Lembrar</button></div><small class="muted">Aviso dentro do Atlas na hora marcada, com ele aberto.</small>
     ${L.length ? L.map(l => { const past = l.quando && new Date(l.quando) <= now; return `<div class="secit ${past ? "st-crit" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(l.texto)}</b><small>${l.quando ? `${l.quando.slice(0, 10) === TODAY ? "hoje" : fmtDL(l.quando.slice(0, 10))} às ${l.quando.slice(11, 16)}` : "sem hora"}${l.origem && l.origem !== "você" ? ` · ${esc(l.origem)}` : ""}</small><div class="secacts"><button type="button" class="btn sm" data-secdo="lemok|${l.id}">${ic("check")}Feito</button><button type="button" class="btn sm ghost" data-secdo="lemdel|${l.id}" aria-label="Apagar">${ic("trash")}</button></div></div></div>`; }).join("") : `<div class="secempty">${ic("clock")}Nenhum lembrete pendente.</div>`}
+    ${lsSecHTML()}
     ${F.length ? `<div class="secsec">Feitos</div>${F.map(l => `<div class="secit done"><i class="secdot"></i><div class="secb"><s>${esc(l.texto)}</s></div></div>`).join("")}` : ""}`;
 }
 function secPropHTML(mi, p) {

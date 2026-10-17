@@ -4,7 +4,7 @@
    (o antigo feitos{dia:1} continua valendo como “feito”). Modelos: S.rotinaModelos. A Agenda e o Google aparecem tracejados, só leitura.
    Arrastar no vazio cria; arrastar um bloco move (também entre dias na semana); a alça de baixo estica. Um bloco repetido movido vira
    exceção naquele dia e uma cópia avulsa no novo horário, como nas agendas. */
-const RT = { d: TODAY, drag: null, mv: null, just: 0, q: "", pick: false, scrolled: "" };
+const RT = { d: TODAY, drag: null, mv: null, just: 0, q: "", pick: false, scrolled: "", pre: "" };
 const RT_Z = { compacto: 18, normal: 28, grande: 40 };
 const rtSH = () => RT_Z[S.cfg.rtZoom] || RT_Z.normal;
 const RT_CATS = [["Trabalho", "var(--a-car)"], ["Estudo", "var(--a-apr)"], ["Saúde & treino", "var(--a-fis)"], ["Casa", "var(--a-fam)"], ["Pessoas", "var(--a-ami)"], ["Lazer", "var(--a-laz)"], ["Descanso", "var(--a-men)"], ["Espiritual", "var(--jp-med)"], ["Deslocamento", "var(--muted)"], ["Outro", "var(--ink-2)"]];
@@ -182,10 +182,11 @@ function rtInsights(days) {
   out.push(panel(`${ic("checksq")}Cumprimento · 4 semanas <small>${AD.pct == null ? "sem histórico" : pct(AD.pct) + " do planejado"}</small>`, AD.pct == null ? `<div class="empty">Marque os blocos como feito, parcial ou pulado: aqui aparece quanto da rotina vira realidade, por categoria.</div>`
     : `${hbars(Object.entries(AD.per).filter(([, [, m]]) => m).sort((p, q) => q[1][1] - p[1][1]).map(([c, [v2, m]]) => ({ l: c, v: v2 / m, color: rtCor(c) })), { fmt: pct, max: 1 })}<div class="rtwks">${wks.map(w => { const [v2, m] = AD.wk[w]; return `<span title="Semana de ${fmtD(w)}: ${pct(v2 / m)}"><i style="height:${Math.max(4, v2 / m * 40)}px"></i><small>${fmtD(w)}</small></span>`; }).join("")}</div>`));
   /* ações */
-  const mods = [...RT_MOD0, ...(S.rotinaModelos || [])];
+  const mods = rtModsPre();
   out.push(panel(`${ic("list")}Modelos e atalhos`, `<div class="form f1"><label>Aplicar um modelo ${v === "dia" ? "neste dia" : "nesta semana"}<div class="row"><select id="rt_mod">${mods.map(m => `<option value="${m.id}"${m.id === RT.mod ? " selected" : ""}>${esc(m.nome)}${m.semana ? ` · semana, ${m.semana.length} blocos` : ""}</option>`).join("")}</select><button type="button" class="btn sm" data-act="rtmod">Aplicar</button></div></label></div>
     <div class="row wrap">${v === "dia" ? `<button type="button" class="btn sm" data-act="rtcopy">${ic("copy")}Copiar o dia…</button>` : `<button type="button" class="btn sm" data-act="rtsavemod">${ic("plus")}Salvar a semana como modelo</button><button type="button" class="btn sm" data-act="rtcopyw">${ic("copy")}Copiar para a próxima semana</button>`}</div>
     <details class="futd"><summary>Ajustes da grade</summary><div class="form f3"><label>Acordo<input type="time" step="1800" data-rtcfg="rtAcordar" value="${esc(S.cfg.rtAcordar || "06:30")}"></label><label>Durmo<input type="time" step="1800" data-rtcfg="rtDormir" value="${esc(S.cfg.rtDormir || "23:00")}"></label><label>Tamanho<select data-rtcfg="rtZoom">${Object.keys(RT_Z).map(k => `<option${(S.cfg.rtZoom || "normal") === k ? " selected" : ""}>${k}</option>`).join("")}</select></label></div><p class="muted small">Teclado: ← → período · T hoje · D S M vistas · N novo bloco.</p></details>`));
+  out.push(lsPanel());
   return out.join("");
 }
 /* dias do período na tela: o dia, a semana (seg–dom) ou os dias do mês */
@@ -200,7 +201,7 @@ function pRotina() {
       <div class="rtnav"><button type="button" class="iconbtn" data-rtnav="-1" aria-label="${v === "dia" ? "Dia anterior" : v === "semana" ? "Semana anterior" : "Mês anterior"}">‹</button><button type="button" class="btn sm" data-rtnav="0">Hoje</button><button type="button" class="iconbtn" data-rtnav="1" aria-label="${v === "dia" ? "Próximo dia" : v === "semana" ? "Próxima semana" : "Próximo mês"}">›</button></div>
       <div class="rtper"><button type="button" class="rtpt" data-act="rtpick" aria-expanded="${RT.pick}"><b>${esc(P.t)}</b><small>${esc(P.y)}${P.s ? ` · <em>${P.s}</em>` : ""}</small>${ic("cal")}</button>${RT.pick ? rtMini() : ""}</div>
       <div class="seg-g rtviews" role="group" aria-label="Visualização">${[["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]].map(([k, l]) => `<button type="button" class="seg" data-rtv="${k}" aria-pressed="${v === k}">${l}</button>`).join("")}</div>
-      <div class="row rtbtns"><button type="button" class="btn sm ghost danger rtclr" data-act="rtclear" title="Tira os blocos da rotina ${RT_LIMPAR[v][1]}. Pede confirmação antes." aria-label="${RT_LIMPAR[v][0]}">${ic("trash")}<span>${RT_LIMPAR[v][0]}</span></button><button type="button" class="btn sm" data-act="rtcap" title="Conte o dia por voz ou texto: cada atividade vai para a faixa de horário dela">${ic("mic")}Capturar o dia</button><button type="button" class="btn sm primary" data-act="rtnovo">${ic("plus")}Novo bloco</button></div>
+      <div class="row rtbtns"><button type="button" class="btn sm rtpre" data-act="rtpre" title="Preenche ${RT_LIMPAR[v][1]} com um modelo pronto (Básica, Intermediária, Avançada ou outro salvo)">${ic("bolt")}<span>Preencher</span></button><button type="button" class="btn sm ghost danger rtclr" data-act="rtclear" title="Tira os blocos da rotina ${RT_LIMPAR[v][1]}. Pede confirmação antes." aria-label="${RT_LIMPAR[v][0]}">${ic("trash")}<span>${RT_LIMPAR[v][0]}</span></button><button type="button" class="btn sm" data-act="rtcap" title="Conte o dia por voz ou texto: cada atividade vai para a faixa de horário dela">${ic("mic")}Capturar o dia</button><button type="button" class="btn sm primary" data-act="rtnovo">${ic("plus")}Novo bloco</button></div>
     </div>
     <div class="rtq"><span>${ic("plus")}</span><input type="text" id="rt_q" value="${esc(RT.q)}" placeholder="Criar rápido: inglês amanhã 20h 30min · academia seg qua sex 18:30–19:30 · reunião 14h–15h30" aria-label="Criar bloco por texto" autocomplete="off"><button type="button" class="btn sm primary" data-act="rtqadd"${qp?.ok ? "" : " disabled"}>Criar</button>
       <div class="rtqp${qp ? (qp.ok ? " ok" : " bad") : ""}" id="rt_qp">${qp ? rtQpHTML(qp) : ""}</div></div>
@@ -256,11 +257,41 @@ const RT_MOD0 = [
   { id: "m_foco", nome: "Foco profundo (estudo ou projeto)", fixo: true, b: [["08:00", "09:30", "Bloco de foco 1", "Estudo"], ["09:30", "10:00", "Pausa com movimento", "Descanso"], ["10:00", "11:30", "Bloco de foco 2", "Estudo"], ["11:30", "12:00", "Revisar e anotar", "Estudo"], ["14:00", "15:30", "Bloco de foco 3", "Estudo"]] },
   { id: "m_fds", nome: "Fim de semana leve", fixo: true, b: [["08:30", "09:30", "Café sem pressa", "Descanso"], ["10:00", "11:30", "Mercado e casa", "Casa"], ["12:00", "14:00", "Almoço com alguém", "Pessoas"], ["15:00", "17:00", "Passeio ou programa ao ar livre", "Lazer"], ["18:00", "19:00", "Ligar para a família no Brasil", "Pessoas"], ["21:00", "22:00", "Filme ou série", "Lazer"]] },
 ];
-function rtAplicar(mod, dias) {
+function rtAplicar0(mod, dias) {
   let n = 0, pulados = 0;
   for (const d of dias) { const dow = parse(d).getDay(), list = mod.semana ? mod.semana.filter(x => x[0] === dow).map(x => x.slice(1)) : mod.b, ex = rtDia(d);
     for (const [ini, fim, titulo, cat, cor, tx] of list) { const a = hm2min(ini), z = hm2min(fim); if ([...ex.bs, ...ex.A.timed].some(x => x.a != null && x.a < z && a < x.z)) { pulados++; continue; } (S.rotina ||= []).push({ id: uid(), data: d, ini, fim, titulo, cat, rep: "", exc: [], st: {}, notas: "", ...(rtHex(cor) ? { cor, ...(rtHex(tx) ? { tx } : {}) } : {}) }); n++; } }
+  return [n, pulados];
+}
+function rtAplicar(mod, dias) {
+  const [n, pulados] = rtAplicar0(mod, dias);
   touch("rotina", { label: `Modelo: ${mod.nome}` }); undoToast(`${plural(n, "bloco aplicado", "blocos aplicados")}${pulados ? ` · ${pulados} pulado(s) por conflito` : ""}`);
+}
+/* ---------------------------------------------------------------- preencher rápido com um modelo de nível
+   Modelos com “nivel” (basica, intermediaria, avancada) aparecem primeiro, com as horas da semana por categoria; os outros modelos
+   salvos vêm depois. “Substituir” limpa o período antes (como o Limpar, sem mexer em tarefas, agenda e aniversários) e aplica:
+   tudo num passo só de desfazer. Sem substituir, os horários já ocupados ficam e o modelo preenche só o que está livre. */
+const RT_NIVEIS = ["basica", "intermediaria", "avancada"];
+const rtModsPre = () => { const M = S.rotinaModelos || [], niv = RT_NIVEIS.flatMap(n => M.filter(m => m.nivel === n)); return [...niv, ...M.filter(m => !niv.includes(m)), ...RT_MOD0]; };
+const rtHorasCat = m => { const H = {}; for (const x of m.semana || []) { const c = x[4] || "Outro"; H[c] = (H[c] || 0) + (hm2min(x[2]) - hm2min(x[1])) / 60; } return H; };
+function rtPreDlg() {
+  const v = rtView(), days = rtDias(), M = rtModsPre(), X = rtAlvoLimpar(days), tem = X.av.length + X.rep.length, P = rtPer(), alvo = v === "mes" ? `${P.t} de ${P.y}` : `${P.t} · ${P.y}`;
+  const sel = M.find(m => m.id === RT.pre) || M.find(m => m.nivel) || M[0], dlg = $("#dlg");
+  const resumo = m => { if (!m.semana) return `${plural(m.b.length, "bloco", "blocos")} por dia`; const H = rtHorasCat(m), ks = ["Trabalho", "Estudo", "Lazer", "Pessoas", "Saúde & treino", "Espiritual"].filter(k => H[k]);
+    return ks.map(k => `${k} ${num(H[k], H[k] % 1 ? 1 : 0)} h`).join(" · ") + (H.Estudo ? "" : " · sem estudo"); };
+  dlg.innerHTML = `<form method="dialog" id="rtpref" class="rtpref"><h3>Preencher ${v === "dia" ? "o dia" : v === "semana" ? "a semana" : "o mês"}</h3><p class="muted small">${esc(alvo)}</p>
+    <div class="rtprl" role="radiogroup" aria-label="Modelo">${M.map(m => `<label class="rtpro${m.nivel ? " nv-" + m.nivel : ""}"><input type="radio" name="rtpre" value="${esc(m.id)}"${m === sel ? " checked" : ""}><span><b>${esc(m.nome)}</b>${m.desc ? `<small>${esc(m.desc)}</small>` : ""}<small class="muted">${esc(resumo(m))}${m.semana ? " · por semana" : ""}</small></span></label>`).join("")}</div>
+    ${tem ? `<label class="chk"><input type="checkbox" id="rt_pres" checked><span>Substituir os ${plural(tem, "bloco", "blocos")} que já estão ${RT_LIMPAR[v][1]} (tarefas, agenda e aniversários ficam). Sem marcar, o modelo só ocupa os horários livres.</span></label>` : `<p class="muted small">O período está vazio: o modelo entra inteiro.</p>`}
+    <p class="muted small">Dá para desfazer logo depois, no aviso que aparece ou com Ctrl+Z.</p>
+    <div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="rtprx">Cancelar</button><button class="btn primary" data-rtpreok="1">${ic("bolt")}Preencher</button></div></div></form>`;
+  dlg.showModal(); dlg.querySelector("input[name=rtpre]:checked")?.focus();
+  $("#rtprx").onclick = () => dlg.close();
+  $("#rtpref").onsubmit = e => { e.preventDefault(); const id = dlg.querySelector("input[name=rtpre]:checked")?.value, m = M.find(x => x.id === id); if (!m) return; RT.pre = id; const subst = !!$("#rt_pres")?.checked; dlg.close(); rtPreencher(m, days, subst); };
+}
+function rtPreencher(mod, days, subst) {
+  const tira = subst ? rtLimpar0(days, false) : null, [n, pulados] = rtAplicar0(mod, days);
+  touch("rotina", { label: `Preencher: ${mod.nome}` });
+  undoToast(`${mod.nome}: ${plural(n, "bloco", "blocos")}${tira?.nb ? `, no lugar de ${tira.nb}` : ""}${pulados ? ` · ${pulados} pulado(s) por conflito` : ""}`);
 }
 function rtCopiar(de, para) {
   const ex = rtDia(para); let n = 0, p = 0;
@@ -299,13 +330,16 @@ function rtLimparDlg() {
   $("#rtclx").onclick = () => dlg.close();
   $("#rtclf").onsubmit = e => { e.preventDefault(); const comT = !!$("#rt_clt")?.checked; dlg.close(); rtLimpar(days, comT); };
 }
-function rtLimpar(days, comT) {
-  const v = rtView(), X = rtAlvoLimpar(days), D = new Set(days), exc = {};
+function rtLimpar0(days, comT) {
+  const X = rtAlvoLimpar(days), D = new Set(days), exc = {};
   for (const [id, d] of X.rep) (exc[id] ||= []).push(d);
   for (const b of S.rotina || []) if (exc[b.id]) b.exc = [...new Set([...(b.exc || []), ...exc[b.id]])];
   S.rotina = (S.rotina || []).filter(b => b.rep || !D.has(b.data));
   const nt = comT ? X.tar.size : 0; if (nt) S.tarefas = S.tarefas.filter(t => !X.tar.has(t.id));
-  const nome = { dia: "Dia limpo", semana: "Semana limpa", mes: "Mês limpo" }[v], nb = X.av.length + X.rep.length;
+  return { X, nt, nb: X.av.length + X.rep.length };
+}
+function rtLimpar(days, comT) {
+  const v = rtView(), { X, nt, nb } = rtLimpar0(days, comT), nome = { dia: "Dia limpo", semana: "Semana limpa", mes: "Mês limpo" }[v];
   touch("rotina", ...(nt ? ["tarefas"] : []), { label: nome });
   undoToast(`${nome}: ${[nb && plural(nb, "bloco", "blocos"), nt && plural(nt, "tarefa", "tarefas")].filter(Boolean).join(" e ")} fora${X.rep.length ? " (as repetições continuam nos outros dias)" : ""}`);
 }
@@ -315,6 +349,7 @@ function rtCard(id, day) {
   const b = (S.rotina || []).find(x => x.id === id); if (!b) return; const st = rtSt(b, day), dlg = $("#dlg");
   dlg.innerHTML = `<form method="dialog" class="rtcard" style="--c:${rtBC(b)}"><div class="rtch"><span class="rtcc"></span><div><h3>${esc(b.titulo)}</h3><p class="muted small">${fmtDL(day)} · ${b.ini}–${b.fim} · ${durTxt(hm2min(b.fim) - hm2min(b.ini))}<br>${esc(b.cat)}${b.rep ? ` · ${REP_TXT[b.rep]}` : ""}</p>${b.notas ? `<p>${esc(b.notas)}</p>` : ""}</div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>
     <div class="flbl">Como foi${day > TODAY ? " (ainda não aconteceu)" : ""}</div><div class="seg-g rtsts">${["feito", "parcial", "pulado"].map(s => `<button type="button" class="seg" data-rtst="${b.id}|${day}|${s}" aria-pressed="${st === s}">${ST_TXT[s]}</button>`).join("")}</div>
+    <div class="lsbox">${lsCartaoHTML(b, day)}</div>
     <div class="row wrap rtca"><button type="button" class="btn sm" data-rtedit="${b.id}|${day}">${ic("edit")}Editar</button><button type="button" class="btn sm" data-rtdup="${b.id}|${day}">${ic("copy")}Duplicar</button><button type="button" class="btn sm ghost" data-rtdel="${b.id}|${day}">${ic("trash")}${b.rep ? "Excluir neste dia" : "Excluir"}</button>${b.rep ? `<button type="button" class="btn sm ghost" data-rtdelall="${b.id}">Excluir a série</button>` : ""}</div></form>`;
   if (!dlg.open) dlg.showModal();
 }
@@ -394,6 +429,7 @@ function rtClick(t) {
   if (ds.act === "rtcopy") { const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="rtcpf"><h3>Copiar ${fmtDL(RT.d)}</h3><div class="form"><label>Para o dia<input type="date" id="rt_cpd" value="${addDays(RT.d, 1)}"></label></div><p class="muted small">Copia os blocos deste dia como blocos avulsos. Horários que já têm algo são pulados.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="rtcpx">Cancelar</button><button class="btn primary">Copiar</button></div></div></form>`; d.showModal(); $("#rtcpx").onclick = () => d.close();
     $("#rtcpf").onsubmit = e => { e.preventDefault(); const para = $("#rt_cpd").value; if (!para) return; const [n, p] = rtCopiar(RT.d, para); d.close(); touch("rotina", { label: "Dia copiado" }); undoToast(`${plural(n, "bloco copiado", "blocos copiados")} para ${fmtD(para)}${p ? ` · ${p} pulado(s)` : ""}`); }; return true; }
   if (ds.act === "rtclear") { rtLimparDlg(); return true; }
+  if (ds.act === "rtpre") { rtPreDlg(); return true; }
   return false;
 }
 function rtInput(t) { if (t.id === "rt_q") { RT.q = t.value; const q = t.value.trim() ? rtParse(t.value) : null, p = $("#rt_qp"), b = $('[data-act="rtqadd"]'); if (p) { p.className = "rtqp" + (q ? (q.ok ? " ok" : " bad") : ""); p.innerHTML = q ? rtQpHTML(q) : ""; } if (b) b.disabled = !q?.ok; return true; } return false; }

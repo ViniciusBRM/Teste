@@ -1,28 +1,67 @@
 /* ================================================================ Hoje: resumo do momento
-   Clima (Open-Meteo) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network via rss2json),
+   Clima (MET Norway, gravado no Atlas por uma tarefa agendada) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network),
    uma frase escolhida pelo horário e pelo que o dia está pedindo, e ideias para sair da rotina filtradas por clima, energia, tempo e dinheiro.
-   Sem internet nesta visualização, o clima vira pergunta e as notícias viram links. As respostas ficam em S.hojeCtx[dia]. */
+   Sem internet nesta visualização, clima, notícias e câmbio vêm do doc feed/hoje; sem ele, as notícias viram links. As respostas ficam em S.hojeCtx[dia]. */
 const HJ = { wx: null, wxSt: "", news: null, newsSt: "", skip: new Set(), fr: 0 };
 const hctx = () => (S.hojeCtx[TODAY] ||= {});
 const periodo = () => { const h = new Date().getHours(); return h < 12 ? "manha" : h < 18 ? "tarde" : "noite"; };
 /* a página pode não ter acesso à internet: cada busca desiste em 7 s */
 async function fetchT(u, ms = 7000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { return await fetch(u, { signal: c.signal }); } finally { clearTimeout(t); } }
-/* feed do dia: notícias e clima gravados no banco do Atlas por uma rotina externa (doc compartilhado feed/hoje); vale quando a página não alcança a internet */
-let FEED = null, FEED_ST = "";
-async function hjFeed() {
-  if (FEED_ST || (!DBH && !LOADED)) return; FEED_ST = "load";
-  try { const d = DBH ? await DBH.doc("feed/hoje").get() : null, v = d?.exists ? JSON.parse(JSON.stringify(d.data())) : null; FEED = v && v.dia ? v : null; } catch { FEED = null; }
-  FEED_ST = "ok"; if (PAGE === "hoje" && FEED) render();
+/* feed do dia (doc compartilhado feed/hoje): uma tarefa agendada grava às 6h e às 13h (hora de Roma) a previsão hora a hora da
+   MET Norway para a cidade escolhida, as notícias boas e o câmbio do BCE. A página não alcança a internet: lê o doc, escuta as
+   mudanças (a atualização entra sem recarregar) e escolhe nas horas gravadas a hora de agora, no fuso da cidade. */
+let FEED = null, FEED_ST = "", FEED_P = null;
+const FEED_HORAS = "6h e às 13h (hora de Roma)";
+function hjFeed() {
+  if (FEED_P) return FEED_P;
+  if (!DBH) { if (LOADED) { FEED_ST = "ok"; FEED_P = Promise.resolve(); } return Promise.resolve(); }
+  FEED_ST = "load";
+  return FEED_P = new Promise(res => {
+    const pega = d => { let v = null; try { v = d?.exists ? JSON.parse(JSON.stringify(d.data())) : null; } catch {} v = v && v.dia ? v : null;
+      const mudou = (v?.at || 0) !== (FEED?.at || 0) || (v?.erroAt || 0) !== (FEED?.erroAt || 0) || FEED_ST !== "ok"; FEED = v; FEED_ST = "ok"; res(); if (mudou && PAGE === "hoje") render(); };
+    const uma = () => DBH.doc("feed/hoje").get().then(pega, () => { FEED_ST = "ok"; res(); });
+    try { DBH.doc("feed/hoje").onSnapshot(pega, () => uma()); } catch { uma(); }
+    setTimeout(() => { if (FEED_ST === "load") { FEED_ST = "ok"; res(); if (PAGE === "hoje") render(); } }, 9000);
+  });
 }
 const feedFresco = () => FEED && diff(TODAY, FEED.dia) <= 1;
 const PER_TXT = { manha: "manhã", tarde: "tarde", noite: "noite" };
-const cidade = () => S.cfg.cidade?.lat ? S.cfg.cidade : { nome: "Turim", lat: 45.0705, lon: 7.6868 };
+const cidade = () => S.cfg.cidade?.nome ? S.cfg.cidade : { nome: "Turim", lat: 45.0705, lon: 7.6868 };
 const WMO = c => c === 0 ? ["Céu limpo", "sun"] : c <= 2 ? ["Poucas nuvens", "sun"] : c === 3 ? ["Nublado", "wave"] : c <= 48 ? ["Neblina", "wave"] : c <= 57 ? ["Garoa", "wave"] : c <= 67 ? ["Chuva", "wave"] : c <= 77 ? ["Neve", "star"] : c <= 82 ? ["Pancadas de chuva", "wave"] : c <= 86 ? ["Neve", "star"] : ["Temporal", "bolt"];
+const normNome = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+/* dia e hora de um instante no fuso da cidade (o aparelho pode estar em outro fuso) */
+const FUSO_FMT = {};
+function diaHoraEm(ms, tz) {
+  try { const f = FUSO_FMT[tz] ||= new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }), p = {};
+    for (const x of f.formatToParts(ms)) p[x.type] = x.value; return [`${p.year}-${p.month}-${p.day}`, +p.hour % 24]; }
+  catch { const d = new Date(ms); return [`${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, d.getHours()]; }
+}
+/* o feed vale para a cidade escolhida: pelas coordenadas, ou pelo nome quando a cidade foi digitada fora da lista */
+function feedDaCidade() {
+  const C = FEED?.clima, cid = cidade(); if (!C?.horas?.length) return null;
+  return (cid.lat != null && C.lat != null ? Math.abs(C.lat - cid.lat) < .2 && Math.abs(C.lon - cid.lon) < .2 : normNome(C.cidade) === normNome(cid.nome)) ? C : null;
+}
+/* agora = a hora gravada que contém este instante; mínima e máxima = horas de hoje; chuva = horas com chuva daqui até as 22 h */
+function feedClima(now = Date.now()) {
+  const C = feedDaCidade(); if (!C) return null;
+  const tz = C.fuso || "Europe/Rome", H = C.horas.map(x => ({ ...x, ms: Date.parse(x.h) })).filter(x => isFinite(x.ms) && isNum(x.t)).sort((a, b) => a.ms - b.ms);
+  if (!H.length) return null;
+  const cur = H.find(x => x.ms <= now && now < x.ms + 3600e3) || H.reduce((b, x) => Math.abs(x.ms + 1800e3 - now) < Math.abs(b.ms + 1800e3 - now) ? x : b);
+  if (Math.abs(cur.ms + 1800e3 - now) > 2 * 3600e3) return null;   /* as horas gravadas não cobrem agora */
+  const hoje = diaHoraEm(now, tz)[0], dia0 = H.filter(x => diaHoraEm(x.ms, tz)[0] === hoje), dia = dia0.length ? dia0 : [cur];
+  const vem = dia.filter(x => x.ms + 3600e3 > now), claro = vem.filter(x => { const h = diaHoraEm(x.ms, tz)[1]; return h >= 7 && h <= 22; }), base = claro.length ? claro : vem.length ? vem : [cur];
+  const chov = base.filter(x => (+x.mm || 0) >= .1 || (x.code || 0) >= 51), mm = Math.round(base.reduce((a, x) => a + (+x.mm || 0), 0) * 10) / 10, codeD = Math.max(...base.map(x => x.code || 0));
+  /* “chuva” do feed não é probabilidade: é a escala de 0 a 100 que as regras de roupa e de atividade usam (0 seco, 40 pouca, 70 bastante) */
+  return { fonte: "feed", t: cur.t, sens: cur.sens ?? cur.t, max: Math.max(...dia.map(x => x.t)), min: Math.min(...dia.map(x => x.t)), chuva: !chov.length ? 0 : mm >= 2 || chov.length >= 3 ? 70 : 40, hChuva: chov.length, hrsChuva: chov.map(x => diaHoraEm(x.ms, tz)[1]), mm,
+    uv: Math.max(0, ...dia.map(x => +x.uv || 0)), vento: cur.vento || 0, txt: WMO(cur.code ?? 3)[0], txtD: codeD >= 51 && codeD !== cur.code ? WMO(codeD)[0].toLowerCase() : "", ico: WMO(cur.code ?? 3)[1], code: Math.max(cur.code ?? 0, codeD),
+    h: cur.h, tz, prox: H.filter(x => x.ms > cur.ms).slice(0, 6).map(x => ({ ...x, hora: diaHoraEm(x.ms, tz)[1] })) };
+}
+/* busca direta (Open-Meteo): só serve quando o Atlas é aberto fora do claude.ai, onde a página tem internet, e o feed não cobre agora */
 async function hjWeather(force) {
   if (HJ.wxSt === "load" || (!force && (HJ.wx?.dia === TODAY || HJ.wxSt === "err"))) return;
-  if (!extOk("clima")) { HJ.wxSt = "err"; return; }   /* desligado em Privacidade: o clima volta a ser marcado por você */
-  try { const v = JSON.parse(localStorage.getItem("atlas_wx") || "null"); if (!force && v?.dia === TODAY && v.at > Date.now() - 3 * 3600e3 && v.lat === cidade().lat) { HJ.wx = v; return; } } catch {}
-  HJ.wxSt = "load"; const C = cidade();
+  const C = cidade(); if (!extOk("clima") || C.lat == null) { HJ.wxSt = "err"; return; }
+  try { const v = JSON.parse(localStorage.getItem("atlas_wx") || "null"); if (!force && v?.dia === TODAY && v.at > Date.now() - 3 * 3600e3 && v.lat === C.lat) { HJ.wx = v; return; } } catch {}
+  HJ.wxSt = "load";
   try { const r = await fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${C.lat}&longitude=${C.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=1`);
     if (!r.ok) throw 0; const j = await r.json(); if (!j?.current || !j?.daily) throw 0;
     HJ.wx = { dia: TODAY, at: Date.now(), lat: C.lat, t: j.current.temperature_2m, sens: j.current.apparent_temperature, code: j.current.weather_code, vento: j.current.wind_speed_10m, max: j.daily.temperature_2m_max[0], min: j.daily.temperature_2m_min[0], chuva: j.daily.precipitation_probability_max[0], codeD: j.daily.weather_code[0], uv: j.daily.uv_index_max[0] };
@@ -30,6 +69,8 @@ async function hjWeather(force) {
   } catch { HJ.wxSt = "err"; }
   if (PAGE === "hoje") render();
 }
+/* a hora vira e o “agora” muda junto: o Hoje redesenha na virada da hora da previsão, sem atrapalhar quem está digitando */
+setInterval(() => { if (PAGE !== "hoje" || document.hidden || !FEED) return; if ((feedClima()?.h || "") === HJ.wxK) return; const a = document.activeElement; if (a?.matches?.("input,textarea,select,[contenteditable]") || $("dialog[open]")) return; render(); }, 60e3);
 async function hjNews() {
   if (HJ.newsSt) return; HJ.newsSt = "load";
   if (!extOk("noticias")) { HJ.news = null; HJ.newsSt = "err"; HJ.newsSrc = ""; return; }
@@ -43,19 +84,23 @@ async function hjNews() {
   if (pick.length) try { localStorage.setItem("atlas_news", JSON.stringify({ dia: TODAY, items: pick })); } catch {}
   if (PAGE === "hoje") render();
 }
-/* o tempo: da internet, ou o que a pessoa marcou */
+/* o tempo: do feed gravado no Atlas; fora do claude.ai, da internet. Não há mais tempo marcado à mão. */
 function hjClima() {
-  const c = hctx(), w = HJ.wx?.dia === TODAY ? HJ.wx : feedFresco() && FEED.clima && (FEED.clima.lat == null || Math.abs(FEED.clima.lat - cidade().lat) < .2) ? { ...FEED.clima, feed: true } : null;
-  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: w.feed ? "feed" : "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
-  if (c.clima) { const base = { sol: [22, 10, "Sol"], nublado: [17, 30, "Nublado"], chuva: [13, 80, "Chuva"], frio: [3, 20, "Frio"], calor: [32, 10, "Calor"] }[c.clima] || [18, 20, "–"], t = isNum(c.temp) && c.temp !== "" ? +c.temp : base[0];
-    return { fonte: "mao", t, sens: t, max: t + 3, min: t - 4, chuva: base[1], uv: c.clima === "sol" || c.clima === "calor" ? 6 : 2, vento: 0, txt: base[2], ico: c.clima === "chuva" ? "wave" : "sun", code: c.clima === "chuva" ? 63 : 1 }; }
+  const f = feedClima(); if (f) return f;
+  const w = HJ.wx?.dia === TODAY && HJ.wx.lat === cidade().lat ? HJ.wx : null;
+  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
   return null;
 }
+/* chuva em palavras: o feed diz em quantas horas chove até a noite; a busca direta dá a probabilidade */
+const listaH = hs => { const t = hs.map(h => `${h} h`); return t.length > 1 ? `${t.slice(0, -1).join(", ")} e ${t.at(-1)}` : t[0] || ""; };
+const quandoChove = W => W.hChuva <= 4 ? `às ${listaH(W.hrsChuva)}` : `em ${W.hChuva} horas até a noite`;
+const chuvaTxt = W => W.fonte === "feed" ? (W.hChuva ? `chuva ${quandoChove(W)} (${num(W.mm, 1)} mm)` : "sem chuva até a noite") : `chuva ${W.chuva}%`;
 function hjRoupa(W) {
   const s = W.sens ?? W.t, out = [];
   out.push(s < 3 ? "Casaco pesado, cachecol e luvas; camada térmica por baixo." : s < 10 ? "Casaco de inverno ou jaqueta forrada com suéter." : s < 16 ? "Jaqueta leve ou suéter; sapato fechado." : s < 22 ? "Manga longa leve, ou camiseta com um casaco na mochila." : s < 28 ? "Roupa leve; um casaco fino só se for voltar tarde." : "Roupa leve e clara, água sempre à mão.");
   if (W.max - W.min >= 10) out.push(`Diferença de ${num(W.max - W.min, 0)}° entre manhã e tarde: vá em camadas.`);
-  if (W.chuva >= 50) out.push(`Chuva provável (${W.chuva}%): guarda-chuva e sapato que aguente água.`); else if (W.chuva >= 30) out.push(`Chance de chuva de ${W.chuva}%: guarda-chuva pequeno na mochila.`);
+  if (W.fonte === "feed") { if (W.hChuva) out.push(`Chuva ${quandoChove(W)} (${num(W.mm, 1)} mm): ${W.chuva >= 70 ? "guarda-chuva e sapato que aguente água" : "guarda-chuva pequeno na mochila"}.`); }
+  else if (W.chuva >= 50) out.push(`Chuva provável (${W.chuva}%): guarda-chuva e sapato que aguente água.`); else if (W.chuva >= 30) out.push(`Chance de chuva de ${W.chuva}%: guarda-chuva pequeno na mochila.`);
   if (W.uv >= 6) out.push(`UV ${num(W.uv, 0)}: protetor solar se ficar ao ar livre entre 11 h e 16 h.`);
   if (W.vento >= 30) out.push(`Vento forte (${num(W.vento, 0)} km/h).`);
   return out;
@@ -128,7 +173,7 @@ const CUSTO_TXT = ["grátis", "até € 10", "até € 30"];
 const TEMPO_OPT = [[120, "2 h"], [240, "4 h"], [360, "6 h"]];
 const GRANA_OPT = [["zero", "nada", 0], ["pouco", "até € 10", 1], ["ok", "até € 30", 2], ["folga", "mais", 2]];
 function hjIdeias(c, W) {
-  const per = periodo(), dow = parse(TODAY).getDay(), tempo = +c.tempo || 60, gmax = (GRANA_OPT.find(g => g[0] === c.grana) || [0, 0, 1])[2], en = { baixa: 1, media: 2, alta: 3 }[c.energia] || 2, chuva = W ? W.chuva >= 50 || W.code >= 61 : c.clima === "chuva", extremo = W ? W.sens < 3 || W.max >= 33 : c.clima === "frio" || c.clima === "calor";
+  const per = periodo(), dow = parse(TODAY).getDay(), tempo = +c.tempo || 60, gmax = (GRANA_OPT.find(g => g[0] === c.grana) || [0, 0, 1])[2], en = { baixa: 1, media: 2, alta: 3 }[c.energia] || 2, chuva = !!W && (W.chuva >= 50 || W.code >= 61), extremo = !!W && (W.sens < 3 || W.max >= 33);
   const out = [], motivos = [];
   if (chuva) motivos.push("com chuva, saíram as de ar livre"); if (extremo) motivos.push("com temperatura extrema, saíram as longas ao ar livre"); if (gmax === 0) motivos.push("sem dinheiro para lazer, só as gratuitas"); if (en === 1) motivos.push("com energia baixa, só as leves"); if (tempo < 60) motivos.push(`com ${tempo} min, só as curtas`);
   for (const [t, d, cst, min, outd, e, soc, tipo, ok] of IDEIAS) {
@@ -155,7 +200,6 @@ function hjAsk(c) {
     <div class="hjaskh"><b>${ic("mood")}Como você está agora?</b><span class="muted small">${falta.length ? `${falta.length} de 4 sem resposta: o resumo fica genérico nelas` : "Resumo ajustado às suas respostas"} · ${PER_TXT[periodo()]}, ${new Date().toTimeString().slice(0, 5)}</span></div>
     <div class="hjq"><span>Humor</span>${chips("humor", mood)}</div><div class="hjq"><span>Energia</span>${chips("energia", [["baixa", "baixa"], ["media", "média"], ["alta", "alta"]])}</div>
     <div class="hjq"><span>Tempo livre hoje</span>${chips("tempo", TEMPO_OPT)}<label class="hjtemp hjtl">outro<input type="text" inputmode="decimal" data-hjtempo="1" value="${c.tempo && !TEMPO_OPT.some(([v]) => v === +c.tempo) ? String(+c.tempo / 60).replace(".", ",") : ""}" placeholder="h" aria-label="Outro tempo livre, em horas">h</label></div><div class="hjq"><span>Dinheiro para lazer</span>${chips("grana", GRANA_OPT.map(g => [g[0], g[1]]))}</div>
-    ${HJ.wxSt === "err" || (!HJ.wx && c.clima) ? `<div class="hjq"><span>Tempo lá fora</span>${chips("clima", [["sol", "sol"], ["nublado", "nublado"], ["chuva", "chuva"], ["frio", "frio"], ["calor", "calor"]])}<label class="hjtemp">°C<input type="number" data-hjtemp="1" value="${esc(c.temp ?? "")}" aria-label="Temperatura"></label></div>` : ""}
   </section>`;
 }
 /* primeiros passos: para quem começa do zero (ou acabou de trazer o backup), quatro coisas que fazem o resto do Atlas funcionar.
@@ -171,7 +215,7 @@ function hjPassos() {
     <ol class="hjpl">${P.map(([k, t, d, h, ok]) => `<li class="${ok ? "ok" : ""}"><span class="pdrn" aria-label="${ok ? "feito" : "a fazer"}">${ok ? ic("check") : "·"}</span><div><a href="${h}"${ok ? ' tabindex="-1"' : ""}><b>${t}</b></a><small class="muted">${d}</small></div></li>`).join("")}</ol></section>`;
 }
 function pHoje2(R) {
-  hjFeed(); const c = hctx(); hjWeather(); hjNews(); const W = hjClima();
+  hjFeed(); const c = hctx(); if (FEED_ST === "ok" && !feedClima()) hjWeather(); hjNews(); const W = hjClima(); HJ.wxK = W?.h || "";
   const news = HJ.news?.length ? HJ.news : feedFresco() && FEED.news?.length ? FEED.news : null, newsFeed = !HJ.news?.length && !!news;
   const s = S.saude[TODAY] || {}, F = hjFrase(c), I = hjIdeias(c, W);
   const tasks = R.tar.filter(t => t.open && t.prazo && t.prazo <= TODAY).sort((a, b) => a.prazo.localeCompare(b.prazo)), doneToday = R.tar.filter(t => t.status === "Concluída" && t.concluida === TODAY);
@@ -181,11 +225,11 @@ function pHoje2(R) {
   const exps = (S.experimentos || []).filter(x => x.status === "ativo" && expSchedule(x)[TODAY] && !(x.desenho === "antes" && expSchedule(x)[TODAY] === "A")), al = radarAlerts().slice(0, 2);
   const fwk = fsTarget(), fpend = parse(TODAY).getDay() <= 1 && S.fechamentos?.[fwk]?.status !== "fechado";
   const reg = [["humor", "humor"], ["sono", "sono"], ["treino", "treino"]].filter(([k]) => s[k] != null && s[k] !== ""), habs = S.habitos.filter(h => S.marks[`${h.id}|${TODAY}`]).length;
-  const resumo = [W ? `${num(W.t, 0)}° agora, ${num(W.min, 0)}–${num(W.max, 0)}° no dia${W.chuva >= 30 ? `, ${W.chuva}% de chuva` : ", sem chuva prevista"}` : "", nVence ? plural(nVence, "tarefa vence até hoje", "tarefas vencem até hoje") : "nenhuma tarefa vencendo", contas.length ? plural(contas.length, "conta da casa para pagar", "contas da casa para pagar") : ""].filter(Boolean).join(" · ");
+  const resumo = [W ? `${num(W.t, 0)}° agora, ${num(W.min, 0)}–${num(W.max, 0)}° no dia, ${W.fonte === "feed" ? chuvaTxt(W) : W.chuva >= 30 ? `${W.chuva}% de chuva` : "sem chuva prevista"}` : "", nVence ? plural(nVence, "tarefa vence até hoje", "tarefas vencem até hoje") : "nenhuma tarefa vencendo", contas.length ? plural(contas.length, "conta da casa para pagar", "contas da casa para pagar") : ""].filter(Boolean).join(" · ");
   return `${hjPassos()}<p class="hjlead">${esc(resumo)}.</p>
     ${hjAsk(c)}
     <div class="g2c hj2">
-      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "net" ? "Open-Meteo, agora" : W.fonte === "feed" ? `Open-Meteo, às ${FEED.hora || "manhã"}` : "marcado por você") : HJ.wxSt === "load" ? "buscando…" : "sem dados"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · chuva ${W.chuva}%${W.fonte === "net" ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div><div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${HJ.wxSt === "err" ? "Não consegui buscar o clima nesta visualização. Marque o tempo lá fora em “Como você está agora?”." : "Buscando a previsão…"}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
+      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "feed" ? `MET Norway · atualizada ${FEED.dia === TODAY ? "hoje" : fmtDY(FEED.dia)} às ${esc(FEED.hora || "")}` : "Open-Meteo, agora") : FEED_ST !== "ok" || HJ.wxSt === "load" ? "buscando…" : "aguardando a atualização"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}${W.txtD ? `; ${esc(W.txtD)} mais tarde` : ""}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · ${esc(chuvaTxt(W))}${W.uv >= 1 ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div>${W.prox?.length ? `<div class="hjhrs" aria-label="Próximas horas">${W.prox.map(x => `<span><small>${x.hora}h</small>${ic((x.code ?? 3) <= 2 && (x.hora >= 20 || x.hora < 6) ? "moon" : WMO(x.code ?? 3)[1])}<b>${num(x.t, 0)}°</b>${(+x.mm || 0) >= .1 ? `<small class="hjmm">${num(x.mm, 1)} mm</small>` : ""}</span>`).join("")}</div>` : ""}<div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${esc(hjSemClima())}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
       ${panel(`${ic("spark")}Para esta ${PER_TXT[periodo()]}`, `<blockquote class="hjq1"><p>${esc(F.f[0])}</p><cite>${esc(F.f[1])}</cite></blockquote><p class="hjconc">${esc(F.concreto)}</p><button type="button" class="lnk" data-act="hjfr">outra frase</button>`)}
       ${panel(`${ic("compass")}Ideias para sair da rotina <small>${I.pick.length} de ${IDEIAS.length}, filtradas pelo seu momento</small>`, `${I.motivos.length ? `<p class="muted small">${esc(I.motivos.join("; "))}.${I.total < 3 ? " Sobraram poucas: é uma limitação real do dia, não falta de opção na cidade." : ""}</p>` : ""}<div class="hjid">${I.pick.map(x => `<article class="hjidc"><b>${esc(x.t)}</b><p>${esc(x.d)}</p><div class="hjidm">${chip(CUSTO_TXT[x.cst])}${chip(x.min >= 60 ? `${num(x.min / 60, x.min % 60 ? 1 : 0)} h` : `${x.min} min`)}${chip(x.outd === 1 ? "ao ar livre" : x.outd ? "dentro ou fora" : "dentro")}</div>${x.why.length ? `<small>Por que hoje: ${esc(x.why.join(", "))}</small>` : ""}<div class="row"><button type="button" class="btn sm" data-hjvou="${esc(x.t)}">${ic("check")}Vou fazer</button><button type="button" class="lnk" data-hjskip="${esc(x.t)}">outra</button></div></article>`).join("") || `<div class="empty">Nenhuma ideia cabe nas respostas de agora. Com mais tempo livre ou orçamento, aparecem opções.</div>`}</div>`, { cls: "span2" })}
       ${panel(`${ic("globe")}Notícias boas <small>jornalismo de soluções, em inglês</small>`, news ? `<div class="hjnews">${news.map(n => `<a class="hjn" href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.t)}</b>${n.d ? `<span>${esc(n.d)}…</span>` : ""}<small>${esc(n.src)}${n.data ? " · " + fmtDY(n.data) : ""}</small></a>`).join("")}</div>${newsFeed ? `<p class="muted small">Do resumo de ${fmtDY(FEED.dia)} gravado no Atlas.</p>` : ""}` : HJ.newsSt === "load" ? `<div class="empty">Buscando…</div>` : `<div class="empty">Não consegui buscar as notícias nesta visualização. Abra direto: <a class="lnk" href="https://www.positive.news" target="_blank" rel="noopener">Positive News</a> · <a class="lnk" href="https://www.goodnewsnetwork.org" target="_blank" rel="noopener">Good News Network</a> · <a class="lnk" href="https://www.corriere.it/buone-notizie/" target="_blank" rel="noopener">Corriere · Buone Notizie</a></div>`)}
@@ -209,14 +253,34 @@ function hjClick(t) {
   if (ds.act === "hjcid") { hjCidade(); return true; }
   return false;
 }
+/* por que não há clima agora, em palavras (sem pedir para marcar à mão) */
+function hjSemClima() {
+  const C = FEED?.clima, nome = cidade().nome;
+  if (FEED_ST !== "ok" || HJ.wxSt === "load") return "Buscando a previsão…";
+  if (!FEED && !extOk("clima")) return "O clima está desligado em Privacidade › Serviços externos.";
+  if (FEED?.erroCidade && normNome(FEED.erroCidade) === normNome(nome)) return `A atualização automática não encontrou “${nome}”. Toque em “trocar cidade” e escolha uma da lista (ou escreva o nome como aparece no mapa).`;
+  if (C?.horas?.length && !feedDaCidade()) return `A previsão de ${nome} entra na próxima atualização automática, às ${FEED_HORAS}, sem precisar recarregar. A última gravada foi de ${C.cidade}.`;
+  if (FEED) return `A última previsão gravada (${fmtDY(FEED.dia)}, ${FEED.hora}) já não cobre esta hora. Ela se atualiza sozinha às ${FEED_HORAS}; a próxima aparece aqui sem recarregar.`;
+  return `A previsão é gravada no Atlas automaticamente às ${FEED_HORAS}. A primeira aparece aqui assim que chegar, sem recarregar.`;
+}
+/* cidades com coordenadas prontas (a página não tem internet para procurar); outra cidade vai pelo nome e a tarefa agendada localiza */
+const CIDADES = [["Turim", 45.0705, 7.6868, "Torino|Turin"], ["Milão", 45.4642, 9.19, "Milano|Milan"], ["Roma", 41.9028, 12.4964, "Rome"], ["Florença", 43.7696, 11.2558, "Firenze|Florence"], ["Bolonha", 44.4949, 11.3426, "Bologna"],
+  ["Gênova", 44.4056, 8.9463, "Genova|Genoa"], ["Veneza", 45.4408, 12.3155, "Venezia|Venice"], ["Nápoles", 40.8518, 14.2681, "Napoli|Naples"], ["Verona", 45.4384, 10.9916, ""], ["Pádua", 45.4064, 11.8768, "Padova|Padua"],
+  ["Bérgamo", 45.6983, 9.6773, "Bergamo"], ["Bréscia", 45.5416, 10.2118, "Brescia"], ["Trieste", 45.6495, 13.7768, ""], ["Bari", 41.1171, 16.8719, ""], ["Palermo", 38.1157, 13.3615, ""], ["Catânia", 37.5079, 15.083, "Catania"],
+  ["Cagliari", 39.2238, 9.1217, ""], ["Aosta", 45.7372, 7.3201, ""], ["Asti", 44.9008, 8.2064, ""], ["Cuneo", 44.3845, 7.5427, ""], ["Novara", 45.4469, 8.6219, ""], ["Alessandria", 44.9133, 8.6155, ""], ["Ivrea", 45.4668, 7.8764, ""], ["Pinerolo", 44.8862, 7.3311, ""],
+  ["São Paulo", -23.5505, -46.6333, "Sao Paulo"], ["Rio de Janeiro", -22.9068, -43.1729, "Rio"], ["Belo Horizonte", -19.9208, -43.9378, "BH"], ["Brasília", -15.7939, -47.8828, "Brasilia"], ["Curitiba", -25.4284, -49.2733, ""],
+  ["Porto Alegre", -30.0346, -51.2177, ""], ["Florianópolis", -27.5954, -48.548, "Florianopolis|Floripa"], ["Salvador", -12.9777, -38.5016, ""], ["Recife", -8.0476, -34.877, ""], ["Fortaleza", -3.7319, -38.5267, ""],
+  ["Goiânia", -16.6869, -49.2648, "Goiania"], ["Campinas", -22.9056, -47.0608, ""], ["Vitória", -20.3155, -40.3128, "Vitoria"], ["Manaus", -3.119, -60.0217, ""], ["Belém", -1.4558, -48.5044, "Belem"],
+  ["Lisboa", 38.7223, -9.1393, "Lisbon"], ["Porto", 41.1579, -8.6291, "Oporto"], ["Madri", 40.4168, -3.7038, "Madrid"], ["Barcelona", 41.3874, 2.1686, ""], ["Paris", 48.8566, 2.3522, ""], ["Londres", 51.5072, -0.1276, "London"],
+  ["Zurique", 47.3769, 8.5417, "Zurich|Zürich"], ["Genebra", 46.2044, 6.1432, "Geneva|Genève"], ["Nice", 43.7102, 7.262, "Nizza"], ["Lyon", 45.764, 4.8357, "Lione"], ["Munique", 48.1351, 11.582, "Munich|München"], ["Berlim", 52.52, 13.405, "Berlin"]];
+const acharCidade = q => { const n = normNome(q); return CIDADES.find(([nome, , , alt]) => [nome, ...alt.split("|")].some(x => x && normNome(x) === n)); };
 function hjCidade() {
-  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" value="${esc(cidade().nome)}"></label></div><p class="muted small" id="hjcm"></p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Buscar</button></div></div></form>`;
+  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" list="hjcl" autocomplete="off" value="${esc(cidade().nome)}"></label><datalist id="hjcl">${CIDADES.map(c => `<option value="${esc(c[0])}">`).join("")}</datalist></div><p class="muted small" id="hjcm">A previsão é atualizada automaticamente às ${FEED_HORAS}. Uma cidade nova entra na próxima atualização.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Salvar</button></div></div></form>`;
   d.showModal(); $("#hjcx").onclick = () => d.close();
-  $("#hjcf").onsubmit = async e => { e.preventDefault(); const q = $("#hjci").value.trim(); if (!q) return; if (!extOk("clima")) { $("#hjcm").textContent = "O clima está desligado em Privacidade › Serviços externos."; return; } $("#hjcm").textContent = "Buscando…";
-    try { const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=pt`), j = await r.json(), x = j?.results?.[0]; if (!x) { $("#hjcm").textContent = "Cidade não encontrada."; return; }
-      S.cfg.cidade = { nome: x.name, lat: x.latitude, lon: x.longitude }; d.close(); HJ.wx = null; HJ.wxSt = ""; try { localStorage.removeItem("atlas_wx"); } catch {} touch("cfg", { label: "Cidade do clima" }); }
-    catch { $("#hjcm").textContent = "Sem acesso à internet nesta visualização."; } };
+  $("#hjcf").onsubmit = e => { e.preventDefault(); const q = $("#hjci").value.trim().slice(0, 80); if (!q) return; const x = acharCidade(q);
+    S.cfg.cidade = x ? { nome: x[0], lat: x[1], lon: x[2] } : { nome: q }; d.close(); HJ.wx = null; HJ.wxSt = ""; try { localStorage.removeItem("atlas_wx"); } catch {}
+    touch("cfg", { label: "Cidade do clima" }); if (!feedDaCidade()) toast(x ? `${x[0]}: a previsão entra na próxima atualização automática (${FEED_HORAS}).` : `“${q}” não está na lista: a próxima atualização automática localiza pelo nome.`); };
 }
 function hjChange(t) {
   if (t.dataset.hjtempo) { const h = parseNum(t.value); hctx().tempo = h > 0 ? Math.round(Math.min(24, h) * 60) : ""; HJ.skip.clear(); touch("hojeCtx", { label: "Tempo livre", noUndo: true }); return true; }
-  if (t.dataset.hjtemp) { hctx().temp = t.value === "" ? "" : +t.value; touch("hojeCtx", { noUndo: true }); return true; } return false; }
+  return false; }

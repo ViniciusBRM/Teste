@@ -8,13 +8,16 @@ def chk(c, msg):
     else: bad += 1; print("FAIL", msg)
 T = datetime.date.fromisoformat(TODAY_ISO); TS = T.isoformat(); U = "data/users/u_test/"
 D = lambda n: (T + datetime.timedelta(days=n)).isoformat()
+# horas gravadas pela tarefa agendada: das 3 h passadas às 20 h seguintes; agora 15°, chuva em todas
+_h0 = int(datetime.datetime.fromisoformat(NOW).replace(tzinfo=datetime.timezone.utc).timestamp() // 3600 * 3600)   # o navegador do teste roda em UTC, com o relógio fixo em NOW
+HORAS = [{"h": datetime.datetime.fromtimestamp(_h0 + i * 3600, datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "t": 15 if i == 0 else 9 + abs(i) % 12, "sens": 14, "code": 61, "vento": 10, "uv": 3, "mm": 0.6} for i in range(-3, 21)]
 SEED = {U + "s_cfg": {"at": 1, "v": {"nome": "Teste"}},
         U + "s_pessoas": {"at": 1, "v": [{"id": "p1", "nome": "Mãe", "relacao": "Família", "freq": 7}]},
         U + "s_tarefas": {"at": 1, "v": [{"id": "t1", "tarefa": "Pagar o condomínio", "prazo": D(-1), "status": "A fazer", "prio": "Alta"}]},
         U + "s_aprend": {"at": 1, "v": [{"id": "a1", "titulo": "Il nome della rosa", "tipo": "Livro", "status": "Em andamento", "total": 500, "atual": 100}]},
         U + "s_rotinas": {"at": 1, "v": [{"id": "r1", "rotina": "Limpar o banheiro", "nivel": "Média", "freq": 7, "ultima": D(-9), "min": 30}]},
         U + "s_contasCasa": {"at": 1, "v": [{"id": "k1", "conta": "Internet", "cat": "Internet / telefone", "valor": 27.9, "periodo": "Mensal", "venc": TS, "debito": "Sim"}]},
-        "feed/hoje": {"dia": TS, "hora": "06:45", "news": [{"src": "Positive News", "t": "Notícia do feed gravado", "link": "https://example.org/f", "data": TS, "d": "resumo"}], "clima": {"t": 15, "sens": 14, "max": 21, "min": 9, "chuva": 60, "uv": 3, "vento": 10, "code": 61, "codeD": 61}, "cot": {"rate": 0.17, "data": TS}}}
+        "feed/hoje": {"dia": TS, "hora": "06:45", "news": [{"src": "Positive News", "t": "Notícia do feed gravado", "link": "https://example.org/f", "data": TS, "d": "resumo"}], "clima": {"lat": 45.0705, "lon": 7.6868, "cidade": "Turim", "fuso": "Europe/Rome", "horas": HORAS}, "cot": {"rate": 0.17, "data": TS}}}
 async def main():
     global bad
     async with async_playwright() as p:
@@ -50,7 +53,7 @@ async def main():
             await pg.wait_for_timeout(1200)
             txt = await pg.inner_text(".p-hoje")
             chk("Notícia do feed gravado" in txt and "Do resumo de" in txt, "sem internet, as notícias vêm do feed gravado no banco")
-            chk("15°" in await pg.inner_text(".hjwx") and "guarda-chuva" in await pg.inner_text(".hjl") and "Open-Meteo, às 06:45" in txt, "clima do feed com recomendação")
+            chk("15°" in await pg.inner_text(".hjwx") and "guarda-chuva" in await pg.inner_text(".hjl") and "MET Norway · atualizada hoje às 06:45" in txt and await pg.locator(".hjhrs > span").count() == 6, "clima do feed: hora de agora, recomendação e as próximas 6 horas")
             await pg.evaluate("location.hash='fin.vida'"); await pg.wait_for_timeout(1500)
             chk(await pg.evaluate("fut().cot?.rate") == 0.17, "câmbio do feed quando a busca falha")
             # mandala e bússola ocupam a linha toda em tela larga

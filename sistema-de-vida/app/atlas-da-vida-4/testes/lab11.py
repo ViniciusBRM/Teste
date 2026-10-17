@@ -120,14 +120,19 @@ async def main():
             for e in errs: print("  ", e)
             if errs: bad += 1
             await b.close()
-        # sem internet: clima vira pergunta, notícias viram links
+        # sem internet e sem feed: o clima não vira pergunta (explica a atualização automática); notícias viram links
         b, pg, errs = await open_page(p, w=390, cfg={"noNet": True}, hash_="hoje")
         try:
             await pg.wait_for_timeout(800)
-            chk(await pg.evaluate("!!document.querySelector('[data-hjc^=\"clima|\"]')") and "Positive News" in await pg.inner_text(".p-hoje"), "sem internet: pergunta o tempo e oferece os links das notícias")
-            await pg.click("[data-hjc='clima|chuva']"); await pg.wait_for_timeout(200)
+            txt = await pg.inner_text(".p-hoje")
+            chk(not await pg.evaluate("!!document.querySelector('[data-hjc^=\"clima|\"], [data-hjtemp]')") and "automaticamente" in txt and "Marque o tempo" not in txt and "Positive News" in txt, "sem internet: nada de marcar o tempo à mão; explica a atualização automática e oferece os links das notícias")
+            # chega um feed com chuva nas próximas horas (como a tarefa agendada grava): guarda-chuva e nenhuma ideia só ao ar livre
+            await pg.evaluate("""(() => { const h0 = Math.floor(Date.now() / 3600e3) * 3600e3, horas = [];
+              for (let i = -3; i < 24; i++) horas.push({ h: new Date(h0 + i * 3600e3).toISOString().replace('.000', ''), t: 12 + (i % 5), sens: 11, code: 63, vento: 8, uv: 1, mm: 1.2 });
+              FEED = { dia: TODAY, at: Date.now(), hora: '06:00', fonte: 'MET Norway (yr.no)', clima: { lat: 45.0705, lon: 7.6868, cidade: 'Turim', fuso: 'Europe/Rome', horas } }; render(); })()""")
+            await pg.wait_for_timeout(200)
             I = await pg.evaluate("hjIdeias(hctx(), hjClima()).pick.map(x => x.outd)")
-            chk(all(o != 1 for o in I) and "guarda-chuva" in await pg.inner_text(".hjl"), "chuva marcada à mão: guarda-chuva e nenhuma ideia só ao ar livre")
+            chk(all(o != 1 for o in I) and "guarda-chuva" in await pg.inner_text(".hjl"), "chuva no feed: guarda-chuva e nenhuma ideia só ao ar livre")
             ov = await overflow(pg); chk(ov[0] <= ov[1], f"390 px sem rolagem lateral {ov}")
         finally:
             errs = [e for e in errs if "ERR_FAILED" not in e]

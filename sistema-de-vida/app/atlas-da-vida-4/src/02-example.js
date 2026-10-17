@@ -156,7 +156,7 @@ function exampleData() {
   ckExemplo(D);
   sdExemplo(D);
   cfExemplo(D);
-  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${addDays(TODAY, 1)}T09:00` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
+  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], semanais: [{ id: "ls_ex1", titulo: "Academia", dias: [], min: 15, on: true }], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${addDays(TODAY, 1)}T09:00` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
   return D;
 }
 

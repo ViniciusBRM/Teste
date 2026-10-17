@@ -49,7 +49,7 @@ function render() {
     : STORE?.kind === "local" && LOADED && !IS_EXAMPLE ? `<div class="banner warn">${ic("info")}<span><b>Sem conta nesta visualização:</b> os dados ficam só neste navegador. Exporte backups em Integrações com frequência.</span></div>` : IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
   const ae = document.activeElement, focusSel = !ae?.id && ae && ae !== document.body ? a11ySel(ae) : null, focusId = ae?.id, selS = ae?.selectionStart, selE = ae?.selectionEnd, scT = ae?.scrollTop, chat = $("#mchat"), chatTop = chat ? chat.scrollTop : null, chatBottom = chat ? chat.scrollHeight - chat.scrollTop - chat.clientHeight < 40 : true;
   $("#nav").innerHTML = navHTML(R);
-  $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}${csStrip()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
+  $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}${csStrip()}${isReport() && LOADED && REF !== mkey(TODAY) ? refBar() : ""}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
   $("#drawerwrap").innerHTML = drawerHTML(R);
   if (PAGE !== "saude" || !["alimentacao", "treinos"].includes(SUB)) document.body.classList.remove("sdside-on");
   if (PAGE !== "trabalho") { document.body.classList.remove("ckside-on", "ckdmeet-on"); if (CK.dash) CK.dash.reuniao = false; }
@@ -183,7 +183,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || lsClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -271,7 +271,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || lsChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }

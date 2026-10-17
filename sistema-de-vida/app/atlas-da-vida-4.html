@@ -116,6 +116,7 @@ main{min-width:0;padding-block:18px 96px;padding-inline:32px;outline:none}
 .monthpick button:hover{background:var(--surface-2);color:var(--ink)}
 .monthpick span{min-width:122px;text-align:center;font-weight:600;font-size:13px}
 .monthpick .mnow{font-size:12px;font-weight:600;padding:0 9px;color:var(--accent)}
+.refbar{position:sticky;top:6px;z-index:6;box-shadow:0 6px 18px -10px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));background:color-mix(in srgb,var(--accent) 9%,var(--surface));border-radius:12px;font-size:13px;backdrop-filter:blur(6px)}.refbar>span{flex:1 1 220px}.refbar>svg{color:var(--accent);flex:0 0 auto}
 .banner{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:color-mix(in srgb,var(--a-pro) 11%,var(--surface));border:1px solid color-mix(in srgb,var(--a-pro) 32%,var(--line));border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:13.5px}
 .banner .ico{color:var(--a-pro)}.banner>span:not(.ico){flex:1;min-width:220px}.banner b{color:var(--ink)}
 .banner.warn{background:color-mix(in srgb,var(--warn) 10%,var(--surface));border-color:color-mix(in srgb,var(--warn) 32%,var(--line))}
@@ -887,6 +888,13 @@ button.mrow{cursor:pointer}button.mrow:hover span{color:var(--ink)}
 /* Rotina › Capturar o dia */
 .rtbtns{gap:8px;flex-wrap:wrap}
 .rtcll{list-style:none;margin:12px 0 10px;padding:0;display:grid;gap:10px}.rtcll li{display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.45}.rtcll li>.ico{flex:0 0 auto;margin-top:2px;color:var(--crit)}.rtcll .chk{align-items:flex-start;font-size:14px;color:var(--ink)}.rtcll .chk input{margin-top:3px}.rtclf p{margin:6px 0}.rtclf h3{margin-bottom:2px}
+.lsbox{margin-top:10px}.lsrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 4px}.lsrow select{min-width:150px}
+.lsit{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line)}.lsit>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 200px}.lsit b{display:flex;align-items:center;gap:6px}.lsit small{color:var(--muted)}.lsit.off{opacity:.6}
+.lsnew{margin:10px 0}.lsnew summary{cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px}.lsdias{display:flex;flex-wrap:wrap;gap:4px;align-items:center}.lsdias small{flex-basis:100%}.lscfg{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0}
+.rtpref h3{margin-bottom:2px}.rtpref p{margin:6px 0}.rtprl{display:flex;flex-direction:column;gap:8px;margin:10px 0;max-height:min(52vh,460px);overflow:auto;padding:2px}
+.rtpro{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer;background:var(--surface)}.rtpro:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.rtpro>span{display:flex;flex-direction:column;gap:2px;min-width:0}.rtpro small{font-size:12px;line-height:1.35}.rtpro input{margin-top:3px;flex:0 0 auto}
+.rtpro.nv-basica{border-left:4px solid #3fb27f}.rtpro.nv-intermediaria{border-left:4px solid #e0b23a}.rtpro.nv-avancada{border-left:4px solid #e0564f}
 .rtcis{display:flex;flex-direction:column;gap:6px}
 .rtci{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:8px 10px;background:var(--surface-2);opacity:.6}
 .rtci.on{opacity:1}
@@ -1346,7 +1354,7 @@ tr.dim td{opacity:.5}
 .hjq{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}.hjq>span{font-size:12px;color:var(--muted);min-width:130px}
 .hjch{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);border-radius:10px;padding:3px}
 .hjtemp{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}.hjtemp input{width:76px}
-.hjwx{display:flex;align-items:center;gap:14px}.hjwx>b{font-family:var(--f-display);font-size:44px;font-weight:500;line-height:1}.hjwx div{display:flex;flex-direction:column}.hjwx small{color:var(--muted)}
+.hjhrs{display:flex;gap:6px;overflow-x:auto;margin:12px 0 4px;padding-bottom:2px}.hjhrs>span{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:46px;padding:6px 4px;border:1px solid var(--line);border-radius:10px;font-size:13px}.hjhrs small{color:var(--muted);font-size:11px}.hjhrs .hjmm{color:var(--accent,var(--muted))}.hjhrs svg{width:16px;height:16px}.hjwx{display:flex;align-items:center;gap:14px}.hjwx>b{font-family:var(--f-display);font-size:44px;font-weight:500;line-height:1}.hjwx div{display:flex;flex-direction:column}.hjwx small{color:var(--muted)}
 .hjl{margin:0;padding-left:18px;font-size:13.5px}.hjl li{margin:3px 0}
 .hjq1{margin:4px 0 8px;padding:0 0 0 14px;border-left:3px solid var(--warn)}.hjq1 p{margin:0;font-family:var(--f-display);font-size:18px;line-height:1.4}.hjq1 cite{display:block;margin-top:6px;font-size:12px;color:var(--muted);font-style:normal}
 .hjconc{font-size:14px;margin:6px 0}
@@ -2647,7 +2655,7 @@ function exampleData() {
   ckExemplo(D);
   sdExemplo(D);
   cfExemplo(D);
-  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${addDays(TODAY, 1)}T09:00` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
+  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], semanais: [{ id: "ls_ex1", titulo: "Academia", dias: [], min: 15, on: true }], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${addDays(TODAY, 1)}T09:00` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
   return D;
 }
 
@@ -3157,6 +3165,10 @@ function calc() {
 }
 function calcAt(mk) { return memo("calc:" + mk, () => { const keep = REF; REF = mk; try { return calc(); } finally { REF = keep; } }); }
 function history(n) { const v = []; for (let k = n - 1; k >= 0; k--) v.push(calcAt(addMonth(REF, -k))); return v; }
+/* janela dos gráficos em que se toca num mês para analisá-lo: vai até o mês atual sempre que o mês analisado cabe nela, para que
+   dê para voltar ao presente pelo próprio gráfico; um mês mais antigo que a janela fica no começo dela (os seguintes à direita) */
+const fimJanela = n => { const hoje = mkey(TODAY), lim = addMonth(REF, n - 1); return REF >= hoje ? REF : lim < hoje ? lim : hoje; };
+function historyNav(n) { const fim = fimJanela(n), v = []; for (let k = n - 1; k >= 0; k--) v.push(calcAt(addMonth(fim, -k))); return v; }
 /* base de comparação escolhida no filtro: mês anterior, média de 3 meses ou mesmo mês do ano anterior */
 function cmpBase(get) {
   if (CMP === "ano") return get(calcAt(addMonth(REF, -12)));
@@ -3893,6 +3905,9 @@ const REPORT_TABS = [["visao", "Visão geral"], ["fin.rel", "Finanças"], ["saud
 const PAGE_AREAS = { fin: ["Finanças"], saude: ["Saúde física", "Saúde mental"], hab: ["Saúde física", "Saúde mental"], metas: ["Carreira", "Casa & organização"], pessoas: ["Família", "Amor & parceria", "Amizades & social"], cresc: ["Carreira", "Aprendizado", "Lazer & criatividade"], casa: ["Casa & organização"] };
 let PAGE = "visao", SUB = null, NAVOPEN = false;
 const pageTitle = (p = PAGE) => p === "mentor" ? "Mentor" : NAV.flatMap(g => g[1]).find(x => x[0] === p)?.[1] || "Atlas";
+/* relatório olhando outro mês: uma faixa visível com o caminho de volta ao mês atual (além do “Hoje” do topo) */
+const refBar = () => { const hoje = mkey(TODAY), fecha = +TODAY.slice(8) <= 7 && REF === addMonth(hoje, -1);
+  return `<div class="refbar" role="status">${ic("cal")}<span>Analisando <b>${mlabel(REF)}</b>${fecha ? ", o mês que acabou de fechar (nos dias 1 a 7 os relatórios abrem nele)" : REF < hoje ? "" : ", um mês que ainda não chegou"}. ${REF < hoje ? `Os gráficos vão até ${mlabel(fimJanela(PER))}: toque em outro mês para trocar.` : ""}</span><button type="button" class="btn sm primary" data-act="mnow">Voltar para ${mlabel(hoje)}</button></div>`; };
 const isReport = () => PAGE === "visao" || PAGE === "cruz" || (SUBS[PAGE] && (SUB || SUBS[PAGE][0][0]) === "rel");
 function setHash(p, s) { const h = s ? `${p}.${s}` : p; if (location.hash.slice(1) !== h) location.hash = h; else route(); }
 function route() {
@@ -4210,6 +4225,7 @@ const railOn = () => innerWidth >= 1500;
 function vw(span) { const G = REPW, gap = 16, pad = 34; let s = span; if (G < 760) s = 12; else if (G < 1080) s = span >= 7 ? 12 : 6; const col = (G - gap * 11) / 12; return Math.max(280, Math.round(s * col + (s - 1) * gap - pad)); }
 function linProj(vals, k) { const p = vals.map((v, i) => ({ x: i, y: v })).filter(q => isNum(q.y)); if (p.length < 3) return []; const mx = avg(p.map(q => q.x)), my = avg(p.map(q => q.y)); let a = 0, b = 0; for (const q of p) { a += (q.x - mx) * (q.y - +my); b += (q.x - mx) ** 2; } const sl = b ? a / b : 0; return Array.from({ length: k }, (_, i) => my + sl * (vals.length + i - mx)); }
 const projLabels = k => Array.from({ length: k }, (_, i) => mabbr(addMonth(REF, i + 1)));
+const projLabelsDe = (mk, k) => Array.from({ length: k }, (_, i) => mabbr(addMonth(mk, i + 1)));
 const pctDelta = (cur, base) => delta(cur == null ? null : cur * 100, base == null ? null : base * 100, { fmt: v => num(v, 0), unit: " pp" });
 function reportPage(R, H, kpis, body, areas) { return `${slicers()}${xfBar()}<div class="rep"><div class="repmain">${kpis ? kpiRow(kpis) : ""}<div class="vg">${body}</div></div>${rail(R, H, areas)}</div>`; }
 function mentorMini(mid) {
@@ -4252,8 +4268,9 @@ function rOverview(R) {
     kcard({ ico: "target", color: acol("Carreira"), l: "Metas no ritmo", v: `${R.metasRitmo}<small>/${R.metasAnd}</small>`, sub: R.metasAtras ? `<span class="st-crit">${R.metasAtras} em risco</span>` : "nenhuma em risco", tgt: `progresso médio ${pct(R.metasProg)}`, go: "metas" }),
     kcard({ ico: "users", color: acol("Amizades & social"), l: "Relações em dia", v: pct(R.relEmDia), sub: R.relAtras ? `<span class="st-crit">${plural(R.relAtras, "pessoa atrasada", "pessoas atrasadas")}</span>` : "ninguém esquecido", dl: delta(R.contMes.length, cmpBase(h => h.contMes.length), { fmt: v => num(v, 0) + " contatos" }), sp: spark(H.map(h => h.contMes.length), acol("Amizades & social")), go: "pessoas" }),
   ];
-  const series = [{ name: "Índice de vida", color: "var(--accent)", data: idx, proj: linProj(idx, 2).map(v => clamp(v, 0, 100)), width: 3, fillOp: .32 }];
-  for (const a of AREAS) { const d = H.map(h => { const v = h.areas.find(x => x.a === a).dados; return v == null ? null : v * 10; }); if (!d.some(isNum)) continue; const on = f.area === a; series.push({ name: ashort(a), color: acol(a), data: d, fill: on, width: on ? 2.6 : 1.2, faded: !!f.area && !on, op: f.area ? null : .5, noLegend: !on, dots: on, fmt: v => num(v / 10) + "/10" }); }
+  const HN = historyNav(PER), LN = HN.map(h => mabbr(h.mk)), KN = HN.map(h => h.mk), idxN = HN.map(h => has(h) ? h.indice : null);
+  const series = [{ name: "Índice de vida", color: "var(--accent)", data: idxN, proj: linProj(idxN, 2).map(v => clamp(v, 0, 100)), width: 3, fillOp: .32 }];
+  for (const a of AREAS) { const d = HN.map(h => { const v = h.areas.find(x => x.a === a).dados; return v == null ? null : v * 10; }); if (!d.some(isNum)) continue; const on = f.area === a; series.push({ name: ashort(a), color: acol(a), data: d, fill: on, width: on ? 2.6 : 1.2, faded: !!f.area && !on, op: f.area ? null : .5, noLegend: !on, dots: on, fmt: v => num(v / 10) + "/10" }); }
   const B = calcAt(addMonth(REF, CMP === "ano" ? -12 : -1)), sB = sum(B.areas.map(a => a.contrib)), sR = sum(R.areas.map(a => a.contrib));
   const dl = R.areas.map((a, i) => ({ a: a.a, v: a.contrib - B.areas[i].contrib, d0: B.areas[i].dados, d1: a.dados })).filter(x => Math.abs(x.v) >= .05).sort((x, y) => y.v - x.v);
   const wf = sB || sR ? `<div class="wfsum"><span>${mabbr(B.mk)}</span><b>${num(sB, 1)}</b><span>→ ${mabbr(R.mk)}</span><b>${num(sR, 1)}</b><span class="dl ${sR >= sB ? "good" : "crit"}">${sgn(sR - sB, v => num(v, 1))} pts</span></div>` + diverge(dl.map(x => ({ l: ashort(x.a), v: x.v, sub: `placar ${x.d0 == null ? "–" : num(x.d0)} → ${x.d1 == null ? "–" : num(x.d1)}`, go: `data-xf="area|${esc(x.a)}"` })), { fmt: v => sgn(v, z => num(z, 1)), empty: "Nenhuma área mudou de forma relevante." }) : emptyChart();
@@ -4262,9 +4279,9 @@ function rOverview(R) {
   const tbl = `<div class="hscroll"><table class="dt sc"><thead><tr><th>Área</th><th class="num">Dados</th><th class="num">vs ant.</th><th class="num opt">Sente</th><th class="num opt">Alvo</th><th class="opt2">Tendência</th><th class="num opt">Peso</th><th><span class="sr">Mentor</span></th></tr></thead><tbody>${rows.map(a => `<tr class="click${f.area === a.a ? " sel" : ""}${f.area && f.area !== a.a ? " dim" : ""}" data-xf="area|${esc(a.a)}" tabindex="0"><td>${areaDot(a.a)}${esc(ashort(a.a))}</td><td class="num"><span class="sbar st-${a.st}" style="--v:${(a.dados ?? 0) * 10}%;--c:${acol(a.a)}">${a.dados == null ? "–" : num(a.dados)}</span></td><td class="num">${isNum(a.dados) && isNum(a.pv) ? `<span class="${a.dados >= a.pv ? "st-good" : "st-crit"}">${sgn(a.dados - a.pv)}</span>` : "–"}</td><td class="num opt">${a.perc ?? "–"}</td><td class="num opt">${a.alvo ?? "–"}</td><td class="opt2 sparkc">${spark(a.ser, acol(a.a), { min: 0, max: 10, w: 90, h: 24 })}</td><td class="num opt">${apeso(a.a)}×</td><td><a class="iconbtn sm" href="#mentor.${AREA_INFO[a.a].id}" title="Mentor de ${esc(ashort(a.a))}" aria-label="Mentor de ${esc(ashort(a.a))}">${ic("spark")}</a></td></tr>`).join("")}</tbody></table></div>`;
   const mAnd = R.metas.filter(m => m.ativa && m.rt !== "Concluída" && (!f.area || m.area === f.area)).sort((a, b) => (a.prazo || "9").localeCompare(b.prazo || "9")).slice(0, 8);
   const inf0 = influencers("bem", { days: PER * 30, min: 20 }).filter(i => !i.k.startsWith("t:") || i.n >= 20), infS = inf0.filter(i => i.sig), inf = (infS.length ? infS : inf0).slice(0, 8);
-  const body = `${vis("ov-idx", "Índice de vida e áreas", lineChart(L, series, { w: vw(8), h: 270, min: 0, max: 100, proj: 2, projLabels: projLabels(2), keys: K, click: "ref", hi: K.indexOf(REF), fmt: v => num(v, 0) }), { cls: "s8", sub: f.area ? `destaque: ${ashort(f.area)} (placar × 10)` : `${PER} meses + tendência · toque num mês para analisá-lo`, info: "Índice = média ponderada dos placares de dados das áreas × 10. As linhas finas são as áreas; filtre uma área para destacá-la.", table: () => ({ cols: [{ l: "Mês" }, ...series.map(s => ({ l: s.name, num: true, f: v => v == null ? "" : num(v) }))], rows: K.map((k, i) => [mlabel(k), ...series.map(s => s.data[i])]) }) })}
+  const body = `${vis("ov-idx", "Índice de vida e áreas", lineChart(LN, series, { w: vw(8), h: 270, min: 0, max: 100, proj: 2, projLabels: projLabelsDe(KN.at(-1), 2), keys: KN, click: "ref", hi: KN.indexOf(REF), fmt: v => num(v, 0) }), { cls: "s8", sub: f.area ? `destaque: ${ashort(f.area)} (placar × 10)` : `${PER} meses + tendência · toque num mês para analisá-lo`, info: "Índice = média ponderada dos placares de dados das áreas × 10. As linhas finas são as áreas; filtre uma área para destacá-la.", table: () => ({ cols: [{ l: "Mês" }, ...series.map(s => ({ l: s.name, num: true, f: v => v == null ? "" : num(v) }))], rows: K.map((k, i) => [mlabel(k), ...series.map(s => s.data[i])]) }) })}
     ${vis("ov-wf", "O que mudou no índice", wf, { cls: "s4", sub: `pontos que cada área somou ou tirou · toque para filtrar`, info: "Quanto cada área somou ou tirou do índice em relação ao mês de comparação, já considerando o peso da área.", table: () => ({ cols: [{ l: "Área" }, { l: "Variação (pts)", num: true, f: v => num(v, 2) }, { l: "Placar antes", num: true }, { l: "Placar agora", num: true }], rows: dl.map(x => [x.a, x.v, x.d0, x.d1]) }) })}
-    ${vis("ov-mat", "Matriz das áreas", heat(AREAS.map(a => ({ l: ashort(a), key: a, color: acol(a) })), L, (i, j) => H[j].areas[i].dados, { xf: "area", sel: f.area }), { cls: "s7", sub: "placar de dados por mês · toque numa área para filtrar o relatório", table: () => ({ cols: [{ l: "Área" }, ...L.map(l => ({ l, num: true, f: v => v == null ? "" : num(v) }))], rows: AREAS.map((a, i) => [a, ...H.map(h => h.areas[i].dados)]) }) })}
+    ${vis("ov-mat", "Matriz das áreas", heat(AREAS.map(a => ({ l: ashort(a), key: a, color: acol(a) })), LN, (i, j) => HN[j].areas[i].dados, { xf: "area", sel: f.area }), { cls: "s7", sub: "placar de dados por mês · toque numa área para filtrar o relatório", table: () => ({ cols: [{ l: "Área" }, ...LN.map(l => ({ l, num: true, f: v => v == null ? "" : num(v) }))], rows: AREAS.map((a, i) => [a, ...HN.map(h => h.areas[i].dados)]) }) })}
     ${vis("ov-radar", "Roda: sente × dados × alvo", radar(R.areas), { cls: "s5", sub: mlabel(R.mk) })}
     ${vis("ov-sc", "Placar por área", tbl, { cls: "s7", sub: "condicional por cor · toque numa linha para filtrar", table: () => ({ cols: [{ l: "Área" }, { l: "Dados", num: true }, { l: "Mês anterior", num: true }, { l: "Percepção", num: true }, { l: "Alvo", num: true }, { l: "Peso", num: true }], rows: rows.map(a => [a.a, a.dados, a.pv, a.perc, a.alvo, apeso(a.a)]) }) })}
     ${vis("ov-metas", "Metas · progresso × tempo", mAnd.length ? `<div class="bud">${mAnd.map(m => `<div class="br click" data-ent="meta|${m.id}" role="button" tabindex="0" ${tip(`${m.meta}\nProgresso ${pct(m.prog)} · esperado ${pct(m.esp)}\n${m.rt}`)}><span>${areaDot(m.area)}${esc(m.meta)}</span><div class="bt"><i class="${m.st}" style="width:${m.prog * 100}%"></i>${m.esp != null ? `<b style="left:${m.esp * 100}%"></b>` : ""}</div><em class="${m.st}">${esc(m.rt)}</em></div>`).join("")}</div>` : emptyChart("Sem metas em andamento."), { cls: "s5", sub: f.area ? ashort(f.area) : "a marca é onde deveria estar hoje" })}
@@ -4286,8 +4303,9 @@ function rFin(R) {
     kcard({ ico: "box", color: acol("Casa & organização"), l: "Reserva", v: R.reserva == null ? "–" : `${num(R.reserva)}<small> meses</small>`, tgt: `meta ${C.metaReserva}`, sp: spark(H.map(h => h.reserva), acol("Casa & organização")) }),
     kcard({ ico: "compass", color: acol("Aprendizado"), l: "Patrimônio líquido", v: eurK(R.pl), dl: delta(R.pl, cmpBase(h => h.pl), { fmt: eurK }), sp: spark(H.map(h => h.pl), acol("Aprendizado")), sub: R.plMes ? `fechado em ${mabbr(R.plMes)}` : "preencha em Orçamento" }),
   ];
-  const grpData = g => H.map(h => f.cat ? (CAT_DESP[f.cat] === g ? h.fin.cat[f.cat] || 0 : 0) : f.grp && f.grp !== g ? 0 : h.fin.grp[g] || 0);
-  const cols = colChart(L, GRUPOS.map(g => ({ name: g, color: GCOL[g], data: grpData(g) })), { stacked: true, w: vw(8), h: 260, fmt: eurK, keys: K, click: "ref", sel: R.mk, line: f.cat || f.grp ? [] : [{ name: "Receita", color: GCOL["Poupança"], data: H.map(h => h.fin.rec), fmt: eurK }, { name: "Resultado", color: "var(--accent)", data: H.map(h => h.fin.res), dash: true, fmt: eurK }], target: f.cat && S.orc[f.cat] ? +S.orc[f.cat] : null, targetLabel: "orçamento" });
+  const HN = historyNav(PER), LN = HN.map(h => mabbr(h.mk)), KN = HN.map(h => h.mk);
+  const grpData = g => HN.map(h => f.cat ? (CAT_DESP[f.cat] === g ? h.fin.cat[f.cat] || 0 : 0) : f.grp && f.grp !== g ? 0 : h.fin.grp[g] || 0);
+  const cols = colChart(LN, GRUPOS.map(g => ({ name: g, color: GCOL[g], data: grpData(g) })), { stacked: true, w: vw(8), h: 260, fmt: eurK, keys: KN, click: "ref", sel: R.mk, line: f.cat || f.grp ? [] : [{ name: "Receita", color: GCOL["Poupança"], data: HN.map(h => h.fin.rec), fmt: eurK }, { name: "Resultado", color: "var(--accent)", data: H.map(h => h.fin.res), dash: true, fmt: eurK }], target: f.cat && S.orc[f.cat] ? +S.orc[f.cat] : null, targetLabel: "orçamento" });
   const wf = F.rec || F.desp ? waterfallH([{ l: "Receita", v: F.rec, total: true, color: GCOL["Poupança"] }, ...GRUPOS.map(g => ({ l: g, v: -(F.grp[g] || 0), color: GCOL[g] })), { l: "Aportes", v: -F.apo, color: "var(--a-pro)" }, { l: "Sobra em caixa", v: F.rec - F.desp - F.apo, total: true }]) + `<p class="note">${ic("info")}Da receita de ${eur(F.rec)}, ${F.rec ? pct((F.grp["Essencial"] || 0) / F.rec) : "–"} foi para o essencial, ${F.rec ? pct((F.grp["Estilo de vida"] || 0) / F.rec) : "–"} para estilo de vida e ${F.rec ? pct(F.apo / F.rec) : "–"} para aportes.</p>` : emptyChart("Sem receitas ou despesas no mês.");
   const cats = Object.entries(F.cat).map(([c, v]) => ({ l: c, v, color: GCOL[CAT_DESP[c] || "Estilo de vida"], key: c, sub: CAT_DESP[c] }));
   const bul = R.orcCats.filter(c => c.plan || c.real).sort((a, b) => (b.p ?? 0) - (a.p ?? 0)).map(c => ({ l: c.cat, real: c.real, plan: c.plan, pace: R.ritmo, st: c.st, key: c.cat }));
@@ -4407,7 +4425,7 @@ function rRel(R) {
   ];
   const rels = RELACAO.filter(r => S.contatos.some(c => S.pessoas.find(p => p.nome === c.pessoa)?.relacao === r));
   const relOf = n => S.pessoas.find(p => p.nome === n)?.relacao || "Amizade";
-  const cm = colChart(L, rels.map(r => ({ name: r, color: acol(relArea(r)), data: H.map(h => h.contMes.filter(c => relOf(c.pessoa) === r).length) })), { stacked: true, w: vw(6), h: 250, keys: K, click: "ref", sel: R.mk, fmt: v => num(v, 0) });
+  const HN = historyNav(PER), cm = colChart(HN.map(h => mabbr(h.mk)), rels.map(r => ({ name: r, color: acol(relArea(r)), data: HN.map(h => h.contMes.filter(c => relOf(c.pessoa) === r).length) })), { stacked: true, w: vw(6), h: 250, keys: HN.map(h => h.mk), click: "ref", sel: R.mk, fmt: v => num(v, 0) });
   const fb = R.pes.map(p => ({ p, c: crossData("p:" + p.nome, "bem", { days: Math.max(180, PER * 30) }) })).filter(x => x.c?.groups?.bin && x.c.groups.na >= 3).map(x => ({ l: x.p.nome, v: x.c.groups.a - x.c.groups.b, sub: `juntos ${num(x.c.groups.a)} × outros dias ${num(x.c.groups.b)} · ${x.c.groups.na} dias juntos`, go: `data-ent="p|${esc(x.p.nome)}"` })).sort((a, b) => b.v - a.v);
   const tipos = {}; R.contMes.forEach(c => tipos[c.tipo] = (tipos[c.tipo] || 0) + 1);
   const aniv = R.pes.filter(p => p.faltam != null && p.faltam <= 60).sort((a, b) => a.faltam - b.faltam);
@@ -4432,16 +4450,17 @@ function rCresc(R) {
     kcard({ ico: "palette", color: acol("Lazer & criatividade"), l: "Lazer no mês", v: `${num(R.horasLaz)}<small> h</small>`, dl: delta(R.horasLaz, cmpBase(h => h.horasLaz), { unit: " h" }), sp: spark(H.map(h => h.horasLaz), acol("Lazer & criatividade")) }),
     kcard({ ico: "mood", color: acol("Amizades & social"), l: "Satisfação no lazer", v: R.lazSat == null ? "–" : `${num(R.lazSat)}<small>/5</small>`, sp: spark(H.map(h => h.lazSat), acol("Amizades & social"), { min: 1, max: 5 }) }),
   ];
-  const hrs = {}; S.estudo.filter(e => mkey(e.data) >= K[0]).forEach(e => hrs[e.item] = (hrs[e.item] || 0) + (+e.horas || 0));
+  const KN = historyNav(PER).map(h => h.mk), LN = KN.map(mabbr);
+  const hrs = {}; S.estudo.filter(e => mkey(e.data) >= KN[0]).forEach(e => hrs[e.item] = (hrs[e.item] || 0) + (+e.horas || 0));
   const items = Object.entries(hrs).sort((a, b) => b[1] - a[1]).map(x => x[0]), top = items.slice(0, 5), pal = ["var(--a-apr)", "var(--a-car)", "var(--a-men)", "var(--a-laz)", "var(--a-fam)", "var(--muted)"];
-  const ser = [...top.map((it, i) => ({ name: it, color: pal[i], data: K.map(k => sum(S.estudo.filter(e => e.item === it && mkey(e.data) === k).map(e => e.horas))) })), ...(items.length > 5 ? [{ name: "Outros", color: pal[5], data: K.map(k => sum(S.estudo.filter(e => !top.includes(e.item) && mkey(e.data) === k).map(e => e.horas))) }] : [])];
+  const ser = [...top.map((it, i) => ({ name: it, color: pal[i], data: KN.map(k => sum(S.estudo.filter(e => e.item === it && mkey(e.data) === k).map(e => e.horas))) })), ...(items.length > 5 ? [{ name: "Outros", color: pal[5], data: KN.map(k => sum(S.estudo.filter(e => !top.includes(e.item) && mkey(e.data) === k).map(e => e.horas))) }] : [])];
   const stages = ["Aplicado", "Entrevista", "Teste / case", "Proposta", "Aceito"], order = ["Interesse", ...stages], reach = s => S.cand.filter(c => order.indexOf(c.etapa) >= order.indexOf(s) || (["Recusado", "Desisti"].includes(c.etapa) && s === "Aplicado")).length;
   const fun = funnel([{ l: "Candidaturas", v: S.cand.length, color: acol("Carreira") }, ...stages.map((s, i) => ({ l: s, v: reach(s), color: `color-mix(in srgb, ${acol("Carreira")} ${90 - i * 14}%, var(--surface))` }))]);
   const prog = S.aprend.filter(a => a.status === "Em andamento").map(a => ({ l: a.titulo, v: +a.total ? clamp(+a.atual / +a.total) : 0, sub: `${a.tipo} · ${num(sum(S.estudo.filter(e => e.item === a.titulo).map(e => e.horas)))} h`, color: acol(a.area || "Aprendizado"), txt: pct(+a.total ? clamp(+a.atual / +a.total) : 0) }));
   const lzc = {}; S.lazer.filter(l => l.data >= addDays(TODAY, -PER * 30)).forEach(l => { const o = lzc[l.cat] ||= { h: 0, s: [], c: 0, n: 0 }; o.h += +l.horas || 0; if (isNum(l.sat)) o.s.push(+l.sat); o.c += +l.custo || 0; o.n++; });
   const lpts = Object.entries(lzc).map(([c, o], i) => ({ x: o.h, y: avg(o.s) ?? 3, r: 5 + Math.sqrt(o.c) * .9, color: pal[i % 5], label: c, tip: `${c}\n${num(o.h)} h em ${o.n} atividades\nsatisfação ${num(avg(o.s))}\ncusto ${eur(o.c)}` }));
   const books = S.aprend.filter(a => a.tipo === "Livro" && a.status === "Concluído" && a.fim).sort((a, b) => b.fim.localeCompare(a.fim));
-  const body = `${vis("cr-st", "Horas de estudo por assunto", colChart(L, ser, { stacked: true, w: vw(8), h: 260, keys: K, click: "ref", sel: R.mk, fmt: v => num(v, 0) + " h", target: C.metaEstudo, targetLabel: "meta mensal" }), { cls: "s8", sub: `${PER} meses`, table: () => ({ cols: [{ l: "Mês" }, ...ser.map(s => ({ l: s.name, num: true, f: v => num(v) }))], rows: K.map((k, i) => [mlabel(k), ...ser.map(s => s.data[i])]) }) })}
+  const body = `${vis("cr-st", "Horas de estudo por assunto", colChart(LN, ser, { stacked: true, w: vw(8), h: 260, keys: KN, click: "ref", sel: R.mk, fmt: v => num(v, 0) + " h", target: C.metaEstudo, targetLabel: "meta mensal" }), { cls: "s8", sub: `${PER} meses`, table: () => ({ cols: [{ l: "Mês" }, ...ser.map(s => ({ l: s.name, num: true, f: v => num(v) }))], rows: KN.map((k, i) => [mlabel(k), ...ser.map(s => s.data[i])]) }) })}
     ${vis("cr-fn", "Funil de candidaturas", fun, { cls: "s4", sub: "quantas chegaram a cada etapa" })}
     ${vis("cr-cp", "Competências: atual → alvo", dumbbell(S.comp.map(c => ({ l: c.nome, a: +c.atual || 0, b: +c.alvo || 0, edit: ["comp", c.id] })), { max: 5 }), { cls: "s6", sub: "1 iniciante · 5 referência · toque para editar" })}
     ${vis("cr-pr", "O que estou aprendendo", hbars(prog, { max: 1, fmt: pct, empty: "Nada em andamento." }), { cls: "s6", sub: "progresso e horas acumuladas" })}
@@ -10422,30 +10441,69 @@ function pMapa() {
 }
 
 /* ================================================================ Hoje: resumo do momento
-   Clima (Open-Meteo) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network via rss2json),
+   Clima (MET Norway, gravado no Atlas por uma tarefa agendada) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network),
    uma frase escolhida pelo horário e pelo que o dia está pedindo, e ideias para sair da rotina filtradas por clima, energia, tempo e dinheiro.
-   Sem internet nesta visualização, o clima vira pergunta e as notícias viram links. As respostas ficam em S.hojeCtx[dia]. */
+   Sem internet nesta visualização, clima, notícias e câmbio vêm do doc feed/hoje; sem ele, as notícias viram links. As respostas ficam em S.hojeCtx[dia]. */
 const HJ = { wx: null, wxSt: "", news: null, newsSt: "", skip: new Set(), fr: 0 };
 const hctx = () => (S.hojeCtx[TODAY] ||= {});
 const periodo = () => { const h = new Date().getHours(); return h < 12 ? "manha" : h < 18 ? "tarde" : "noite"; };
 /* a página pode não ter acesso à internet: cada busca desiste em 7 s */
 async function fetchT(u, ms = 7000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { return await fetch(u, { signal: c.signal }); } finally { clearTimeout(t); } }
-/* feed do dia: notícias e clima gravados no banco do Atlas por uma rotina externa (doc compartilhado feed/hoje); vale quando a página não alcança a internet */
-let FEED = null, FEED_ST = "";
-async function hjFeed() {
-  if (FEED_ST || (!DBH && !LOADED)) return; FEED_ST = "load";
-  try { const d = DBH ? await DBH.doc("feed/hoje").get() : null, v = d?.exists ? JSON.parse(JSON.stringify(d.data())) : null; FEED = v && v.dia ? v : null; } catch { FEED = null; }
-  FEED_ST = "ok"; if (PAGE === "hoje" && FEED) render();
+/* feed do dia (doc compartilhado feed/hoje): uma tarefa agendada grava às 6h e às 13h (hora de Roma) a previsão hora a hora da
+   MET Norway para a cidade escolhida, as notícias boas e o câmbio do BCE. A página não alcança a internet: lê o doc, escuta as
+   mudanças (a atualização entra sem recarregar) e escolhe nas horas gravadas a hora de agora, no fuso da cidade. */
+let FEED = null, FEED_ST = "", FEED_P = null;
+const FEED_HORAS = "6h e às 13h (hora de Roma)";
+function hjFeed() {
+  if (FEED_P) return FEED_P;
+  if (!DBH) { if (LOADED) { FEED_ST = "ok"; FEED_P = Promise.resolve(); } return Promise.resolve(); }
+  FEED_ST = "load";
+  return FEED_P = new Promise(res => {
+    const pega = d => { let v = null; try { v = d?.exists ? JSON.parse(JSON.stringify(d.data())) : null; } catch {} v = v && v.dia ? v : null;
+      const mudou = (v?.at || 0) !== (FEED?.at || 0) || (v?.erroAt || 0) !== (FEED?.erroAt || 0) || FEED_ST !== "ok"; FEED = v; FEED_ST = "ok"; res(); if (mudou && PAGE === "hoje") render(); };
+    const uma = () => DBH.doc("feed/hoje").get().then(pega, () => { FEED_ST = "ok"; res(); });
+    try { DBH.doc("feed/hoje").onSnapshot(pega, () => uma()); } catch { uma(); }
+    setTimeout(() => { if (FEED_ST === "load") { FEED_ST = "ok"; res(); if (PAGE === "hoje") render(); } }, 9000);
+  });
 }
 const feedFresco = () => FEED && diff(TODAY, FEED.dia) <= 1;
 const PER_TXT = { manha: "manhã", tarde: "tarde", noite: "noite" };
-const cidade = () => S.cfg.cidade?.lat ? S.cfg.cidade : { nome: "Turim", lat: 45.0705, lon: 7.6868 };
+const cidade = () => S.cfg.cidade?.nome ? S.cfg.cidade : { nome: "Turim", lat: 45.0705, lon: 7.6868 };
 const WMO = c => c === 0 ? ["Céu limpo", "sun"] : c <= 2 ? ["Poucas nuvens", "sun"] : c === 3 ? ["Nublado", "wave"] : c <= 48 ? ["Neblina", "wave"] : c <= 57 ? ["Garoa", "wave"] : c <= 67 ? ["Chuva", "wave"] : c <= 77 ? ["Neve", "star"] : c <= 82 ? ["Pancadas de chuva", "wave"] : c <= 86 ? ["Neve", "star"] : ["Temporal", "bolt"];
+const normNome = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+/* dia e hora de um instante no fuso da cidade (o aparelho pode estar em outro fuso) */
+const FUSO_FMT = {};
+function diaHoraEm(ms, tz) {
+  try { const f = FUSO_FMT[tz] ||= new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" }), p = {};
+    for (const x of f.formatToParts(ms)) p[x.type] = x.value; return [`${p.year}-${p.month}-${p.day}`, +p.hour % 24]; }
+  catch { const d = new Date(ms); return [`${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, d.getHours()]; }
+}
+/* o feed vale para a cidade escolhida: pelas coordenadas, ou pelo nome quando a cidade foi digitada fora da lista */
+function feedDaCidade() {
+  const C = FEED?.clima, cid = cidade(); if (!C?.horas?.length) return null;
+  return (cid.lat != null && C.lat != null ? Math.abs(C.lat - cid.lat) < .2 && Math.abs(C.lon - cid.lon) < .2 : normNome(C.cidade) === normNome(cid.nome)) ? C : null;
+}
+/* agora = a hora gravada que contém este instante; mínima e máxima = horas de hoje; chuva = horas com chuva daqui até as 22 h */
+function feedClima(now = Date.now()) {
+  const C = feedDaCidade(); if (!C) return null;
+  const tz = C.fuso || "Europe/Rome", H = C.horas.map(x => ({ ...x, ms: Date.parse(x.h) })).filter(x => isFinite(x.ms) && isNum(x.t)).sort((a, b) => a.ms - b.ms);
+  if (!H.length) return null;
+  const cur = H.find(x => x.ms <= now && now < x.ms + 3600e3) || H.reduce((b, x) => Math.abs(x.ms + 1800e3 - now) < Math.abs(b.ms + 1800e3 - now) ? x : b);
+  if (Math.abs(cur.ms + 1800e3 - now) > 2 * 3600e3) return null;   /* as horas gravadas não cobrem agora */
+  const hoje = diaHoraEm(now, tz)[0], dia0 = H.filter(x => diaHoraEm(x.ms, tz)[0] === hoje), dia = dia0.length ? dia0 : [cur];
+  const vem = dia.filter(x => x.ms + 3600e3 > now), claro = vem.filter(x => { const h = diaHoraEm(x.ms, tz)[1]; return h >= 7 && h <= 22; }), base = claro.length ? claro : vem.length ? vem : [cur];
+  const chov = base.filter(x => (+x.mm || 0) >= .1 || (x.code || 0) >= 51), mm = Math.round(base.reduce((a, x) => a + (+x.mm || 0), 0) * 10) / 10, codeD = Math.max(...base.map(x => x.code || 0));
+  /* “chuva” do feed não é probabilidade: é a escala de 0 a 100 que as regras de roupa e de atividade usam (0 seco, 40 pouca, 70 bastante) */
+  return { fonte: "feed", t: cur.t, sens: cur.sens ?? cur.t, max: Math.max(...dia.map(x => x.t)), min: Math.min(...dia.map(x => x.t)), chuva: !chov.length ? 0 : mm >= 2 || chov.length >= 3 ? 70 : 40, hChuva: chov.length, hrsChuva: chov.map(x => diaHoraEm(x.ms, tz)[1]), mm,
+    uv: Math.max(0, ...dia.map(x => +x.uv || 0)), vento: cur.vento || 0, txt: WMO(cur.code ?? 3)[0], txtD: codeD >= 51 && codeD !== cur.code ? WMO(codeD)[0].toLowerCase() : "", ico: WMO(cur.code ?? 3)[1], code: Math.max(cur.code ?? 0, codeD),
+    h: cur.h, tz, prox: H.filter(x => x.ms > cur.ms).slice(0, 6).map(x => ({ ...x, hora: diaHoraEm(x.ms, tz)[1] })) };
+}
+/* busca direta (Open-Meteo): só serve quando o Atlas é aberto fora do claude.ai, onde a página tem internet, e o feed não cobre agora */
 async function hjWeather(force) {
   if (HJ.wxSt === "load" || (!force && (HJ.wx?.dia === TODAY || HJ.wxSt === "err"))) return;
-  if (!extOk("clima")) { HJ.wxSt = "err"; return; }   /* desligado em Privacidade: o clima volta a ser marcado por você */
-  try { const v = JSON.parse(localStorage.getItem("atlas_wx") || "null"); if (!force && v?.dia === TODAY && v.at > Date.now() - 3 * 3600e3 && v.lat === cidade().lat) { HJ.wx = v; return; } } catch {}
-  HJ.wxSt = "load"; const C = cidade();
+  const C = cidade(); if (!extOk("clima") || C.lat == null) { HJ.wxSt = "err"; return; }
+  try { const v = JSON.parse(localStorage.getItem("atlas_wx") || "null"); if (!force && v?.dia === TODAY && v.at > Date.now() - 3 * 3600e3 && v.lat === C.lat) { HJ.wx = v; return; } } catch {}
+  HJ.wxSt = "load";
   try { const r = await fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${C.lat}&longitude=${C.lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=1`);
     if (!r.ok) throw 0; const j = await r.json(); if (!j?.current || !j?.daily) throw 0;
     HJ.wx = { dia: TODAY, at: Date.now(), lat: C.lat, t: j.current.temperature_2m, sens: j.current.apparent_temperature, code: j.current.weather_code, vento: j.current.wind_speed_10m, max: j.daily.temperature_2m_max[0], min: j.daily.temperature_2m_min[0], chuva: j.daily.precipitation_probability_max[0], codeD: j.daily.weather_code[0], uv: j.daily.uv_index_max[0] };
@@ -10453,6 +10511,8 @@ async function hjWeather(force) {
   } catch { HJ.wxSt = "err"; }
   if (PAGE === "hoje") render();
 }
+/* a hora vira e o “agora” muda junto: o Hoje redesenha na virada da hora da previsão, sem atrapalhar quem está digitando */
+setInterval(() => { if (PAGE !== "hoje" || document.hidden || !FEED) return; if ((feedClima()?.h || "") === HJ.wxK) return; const a = document.activeElement; if (a?.matches?.("input,textarea,select,[contenteditable]") || $("dialog[open]")) return; render(); }, 60e3);
 async function hjNews() {
   if (HJ.newsSt) return; HJ.newsSt = "load";
   if (!extOk("noticias")) { HJ.news = null; HJ.newsSt = "err"; HJ.newsSrc = ""; return; }
@@ -10466,19 +10526,23 @@ async function hjNews() {
   if (pick.length) try { localStorage.setItem("atlas_news", JSON.stringify({ dia: TODAY, items: pick })); } catch {}
   if (PAGE === "hoje") render();
 }
-/* o tempo: da internet, ou o que a pessoa marcou */
+/* o tempo: do feed gravado no Atlas; fora do claude.ai, da internet. Não há mais tempo marcado à mão. */
 function hjClima() {
-  const c = hctx(), w = HJ.wx?.dia === TODAY ? HJ.wx : feedFresco() && FEED.clima && (FEED.clima.lat == null || Math.abs(FEED.clima.lat - cidade().lat) < .2) ? { ...FEED.clima, feed: true } : null;
-  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: w.feed ? "feed" : "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
-  if (c.clima) { const base = { sol: [22, 10, "Sol"], nublado: [17, 30, "Nublado"], chuva: [13, 80, "Chuva"], frio: [3, 20, "Frio"], calor: [32, 10, "Calor"] }[c.clima] || [18, 20, "–"], t = isNum(c.temp) && c.temp !== "" ? +c.temp : base[0];
-    return { fonte: "mao", t, sens: t, max: t + 3, min: t - 4, chuva: base[1], uv: c.clima === "sol" || c.clima === "calor" ? 6 : 2, vento: 0, txt: base[2], ico: c.clima === "chuva" ? "wave" : "sun", code: c.clima === "chuva" ? 63 : 1 }; }
+  const f = feedClima(); if (f) return f;
+  const w = HJ.wx?.dia === TODAY && HJ.wx.lat === cidade().lat ? HJ.wx : null;
+  if (w) { const [txt] = WMO(w.codeD ?? w.code); return { fonte: "net", t: w.t, sens: w.sens, max: w.max, min: w.min, chuva: w.chuva, uv: w.uv, vento: w.vento, txt, ico: WMO(w.code)[1], code: w.codeD ?? w.code }; }
   return null;
 }
+/* chuva em palavras: o feed diz em quantas horas chove até a noite; a busca direta dá a probabilidade */
+const listaH = hs => { const t = hs.map(h => `${h} h`); return t.length > 1 ? `${t.slice(0, -1).join(", ")} e ${t.at(-1)}` : t[0] || ""; };
+const quandoChove = W => W.hChuva <= 4 ? `às ${listaH(W.hrsChuva)}` : `em ${W.hChuva} horas até a noite`;
+const chuvaTxt = W => W.fonte === "feed" ? (W.hChuva ? `chuva ${quandoChove(W)} (${num(W.mm, 1)} mm)` : "sem chuva até a noite") : `chuva ${W.chuva}%`;
 function hjRoupa(W) {
   const s = W.sens ?? W.t, out = [];
   out.push(s < 3 ? "Casaco pesado, cachecol e luvas; camada térmica por baixo." : s < 10 ? "Casaco de inverno ou jaqueta forrada com suéter." : s < 16 ? "Jaqueta leve ou suéter; sapato fechado." : s < 22 ? "Manga longa leve, ou camiseta com um casaco na mochila." : s < 28 ? "Roupa leve; um casaco fino só se for voltar tarde." : "Roupa leve e clara, água sempre à mão.");
   if (W.max - W.min >= 10) out.push(`Diferença de ${num(W.max - W.min, 0)}° entre manhã e tarde: vá em camadas.`);
-  if (W.chuva >= 50) out.push(`Chuva provável (${W.chuva}%): guarda-chuva e sapato que aguente água.`); else if (W.chuva >= 30) out.push(`Chance de chuva de ${W.chuva}%: guarda-chuva pequeno na mochila.`);
+  if (W.fonte === "feed") { if (W.hChuva) out.push(`Chuva ${quandoChove(W)} (${num(W.mm, 1)} mm): ${W.chuva >= 70 ? "guarda-chuva e sapato que aguente água" : "guarda-chuva pequeno na mochila"}.`); }
+  else if (W.chuva >= 50) out.push(`Chuva provável (${W.chuva}%): guarda-chuva e sapato que aguente água.`); else if (W.chuva >= 30) out.push(`Chance de chuva de ${W.chuva}%: guarda-chuva pequeno na mochila.`);
   if (W.uv >= 6) out.push(`UV ${num(W.uv, 0)}: protetor solar se ficar ao ar livre entre 11 h e 16 h.`);
   if (W.vento >= 30) out.push(`Vento forte (${num(W.vento, 0)} km/h).`);
   return out;
@@ -10551,7 +10615,7 @@ const CUSTO_TXT = ["grátis", "até € 10", "até € 30"];
 const TEMPO_OPT = [[120, "2 h"], [240, "4 h"], [360, "6 h"]];
 const GRANA_OPT = [["zero", "nada", 0], ["pouco", "até € 10", 1], ["ok", "até € 30", 2], ["folga", "mais", 2]];
 function hjIdeias(c, W) {
-  const per = periodo(), dow = parse(TODAY).getDay(), tempo = +c.tempo || 60, gmax = (GRANA_OPT.find(g => g[0] === c.grana) || [0, 0, 1])[2], en = { baixa: 1, media: 2, alta: 3 }[c.energia] || 2, chuva = W ? W.chuva >= 50 || W.code >= 61 : c.clima === "chuva", extremo = W ? W.sens < 3 || W.max >= 33 : c.clima === "frio" || c.clima === "calor";
+  const per = periodo(), dow = parse(TODAY).getDay(), tempo = +c.tempo || 60, gmax = (GRANA_OPT.find(g => g[0] === c.grana) || [0, 0, 1])[2], en = { baixa: 1, media: 2, alta: 3 }[c.energia] || 2, chuva = !!W && (W.chuva >= 50 || W.code >= 61), extremo = !!W && (W.sens < 3 || W.max >= 33);
   const out = [], motivos = [];
   if (chuva) motivos.push("com chuva, saíram as de ar livre"); if (extremo) motivos.push("com temperatura extrema, saíram as longas ao ar livre"); if (gmax === 0) motivos.push("sem dinheiro para lazer, só as gratuitas"); if (en === 1) motivos.push("com energia baixa, só as leves"); if (tempo < 60) motivos.push(`com ${tempo} min, só as curtas`);
   for (const [t, d, cst, min, outd, e, soc, tipo, ok] of IDEIAS) {
@@ -10578,7 +10642,6 @@ function hjAsk(c) {
     <div class="hjaskh"><b>${ic("mood")}Como você está agora?</b><span class="muted small">${falta.length ? `${falta.length} de 4 sem resposta: o resumo fica genérico nelas` : "Resumo ajustado às suas respostas"} · ${PER_TXT[periodo()]}, ${new Date().toTimeString().slice(0, 5)}</span></div>
     <div class="hjq"><span>Humor</span>${chips("humor", mood)}</div><div class="hjq"><span>Energia</span>${chips("energia", [["baixa", "baixa"], ["media", "média"], ["alta", "alta"]])}</div>
     <div class="hjq"><span>Tempo livre hoje</span>${chips("tempo", TEMPO_OPT)}<label class="hjtemp hjtl">outro<input type="text" inputmode="decimal" data-hjtempo="1" value="${c.tempo && !TEMPO_OPT.some(([v]) => v === +c.tempo) ? String(+c.tempo / 60).replace(".", ",") : ""}" placeholder="h" aria-label="Outro tempo livre, em horas">h</label></div><div class="hjq"><span>Dinheiro para lazer</span>${chips("grana", GRANA_OPT.map(g => [g[0], g[1]]))}</div>
-    ${HJ.wxSt === "err" || (!HJ.wx && c.clima) ? `<div class="hjq"><span>Tempo lá fora</span>${chips("clima", [["sol", "sol"], ["nublado", "nublado"], ["chuva", "chuva"], ["frio", "frio"], ["calor", "calor"]])}<label class="hjtemp">°C<input type="number" data-hjtemp="1" value="${esc(c.temp ?? "")}" aria-label="Temperatura"></label></div>` : ""}
   </section>`;
 }
 /* primeiros passos: para quem começa do zero (ou acabou de trazer o backup), quatro coisas que fazem o resto do Atlas funcionar.
@@ -10594,7 +10657,7 @@ function hjPassos() {
     <ol class="hjpl">${P.map(([k, t, d, h, ok]) => `<li class="${ok ? "ok" : ""}"><span class="pdrn" aria-label="${ok ? "feito" : "a fazer"}">${ok ? ic("check") : "·"}</span><div><a href="${h}"${ok ? ' tabindex="-1"' : ""}><b>${t}</b></a><small class="muted">${d}</small></div></li>`).join("")}</ol></section>`;
 }
 function pHoje2(R) {
-  hjFeed(); const c = hctx(); hjWeather(); hjNews(); const W = hjClima();
+  hjFeed(); const c = hctx(); if (FEED_ST === "ok" && !feedClima()) hjWeather(); hjNews(); const W = hjClima(); HJ.wxK = W?.h || "";
   const news = HJ.news?.length ? HJ.news : feedFresco() && FEED.news?.length ? FEED.news : null, newsFeed = !HJ.news?.length && !!news;
   const s = S.saude[TODAY] || {}, F = hjFrase(c), I = hjIdeias(c, W);
   const tasks = R.tar.filter(t => t.open && t.prazo && t.prazo <= TODAY).sort((a, b) => a.prazo.localeCompare(b.prazo)), doneToday = R.tar.filter(t => t.status === "Concluída" && t.concluida === TODAY);
@@ -10604,11 +10667,11 @@ function pHoje2(R) {
   const exps = (S.experimentos || []).filter(x => x.status === "ativo" && expSchedule(x)[TODAY] && !(x.desenho === "antes" && expSchedule(x)[TODAY] === "A")), al = radarAlerts().slice(0, 2);
   const fwk = fsTarget(), fpend = parse(TODAY).getDay() <= 1 && S.fechamentos?.[fwk]?.status !== "fechado";
   const reg = [["humor", "humor"], ["sono", "sono"], ["treino", "treino"]].filter(([k]) => s[k] != null && s[k] !== ""), habs = S.habitos.filter(h => S.marks[`${h.id}|${TODAY}`]).length;
-  const resumo = [W ? `${num(W.t, 0)}° agora, ${num(W.min, 0)}–${num(W.max, 0)}° no dia${W.chuva >= 30 ? `, ${W.chuva}% de chuva` : ", sem chuva prevista"}` : "", nVence ? plural(nVence, "tarefa vence até hoje", "tarefas vencem até hoje") : "nenhuma tarefa vencendo", contas.length ? plural(contas.length, "conta da casa para pagar", "contas da casa para pagar") : ""].filter(Boolean).join(" · ");
+  const resumo = [W ? `${num(W.t, 0)}° agora, ${num(W.min, 0)}–${num(W.max, 0)}° no dia, ${W.fonte === "feed" ? chuvaTxt(W) : W.chuva >= 30 ? `${W.chuva}% de chuva` : "sem chuva prevista"}` : "", nVence ? plural(nVence, "tarefa vence até hoje", "tarefas vencem até hoje") : "nenhuma tarefa vencendo", contas.length ? plural(contas.length, "conta da casa para pagar", "contas da casa para pagar") : ""].filter(Boolean).join(" · ");
   return `${hjPassos()}<p class="hjlead">${esc(resumo)}.</p>
     ${hjAsk(c)}
     <div class="g2c hj2">
-      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "net" ? "Open-Meteo, agora" : W.fonte === "feed" ? `Open-Meteo, às ${FEED.hora || "manhã"}` : "marcado por você") : HJ.wxSt === "load" ? "buscando…" : "sem dados"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · chuva ${W.chuva}%${W.fonte === "net" ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div><div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${HJ.wxSt === "err" ? "Não consegui buscar o clima nesta visualização. Marque o tempo lá fora em “Como você está agora?”." : "Buscando a previsão…"}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
+      ${panel(`${ic(W?.ico || "sun")}Tempo em ${esc(cidade().nome)} <small>${W ? (W.fonte === "feed" ? `MET Norway · atualizada ${FEED.dia === TODAY ? "hoje" : fmtDY(FEED.dia)} às ${esc(FEED.hora || "")}` : "Open-Meteo, agora") : FEED_ST !== "ok" || HJ.wxSt === "load" ? "buscando…" : "aguardando a atualização"}</small>`, W ? `<div class="hjwx"><b>${num(W.t, 0)}°</b><div><span>${esc(W.txt)}${W.txtD ? `; ${esc(W.txtD)} mais tarde` : ""}</span><small>sensação ${num(W.sens, 0)}° · mín ${num(W.min, 0)}° máx ${num(W.max, 0)}° · ${esc(chuvaTxt(W))}${W.uv >= 1 ? ` · UV ${num(W.uv, 0)}` : ""}</small></div></div>${W.prox?.length ? `<div class="hjhrs" aria-label="Próximas horas">${W.prox.map(x => `<span><small>${x.hora}h</small>${ic((x.code ?? 3) <= 2 && (x.hora >= 20 || x.hora < 6) ? "moon" : WMO(x.code ?? 3)[1])}<b>${num(x.t, 0)}°</b>${(+x.mm || 0) >= .1 ? `<small class="hjmm">${num(x.mm, 1)} mm</small>` : ""}</span>`).join("")}</div>` : ""}<div class="flbl">O que vestir</div><ul class="hjl">${hjRoupa(W).map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="flbl">O que o tempo permite</div><p>${esc(hjAtiv(W))}</p>` : `<div class="empty">${esc(hjSemClima())}</div>`, { act: `<button type="button" class="lnk" data-act="hjcid">${ic("globe")}trocar cidade</button>` })}
       ${panel(`${ic("spark")}Para esta ${PER_TXT[periodo()]}`, `<blockquote class="hjq1"><p>${esc(F.f[0])}</p><cite>${esc(F.f[1])}</cite></blockquote><p class="hjconc">${esc(F.concreto)}</p><button type="button" class="lnk" data-act="hjfr">outra frase</button>`)}
       ${panel(`${ic("compass")}Ideias para sair da rotina <small>${I.pick.length} de ${IDEIAS.length}, filtradas pelo seu momento</small>`, `${I.motivos.length ? `<p class="muted small">${esc(I.motivos.join("; "))}.${I.total < 3 ? " Sobraram poucas: é uma limitação real do dia, não falta de opção na cidade." : ""}</p>` : ""}<div class="hjid">${I.pick.map(x => `<article class="hjidc"><b>${esc(x.t)}</b><p>${esc(x.d)}</p><div class="hjidm">${chip(CUSTO_TXT[x.cst])}${chip(x.min >= 60 ? `${num(x.min / 60, x.min % 60 ? 1 : 0)} h` : `${x.min} min`)}${chip(x.outd === 1 ? "ao ar livre" : x.outd ? "dentro ou fora" : "dentro")}</div>${x.why.length ? `<small>Por que hoje: ${esc(x.why.join(", "))}</small>` : ""}<div class="row"><button type="button" class="btn sm" data-hjvou="${esc(x.t)}">${ic("check")}Vou fazer</button><button type="button" class="lnk" data-hjskip="${esc(x.t)}">outra</button></div></article>`).join("") || `<div class="empty">Nenhuma ideia cabe nas respostas de agora. Com mais tempo livre ou orçamento, aparecem opções.</div>`}</div>`, { cls: "span2" })}
       ${panel(`${ic("globe")}Notícias boas <small>jornalismo de soluções, em inglês</small>`, news ? `<div class="hjnews">${news.map(n => `<a class="hjn" href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.t)}</b>${n.d ? `<span>${esc(n.d)}…</span>` : ""}<small>${esc(n.src)}${n.data ? " · " + fmtDY(n.data) : ""}</small></a>`).join("")}</div>${newsFeed ? `<p class="muted small">Do resumo de ${fmtDY(FEED.dia)} gravado no Atlas.</p>` : ""}` : HJ.newsSt === "load" ? `<div class="empty">Buscando…</div>` : `<div class="empty">Não consegui buscar as notícias nesta visualização. Abra direto: <a class="lnk" href="https://www.positive.news" target="_blank" rel="noopener">Positive News</a> · <a class="lnk" href="https://www.goodnewsnetwork.org" target="_blank" rel="noopener">Good News Network</a> · <a class="lnk" href="https://www.corriere.it/buone-notizie/" target="_blank" rel="noopener">Corriere · Buone Notizie</a></div>`)}
@@ -10632,17 +10695,37 @@ function hjClick(t) {
   if (ds.act === "hjcid") { hjCidade(); return true; }
   return false;
 }
+/* por que não há clima agora, em palavras (sem pedir para marcar à mão) */
+function hjSemClima() {
+  const C = FEED?.clima, nome = cidade().nome;
+  if (FEED_ST !== "ok" || HJ.wxSt === "load") return "Buscando a previsão…";
+  if (!FEED && !extOk("clima")) return "O clima está desligado em Privacidade › Serviços externos.";
+  if (FEED?.erroCidade && normNome(FEED.erroCidade) === normNome(nome)) return `A atualização automática não encontrou “${nome}”. Toque em “trocar cidade” e escolha uma da lista (ou escreva o nome como aparece no mapa).`;
+  if (C?.horas?.length && !feedDaCidade()) return `A previsão de ${nome} entra na próxima atualização automática, às ${FEED_HORAS}, sem precisar recarregar. A última gravada foi de ${C.cidade}.`;
+  if (FEED) return `A última previsão gravada (${fmtDY(FEED.dia)}, ${FEED.hora}) já não cobre esta hora. Ela se atualiza sozinha às ${FEED_HORAS}; a próxima aparece aqui sem recarregar.`;
+  return `A previsão é gravada no Atlas automaticamente às ${FEED_HORAS}. A primeira aparece aqui assim que chegar, sem recarregar.`;
+}
+/* cidades com coordenadas prontas (a página não tem internet para procurar); outra cidade vai pelo nome e a tarefa agendada localiza */
+const CIDADES = [["Turim", 45.0705, 7.6868, "Torino|Turin"], ["Milão", 45.4642, 9.19, "Milano|Milan"], ["Roma", 41.9028, 12.4964, "Rome"], ["Florença", 43.7696, 11.2558, "Firenze|Florence"], ["Bolonha", 44.4949, 11.3426, "Bologna"],
+  ["Gênova", 44.4056, 8.9463, "Genova|Genoa"], ["Veneza", 45.4408, 12.3155, "Venezia|Venice"], ["Nápoles", 40.8518, 14.2681, "Napoli|Naples"], ["Verona", 45.4384, 10.9916, ""], ["Pádua", 45.4064, 11.8768, "Padova|Padua"],
+  ["Bérgamo", 45.6983, 9.6773, "Bergamo"], ["Bréscia", 45.5416, 10.2118, "Brescia"], ["Trieste", 45.6495, 13.7768, ""], ["Bari", 41.1171, 16.8719, ""], ["Palermo", 38.1157, 13.3615, ""], ["Catânia", 37.5079, 15.083, "Catania"],
+  ["Cagliari", 39.2238, 9.1217, ""], ["Aosta", 45.7372, 7.3201, ""], ["Asti", 44.9008, 8.2064, ""], ["Cuneo", 44.3845, 7.5427, ""], ["Novara", 45.4469, 8.6219, ""], ["Alessandria", 44.9133, 8.6155, ""], ["Ivrea", 45.4668, 7.8764, ""], ["Pinerolo", 44.8862, 7.3311, ""],
+  ["São Paulo", -23.5505, -46.6333, "Sao Paulo"], ["Rio de Janeiro", -22.9068, -43.1729, "Rio"], ["Belo Horizonte", -19.9208, -43.9378, "BH"], ["Brasília", -15.7939, -47.8828, "Brasilia"], ["Curitiba", -25.4284, -49.2733, ""],
+  ["Porto Alegre", -30.0346, -51.2177, ""], ["Florianópolis", -27.5954, -48.548, "Florianopolis|Floripa"], ["Salvador", -12.9777, -38.5016, ""], ["Recife", -8.0476, -34.877, ""], ["Fortaleza", -3.7319, -38.5267, ""],
+  ["Goiânia", -16.6869, -49.2648, "Goiania"], ["Campinas", -22.9056, -47.0608, ""], ["Vitória", -20.3155, -40.3128, "Vitoria"], ["Manaus", -3.119, -60.0217, ""], ["Belém", -1.4558, -48.5044, "Belem"],
+  ["Lisboa", 38.7223, -9.1393, "Lisbon"], ["Porto", 41.1579, -8.6291, "Oporto"], ["Madri", 40.4168, -3.7038, "Madrid"], ["Barcelona", 41.3874, 2.1686, ""], ["Paris", 48.8566, 2.3522, ""], ["Londres", 51.5072, -0.1276, "London"],
+  ["Zurique", 47.3769, 8.5417, "Zurich|Zürich"], ["Genebra", 46.2044, 6.1432, "Geneva|Genève"], ["Nice", 43.7102, 7.262, "Nizza"], ["Lyon", 45.764, 4.8357, "Lione"], ["Munique", 48.1351, 11.582, "Munich|München"], ["Berlim", 52.52, 13.405, "Berlin"]];
+const acharCidade = q => { const n = normNome(q); return CIDADES.find(([nome, , , alt]) => [nome, ...alt.split("|")].some(x => x && normNome(x) === n)); };
 function hjCidade() {
-  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" value="${esc(cidade().nome)}"></label></div><p class="muted small" id="hjcm"></p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Buscar</button></div></div></form>`;
+  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" list="hjcl" autocomplete="off" value="${esc(cidade().nome)}"></label><datalist id="hjcl">${CIDADES.map(c => `<option value="${esc(c[0])}">`).join("")}</datalist></div><p class="muted small" id="hjcm">A previsão é atualizada automaticamente às ${FEED_HORAS}. Uma cidade nova entra na próxima atualização.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Salvar</button></div></div></form>`;
   d.showModal(); $("#hjcx").onclick = () => d.close();
-  $("#hjcf").onsubmit = async e => { e.preventDefault(); const q = $("#hjci").value.trim(); if (!q) return; if (!extOk("clima")) { $("#hjcm").textContent = "O clima está desligado em Privacidade › Serviços externos."; return; } $("#hjcm").textContent = "Buscando…";
-    try { const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=pt`), j = await r.json(), x = j?.results?.[0]; if (!x) { $("#hjcm").textContent = "Cidade não encontrada."; return; }
-      S.cfg.cidade = { nome: x.name, lat: x.latitude, lon: x.longitude }; d.close(); HJ.wx = null; HJ.wxSt = ""; try { localStorage.removeItem("atlas_wx"); } catch {} touch("cfg", { label: "Cidade do clima" }); }
-    catch { $("#hjcm").textContent = "Sem acesso à internet nesta visualização."; } };
+  $("#hjcf").onsubmit = e => { e.preventDefault(); const q = $("#hjci").value.trim().slice(0, 80); if (!q) return; const x = acharCidade(q);
+    S.cfg.cidade = x ? { nome: x[0], lat: x[1], lon: x[2] } : { nome: q }; d.close(); HJ.wx = null; HJ.wxSt = ""; try { localStorage.removeItem("atlas_wx"); } catch {}
+    touch("cfg", { label: "Cidade do clima" }); if (!feedDaCidade()) toast(x ? `${x[0]}: a previsão entra na próxima atualização automática (${FEED_HORAS}).` : `“${q}” não está na lista: a próxima atualização automática localiza pelo nome.`); };
 }
 function hjChange(t) {
   if (t.dataset.hjtempo) { const h = parseNum(t.value); hctx().tempo = h > 0 ? Math.round(Math.min(24, h) * 60) : ""; HJ.skip.clear(); touch("hojeCtx", { label: "Tempo livre", noUndo: true }); return true; }
-  if (t.dataset.hjtemp) { hctx().temp = t.value === "" ? "" : +t.value; touch("hojeCtx", { noUndo: true }); return true; } return false; }
+  return false; }
 
 /* ================================================================ Casa & docs: a casa como espaço físico e como conta
    Limpeza (rotinas do leve ao pesado), compras da semana, calendário de contas e documentos anuais.
@@ -11139,6 +11222,8 @@ function pd2Change(t) { if (t.dataset.pdl) { if (t.tagName === "SELECT") { const
    os blocos de estudo do plano de Idiomas. A primeira chamada pede a sua permissão no próprio Claude. */
 const GCAL = { st: "", msg: "", busy: false };
 const GC_SRV = "Google Calendar";
+/* eventos semanais que o Atlas cria para os lembretes levam esta marca na descrição: a sincronização não os traz como compromissos */
+const GC_LEMB = "atlas-lemb:";
 const gcInteg = () => { S.integ ||= {}; return (S.integ.gcal ||= {}); };
 const gcErr = e => ({ not_granted: "Você não liberou o Google Calendar para esta página.", needs_reauth: "O Google Calendar precisa ser reconectado nas configurações do Claude.", server_not_connected: "O Google Calendar não está conectado na sua conta Claude.", not_in_manifest: "Esta versão da página não tem acesso ao Google Calendar.", blocked_by_policy: "A sua organização bloqueou este conector.", cancelled: "Cancelado.", formato: e?.message }[e?.code] || `Não consegui falar com o Google Calendar (${e?.code || "erro"}).`);
 /* o conector pede a hora local sem fuso nem “Z” (o fuso vai à parte, em timeZone) */
@@ -11160,7 +11245,7 @@ async function gcSync(o = {}) {
       /* formato da resposta conferido só em simulação: aceita as variações comuns e, se não reconhecer nenhuma, para sem apagar nada */
       const pl = r?.payload ?? {}, lista = Array.isArray(pl) ? pl : pl.events ?? pl.items ?? pl.result?.events ?? pl.data?.events;
       if (!Array.isArray(lista)) throw { code: "formato", message: `O Google Agenda respondeu num formato que o Atlas não reconhece (${Object.keys(pl || {}).slice(0, 6).join(", ") || "vazio"}). Nada foi alterado.` };
-      for (const ev of lista) if (ev && ev.status !== "cancelled" && ev.id) evs.push(ev); tok = (Array.isArray(pl) ? "" : pl.nextPageToken || pl.next_page_token) || ""; if (!tok) break; }
+      for (const ev of lista) if (ev && ev.status !== "cancelled" && ev.id && !String(ev.description || "").includes(GC_LEMB)) evs.push(ev); tok = (Array.isArray(pl) ? "" : pl.nextPageToken || pl.next_page_token) || ""; if (!tok) break; }
     const keep = (S.eventos || []).filter(e => e.origem !== "gcal" || e.data < de || e.data > ate), novos = evs.map(ev => { const m = gcMap(ev); return { id: "gc_" + ev.id, uid: "gcal:" + ev.id, ...m, titulo: String(ev.summary || "(sem título)").slice(0, 200), local: String(ev.location || "").slice(0, 200), link: ev.htmlLink || "", origem: "gcal" }; }).filter(e => e.data);
     S.eventos = [...keep, ...novos]; const G = gcInteg(); G.on = true; G.last = Date.now(); G.n = novos.length;
     GCAL.st = "ok"; GCAL.msg = ""; touch("eventos", "integ", { label: "Google Calendar", noUndo: true }); if (!o.silent) toast(`${plural(novos.length, "compromisso", "compromissos")} do Google Calendar nos próximos 30 dias`);
@@ -11210,7 +11295,7 @@ function gcClick(t) {
    (o antigo feitos{dia:1} continua valendo como “feito”). Modelos: S.rotinaModelos. A Agenda e o Google aparecem tracejados, só leitura.
    Arrastar no vazio cria; arrastar um bloco move (também entre dias na semana); a alça de baixo estica. Um bloco repetido movido vira
    exceção naquele dia e uma cópia avulsa no novo horário, como nas agendas. */
-const RT = { d: TODAY, drag: null, mv: null, just: 0, q: "", pick: false, scrolled: "" };
+const RT = { d: TODAY, drag: null, mv: null, just: 0, q: "", pick: false, scrolled: "", pre: "" };
 const RT_Z = { compacto: 18, normal: 28, grande: 40 };
 const rtSH = () => RT_Z[S.cfg.rtZoom] || RT_Z.normal;
 const RT_CATS = [["Trabalho", "var(--a-car)"], ["Estudo", "var(--a-apr)"], ["Saúde & treino", "var(--a-fis)"], ["Casa", "var(--a-fam)"], ["Pessoas", "var(--a-ami)"], ["Lazer", "var(--a-laz)"], ["Descanso", "var(--a-men)"], ["Espiritual", "var(--jp-med)"], ["Deslocamento", "var(--muted)"], ["Outro", "var(--ink-2)"]];
@@ -11388,10 +11473,11 @@ function rtInsights(days) {
   out.push(panel(`${ic("checksq")}Cumprimento · 4 semanas <small>${AD.pct == null ? "sem histórico" : pct(AD.pct) + " do planejado"}</small>`, AD.pct == null ? `<div class="empty">Marque os blocos como feito, parcial ou pulado: aqui aparece quanto da rotina vira realidade, por categoria.</div>`
     : `${hbars(Object.entries(AD.per).filter(([, [, m]]) => m).sort((p, q) => q[1][1] - p[1][1]).map(([c, [v2, m]]) => ({ l: c, v: v2 / m, color: rtCor(c) })), { fmt: pct, max: 1 })}<div class="rtwks">${wks.map(w => { const [v2, m] = AD.wk[w]; return `<span title="Semana de ${fmtD(w)}: ${pct(v2 / m)}"><i style="height:${Math.max(4, v2 / m * 40)}px"></i><small>${fmtD(w)}</small></span>`; }).join("")}</div>`));
   /* ações */
-  const mods = [...RT_MOD0, ...(S.rotinaModelos || [])];
+  const mods = rtModsPre();
   out.push(panel(`${ic("list")}Modelos e atalhos`, `<div class="form f1"><label>Aplicar um modelo ${v === "dia" ? "neste dia" : "nesta semana"}<div class="row"><select id="rt_mod">${mods.map(m => `<option value="${m.id}"${m.id === RT.mod ? " selected" : ""}>${esc(m.nome)}${m.semana ? ` · semana, ${m.semana.length} blocos` : ""}</option>`).join("")}</select><button type="button" class="btn sm" data-act="rtmod">Aplicar</button></div></label></div>
     <div class="row wrap">${v === "dia" ? `<button type="button" class="btn sm" data-act="rtcopy">${ic("copy")}Copiar o dia…</button>` : `<button type="button" class="btn sm" data-act="rtsavemod">${ic("plus")}Salvar a semana como modelo</button><button type="button" class="btn sm" data-act="rtcopyw">${ic("copy")}Copiar para a próxima semana</button>`}</div>
     <details class="futd"><summary>Ajustes da grade</summary><div class="form f3"><label>Acordo<input type="time" step="1800" data-rtcfg="rtAcordar" value="${esc(S.cfg.rtAcordar || "06:30")}"></label><label>Durmo<input type="time" step="1800" data-rtcfg="rtDormir" value="${esc(S.cfg.rtDormir || "23:00")}"></label><label>Tamanho<select data-rtcfg="rtZoom">${Object.keys(RT_Z).map(k => `<option${(S.cfg.rtZoom || "normal") === k ? " selected" : ""}>${k}</option>`).join("")}</select></label></div><p class="muted small">Teclado: ← → período · T hoje · D S M vistas · N novo bloco.</p></details>`));
+  out.push(lsPanel());
   return out.join("");
 }
 /* dias do período na tela: o dia, a semana (seg–dom) ou os dias do mês */
@@ -11406,7 +11492,7 @@ function pRotina() {
       <div class="rtnav"><button type="button" class="iconbtn" data-rtnav="-1" aria-label="${v === "dia" ? "Dia anterior" : v === "semana" ? "Semana anterior" : "Mês anterior"}">‹</button><button type="button" class="btn sm" data-rtnav="0">Hoje</button><button type="button" class="iconbtn" data-rtnav="1" aria-label="${v === "dia" ? "Próximo dia" : v === "semana" ? "Próxima semana" : "Próximo mês"}">›</button></div>
       <div class="rtper"><button type="button" class="rtpt" data-act="rtpick" aria-expanded="${RT.pick}"><b>${esc(P.t)}</b><small>${esc(P.y)}${P.s ? ` · <em>${P.s}</em>` : ""}</small>${ic("cal")}</button>${RT.pick ? rtMini() : ""}</div>
       <div class="seg-g rtviews" role="group" aria-label="Visualização">${[["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]].map(([k, l]) => `<button type="button" class="seg" data-rtv="${k}" aria-pressed="${v === k}">${l}</button>`).join("")}</div>
-      <div class="row rtbtns"><button type="button" class="btn sm ghost danger rtclr" data-act="rtclear" title="Tira os blocos da rotina ${RT_LIMPAR[v][1]}. Pede confirmação antes." aria-label="${RT_LIMPAR[v][0]}">${ic("trash")}<span>${RT_LIMPAR[v][0]}</span></button><button type="button" class="btn sm" data-act="rtcap" title="Conte o dia por voz ou texto: cada atividade vai para a faixa de horário dela">${ic("mic")}Capturar o dia</button><button type="button" class="btn sm primary" data-act="rtnovo">${ic("plus")}Novo bloco</button></div>
+      <div class="row rtbtns"><button type="button" class="btn sm rtpre" data-act="rtpre" title="Preenche ${RT_LIMPAR[v][1]} com um modelo pronto (Básica, Intermediária, Avançada ou outro salvo)">${ic("bolt")}<span>Preencher</span></button><button type="button" class="btn sm ghost danger rtclr" data-act="rtclear" title="Tira os blocos da rotina ${RT_LIMPAR[v][1]}. Pede confirmação antes." aria-label="${RT_LIMPAR[v][0]}">${ic("trash")}<span>${RT_LIMPAR[v][0]}</span></button><button type="button" class="btn sm" data-act="rtcap" title="Conte o dia por voz ou texto: cada atividade vai para a faixa de horário dela">${ic("mic")}Capturar o dia</button><button type="button" class="btn sm primary" data-act="rtnovo">${ic("plus")}Novo bloco</button></div>
     </div>
     <div class="rtq"><span>${ic("plus")}</span><input type="text" id="rt_q" value="${esc(RT.q)}" placeholder="Criar rápido: inglês amanhã 20h 30min · academia seg qua sex 18:30–19:30 · reunião 14h–15h30" aria-label="Criar bloco por texto" autocomplete="off"><button type="button" class="btn sm primary" data-act="rtqadd"${qp?.ok ? "" : " disabled"}>Criar</button>
       <div class="rtqp${qp ? (qp.ok ? " ok" : " bad") : ""}" id="rt_qp">${qp ? rtQpHTML(qp) : ""}</div></div>
@@ -11462,11 +11548,41 @@ const RT_MOD0 = [
   { id: "m_foco", nome: "Foco profundo (estudo ou projeto)", fixo: true, b: [["08:00", "09:30", "Bloco de foco 1", "Estudo"], ["09:30", "10:00", "Pausa com movimento", "Descanso"], ["10:00", "11:30", "Bloco de foco 2", "Estudo"], ["11:30", "12:00", "Revisar e anotar", "Estudo"], ["14:00", "15:30", "Bloco de foco 3", "Estudo"]] },
   { id: "m_fds", nome: "Fim de semana leve", fixo: true, b: [["08:30", "09:30", "Café sem pressa", "Descanso"], ["10:00", "11:30", "Mercado e casa", "Casa"], ["12:00", "14:00", "Almoço com alguém", "Pessoas"], ["15:00", "17:00", "Passeio ou programa ao ar livre", "Lazer"], ["18:00", "19:00", "Ligar para a família no Brasil", "Pessoas"], ["21:00", "22:00", "Filme ou série", "Lazer"]] },
 ];
-function rtAplicar(mod, dias) {
+function rtAplicar0(mod, dias) {
   let n = 0, pulados = 0;
   for (const d of dias) { const dow = parse(d).getDay(), list = mod.semana ? mod.semana.filter(x => x[0] === dow).map(x => x.slice(1)) : mod.b, ex = rtDia(d);
     for (const [ini, fim, titulo, cat, cor, tx] of list) { const a = hm2min(ini), z = hm2min(fim); if ([...ex.bs, ...ex.A.timed].some(x => x.a != null && x.a < z && a < x.z)) { pulados++; continue; } (S.rotina ||= []).push({ id: uid(), data: d, ini, fim, titulo, cat, rep: "", exc: [], st: {}, notas: "", ...(rtHex(cor) ? { cor, ...(rtHex(tx) ? { tx } : {}) } : {}) }); n++; } }
+  return [n, pulados];
+}
+function rtAplicar(mod, dias) {
+  const [n, pulados] = rtAplicar0(mod, dias);
   touch("rotina", { label: `Modelo: ${mod.nome}` }); undoToast(`${plural(n, "bloco aplicado", "blocos aplicados")}${pulados ? ` · ${pulados} pulado(s) por conflito` : ""}`);
+}
+/* ---------------------------------------------------------------- preencher rápido com um modelo de nível
+   Modelos com “nivel” (basica, intermediaria, avancada) aparecem primeiro, com as horas da semana por categoria; os outros modelos
+   salvos vêm depois. “Substituir” limpa o período antes (como o Limpar, sem mexer em tarefas, agenda e aniversários) e aplica:
+   tudo num passo só de desfazer. Sem substituir, os horários já ocupados ficam e o modelo preenche só o que está livre. */
+const RT_NIVEIS = ["basica", "intermediaria", "avancada"];
+const rtModsPre = () => { const M = S.rotinaModelos || [], niv = RT_NIVEIS.flatMap(n => M.filter(m => m.nivel === n)); return [...niv, ...M.filter(m => !niv.includes(m)), ...RT_MOD0]; };
+const rtHorasCat = m => { const H = {}; for (const x of m.semana || []) { const c = x[4] || "Outro"; H[c] = (H[c] || 0) + (hm2min(x[2]) - hm2min(x[1])) / 60; } return H; };
+function rtPreDlg() {
+  const v = rtView(), days = rtDias(), M = rtModsPre(), X = rtAlvoLimpar(days), tem = X.av.length + X.rep.length, P = rtPer(), alvo = v === "mes" ? `${P.t} de ${P.y}` : `${P.t} · ${P.y}`;
+  const sel = M.find(m => m.id === RT.pre) || M.find(m => m.nivel) || M[0], dlg = $("#dlg");
+  const resumo = m => { if (!m.semana) return `${plural(m.b.length, "bloco", "blocos")} por dia`; const H = rtHorasCat(m), ks = ["Trabalho", "Estudo", "Lazer", "Pessoas", "Saúde & treino", "Espiritual"].filter(k => H[k]);
+    return ks.map(k => `${k} ${num(H[k], H[k] % 1 ? 1 : 0)} h`).join(" · ") + (H.Estudo ? "" : " · sem estudo"); };
+  dlg.innerHTML = `<form method="dialog" id="rtpref" class="rtpref"><h3>Preencher ${v === "dia" ? "o dia" : v === "semana" ? "a semana" : "o mês"}</h3><p class="muted small">${esc(alvo)}</p>
+    <div class="rtprl" role="radiogroup" aria-label="Modelo">${M.map(m => `<label class="rtpro${m.nivel ? " nv-" + m.nivel : ""}"><input type="radio" name="rtpre" value="${esc(m.id)}"${m === sel ? " checked" : ""}><span><b>${esc(m.nome)}</b>${m.desc ? `<small>${esc(m.desc)}</small>` : ""}<small class="muted">${esc(resumo(m))}${m.semana ? " · por semana" : ""}</small></span></label>`).join("")}</div>
+    ${tem ? `<label class="chk"><input type="checkbox" id="rt_pres" checked><span>Substituir os ${plural(tem, "bloco", "blocos")} que já estão ${RT_LIMPAR[v][1]} (tarefas, agenda e aniversários ficam). Sem marcar, o modelo só ocupa os horários livres.</span></label>` : `<p class="muted small">O período está vazio: o modelo entra inteiro.</p>`}
+    <p class="muted small">Dá para desfazer logo depois, no aviso que aparece ou com Ctrl+Z.</p>
+    <div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="rtprx">Cancelar</button><button class="btn primary" data-rtpreok="1">${ic("bolt")}Preencher</button></div></div></form>`;
+  dlg.showModal(); dlg.querySelector("input[name=rtpre]:checked")?.focus();
+  $("#rtprx").onclick = () => dlg.close();
+  $("#rtpref").onsubmit = e => { e.preventDefault(); const id = dlg.querySelector("input[name=rtpre]:checked")?.value, m = M.find(x => x.id === id); if (!m) return; RT.pre = id; const subst = !!$("#rt_pres")?.checked; dlg.close(); rtPreencher(m, days, subst); };
+}
+function rtPreencher(mod, days, subst) {
+  const tira = subst ? rtLimpar0(days, false) : null, [n, pulados] = rtAplicar0(mod, days);
+  touch("rotina", { label: `Preencher: ${mod.nome}` });
+  undoToast(`${mod.nome}: ${plural(n, "bloco", "blocos")}${tira?.nb ? `, no lugar de ${tira.nb}` : ""}${pulados ? ` · ${pulados} pulado(s) por conflito` : ""}`);
 }
 function rtCopiar(de, para) {
   const ex = rtDia(para); let n = 0, p = 0;
@@ -11505,13 +11621,16 @@ function rtLimparDlg() {
   $("#rtclx").onclick = () => dlg.close();
   $("#rtclf").onsubmit = e => { e.preventDefault(); const comT = !!$("#rt_clt")?.checked; dlg.close(); rtLimpar(days, comT); };
 }
-function rtLimpar(days, comT) {
-  const v = rtView(), X = rtAlvoLimpar(days), D = new Set(days), exc = {};
+function rtLimpar0(days, comT) {
+  const X = rtAlvoLimpar(days), D = new Set(days), exc = {};
   for (const [id, d] of X.rep) (exc[id] ||= []).push(d);
   for (const b of S.rotina || []) if (exc[b.id]) b.exc = [...new Set([...(b.exc || []), ...exc[b.id]])];
   S.rotina = (S.rotina || []).filter(b => b.rep || !D.has(b.data));
   const nt = comT ? X.tar.size : 0; if (nt) S.tarefas = S.tarefas.filter(t => !X.tar.has(t.id));
-  const nome = { dia: "Dia limpo", semana: "Semana limpa", mes: "Mês limpo" }[v], nb = X.av.length + X.rep.length;
+  return { X, nt, nb: X.av.length + X.rep.length };
+}
+function rtLimpar(days, comT) {
+  const v = rtView(), { X, nt, nb } = rtLimpar0(days, comT), nome = { dia: "Dia limpo", semana: "Semana limpa", mes: "Mês limpo" }[v];
   touch("rotina", ...(nt ? ["tarefas"] : []), { label: nome });
   undoToast(`${nome}: ${[nb && plural(nb, "bloco", "blocos"), nt && plural(nt, "tarefa", "tarefas")].filter(Boolean).join(" e ")} fora${X.rep.length ? " (as repetições continuam nos outros dias)" : ""}`);
 }
@@ -11521,6 +11640,7 @@ function rtCard(id, day) {
   const b = (S.rotina || []).find(x => x.id === id); if (!b) return; const st = rtSt(b, day), dlg = $("#dlg");
   dlg.innerHTML = `<form method="dialog" class="rtcard" style="--c:${rtBC(b)}"><div class="rtch"><span class="rtcc"></span><div><h3>${esc(b.titulo)}</h3><p class="muted small">${fmtDL(day)} · ${b.ini}–${b.fim} · ${durTxt(hm2min(b.fim) - hm2min(b.ini))}<br>${esc(b.cat)}${b.rep ? ` · ${REP_TXT[b.rep]}` : ""}</p>${b.notas ? `<p>${esc(b.notas)}</p>` : ""}</div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>
     <div class="flbl">Como foi${day > TODAY ? " (ainda não aconteceu)" : ""}</div><div class="seg-g rtsts">${["feito", "parcial", "pulado"].map(s => `<button type="button" class="seg" data-rtst="${b.id}|${day}|${s}" aria-pressed="${st === s}">${ST_TXT[s]}</button>`).join("")}</div>
+    <div class="lsbox">${lsCartaoHTML(b, day)}</div>
     <div class="row wrap rtca"><button type="button" class="btn sm" data-rtedit="${b.id}|${day}">${ic("edit")}Editar</button><button type="button" class="btn sm" data-rtdup="${b.id}|${day}">${ic("copy")}Duplicar</button><button type="button" class="btn sm ghost" data-rtdel="${b.id}|${day}">${ic("trash")}${b.rep ? "Excluir neste dia" : "Excluir"}</button>${b.rep ? `<button type="button" class="btn sm ghost" data-rtdelall="${b.id}">Excluir a série</button>` : ""}</div></form>`;
   if (!dlg.open) dlg.showModal();
 }
@@ -11600,6 +11720,7 @@ function rtClick(t) {
   if (ds.act === "rtcopy") { const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="rtcpf"><h3>Copiar ${fmtDL(RT.d)}</h3><div class="form"><label>Para o dia<input type="date" id="rt_cpd" value="${addDays(RT.d, 1)}"></label></div><p class="muted small">Copia os blocos deste dia como blocos avulsos. Horários que já têm algo são pulados.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="rtcpx">Cancelar</button><button class="btn primary">Copiar</button></div></div></form>`; d.showModal(); $("#rtcpx").onclick = () => d.close();
     $("#rtcpf").onsubmit = e => { e.preventDefault(); const para = $("#rt_cpd").value; if (!para) return; const [n, p] = rtCopiar(RT.d, para); d.close(); touch("rotina", { label: "Dia copiado" }); undoToast(`${plural(n, "bloco copiado", "blocos copiados")} para ${fmtD(para)}${p ? ` · ${p} pulado(s)` : ""}`); }; return true; }
   if (ds.act === "rtclear") { rtLimparDlg(); return true; }
+  if (ds.act === "rtpre") { rtPreDlg(); return true; }
   return false;
 }
 function rtInput(t) { if (t.id === "rt_q") { RT.q = t.value; const q = t.value.trim() ? rtParse(t.value) : null, p = $("#rt_qp"), b = $('[data-act="rtqadd"]'); if (p) { p.className = "rtqp" + (q ? (q.ok ? " ok" : " bad") : ""); p.innerHTML = q ? rtQpHTML(q) : ""; } if (b) b.disabled = !q?.ok; return true; } return false; }
@@ -12604,7 +12725,7 @@ function secParseLembrete(txt) {
 }
 function secLembrar(l) { secData().lembretes.push({ id: uid(), texto: l.texto.slice(0, 200), quando: l.quando, feito: false, avisado: false, at: Date.now(), origem: l.origem || "você" }); touch("secretario", { label: "Lembrete criado" }); }
 function secTick() {
-  if (!LOADED) return; const L = secData().lembretes, now = new Date(), due = L.filter(l => !l.feito && !l.avisado && l.quando && new Date(l.quando) <= now);
+  if (!LOADED) return; if (lsTick()) return; const L = secData().lembretes, now = new Date(), due = L.filter(l => !l.feito && !l.avisado && l.quando && new Date(l.quando) <= now);
   if (due.length) { for (const l of due) l.avisado = true; touch("secretario", { noUndo: true, noRender: true }); SEC.nudge = { txt: due.length === 1 ? `Lembrete: ${due[0].texto}` : `${due.length} lembretes agora`, crit: true, at: Date.now() }; SEC.tab = "lembretes"; SEC.open = true; secLS("open", true); toast(SEC.nudge.txt); secPaint(); return; }
   /* proatividade: avisa uma vez por dia o que é novo, conforme o perfil */
   const pf = secPerfil(); if (SEC.open || pf.pro === "baixa" || pf.pro === "minima") { secFab(); return; }
@@ -12768,6 +12889,7 @@ function secLembHTML() {
   const L = secData().lembretes.filter(l => !l.feito).sort((a, b) => (a.quando || "9").localeCompare(b.quando || "9")), F = secData().lembretes.filter(l => l.feito).slice(-5).reverse(), now = new Date();
   return `<div class="secnew"><input type="text" id="sec_lem" placeholder="Ligar para o banco amanhã às 10" aria-label="Novo lembrete"><button type="button" class="btn sm primary" data-act="seclemadd">${ic("plus")}Lembrar</button></div><small class="muted">Aviso dentro do Atlas na hora marcada, com ele aberto.</small>
     ${L.length ? L.map(l => { const past = l.quando && new Date(l.quando) <= now; return `<div class="secit ${past ? "st-crit" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(l.texto)}</b><small>${l.quando ? `${l.quando.slice(0, 10) === TODAY ? "hoje" : fmtDL(l.quando.slice(0, 10))} às ${l.quando.slice(11, 16)}` : "sem hora"}${l.origem && l.origem !== "você" ? ` · ${esc(l.origem)}` : ""}</small><div class="secacts"><button type="button" class="btn sm" data-secdo="lemok|${l.id}">${ic("check")}Feito</button><button type="button" class="btn sm ghost" data-secdo="lemdel|${l.id}" aria-label="Apagar">${ic("trash")}</button></div></div></div>`; }).join("") : `<div class="secempty">${ic("clock")}Nenhum lembrete pendente.</div>`}
+    ${lsSecHTML()}
     ${F.length ? `<div class="secsec">Feitos</div>${F.map(l => `<div class="secit done"><i class="secdot"></i><div class="secb"><s>${esc(l.texto)}</s></div></div>`).join("")}` : ""}`;
 }
 function secPropHTML(mi, p) {
@@ -17939,6 +18061,174 @@ function iadCabe(lista) {
 const iadNota = () => `\n\nDADOS DO ATLAS: você pode ler todos, registro por registro, com a ferramenta ler_dados (catálogo: ${iadCatalogo() || "vazio"}). Use-a para conferir detalhes antes de afirmar algo. Não narre a consulta: o texto que você escrever é a resposta final, sem frases como "vou consultar os dados".`;
 
 
+/* ================================================================ lembretes das atividades semanais
+   Uma regra por atividade da Rotina, pelo nome do bloco: “Academia · seg, qua, sex · 15 min antes”. Vale para toda ocorrência
+   com esse nome (de modelo, avulsa ou repetida), em todas as semanas. Com o Atlas aberto, o Secretário avisa (aviso, som se ligado,
+   notificação do navegador se permitida). Para tocar no celular com o Atlas fechado, a regra vira evento semanal no Google Agenda,
+   com o mesmo aviso, marcado com GC_LEMB + id (a sincronização da Agenda ignora esses eventos).
+   Dados: S.secretario.semanais = [{ id, titulo, dias: [0..6] (vazio = todo dia em que aparece), min, on, gcal: { ids, min, slots, at } }],
+   S.secretario.lsSom, S.secretario.lsNotif. Avisos já dados ficam neste aparelho (localStorage), para cada aparelho avisar uma vez. */
+const LS_MIN = [0, 5, 10, 15, 30, 60];
+const lsData = () => (secData().semanais ||= []);
+const lsMinTxt = m => +m ? `${m} min antes` : "na hora";
+const lsSoTxt = d => ["só aos domingos", "só às segundas", "só às terças", "só às quartas", "só às quintas", "só às sextas", "só aos sábados"][d];
+const lsOrdDow = ds => ds.slice().sort((a, b) => (a + 6) % 7 - (b + 6) % 7);
+const lsDiasTxt = r => !r.dias?.length ? "todo dia em que aparece" : lsOrdDow(r.dias).map(d => DOWS[d].toLowerCase()).join(", ");
+const lsRegra = (titulo, dow) => lsData().find(r => normNome(r.titulo) === normNome(titulo) && (!r.dias?.length || r.dias.includes(dow)));
+const lsRegraDe = titulo => lsData().find(r => normNome(r.titulo) === normNome(titulo));
+/* avisos devidos agora: blocos de hoje (e de amanhã, quando o aviso cai antes da meia-noite) com regra ativa, ainda sem marcação */
+function lsDevidos(now = new Date()) {
+  if (!lsData().some(r => r.on !== false)) return [];
+  const m = now.getHours() * 60 + now.getMinutes(), out = [];
+  for (const [d, off] of [[TODAY, 0], [addDays(TODAY, 1), 1440]]) for (const b of rtOcc(d)) {
+    const r = lsRegra(b.titulo, parse(d).getDay()); if (!r || r.on === false) continue;
+    const a = hm2min(b.ini) + off;
+    if (m >= a - (+r.min || 0) && m <= a + 5 && !b.st) out.push({ k: `${d}|${b.id}|${b.ini}|${r.id}`, b, d, r, falta: a - m });
+  }
+  return out.sort((x, y) => x.falta - y.falta);
+}
+const lsVistos = () => { try { return JSON.parse(localStorage.getItem("atlas_lsem") || "{}") || {}; } catch { return {}; } };
+/* chamado pelo relógio do Secretário (a cada 30 s): devolve true quando avisou */
+function lsTick() {
+  if (!LOADED || EX_MODE) return false;
+  const vis = lsVistos(), novos = lsDevidos().filter(x => !vis[x.k]); if (!novos.length) return false;
+  for (const x of novos) vis[x.k] = Date.now();
+  for (const k in vis) if (Date.now() - vis[k] > 3 * 86400e3) delete vis[k];
+  try { localStorage.setItem("atlas_lsem", JSON.stringify(vis)); } catch {}
+  const um = x => `${x.falta > 0 ? `Em ${x.falta} min` : "Agora"}: ${x.b.titulo} (${x.b.ini}–${x.b.fim})`;
+  const txt = novos.length === 1 ? um(novos[0]) : `${novos.length} atividades: ${novos.map(x => `${x.b.titulo} ${x.b.ini}`).join(", ")}`;
+  SEC.nudge = { txt, crit: true, at: Date.now() }; SEC.tab = "lembretes"; SEC.open = true; secLS("open", true); toast(txt); secPaint();
+  lsNotifica(txt); if (secData().lsSom) lsSom();
+  return true;
+}
+function lsNotifica(txt) { try { if (secData().lsNotif && "Notification" in window && Notification.permission === "granted") new Notification("Atlas da Vida", { body: txt, tag: "atlas-lsem" }); } catch {} }
+function lsSom() { try { const C = new (window.AudioContext || window.webkitAudioContext)(), o = C.createOscillator(), g = C.createGain(); o.frequency.value = 880; g.gain.setValueAtTime(.0001, C.currentTime); g.gain.exponentialRampToValueAtTime(.2, C.currentTime + .02); g.gain.exponentialRampToValueAtTime(.0001, C.currentTime + .6); o.connect(g).connect(C.destination); o.start(); o.stop(C.currentTime + .65); setTimeout(() => C.close(), 900); } catch {} }
+async function lsPedirNotif() {
+  if (!("Notification" in window)) { toast("Este navegador não mostra notificações; os avisos continuam dentro do Atlas."); return; }
+  let p = Notification.permission; try { if (p === "default") p = await Notification.requestPermission(); } catch { p = "denied"; }
+  secData().lsNotif = p === "granted"; touch("secretario", { noUndo: true, label: "Notificações" });
+  toast(p === "granted" ? "Notificações ligadas neste aparelho." : "Esta visualização não deixa mostrar notificações. Os avisos continuam dentro do Atlas; para o celular, use o Google Agenda.");
+}
+/* atividades que dá para lembrar: nomes da rotina dos próximos 14 dias e dos modelos */
+function lsAtividades() {
+  const n = new Map(); for (let i = 0; i < 14; i++) for (const b of rtOcc(addDays(TODAY, i))) if (!n.has(normNome(b.titulo))) n.set(normNome(b.titulo), b.titulo);
+  for (const m of S.rotinaModelos || []) for (const x of m.semana || []) if (!n.has(normNome(x[3]))) n.set(normNome(x[3]), x[3]);
+  return [...n.values()].sort((a, b) => a.localeCompare(b, "pt"));
+}
+/* próximas ocorrências da regra (para mostrar quando vai tocar) */
+function lsProximas(r, k = 3) {
+  const out = []; for (let i = 0; i < 14 && out.length < k; i++) { const d = addDays(TODAY, i), dow = parse(d).getDay(); if (r.dias?.length && !r.dias.includes(dow)) continue;
+    for (const b of rtOcc(d).sort((x, y) => x.a - y.a)) if (normNome(b.titulo) === normNome(r.titulo) && (d > TODAY || hm2min(b.ini) > nowMin())) out.push(`${i === 0 ? "hoje" : i === 1 ? "amanhã" : DOWS[dow].toLowerCase()} ${b.ini}`); }
+  return out.slice(0, k);
+}
+/* criar, mudar e tirar (um passo de desfazer cada) */
+function lsSalvar(titulo, dias, min) {
+  const t = String(titulo || "").trim().slice(0, 120); if (!t) return null;
+  let r = lsData().find(x => normNome(x.titulo) === normNome(t) && JSON.stringify(lsOrdDow(x.dias || [])) === JSON.stringify(lsOrdDow(dias || [])));
+  if (r) { r.min = +min || 0; r.on = true; } else { r = { id: uid(), titulo: t, dias: lsOrdDow(dias || []), min: +min || 0, on: true }; lsData().push(r); }
+  touch("secretario", { label: "Lembrete semanal" }); return r;
+}
+/* no cartão do bloco: muda a regra que cobre este dia; “sem lembrete” tira só este dia da regra (ou a regra, se era só ele ou todos) */
+function lsDoCartao(titulo, dow, min, so) {
+  const r = lsRegra(titulo, dow);
+  if (min === "") { if (!r) return; if (r.dias?.length > 1) r.dias = r.dias.filter(d => d !== dow); else secData().semanais = lsData().filter(x => x !== r); touch("secretario", { label: "Lembrete removido" }); undoToast(`Sem lembrete para ${titulo}${r.dias?.length ? ` (${lsSoTxt(dow).replace("só ", "")})` : ""}`); return; }
+  if (r) { r.min = +min; if (so != null) r.dias = so ? [dow] : []; touch("secretario", { label: "Lembrete semanal" }); }
+  else lsSalvar(titulo, so ? [dow] : [], min);
+  const R = lsRegra(titulo, dow); toast(`Lembrete: ${titulo}, ${lsMinTxt(R.min)}, ${lsDiasTxt(R)}, toda semana`);
+}
+function lsCartaoHTML(b, day) {
+  const dow = parse(day).getDay(), r = lsRegra(b.titulo, dow), k = esc(`${b.titulo}|${dow}`);
+  return `<div class="flbl">${ic("clock")}Lembrete toda semana</div><div class="lsrow"><select data-lsmin="${k}" aria-label="Lembrete de ${esc(b.titulo)}"><option value="">Sem lembrete</option>${LS_MIN.map(m => `<option value="${m}"${r && +r.min === m ? " selected" : ""}>${lsMinTxt(m)}</option>`).join("")}</select>
+    <label class="chk"><input type="checkbox" data-lsso="${k}"${r?.dias?.length === 1 && r.dias[0] === dow ? " checked" : ""}${r ? "" : " disabled"}><span>${lsSoTxt(dow)}</span></label></div>
+    <small class="muted">${r ? `Vale para toda “${esc(b.titulo)}”: ${esc(lsDiasTxt(r))}.${r.gcal?.on ? " Também no Google Agenda." : ""}` : `Escolha quando avisar: vale para toda “${esc(b.titulo)}”, em todas as semanas.`}</small>`;
+}
+/* ---------------------------------------------------------------- Google Agenda: evento semanal com o aviso, por horário da atividade */
+const lsSlots = r => { const s = new Map(); for (const d of rtWeek(TODAY)) { const dow = parse(d).getDay(); if (r.dias?.length && !r.dias.includes(dow)) continue; for (const b of rtOcc(d)) if (normNome(b.titulo) === normNome(r.titulo)) s.set(`${dow}|${b.ini}`, [dow, b.ini, b.fim]); } return [...s.values()].sort((x, y) => (x[0] + 6) % 7 - (y[0] + 6) % 7 || x[1].localeCompare(y[1])); };
+const lsSlotsTxt = sl => sl.map(([d, a]) => `${DOWS[d].toLowerCase()} ${a}`).join(", ");
+const lsGcDesatual = r => r.gcal?.on && (+r.gcal.min !== +r.min || r.gcal.slots !== lsSlotsTxt(lsSlots(r)));
+const lsIdDe = res => { const p = res?.payload ?? res; return [p?.id, p?.event?.id, p?.eventId, p?.result?.id, p?.data?.id, p?.event?.eventId].find(x => typeof x === "string" && x) || ""; };
+async function lsGcalPor(r) {
+  if (!MCP) { toast(EX_MODE ? "Desligue o modo exemplo para usar o Google Agenda." : "O Google Agenda não está disponível nesta visualização."); return; }
+  const sl = lsSlots(r); if (!sl.length) { toast(`“${r.titulo}” não aparece na rotina desta semana: não há horário para levar ao Google.`); return; }
+  if (GCAL.busy) return; GCAL.busy = true; LS.busy = r.id; render(); let n = 0; const ids = [];
+  try {
+    if (r.gcal?.on) await lsGcalTira0(r);
+    for (const [dow, ini, fim] of sl) {
+      let d = TODAY; while (parse(d).getDay() !== dow) d = addDays(d, 1);
+      const fimD = fim === "24:00" ? `${addDays(d, 1)}T00:00:00` : `${d}T${fim}:00`;
+      const res = await MCP.callTool(GC_SRV, "create_event", { summary: `🔔 ${r.titulo}`, startTime: `${d}T${ini}:00`, endTime: fimD, timeZone: tzLocal(), recurrenceData: ["RRULE:FREQ=WEEKLY"],
+        overrideReminders: [{ method: "popup", minutes: +r.min || 0 }], useDefaultReminders: false, availability: "AVAILABILITY_FREE",
+        description: `Lembrete semanal do Atlas da Vida (${lsMinTxt(r.min)}). Para mudar ou tirar, use o Atlas: Rotina › Lembretes. ${GC_LEMB}${r.id}` });
+      const id = lsIdDe(res); if (id) ids.push(id); n++;
+    }
+    r.gcal = { on: true, ids, min: +r.min || 0, slots: lsSlotsTxt(sl), at: Date.now() }; touch("secretario", { label: "Lembrete no Google Agenda" });
+    toast(`${r.titulo}: ${plural(n, "evento semanal", "eventos semanais")} no Google Agenda, com aviso ${lsMinTxt(r.min)}.`);
+  } catch (e) { toast(gcErr(e) + (n ? ` (${n} criado(s) antes do erro: use “Atualizar no Google” para refazer)` : "")); if (n) { r.gcal = { on: true, ids, min: +r.min || 0, slots: "", at: Date.now() }; touch("secretario", { noUndo: true }); } }
+  finally { GCAL.busy = false; LS.busy = ""; render(); }
+}
+/* tira os eventos da regra: pelos ids guardados; sem ids, procura a marca da regra na agenda das próximas 2 semanas */
+async function lsGcalTira0(r) {
+  let ids = [...(r.gcal?.ids || [])];
+  if (!ids.length) {
+    const res = await MCP.callTool(GC_SRV, "list_events", { startTime: `${TODAY}T00:00:00`, endTime: `${addDays(TODAY, 15)}T23:59:59`, fullText: GC_LEMB + r.id, pageSize: 100, timeZone: tzLocal() }, { cache: false });
+    const pl = res?.payload ?? {}, lista = Array.isArray(pl) ? pl : pl.events ?? pl.items ?? pl.result?.events ?? pl.data?.events ?? [];
+    for (const ev of lista) if (String(ev?.description || "").includes(GC_LEMB + r.id)) ids.push(ev.recurringEventId || ev.id);
+  }
+  for (const id of [...new Set(ids.filter(Boolean))]) await MCP.callTool(GC_SRV, "delete_event", { eventId: id, notificationLevel: "NONE" });
+  r.gcal = null;
+}
+async function lsGcalTira(r, apagar) {
+  if (!MCP) { toast("O Google Agenda não está disponível nesta visualização: o evento continua lá até você apagar no Google."); return false; }
+  if (GCAL.busy) return false; GCAL.busy = true; LS.busy = r.id; render();
+  try { await lsGcalTira0(r); if (apagar) secData().semanais = lsData().filter(x => x !== r); touch("secretario", { label: apagar ? "Lembrete apagado" : "Lembrete fora do Google" }); toast(apagar ? `Lembrete de ${r.titulo} apagado, também no Google Agenda.` : `${r.titulo} saiu do Google Agenda.`); return true; }
+  catch (e) { toast(gcErr(e)); return false; }
+  finally { GCAL.busy = false; LS.busy = ""; render(); }
+}
+/* ---------------------------------------------------------------- painel na Rotina e lista no Secretário */
+const LS = { dias: [], busy: "" };
+function lsPanel() {
+  const L = lsData(), A = lsAtividades(), D = secData();
+  const item = r => { const px = lsProximas(r), des = lsGcDesatual(r);
+    return `<div class="lsit${r.on === false ? " off" : ""}"><div><b>${ic("clock")}${esc(r.titulo)}</b><small>${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próximas: ${esc(px.join(", "))}` : " · não aparece nos próximos 14 dias"}${r.gcal?.on ? ` · ${des ? "<span class=\"st-warn\">Google desatualizado</span>" : "no Google Agenda"}` : ""}</small></div>
+      <div class="row wrap">${LS.busy === r.id ? `<span class="muted small">Google Agenda…</span>` : `<button type="button" class="btn sm ghost" data-lsgc="${r.id}">${r.gcal?.on ? (des ? "Atualizar no Google" : "Tirar do Google") : "Pôr no Google Agenda"}</button>`}<button type="button" class="btn sm ghost" data-lson="${r.id}">${r.on === false ? "Retomar" : "Pausar"}</button><button type="button" class="btn sm ghost" data-lsdel="${r.id}" aria-label="Apagar o lembrete de ${esc(r.titulo)}">${ic("trash")}</button></div></div>`; };
+  return panel(`${ic("clock")}Lembretes <small>${L.length ? plural(L.filter(r => r.on !== false).length, "ativo", "ativos") : "nenhum"}</small>`, `${L.map(item).join("") || `<p class="muted small">Escolha uma atividade da rotina para ser avisado antes dela, toda semana.</p>`}
+    <details class="lsnew"${L.length ? "" : " open"}><summary>${ic("plus")}Novo lembrete</summary><div class="form f1">
+      <label>Atividade<input type="text" id="ls_t" list="ls_tl" autocomplete="off" placeholder="${esc(A[0] || "Academia")}"><datalist id="ls_tl">${A.map(t => `<option value="${esc(t)}">`).join("")}</datalist></label>
+      <div class="lsdias" role="group" aria-label="Dias">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button type="button" class="seg" data-lsdia="${d}" aria-pressed="${LS.dias.includes(d)}">${DOWS[d].toLowerCase()}</button>`).join("")}<small class="muted">nenhum marcado = todo dia em que aparece</small></div>
+      <label>Avisar<select id="ls_m">${LS_MIN.map(m => `<option value="${m}"${m === 10 ? " selected" : ""}>${lsMinTxt(m)}</option>`).join("")}</select></label>
+      <button type="button" class="btn sm primary" data-act="lsadd">${ic("plus")}Criar lembrete</button></div></details>
+    <div class="lscfg"><label class="chk"><input type="checkbox" data-lscfg="lsSom"${D.lsSom ? " checked" : ""}><span>Tocar um som no aviso</span></label>${"Notification" in window ? `<button type="button" class="lnk" data-act="lsnotif">${D.lsNotif && Notification.permission === "granted" ? "Notificações do navegador ligadas" : "Ligar notificações do navegador"}</button>` : ""}</div>
+    <p class="muted small">O Atlas avisa pelo Secretário enquanto estiver aberto. Para tocar no celular com ele fechado, ponha o lembrete no Google Agenda: vira um evento semanal, com o mesmo aviso, nos horários desta semana.</p>`);
+}
+function lsSecHTML() {
+  const L = lsData(); if (!L.length) return `<div class="secsec">${ic("clock")}Toda semana</div><small class="muted">Nenhum lembrete semanal. Crie na <a href="#rotina.semana">Rotina › Lembretes</a> ou no cartão de qualquer bloco.</small>`;
+  return `<div class="secsec">${ic("clock")}Toda semana<small>${L.length}</small></div>${L.map(r => { const px = lsProximas(r, 1); return `<div class="secit${r.on === false ? " done" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(r.titulo)}</b><small>${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próxima: ${esc(px[0])}` : ""}${r.gcal?.on ? " · Google" : ""}${r.on === false ? " · pausado" : ""}</small></div></div>`; }).join("")}<a class="lnk small" href="#rotina.semana">gerenciar na Rotina</a>`;
+}
+function lsClick(t) {
+  const ds = t.dataset;
+  if (ds.lsdia != null) { const d = +ds.lsdia; LS.dias = LS.dias.includes(d) ? LS.dias.filter(x => x !== d) : [...LS.dias, d]; t.setAttribute("aria-pressed", String(LS.dias.includes(d))); return true; }
+  if (ds.act === "lsadd") { const tt = $("#ls_t")?.value.trim(); if (!tt) { toast("Escolha a atividade."); $("#ls_t")?.focus(); return true; }
+    const r = lsSalvar(tt, LS.dias, $("#ls_m").value); LS.dias = []; const px = lsProximas(r, 1);
+    undoToast(`Lembrete: ${r.titulo}, ${lsMinTxt(r.min)}, ${lsDiasTxt(r)}${px.length ? ` · próximo ${px[0]}` : " · não aparece nos próximos 14 dias"}`); return true; }
+  if (ds.lson) { const r = lsData().find(x => x.id === ds.lson); if (r) { r.on = r.on === false; touch("secretario", { label: r.on ? "Lembrete retomado" : "Lembrete pausado" }); } return true; }
+  if (ds.lsdel) { const r = lsData().find(x => x.id === ds.lsdel); if (!r) return true;
+    if (r.gcal?.on) { lsGcalTira(r, true); return true; }
+    secData().semanais = lsData().filter(x => x !== r); touch("secretario", { label: "Lembrete apagado" }); undoToast(`Lembrete de ${r.titulo} apagado`); return true; }
+  if (ds.lsgc) { const r = lsData().find(x => x.id === ds.lsgc); if (!r) return true; if (r.gcal?.on && !lsGcDesatual(r)) lsGcalTira(r, false); else lsGcalPor(r); return true; }
+  if (ds.act === "lsnotif") { lsPedirNotif(); return true; }
+  return false;
+}
+function lsChange(t) {
+  const ds = t.dataset;
+  if (ds.lsmin != null) { const [ti, dw] = ds.lsmin.split("|"), so = $("[data-lsso]", t.closest("form") || document)?.checked; lsDoCartao(ti, +dw, t.value, t.value === "" ? null : so); lsCartaoRepinta(t, ti, +dw); return true; }
+  if (ds.lsso != null) { const [ti, dw] = ds.lsso.split("|"), r = lsRegra(ti, +dw); if (r) { r.dias = t.checked ? [+dw] : []; touch("secretario", { label: "Lembrete semanal" }); toast(`Lembrete de ${ti}: ${lsDiasTxt(r)}`); lsCartaoRepinta(t, ti, +dw); } return true; }
+  if (ds.lscfg) { secData()[ds.lscfg] = t.checked; touch("secretario", { noUndo: true, label: "Lembretes" }); return true; }
+  return false;
+}
+/* o cartão do bloco fica aberto: só a parte do lembrete é redesenhada */
+function lsCartaoRepinta(t, titulo, dow) { const box = t.closest(".lsbox"); if (!box) return; const b = { titulo }, d = rtWeek(TODAY).find(x => parse(x).getDay() === dow) || TODAY; box.innerHTML = lsCartaoHTML(b, d); }
+
+
 /* ================================================================ render */
 let RELAYOUT = false;
 function greet() { const h = new Date().getHours(); return h < 5 ? "Boa noite" : h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"; }
@@ -17989,7 +18279,7 @@ function render() {
     : STORE?.kind === "local" && LOADED && !IS_EXAMPLE ? `<div class="banner warn">${ic("info")}<span><b>Sem conta nesta visualização:</b> os dados ficam só neste navegador. Exporte backups em Integrações com frequência.</span></div>` : IS_EXAMPLE && LOADED ? `<div class="banner">${ic("info")}<span><b>Dados de exemplo.</b> São fictícios, para você ver tudo funcionando. Ao editar qualquer coisa eles viram seus e passam a ser salvos.</span><button type="button" class="btn sm primary" id="startEmpty">Começar do zero</button></div>` : "";
   const ae = document.activeElement, focusSel = !ae?.id && ae && ae !== document.body ? a11ySel(ae) : null, focusId = ae?.id, selS = ae?.selectionStart, selE = ae?.selectionEnd, scT = ae?.scrollTop, chat = $("#mchat"), chatTop = chat ? chat.scrollTop : null, chatBottom = chat ? chat.scrollHeight - chat.scrollTop - chat.clientHeight < 40 : true;
   $("#nav").innerHTML = navHTML(R);
-  $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}${csStrip()}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
+  $("#main").innerHTML = `${topbar(R, title, sub)}${banner}${tabHead()}${subtabs()}${csStrip()}${isReport() && LOADED && REF !== mkey(TODAY) ? refBar() : ""}<div class="page p-${PAGE}${SUB ? " s-" + SUB : ""}">${body}</div>${isReport() ? reportTabs() : ""}`;
   $("#drawerwrap").innerHTML = drawerHTML(R);
   if (PAGE !== "saude" || !["alimentacao", "treinos"].includes(SUB)) document.body.classList.remove("sdside-on");
   if (PAGE !== "trabalho") { document.body.classList.remove("ckside-on", "ckdmeet-on"); if (CK.dash) CK.dash.reuniao = false; }
@@ -18123,7 +18413,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || lsClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -18211,7 +18501,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || lsChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }
