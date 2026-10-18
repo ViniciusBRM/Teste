@@ -353,7 +353,7 @@ function trVolV() {
 }
 function trFreqV() {
   const W = trSemanas(12), P = trD().perfil;
-  return `<div class="vg">${vis("tr-freq", "Treinos por semana", colChart(W.map(w => fmtD(w.a)), [{ name: "Academia", color: "var(--a-car)", data: W.map(w => w.ses) }, { name: "Corrida", color: "var(--a-apr)", data: W.map(w => w.cor) }], { w: vw(12), h: 220, stacked: true, line: [{ name: "Meta", color: "var(--ink-2)", data: W.map(() => +P.dias || 3) }], empty: "Sem treinos nas últimas 12 semanas." }), { cls: "s12", sub: "12 semanas, de segunda a domingo" })}</div>`;
+  return `<div class="vg">${vis("tr-freq", "Treinos por semana", colChart(W.map(w => fmtD(w.a)), [{ name: "Academia", color: "var(--a-car)", data: W.map(w => w.ses) }, { name: "Corrida", color: "var(--a-apr)", data: W.map(w => w.cor) }], { w: vw(12, "tr-freq"), h: 220, stacked: true, line: [{ name: "Meta", color: "var(--ink-2)", data: W.map(() => +P.dias || 3) }], empty: "Sem treinos nas últimas 12 semanas." }), { cls: "s12", sub: "12 semanas, de segunda a domingo" })}</div>`;
 }
 function trPerfilV() {
   const d = trD(), P = d.perfil, F = TR_FAIXA[P.modo] || TR_FAIXA.medio, W = trSemanas(1)[0], w0 = weekStart(TODAY);

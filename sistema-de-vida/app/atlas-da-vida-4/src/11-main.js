@@ -4,7 +4,7 @@ let RELAYOUT = false;
 function greet() { const h = new Date().getHours(); return h < 5 ? "Boa noite" : h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"; }
 function measureGrid() { const m = $("#main"); if (!m) return; const cs = getComputedStyle(m), w = m.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight); REPW = Math.round(w - (railOn() ? 316 : 0)); }
 function render() {
-  const R = calcAt(REF); VIS = {}; if (!RELAYOUT) CTAB.d = {};
+  const R = calcAt(REF); VIS = {}; VW_IDS.clear(); if (!RELAYOUT) CTAB.d = {};
   if (!RELAYOUT) measureGrid();
   const nm = S.cfg.nome ? esc(S.cfg.nome.split(" ")[0]) : "";
   const pages = {
@@ -128,20 +128,22 @@ function a11yArrow(e) {
 /* ================================================================ empacotamento: nenhum buraco entre os cartões
    Grades de cartões viram "alvenaria": cada cartão ocupa linhas de 4px conforme a altura real, a grade preenche
    os vãos (dense) e o último cartão de cada coluna estica até a base. Grades de itens iguais dividem a última linha. */
-const PACK_SEL = ".vg,.g2c,.g3c", FILL_SEL = ".mgrid,.jmgrid,.pgrid,.sjels,.sjside,.hgrid2,.xgrid,.krow,.minis", PACK_ROW = 4;
+const PACK_SEL = ".vg,.g2c,.g3c,.cadgrid", FILL_SEL = ".mgrid,.jmgrid,.pgrid,.sjels,.sjside,.hgrid2,.xgrid,.krow,.minis,.filprinc,.crlibs,.insgrid,.lzgrid,.ckpeople", PACK_ROW = 4;
 let PACK_RO = null, PACK_RAF = 0;
-const PACK_H = new WeakMap(), PACK_W = new WeakMap();
+const PACK_H = new WeakMap(), PACK_W = new WeakMap(), PACK_N = new WeakMap();
 /* só listas longas por natureza (agenda, listas, tabelas compridas) podem ganhar rolagem; gráficos e placares nunca */
 const listy = k => k.getBoundingClientRect().height > 520 && (!!k.querySelector(".agenda,.list,.bls") || k.querySelectorAll("tbody tr").length > 14);
 function packGrid(g) {
   const cs = getComputedStyle(g), cols = cs.gridTemplateColumns.split(" ").length, gap = parseFloat(cs.columnGap) || 16;
   const kids = [...g.children].filter(k => getComputedStyle(k).display !== "none");
   g.classList.add("packed");
-  for (const k of kids) { k.style.gridRowEnd = ""; k.style.height = ""; k.style.minHeight = ""; k.style.maxHeight = ""; k.classList.remove("grown", "capped"); }
-  const span = () => kids.forEach(k => { k.style.gridRowEnd = `span ${Math.max(1, Math.ceil((k.getBoundingClientRect().height + gap) / PACK_ROW))}`; });
+  for (const t of g.querySelectorAll(":scope > * textarea[data-pkta]")) { t.style.height = t.dataset.pkta; delete t.dataset.pkta; }
+  for (const k of kids) { k.style.gridRowEnd = ""; k.style.height = ""; k.style.minHeight = ""; k.style.maxHeight = ""; k.classList.remove("grown", "capped"); if (k.dataset.pkfull) { k.style.gridColumn = ""; k.style.gridRow = ""; delete k.dataset.pkfull; } }
+  const span = () => kids.forEach(k => { const h = k.getBoundingClientRect().height; PACK_N.set(k, h); k.style.gridRowEnd = `span ${Math.max(1, Math.ceil((h + gap) / PACK_ROW))}`; });
   const gaps = () => { const rs = kids.map(k => k.getBoundingClientRect()), bottom = Math.max(...rs.map(r => r.bottom));
     return { rs, list: rs.map((r, i) => { let to = bottom; rs.forEach((o, j) => { if (j !== i && o.top >= r.bottom - 1 && o.left < r.right - 2 && o.right > r.left + 2) to = Math.min(to, o.top - gap); }); return to; }) }; };
   span();
+  if (cols > 1 && kids.length && !g.classList.contains("vg")) { packCards(g, kids, cols, gap); for (const k of kids) { PACK_H.set(k, k.getBoundingClientRect().height); PACK_RO?.observe(k); } return; }
   if (cols > 1 && kids.length > 1) {
     /* vão grande ao lado de uma lista longa: a lista ganha rolagem interna em vez de o cartão curto inchar */
     for (let it = 0; it < 3; it++) {
@@ -158,16 +160,132 @@ function packGrid(g) {
       const h = Math.round(list[i] - r.top) + "px"; if (kids[i].classList.contains("capped")) { kids[i].style.maxHeight = ""; kids[i].style.height = h; } else kids[i].style.minHeight = h; kids[i].classList.add("grown"); } });
   }
   for (const k of kids) { PACK_H.set(k, k.getBoundingClientRect().height); PACK_RO?.observe(k); }
+  if (g.classList.contains("vg") && cols > 1 && kids.length > 1) vgPlan(g, kids);
+}
+/* grade de cartões (2 ou 3 colunas): cada cartão vai para a coluna mais curta ou ocupa a largura toda, o que deixar menos vazio.
+   Testa as combinações (até 2^10; acima disso melhora uma escolha por vez). Conta o vazio que sobra: buraco entre cartões pesa o
+   dobro do que só estica o último cartão de uma coluna; alargar um cartão que não era largo custa um pouco, para o desenho original
+   ficar quando a diferença é pequena. Cartão com gráfico de largura fixa não é alargado (o gráfico ficaria esticado). */
+/* até onde o conteúdo de um cartão chega à direita (texto, campos, imagens, caixas com fundo ou borda), em px a partir da esquerda */
+function pkDireita(k) {
+  const cr = k.getBoundingClientRect(); let mx = 0, n = 0; const rg = document.createRange();
+  const tw = document.createTreeWalker(k, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, { acceptNode: x => x.nodeType === 1 && getComputedStyle(x).display === "none" ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+  for (let x = tw.nextNode(); x && n < 3000; x = tw.nextNode(), n++) {
+    if (x.nodeType === 3) { if (x.textContent.trim()) { rg.selectNodeContents(x); for (const q of rg.getClientRects()) mx = Math.max(mx, q.right); } continue; }
+    if (/^(svg|IMG|CANVAS|INPUT|SELECT|TEXTAREA|BUTTON|VIDEO)$/.test(x.tagName)) { mx = Math.max(mx, x.getBoundingClientRect().right); continue; }
+    const cs = getComputedStyle(x); if (!/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor) || parseFloat(cs.borderBottomWidth) || parseFloat(cs.borderRightWidth)) mx = Math.max(mx, x.getBoundingClientRect().right);
+  }
+  return mx - cr.left;
+}
+let PK_LADO = true;   /* conta o vazio à direita de um cartão alargado (os testes comparam com e sem) */
+function packCards(g, kids, cols, gap) {
+  const W = g.getBoundingClientRect().width, R = PACK_ROW, rows = h => Math.max(1, Math.ceil((h + gap) / R)), PEN = 15;
+  const full0 = kids.map(k => k.getBoundingClientRect().width >= W - 2), hS = kids.map(k => k.getBoundingClientRect().height), hF = hS.slice();
+  const ids = kids.map((k, i) => i).filter(i => !full0[i] && !kids[i].querySelector("svg.chart")), bit = new Map(ids.map((i, b) => [i, b]));
+  /* vazio à direita de um cartão alargado cujo conteúdo não acompanha a largura (mapa de calor, formulário curto), em colunas×linhas */
+  const colW = (W - (cols - 1) * (parseFloat(getComputedStyle(g).columnGap) || gap)) / cols, lado = kids.map(() => 0);
+  if (ids.length) { ids.forEach(i => { kids[i].style.gridColumn = "1 / -1"; });
+    ids.forEach(i => { const k = kids[i]; hF[i] = k.getBoundingClientRect().height; const sobra = k.getBoundingClientRect().width - parseFloat(getComputedStyle(k).paddingRight || 0) - pkDireita(k); if (sobra > 120 && PK_LADO) lado[i] = sobra / colW * rows(hF[i]); });
+    ids.forEach(i => { kids[i].style.gridColumn = ""; }); }
+  const sim = mask => {
+    const colH = new Array(cols).fill(0), last = new Array(cols).fill(-1), pl = []; let estica = 0, buraco = 0, n1 = 0;
+    const fecha = top => { for (let c = 0; c < cols; c++) { const d = top - colH[c]; if (d <= 0) continue; if (last[c] >= 0) { pl[last[c]].g += d; estica += d; } else buraco += d; } };
+    kids.forEach((k, i) => { const f = full0[i] || (bit.has(i) && (mask >> bit.get(i)) & 1);
+      if (f) { const top = Math.max(...colH), n = rows(hF[i]); fecha(top); pl.push({ i, f: true, c: 0, top, n, g: 0 }); colH.fill(top + n); last.fill(-1); if (!full0[i]) { n1++; estica += lado[i]; } }
+      else { let c = 0; for (let j = 1; j < cols; j++) if (colH[j] < colH[c]) c = j; const n = rows(hS[i]); pl.push({ i, f: false, c, top: colH[c], n, g: 0 }); colH[c] += n; last[c] = pl.length - 1; } });
+    fecha(Math.max(...colH));
+    return { s: estica + 2 * buraco + PEN * n1, pl };
+  };
+  let best = sim(kids.length === 1 && ids.length === 1 ? 1 : 0);   /* cartão sozinho na grade: largura toda (as outras colunas ficariam vazias) */
+  if (kids.length === 1) { /* decidido acima */ }
+  else if (ids.length <= 10) { for (let m = 1; m < 1 << ids.length; m++) { const r = sim(m); if (r.s < best.s) best = r; } }
+  else { let mask = 0; for (let ch = true; ch;) { ch = false; for (let b = 0; b < ids.length; b++) { const r = sim(mask ^ (1 << b)); if (r.s < best.s) { best = r; mask ^= 1 << b; ch = true; } } } }
+  for (const p of best.pl) { const k = kids[p.i]; k.dataset.pkfull = p.f && !full0[p.i] ? "w" : "1"; k.style.gridColumn = p.f ? "1 / -1" : `${p.c + 1} / span 1`; k.style.gridRow = `${p.top + 1} / span ${p.n + p.g}`;
+    PACK_N.set(k, p.f ? hF[p.i] : hS[p.i]);
+    if (p.g > 0) { k.style.minHeight = Math.round((p.n + p.g) * R - gap) + "px"; k.classList.add("grown");
+      /* cartão esticado com campo de texto: o campo ganha a altura que sobrou, em vez de ficar vazio embaixo */
+      const ta = [...k.querySelectorAll("textarea")].filter(t => t.offsetHeight >= 40).at(-1);
+      if (ta) { const extra = Math.round((p.n + p.g) * R - gap - k.getBoundingClientRect().height); if (extra > 0) { ta.dataset.pkta = ta.style.height; ta.style.height = (ta.getBoundingClientRect().height + extra) + "px"; } } } }
+}
+/* grade de relatório (12 colunas): vão que nenhum cartão de cima consegue cobrir esticando para baixo é coberto alargando um cartão
+   vizinho (à esquerda ou à direita) cuja faixa de altura cabe inteira nas colunas livres. A posição dos outros cartões não muda
+   (a colocação densa põe o cartão alargado no mesmo lugar). Gráfico desenhado com vw(n, id) é redesenhado na largura nova;
+   gráfico de largura fixa não é alargado (ficaria esticado). No máximo 3 redesenhos para o mesmo estado da tela. */
+function vgPlan(g, kids) {
+  if (VG_BUSY || REPW < 760 || !g.isConnected) return;
+  const gr = g.getBoundingClientRect(), gap = parseFloat(getComputedStyle(g).columnGap) || 16, cw = (gr.width - 11 * gap) / 12, R = 8;
+  const it = kids.map(k => { const r = k.getBoundingClientRect(), t = r.top - gr.top; return { k, vid: k.dataset.vid, c0: Math.round((r.left - gr.left) / (cw + gap)), c1: Math.round((r.right - gr.left + gap) / (cw + gap)), t, b: r.bottom - gr.top, nb: t + (PACK_N.get(k) ?? r.height) }; });
+  const H = Math.ceil(Math.max(...it.map(x => x.b)) / R); if (!H) return;
+  const occ = new Uint8Array(12 * H), mark = (c0, c1, t, b) => { for (let y = Math.max(0, Math.floor(t / R)); y < Math.min(H, Math.ceil(b / R)); y++) for (let c = c0; c < c1; c++) occ[y * 12 + c] = 1; };
+  it.forEach(x => mark(x.c0, x.c1, x.t, x.nb));   /* conta como vazio também o que um cartão só cobre por ter sido esticado */
+  const free = (c, x) => it.every(o => o === x || o.c0 > c || o.c1 <= c || o.nb <= x.t + 2 || o.t >= x.nb - 2);
+  const vazio = (c0, c1, t, b) => { let n = 0; for (let y = Math.max(0, Math.floor(t / R)); y < Math.min(H, Math.ceil(b / R)); y++) for (let c = c0; c < c1; c++) n += !occ[y * 12 + c]; return n * R; };
+  const fix = {};
+  for (let volta = 0; volta < 6; volta++) {
+    let best = null;
+    for (const x of it) {
+      if (!x.vid || x.c1 - x.c0 >= 12 || (x.k.querySelector("svg.chart") && !VW_IDS.has(x.vid))) continue;
+      for (const dir of [1, -1]) { let c0 = x.c0, c1 = x.c1;
+        for (;;) { const c = dir > 0 ? c1 : c0 - 1; if (c < 0 || c > 11 || !free(c, x)) break; if (dir > 0) c1++; else c0--; }
+        if (c1 - c0 === x.c1 - x.c0) continue;
+        const ganho = dir > 0 ? vazio(x.c1, c1, x.t, x.nb) : vazio(c0, x.c0, x.t, x.nb);
+        if (ganho > (best?.ganho || 0)) best = { x, c0, c1, ganho }; }
+    }
+    if (!best || best.ganho < 100) break;
+    mark(best.c0, best.c1, best.x.t, best.x.nb); best.x.c0 = best.c0; best.x.c1 = best.c1; fix[best.x.vid] = best.c1 - best.c0;
+  }
+  if (!Object.keys(fix).length) return;
+  const key = vgKey(); if (VG_FIX.k !== key) VG_FIX = { k: key, s: {}, n: 0 };
+  if (VG_FIX.n >= 3) return;
+  VG_FIX.n++; Object.assign(VG_FIX.s, fix);
+  VG_BUSY = true; try { render(); } finally { VG_BUSY = false; }
+  pack();   /* nova rodada sobre a grade redesenhada (o limite de 3 por estado encerra) */
 }
 function fillRow(g) {
   const kids = [...g.children].filter(k => getComputedStyle(k).display !== "none");
   for (const k of kids) k.style.gridColumn = "";
   const cs = getComputedStyle(g), tr = cs.gridTemplateColumns.split(" ").map(parseFloat), cols = tr.length, gap = parseFloat(cs.columnGap) || 0;
-  if (cols < 2 || kids.length < 2) return;
+  if (cols < 2 || !kids.length) return;
+  if (kids.length === 1) { kids[0].style.gridColumn = "1 / -1"; return; }   /* item sozinho numa grade de várias colunas: a linha toda */
   const rs = kids.map(k => k.getBoundingClientRect()), top = Math.max(...rs.map(r => r.top)), tol = Math.min(...rs.map(r => r.height)) / 2, last = kids.filter((k, i) => top - rs[i].top < tol);
   const spans = last.map(k => Math.max(1, Math.round((k.getBoundingClientRect().width + gap) / (tr[0] + gap)))), free = cols - sum(spans);
   if (free <= 0 || free >= cols) return;
   last.forEach((k, i) => { k.style.gridColumn = `span ${spans[i] + Math.floor(free / last.length) + (i < free % last.length ? 1 : 0)}`; });
+}
+/* duas colunas lado a lado (conteúdo + lateral): a mais curta cresce até a altura útil da tela, sem passar da outra, e, se ainda
+   for mais curta, acompanha a rolagem. Coluna que acompanha a rolagem e é mais alta que a tela para com a base visível. */
+const COLS_SEL = ".rtlay,.ckwrap,.sdwrap,.jcols,.sjbody,.csgrid,.diary,.dados,.rep,.jdlay", CF_TOP = 12;
+const cfVis = k => getComputedStyle(k).display !== "none" && k.getBoundingClientRect().height > 0;
+const cfPlain = cs => !/grid|table/.test(cs.display) && /rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor) && cs.backgroundImage === "none" && !parseFloat(cs.borderTopWidth) && !parseFloat(cs.borderBottomWidth);
+/* o que cresce na coluna curta: o marcado (data-cfgrow), a conversa de um mentor, ou o último cartão (se for um bloco de texto, a caixa de texto) */
+function cfElastic(col) {
+  const x = col.querySelector("[data-cfgrow]") || col.querySelector(".mchat"); if (x && cfVis(x)) return [x, "height"];
+  let e = col;
+  for (let d = 0; d < 6; d++) { const last = [...e.children].filter(cfVis).at(-1); if (!last) break; e = last; if (!(cfPlain(getComputedStyle(last)) && last.children.length)) break; }
+  if (e === col) return [col, "minHeight"];
+  const ta = [...e.querySelectorAll("textarea")].filter(cfVis).at(-1); if (ta && ta.offsetHeight >= 60) return [ta, "height"];
+  return [e, "minHeight"];
+}
+function colFit(c) {
+  for (const e of c.querySelectorAll("[data-cfp]")) { e.style[e.dataset.cfp] = e.dataset.cfo || ""; delete e.dataset.cfp; delete e.dataset.cfo; }
+  const cols = [...c.children].filter(cfVis);
+  for (const k of [...c.children]) { k.classList.remove("cfstick"); if (k.dataset.cft) { k.style.top = ""; delete k.dataset.cft; } }
+  if (cols.length !== 2) return;
+  const [a, b] = cols.map(k => k.getBoundingClientRect());
+  if (!(a.right <= b.left + 1 || b.right <= a.left + 1)) return;   /* empilhadas (tela estreita): nada a acertar */
+  let hs = Math.min(a.height, b.height), hl = Math.max(a.height, b.height); const sh = cols[a.height <= b.height ? 0 : 1], lg = cols[a.height <= b.height ? 1 : 0], avail = innerHeight - 28;   /* = as laterais com altura máxima de 100vh − 28px */
+  /* a coluna mais longa tem a conversa de um mentor: a conversa encolhe (até 280 px, rolando por dentro) antes de a outra coluna esticar */
+  const ch = hl - hs >= 24 && lg.querySelector(".mchat");
+  if (ch && cfVis(ch)) { const cur = ch.getBoundingClientRect().height, cut = Math.round(Math.min(hl - hs, cur - Math.max(280, parseFloat(getComputedStyle(ch).minHeight) || 0)));
+    if (cut > 8) { ch.dataset.cfp = "height"; ch.dataset.cfo = ch.style.height; ch.style.height = Math.round(parseFloat(getComputedStyle(ch).height) - cut) + "px"; hl = lg.getBoundingClientRect().height; } }
+  if (hl - hs >= 24) {
+    const F = Math.min(hl, Math.max(hs, avail)), grow = Math.round(F - hs);
+    if (grow > 0) { const [e, prop] = cfElastic(sh); e.dataset.cfp = prop; e.dataset.cfo = e.style[prop]; e.style[prop] = Math.round(parseFloat(getComputedStyle(e).height) + grow) + "px"; }
+    if (F < hl - 24) sh.classList.add("cfstick");
+  }
+  for (const k of cols) { const h = k.getBoundingClientRect().height;
+    if (getComputedStyle(k).position === "sticky") { k.dataset.cft = "1"; k.style.top = (h > avail + 4 ? Math.round(innerHeight - h - CF_TOP) : CF_TOP) + "px"; }
+    PACK_H.set(k, h); PACK_RO?.observe(k); }
 }
 function pack() {
   const m = $("#main"); if (!m) return;
@@ -176,7 +294,8 @@ function pack() {
     if (ents.some(e => { const r = e.target.getBoundingClientRect(), w = PACK_W.get(e.target); return w != null ? Math.abs(r.width - w) > 1 : Math.abs(r.height - (PACK_H.get(e.target) ?? -9)) > 1; })) { cancelAnimationFrame(PACK_RAF); PACK_RAF = requestAnimationFrame(pack); }
   });
   for (const g of m.querySelectorAll(FILL_SEL)) { fillRow(g); PACK_W.set(g, g.getBoundingClientRect().width); PACK_RO?.observe(g); }
-  for (const g of [...m.querySelectorAll(PACK_SEL)].reverse()) packGrid(g);
+  for (const g of [...m.querySelectorAll(PACK_SEL)].reverse()) if (g.isConnected) packGrid(g);
+  for (const c of $("#main").querySelectorAll(COLS_SEL)) colFit(c);
 }
 
 /* ================================================================ eventos */

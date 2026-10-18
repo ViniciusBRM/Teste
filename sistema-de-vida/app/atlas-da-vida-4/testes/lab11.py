@@ -120,12 +120,12 @@ async def main():
             for e in errs: print("  ", e)
             if errs: bad += 1
             await b.close()
-        # sem internet e sem feed: o clima não vira pergunta (explica a atualização automática); notícias viram links
+        # sem internet e sem feed: o clima não vira pergunta (diz que não há previsão gravada e que a atualização automática está desligada); notícias viram links
         b, pg, errs = await open_page(p, w=390, cfg={"noNet": True}, hash_="hoje")
         try:
             await pg.wait_for_timeout(800)
             txt = await pg.inner_text(".p-hoje")
-            chk(not await pg.evaluate("!!document.querySelector('[data-hjc^=\"clima|\"], [data-hjtemp]')") and "automaticamente" in txt and "Marque o tempo" not in txt and "Positive News" in txt, "sem internet: nada de marcar o tempo à mão; explica a atualização automática e oferece os links das notícias")
+            chk(not await pg.evaluate("!!document.querySelector('[data-hjc^=\"clima|\"], [data-hjtemp]')") and "Nenhuma previsão gravada" in txt and "atualização automática está desligada" in txt and "Marque o tempo" not in txt and "Positive News" in txt, "sem internet: nada de marcar o tempo à mão; diz que não há previsão gravada e que a atualização automática está desligada, e oferece os links das notícias")
             # chega um feed com chuva nas próximas horas (como a tarefa agendada grava): guarda-chuva e nenhuma ideia só ao ar livre
             await pg.evaluate("""(() => { const h0 = Math.floor(Date.now() / 3600e3) * 3600e3, horas = [];
               for (let i = -3; i < 24; i++) horas.push({ h: new Date(h0 + i * 3600e3).toISOString().replace('.000', ''), t: 12 + (i % 5), sens: 11, code: 63, vento: 8, uv: 1, mm: 1.2 });

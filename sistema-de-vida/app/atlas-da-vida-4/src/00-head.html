@@ -56,7 +56,7 @@ a{color:inherit}
 .ico{display:inline-grid;place-items:center;width:18px;height:18px;flex:none;color:var(--c,currentColor)}
 .ico svg{width:100%;height:100%}
 .row{display:flex;align-items:center;gap:8px}.row.wrap{flex-wrap:wrap}
-.lead{color:var(--ink-2);max-width:78ch;margin:0 0 18px;font-size:14.5px}
+.lead{color:var(--ink-2);margin:0 0 18px;font-size:14.5px}
 .note{font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-radius:var(--r-sm);padding:9px 11px;margin:10px 0 0;display:flex;gap:6px;align-items:flex-start}
 .note .ico{width:15px;height:15px;margin-top:2px;color:var(--accent)}
 .empty{color:var(--muted);font-size:13px;padding:12px 0}
@@ -829,6 +829,7 @@ button.mrow{cursor:pointer}button.mrow:hover span{color:var(--ink)}
 .packed{grid-auto-rows:4px;row-gap:0!important;grid-auto-flow:row dense;align-items:start}
 .packed>*{margin-top:0!important;margin-bottom:0!important;align-self:start}
 .packed>.vis.grown>.vbody:not(:has(table,.list,.agenda,.bls,.terms,.empty)){display:flex;flex-direction:column;justify-content:center}
+.packed>.stack.grown>:last-child{flex:1 0 auto}.cfstick{position:sticky;top:12px;align-self:start}
 .packed>.capped{overflow:auto;scrollbar-width:thin;overscroll-behavior:contain}
 .packed>.capped>header{position:sticky;top:-13px;z-index:2;background:var(--surface);margin-top:-13px;padding-top:13px}
 .packed>.capped::after{content:"";position:sticky;display:block;bottom:-15px;height:28px;margin-top:-28px;background:linear-gradient(transparent,var(--surface));pointer-events:none}
@@ -1282,7 +1283,7 @@ tr.dim td{opacity:.5}
 .crbd{fill:color-mix(in srgb,var(--a-car) 55%,transparent);stroke:var(--a-car)}.crbme{fill:var(--a-pro);stroke:var(--ink)}.crbped{fill:none;stroke:var(--good);stroke-width:2}
 
 /* ===== painel do dia */
-.pd{display:grid;gap:14px;max-width:980px}
+.pd{display:grid;gap:14px}
 .pdtxt .pdday{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px;margin-bottom:10px}
 .pdd{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-2);font-weight:500}.pdd input{width:auto;min-width:150px}
 .pdday .pdmsg{flex-basis:100%;margin:0}
@@ -1450,7 +1451,7 @@ tr.dim td{opacity:.5}
 .rtcorner{position:sticky;left:0;z-index:5;background:var(--surface);display:flex;align-items:center;justify-content:flex-end;padding:0 6px;color:var(--muted)}.rtcorner .ico{width:14px;height:14px}.rtcorner small{font-size:10px}
 .rtdh{border:0;background:none;padding:7px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--ink-2);border-left:1px solid var(--line)}
 .rtdh small{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em}.rtdh b{font-size:18px;font-weight:600;color:var(--ink);width:32px;height:32px;display:grid;place-items:center;border-radius:50%}.rtdh em{font-style:normal;font-size:10.5px;color:var(--muted)}
-.rtdh.today b{background:var(--accent);color:var(--accent-ink)}.rtdh:hover{background:var(--surface-2)}
+.rtdh .rtsb{width:56%;margin-top:2px}.rtdh.today b{background:var(--accent);color:var(--accent-ink)}.rtdh:hover{background:var(--surface-2)}
 .rtallrow{border-bottom:1px solid var(--line);position:sticky;top:var(--hh,63px);z-index:5;background:var(--surface)}
 .rtall{border-left:1px solid var(--line);padding:3px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .rtad{font-size:11px;border-radius:5px;padding:1px 5px;display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rtad .ico{width:11px;height:11px;flex:none}.rtad.e{background:var(--surface-3)}.rtad.t{background:color-mix(in srgb,var(--warn) 16%,var(--surface))}
@@ -1780,7 +1781,7 @@ svg .ckg-sl{stroke:var(--muted);stroke-width:1.5}svg .ckg-dl{stroke:var(--ink);s
 svg .ckg-dep{fill:none;stroke:var(--muted);stroke-width:1}svg .ckg-dep.crit{stroke:var(--crit);stroke-width:1.4}
 svg .ckg-mk{fill:var(--a-car)}svg .ckg-mkl{stroke:var(--a-car);stroke-width:1;opacity:.45}
 .ckpath{margin-bottom:10px}.ckpath>div{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:4px}.ckpath .chip{cursor:pointer}.ckpath .chip.on{border-color:var(--warn);color:var(--warn)}
-.ckmks{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.ckmks{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.ckmks>*{flex:1 1 auto}
 .ckrow-late td{background:color-mix(in srgb,var(--crit) 6%,transparent)}
 textarea.ckmd{font:13px/1.5 var(--f-mono);min-height:280px}
 @media (min-width:1181px){body.ckside-on .secfab{right:436px;bottom:16px}body.ckside-on .secnudge{display:none}}

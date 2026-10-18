@@ -1,5 +1,5 @@
 """Monta o documento feed/hoje do Atlas da Vida: previsão hora a hora (MET Norway), notícias boas e câmbio BRL→EUR (BCE).
-A página do Atlas não tem internet; uma tarefa agendada roda este script e grava a saída no banco do Atlas.
+A página do Atlas não tem internet; quem roda este script grava a saída no banco do Atlas (a tarefa agendada que fazia isso duas vezes por dia foi desligada em 18/10/2026).
 uso: python3 feed_hoje.py [cidade.json] [feed_anterior.json] > novo.json
   cidade.json: {"nome": "Turim", "lat": 45.07, "lon": 7.69} (lat/lon opcionais: sem eles, a cidade é localizada pelo nome),
     ou o documento s_cfg do Atlas inteiro (a cidade sai de v.cidade; sem cidade, Turim)

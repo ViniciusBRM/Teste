@@ -1,5 +1,5 @@
 /* ================================================================ Hoje: resumo do momento
-   Clima (MET Norway, gravado no Atlas por uma tarefa agendada) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network),
+   Clima (MET Norway, gravado no Atlas por ferramentas/feed_hoje.py) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network),
    uma frase escolhida pelo horário e pelo que o dia está pedindo, e ideias para sair da rotina filtradas por clima, energia, tempo e dinheiro.
    Sem internet nesta visualização, clima, notícias e câmbio vêm do doc feed/hoje; sem ele, as notícias viram links. As respostas ficam em S.hojeCtx[dia]. */
 const HJ = { wx: null, wxSt: "", news: null, newsSt: "", skip: new Set(), fr: 0 };
@@ -7,11 +7,12 @@ const hctx = () => (S.hojeCtx[TODAY] ||= {});
 const periodo = () => { const h = new Date().getHours(); return h < 12 ? "manha" : h < 18 ? "tarde" : "noite"; };
 /* a página pode não ter acesso à internet: cada busca desiste em 7 s */
 async function fetchT(u, ms = 7000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { return await fetch(u, { signal: c.signal }); } finally { clearTimeout(t); } }
-/* feed do dia (doc compartilhado feed/hoje): uma tarefa agendada grava às 6h e às 13h (hora de Roma) a previsão hora a hora da
-   MET Norway para a cidade escolhida, as notícias boas e o câmbio do BCE. A página não alcança a internet: lê o doc, escuta as
-   mudanças (a atualização entra sem recarregar) e escolhe nas horas gravadas a hora de agora, no fuso da cidade. */
+/* feed do dia (doc compartilhado feed/hoje): ferramentas/feed_hoje.py grava a previsão hora a hora da MET Norway para a cidade
+   escolhida, as notícias boas e o câmbio do BCE. A atualização agendada foi desligada (custo zero): o doc só muda quando o script
+   roda. A página não alcança a internet: lê o doc, escuta as mudanças (entram sem recarregar) e escolhe nas horas gravadas a hora
+   de agora, no fuso da cidade. */
 let FEED = null, FEED_ST = "", FEED_P = null;
-const FEED_HORAS = "6h e às 13h (hora de Roma)";
+const FEED_OFF = "a atualização automática está desligada";
 function hjFeed() {
   if (FEED_P) return FEED_P;
   if (!DBH) { if (LOADED) { FEED_ST = "ok"; FEED_P = Promise.resolve(); } return Promise.resolve(); }
@@ -258,12 +259,12 @@ function hjSemClima() {
   const C = FEED?.clima, nome = cidade().nome;
   if (FEED_ST !== "ok" || HJ.wxSt === "load") return "Buscando a previsão…";
   if (!FEED && !extOk("clima")) return "O clima está desligado em Privacidade › Serviços externos.";
-  if (FEED?.erroCidade && normNome(FEED.erroCidade) === normNome(nome)) return `A atualização automática não encontrou “${nome}”. Toque em “trocar cidade” e escolha uma da lista (ou escreva o nome como aparece no mapa).`;
-  if (C?.horas?.length && !feedDaCidade()) return `A previsão de ${nome} entra na próxima atualização automática, às ${FEED_HORAS}, sem precisar recarregar. A última gravada foi de ${C.cidade}.`;
-  if (FEED) return `A última previsão gravada (${fmtDY(FEED.dia)}, ${FEED.hora}) já não cobre esta hora. Ela se atualiza sozinha às ${FEED_HORAS}; a próxima aparece aqui sem recarregar.`;
-  return `A previsão é gravada no Atlas automaticamente às ${FEED_HORAS}. A primeira aparece aqui assim que chegar, sem recarregar.`;
+  if (FEED?.erroCidade && normNome(FEED.erroCidade) === normNome(nome)) return `A última atualização não encontrou “${nome}”. Toque em “trocar cidade” e escolha uma da lista (ou escreva o nome como aparece no mapa).`;
+  if (C?.horas?.length && !feedDaCidade()) return `A previsão gravada é de ${C.cidade}. ${nome} só aparece quando houver uma previsão gravada para ela: ${FEED_OFF}.`;
+  if (FEED) return `A última previsão gravada (${fmtDY(FEED.dia)}, ${FEED.hora}) já não cobre esta hora e ${FEED_OFF}. Se uma nova for gravada, ela aparece aqui sem recarregar.`;
+  return `Nenhuma previsão gravada no Atlas e ${FEED_OFF}. Se uma for gravada, ela aparece aqui sem recarregar.`;
 }
-/* cidades com coordenadas prontas (a página não tem internet para procurar); outra cidade vai pelo nome e a tarefa agendada localiza */
+/* cidades com coordenadas prontas (a página não tem internet para procurar); outra cidade vai pelo nome e o script localiza */
 const CIDADES = [["Turim", 45.0705, 7.6868, "Torino|Turin"], ["Milão", 45.4642, 9.19, "Milano|Milan"], ["Roma", 41.9028, 12.4964, "Rome"], ["Florença", 43.7696, 11.2558, "Firenze|Florence"], ["Bolonha", 44.4949, 11.3426, "Bologna"],
   ["Gênova", 44.4056, 8.9463, "Genova|Genoa"], ["Veneza", 45.4408, 12.3155, "Venezia|Venice"], ["Nápoles", 40.8518, 14.2681, "Napoli|Naples"], ["Verona", 45.4384, 10.9916, ""], ["Pádua", 45.4064, 11.8768, "Padova|Padua"],
   ["Bérgamo", 45.6983, 9.6773, "Bergamo"], ["Bréscia", 45.5416, 10.2118, "Brescia"], ["Trieste", 45.6495, 13.7768, ""], ["Bari", 41.1171, 16.8719, ""], ["Palermo", 38.1157, 13.3615, ""], ["Catânia", 37.5079, 15.083, "Catania"],
@@ -275,11 +276,11 @@ const CIDADES = [["Turim", 45.0705, 7.6868, "Torino|Turin"], ["Milão", 45.4642,
   ["Zurique", 47.3769, 8.5417, "Zurich|Zürich"], ["Genebra", 46.2044, 6.1432, "Geneva|Genève"], ["Nice", 43.7102, 7.262, "Nizza"], ["Lyon", 45.764, 4.8357, "Lione"], ["Munique", 48.1351, 11.582, "Munich|München"], ["Berlim", 52.52, 13.405, "Berlin"]];
 const acharCidade = q => { const n = normNome(q); return CIDADES.find(([nome, , , alt]) => [nome, ...alt.split("|")].some(x => x && normNome(x) === n)); };
 function hjCidade() {
-  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" list="hjcl" autocomplete="off" value="${esc(cidade().nome)}"></label><datalist id="hjcl">${CIDADES.map(c => `<option value="${esc(c[0])}">`).join("")}</datalist></div><p class="muted small" id="hjcm">A previsão é atualizada automaticamente às ${FEED_HORAS}. Uma cidade nova entra na próxima atualização.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Salvar</button></div></div></form>`;
+  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" list="hjcl" autocomplete="off" value="${esc(cidade().nome)}"></label><datalist id="hjcl">${CIDADES.map(c => `<option value="${esc(c[0])}">`).join("")}</datalist></div><p class="muted small" id="hjcm">${FEED_OFF.replace(/^./, c => c.toUpperCase())}: a cidade nova passa a valer quando houver uma previsão gravada para ela.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Salvar</button></div></div></form>`;
   d.showModal(); $("#hjcx").onclick = () => d.close();
   $("#hjcf").onsubmit = e => { e.preventDefault(); const q = $("#hjci").value.trim().slice(0, 80); if (!q) return; const x = acharCidade(q);
     S.cfg.cidade = x ? { nome: x[0], lat: x[1], lon: x[2] } : { nome: q }; d.close(); HJ.wx = null; HJ.wxSt = ""; try { localStorage.removeItem("atlas_wx"); } catch {}
-    touch("cfg", { label: "Cidade do clima" }); if (!feedDaCidade()) toast(x ? `${x[0]}: a previsão entra na próxima atualização automática (${FEED_HORAS}).` : `“${q}” não está na lista: a próxima atualização automática localiza pelo nome.`); };
+    touch("cfg", { label: "Cidade do clima" }); if (!feedDaCidade()) toast(x ? `${x[0]}: vale quando houver uma previsão gravada para essa cidade (${FEED_OFF}).` : `“${q}” não está na lista: vale quando houver uma previsão gravada com esse nome (${FEED_OFF}).`); };
 }
 function hjChange(t) {
   if (t.dataset.hjtempo) { const h = parseNum(t.value); hctx().tempo = h > 0 ? Math.round(Math.min(24, h) * 60) : ""; HJ.skip.clear(); touch("hojeCtx", { label: "Tempo livre", noUndo: true }); return true; }

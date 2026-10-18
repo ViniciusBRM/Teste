@@ -60,7 +60,7 @@ async def main():
             chk(c1 == {"nome": "Turim", "lat": 45.0705, "lon": 7.6868} and await pg.evaluate("hjClima()?.fonte") == "feed", f"“torino” vira Turim com coordenadas e o clima continua ({c1})")
             c2 = await cidade("Belo Horizonte")
             txt = await pg.inner_text(".p-hoje")
-            chk(c2["lat"] == -19.9208 and "A previsão de Belo Horizonte entra na próxima atualização automática" in txt and "A última gravada foi de Turim" in txt and "Tempo em Belo Horizonte" in txt, f"cidade nova: avisa que entra na próxima atualização, sem mostrar o tempo de Turim ({c2})")
+            chk(c2["lat"] == -19.9208 and "A previsão gravada é de Turim" in txt and "Belo Horizonte só aparece quando houver uma previsão gravada" in txt and "Tempo em Belo Horizonte" in txt, f"cidade nova: avisa que a previsão gravada é de outra cidade, sem mostrar o tempo de Turim ({c2})")
             c3 = await cidade("Vila do Conde")
             chk(c3 == {"nome": "Vila do Conde"}, f"nome fora da lista fica só com o nome, para a tarefa localizar ({c3})")
             # a tarefa grava a cidade digitada (localizada pelo nome): vale pelo nome
@@ -80,7 +80,7 @@ async def main():
             # feed velho (2 dias): explica a atualização automática, sem pedir para marcar à mão
             await pg.evaluate("__clock.shift(2.5 * 86400e3)"); await pg.evaluate("diaVirou(); render()"); await pg.wait_for_timeout(300)
             txt = await pg.inner_text(".p-hoje")
-            chk(await pg.evaluate("hjClima()") is None and "já não cobre esta hora" in txt and "6h e às 13h" in txt and "Marque o tempo" not in txt, "feed velho: explica quando a previsão se atualiza, sem pedir o tempo à mão")
+            chk(await pg.evaluate("hjClima()") is None and "já não cobre esta hora" in txt and "atualização automática está desligada" in txt and "6h" not in txt and "Marque o tempo" not in txt, "feed velho: diz que a previsão não cobre a hora e que a atualização automática está desligada, sem pedir o tempo à mão")
             ov = await overflow(pg); chk(ov[0] <= ov[1], f"sem rolagem lateral {ov}")
         finally:
             errs = [e for e in errs if "ERR_FAILED" not in e]
@@ -92,7 +92,7 @@ async def main():
         try:
             await pg.wait_for_timeout(900)
             txt = await pg.inner_text(".p-hoje")
-            chk("gravada no Atlas automaticamente às 6h e às 13h" in txt and "Tempo lá fora" not in txt, "banco sem feed: explica a atualização automática")
+            chk("Nenhuma previsão gravada" in txt and "atualização automática está desligada" in txt and "Tempo lá fora" not in txt, "banco sem feed: diz que não há previsão gravada e que a atualização automática está desligada")
             # o feed chega pela primeira vez com o Hoje aberto
             await pg.evaluate(f"(() => {{ window.__store['feed/hoje'] = {json.dumps(FEED)}; return DBH.doc('feed/hoje').update({{ at: 1000 }}); }})()")
             await pg.wait_for_timeout(500)

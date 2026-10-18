@@ -110,7 +110,7 @@ function rtMini() {
   return `<div class="rtmini" role="dialog" aria-label="Escolher data"><div class="rtmh"><button type="button" class="iconbtn" data-rtmini="-1" aria-label="Mês anterior">‹</button><b>${MESES[m0.getMonth()]} ${m0.getFullYear()}</b><button type="button" class="iconbtn" data-rtmini="1" aria-label="Próximo mês">›</button></div>
     <table><thead><tr><th title="Número da semana">#</th>${["S", "T", "Q", "Q", "S", "S", "D"].map(x => `<th>${x}</th>`).join("")}</tr></thead><tbody>${weeks.map(w => `<tr class="${v === "semana" && w === wk[0] ? "sel" : ""}"><td><button type="button" class="rtwk" data-rtgo="semana|${w}" title="Ver a semana ${isoWeek(w)}">${isoWeek(w)}</button></td>${Array.from({ length: 7 }, (_, i) => { const x = addDays(w, i), n = rtOcc(x).length + rtAgenda(x).timed.length; return `<td><button type="button" class="rtmd${x.slice(0, 7) !== d.slice(0, 7) ? " out" : ""}${x === TODAY ? " today" : ""}${x === d && v === "dia" ? " sel" : ""}" data-rtgo="dia|${x}" aria-label="${fmtDL(x)}">${parse(x).getDate()}${n ? "<i></i>" : ""}</button></td>`; }).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
-/* faixa da semana: navegação rápida em qualquer largura, com as horas planejadas e o que foi cumprido */
+/* faixa da semana (só na vista Dia: na Semana o cabeçalho da grade já mostra os dias, as horas e o cumprido) */
 function rtStrip() {
   const w = rtWeek(RT.d), v = rtView();
   return `<div class="rtstrip" role="tablist" aria-label="Dias da semana"><button type="button" class="iconbtn rtsw" data-rtnavw="-1" aria-label="Semana anterior">‹</button>${w.map(d => { const X = rtDia(d), p = X.plan, f = p ? X.feito / p : 0, on = v === "dia" && d === RT.d;
@@ -150,8 +150,8 @@ function rtItemCard(k, id, d) {
 }
 function rtGrid(days) {
   const H = rtSH(), one = days.length === 1, hasAll = days.some(d => { const A = rtAgenda(d); return A.allday.length || A.tar.length; });
-  return `<div class="rtgrid${one ? " one" : ""}" style="--n:${days.length};--sh:${H}px"><div class="rtscroll" id="rtscroll">
-    <div class="rthead"><div class="rtcorner">${ic("clock")}</div>${days.map(d => { const X = rtDia(d); return `<button type="button" class="rtdh${d === TODAY ? " today" : ""}" data-rtgo="dia|${d}"><small>${DOWL[parse(d).getDay()].slice(0, 3)}</small><b>${parse(d).getDate()}</b>${one ? "" : `<em>${X.plan ? durTxt(X.plan) : "–"}</em>`}</button>`; }).join("")}</div>
+  return `<div class="rtgrid${one ? " one" : ""}" style="--n:${days.length};--sh:${H}px"><div class="rtscroll" id="rtscroll" data-cfgrow>
+    <div class="rthead"><div class="rtcorner">${ic("clock")}</div>${days.map(d => { const X = rtDia(d); return `<button type="button" class="rtdh${d === TODAY ? " today" : ""}" data-rtgo="dia|${d}"><small>${DOWL[parse(d).getDay()].slice(0, 3)}</small><b>${parse(d).getDate()}</b>${one ? "" : `<em>${X.plan ? durTxt(X.plan) : "livre"}</em>${X.plan ? `<i class="rtsb" title="Cumprido: ${pct(clamp(X.feito / X.plan))}"><u style="width:${clamp(X.feito / X.plan) * 100}%"></u></i>` : ""}`}</button>`; }).join("")}</div>
     ${hasAll ? `<div class="rtallrow"><div class="rtcorner"><small>dia todo</small></div>${days.map(d => `<div class="rtall">${rtAllday(d)}</div>`).join("")}</div>` : ""}
     <div class="rtbody"><div class="rttimes" style="height:${48 * H}px">${Array.from({ length: 48 }, (_, i) => `<span class="${i % 2 ? "half" : ""}" style="top:${i * H}px">${i % 2 ? ":30" : m2hm(i * 30)}</span>`).join("")}</div>${days.map(rtCol).join("")}</div></div></div>`;
 }
@@ -205,7 +205,7 @@ function pRotina() {
     </div>
     <div class="rtq"><span>${ic("plus")}</span><input type="text" id="rt_q" value="${esc(RT.q)}" placeholder="Criar rápido: inglês amanhã 20h 30min · academia seg qua sex 18:30–19:30 · reunião 14h–15h30" aria-label="Criar bloco por texto" autocomplete="off"><button type="button" class="btn sm primary" data-act="rtqadd"${qp?.ok ? "" : " disabled"}>Criar</button>
       <div class="rtqp${qp ? (qp.ok ? " ok" : " bad") : ""}" id="rt_qp">${qp ? rtQpHTML(qp) : ""}</div></div>
-    ${v !== "mes" ? rtStrip() : ""}
+    ${v === "dia" ? rtStrip() : ""}
     <div class="rtlay"><section class="rtcal" aria-label="${esc(P.t)}">${v === "mes" ? rtMonth() : rtGrid(v === "dia" ? [RT.d] : rtWeek(RT.d))}</section>
       <aside class="rtins">${rtInsights(days)}</aside></div></div>`;
 }

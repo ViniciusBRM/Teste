@@ -250,11 +250,11 @@ Os chakras lidos à luz da Doutrina Espírita, dentro do pilar Espiritismo (nave
 - **Hoje:** tempo livre em 2 h, 4 h ou 6 h, ou outro valor escrito em horas (1, 1,5, 3…).
 - **Painel do dia:** “Recomeçar do zero” no topo (e “Limpar” no rodapé) limpa o painel num toque, com desfazer; o que já foi salvo nas abas continua lá.
 
-## Clima automático (`src/29-hoje2.js` + `ferramentas/feed_hoje.py`)
+## Clima (`src/29-hoje2.js` + `ferramentas/feed_hoje.py`)
 
-A página do Atlas, dentro do claude.ai, não tem internet: a previsão chega pelo banco do Atlas. Uma tarefa agendada (sessão do
-Claude Code, às 5:48 e às 12:48, hora de Roma) roda `ferramentas/feed_hoje.py` e grava o resultado com `update` no documento
-compartilhado `feed/hoje`: previsão hora a hora da MET Norway (yr.no) para cerca de 60 horas, com as horas já passadas de hoje
+A página do Atlas, dentro do claude.ai, não tem internet: a previsão chega pelo banco do Atlas. A tarefa agendada que rodava o
+script duas vezes por dia foi desligada em 18/10/2026 (custo zero): hoje o documento só muda quando `ferramentas/feed_hoje.py`
+roda. O script grava com `update` no documento compartilhado `feed/hoje`: previsão hora a hora da MET Norway (yr.no) para cerca de 60 horas, com as horas já passadas de hoje
 vindas do feed anterior (para a mínima e a máxima do dia), mais as notícias boas (Positive News, Good News Network) e o câmbio
 BRL→EUR do BCE. A cidade vem de `s_cfg.v.cidade` (sem ela, Turim); sem coordenadas, é localizada pelo nome (geocodificação do
 Open-Meteo, que também dá o fuso). Cidade não encontrada grava só `erroCidade` (o clima anterior fica); MET Norway fora do ar não
@@ -263,11 +263,27 @@ grava nada.
 Na página: o doc é lido com `onSnapshot` (a atualização entra sem recarregar); o “agora” é a hora gravada que contém este
 instante, no fuso da cidade (o aparelho pode estar em outro); mínima e máxima são das horas de hoje; chuva é dita com as horas
 (“chuva às 15 h e 16 h (2,8 mm)”), até as 22 h; seis próximas horas aparecem numa faixa; o Hoje redesenha na virada da hora (não
-enquanto você digita). Não há mais tempo marcado à mão: sem previsão válida, o painel explica por quê (buscando, cidade nova que
-entra na próxima atualização, cidade não encontrada, previsão que já não cobre a hora, clima desligado em Privacidade). Trocar a
-cidade não usa internet: lista pronta de cidades da Itália, do Brasil e da Europa (aceita o nome em italiano ou inglês) e nome
-livre, que a tarefa localiza. Aberto fora do claude.ai, com internet, a página ainda busca o Open-Meteo direto quando o feed não
+enquanto você digita). Não há mais tempo marcado à mão: sem previsão válida, o painel explica por quê (buscando, previsão gravada de
+outra cidade, cidade não encontrada, previsão que já não cobre a hora, clima desligado em Privacidade) e diz que a atualização
+automática está desligada. Trocar a cidade não usa internet: lista pronta de cidades da Itália, do Brasil e da Europa (aceita o
+nome em italiano ou inglês) e nome livre, que o script localiza. Aberto fora do claude.ai, com internet, a página ainda busca o Open-Meteo direto quando o feed não
 cobre a hora.
+
+## Sem vazios entre as caixas (`src/11-main.js`, `pack`)
+
+Medido por `testes/furos.py` (o que aparece na tela em cada posição de rolagem, não só a geometria da página): vazio de 120×180 px
+ou mais entre caixas, e caixa esticada com 160 px ou mais sem conteúdo dentro.
+- **Duas colunas lado a lado** (Rotina, Cockpit, Saúde com agente, Jornada, Lazer, diários das áreas, Conselho, Diário, Dados,
+  relatórios com a coluna “O que os dados dizem”, Jardim): a coluna mais curta cresce até a altura útil da janela, sem passar da
+  outra; se ainda for mais curta, acompanha a rolagem. O que cresce: a grade de horas da Rotina, a conversa de um mentor, a caixa
+  de texto do último cartão, ou o último cartão. Coluna que acompanha a rolagem e é mais alta que a janela para com a base visível.
+- **Grades de cartões** (`.g2c`, `.g3c`, Caderno técnico): cada cartão vai para a coluna mais curta ou ocupa a largura toda, o que
+  deixar menos vazio; testa as combinações e conta buraco em dobro, caixa esticada e o vazio à direita de um cartão alargado cujo
+  conteúdo não acompanha a largura. Cartão com gráfico de largura fixa não é alargado.
+- **Relatórios** (`.vg`, 12 colunas): vão que nenhum cartão consegue cobrir esticando para baixo é coberto alargando um vizinho
+  cuja faixa de altura cabe nas colunas livres; o gráfico é redesenhado na largura nova (`vw(n, id)`), sem esticar.
+- **Última linha incompleta** (Inspiração, Lazer, Filosofia, Biblioteca): os cartões dela dividem a linha toda.
+- **Rotina · Semana**: um cabeçalho de datas só (dia, horas planejadas e barra de cumprido); a faixa de dias fica só na vista Dia.
 
 ## Guia do Atlas e plano de preenchimento (`src/58-guia.js`)
 
@@ -376,6 +392,8 @@ O relógio do navegador fica fixo em 09/10/2026, 10:00 (sexta), para os testes n
 | `lab45.py` | Atlas 4 · Inspiração: lugar no menu, catálogo conferido (frases com fonte, links, aquecimento, desafios), grupos e busca, próximo bloco da rotina, detalhe com links em aba nova, relógio do aquecimento, outro desafio, Comecei e desfazer, atividade própria com ficha da IA, celular |
 | `lab46.py` | Atlas 4 · IA de acompanhamento: ativar, perfil e esforço no pedido (quick/default/complex), ferramentas, contexto guardado, tela compartilhada (texto da aba e campos), avaliar outra aba, imagem anexada só onde há imagens, notas de progresso, ao lado do Secretário, desativar e reativar com a conversa, outra atividade com outro perfil, celular (uma janela de cada vez), modo exemplo |
 | `flows.py`, `edge.py`, `sjflows.py` | fluxos herdados do Atlas original |
+| `lab47.py` | Atlas 4 · sem vazios entre as caixas: Rotina na Semana com um cabeçalho de datas só (a faixa de dias só no Dia), grade da Rotina na altura útil da janela acompanhando a rolagem e terminando junto com os painéis, a janela mais alta faz a grade crescer, coluna principal curta cresce até a lateral (Cockpit · Mês), relatório alarga o cartão e redesenha o gráfico sem esticar, nenhum vazio de 120×180 px em 21 telas em nenhuma posição de rolagem, cartão sozinho na largura toda, celular sem ajustes e sem rolagem lateral |
+| `furos.py 1440 900 ex` | varredura de todas as telas (largura, altura, `ex` ou `vazio`): vazio entre caixas e caixa esticada, em cada posição de rolagem |
 | `smoke.py 390 dark`, `holes.py 1024` | todas as páginas numa largura/tema; buracos entre cartões |
 
 Dependências: `playwright`, `python-dateutil`, `pdftotext`/`pdfinfo` (poppler). O livro em PDF carrega o jsPDF do

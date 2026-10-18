@@ -56,7 +56,7 @@ a{color:inherit}
 .ico{display:inline-grid;place-items:center;width:18px;height:18px;flex:none;color:var(--c,currentColor)}
 .ico svg{width:100%;height:100%}
 .row{display:flex;align-items:center;gap:8px}.row.wrap{flex-wrap:wrap}
-.lead{color:var(--ink-2);max-width:78ch;margin:0 0 18px;font-size:14.5px}
+.lead{color:var(--ink-2);margin:0 0 18px;font-size:14.5px}
 .note{font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-radius:var(--r-sm);padding:9px 11px;margin:10px 0 0;display:flex;gap:6px;align-items:flex-start}
 .note .ico{width:15px;height:15px;margin-top:2px;color:var(--accent)}
 .empty{color:var(--muted);font-size:13px;padding:12px 0}
@@ -829,6 +829,7 @@ button.mrow{cursor:pointer}button.mrow:hover span{color:var(--ink)}
 .packed{grid-auto-rows:4px;row-gap:0!important;grid-auto-flow:row dense;align-items:start}
 .packed>*{margin-top:0!important;margin-bottom:0!important;align-self:start}
 .packed>.vis.grown>.vbody:not(:has(table,.list,.agenda,.bls,.terms,.empty)){display:flex;flex-direction:column;justify-content:center}
+.packed>.stack.grown>:last-child{flex:1 0 auto}.cfstick{position:sticky;top:12px;align-self:start}
 .packed>.capped{overflow:auto;scrollbar-width:thin;overscroll-behavior:contain}
 .packed>.capped>header{position:sticky;top:-13px;z-index:2;background:var(--surface);margin-top:-13px;padding-top:13px}
 .packed>.capped::after{content:"";position:sticky;display:block;bottom:-15px;height:28px;margin-top:-28px;background:linear-gradient(transparent,var(--surface));pointer-events:none}
@@ -1282,7 +1283,7 @@ tr.dim td{opacity:.5}
 .crbd{fill:color-mix(in srgb,var(--a-car) 55%,transparent);stroke:var(--a-car)}.crbme{fill:var(--a-pro);stroke:var(--ink)}.crbped{fill:none;stroke:var(--good);stroke-width:2}
 
 /* ===== painel do dia */
-.pd{display:grid;gap:14px;max-width:980px}
+.pd{display:grid;gap:14px}
 .pdtxt .pdday{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px;margin-bottom:10px}
 .pdd{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-2);font-weight:500}.pdd input{width:auto;min-width:150px}
 .pdday .pdmsg{flex-basis:100%;margin:0}
@@ -1450,7 +1451,7 @@ tr.dim td{opacity:.5}
 .rtcorner{position:sticky;left:0;z-index:5;background:var(--surface);display:flex;align-items:center;justify-content:flex-end;padding:0 6px;color:var(--muted)}.rtcorner .ico{width:14px;height:14px}.rtcorner small{font-size:10px}
 .rtdh{border:0;background:none;padding:7px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--ink-2);border-left:1px solid var(--line)}
 .rtdh small{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em}.rtdh b{font-size:18px;font-weight:600;color:var(--ink);width:32px;height:32px;display:grid;place-items:center;border-radius:50%}.rtdh em{font-style:normal;font-size:10.5px;color:var(--muted)}
-.rtdh.today b{background:var(--accent);color:var(--accent-ink)}.rtdh:hover{background:var(--surface-2)}
+.rtdh .rtsb{width:56%;margin-top:2px}.rtdh.today b{background:var(--accent);color:var(--accent-ink)}.rtdh:hover{background:var(--surface-2)}
 .rtallrow{border-bottom:1px solid var(--line);position:sticky;top:var(--hh,63px);z-index:5;background:var(--surface)}
 .rtall{border-left:1px solid var(--line);padding:3px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .rtad{font-size:11px;border-radius:5px;padding:1px 5px;display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rtad .ico{width:11px;height:11px;flex:none}.rtad.e{background:var(--surface-3)}.rtad.t{background:color-mix(in srgb,var(--warn) 16%,var(--surface))}
@@ -1780,7 +1781,7 @@ svg .ckg-sl{stroke:var(--muted);stroke-width:1.5}svg .ckg-dl{stroke:var(--ink);s
 svg .ckg-dep{fill:none;stroke:var(--muted);stroke-width:1}svg .ckg-dep.crit{stroke:var(--crit);stroke-width:1.4}
 svg .ckg-mk{fill:var(--a-car)}svg .ckg-mkl{stroke:var(--a-car);stroke-width:1;opacity:.45}
 .ckpath{margin-bottom:10px}.ckpath>div{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:4px}.ckpath .chip{cursor:pointer}.ckpath .chip.on{border-color:var(--warn);color:var(--warn)}
-.ckmks{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.ckmks{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.ckmks>*{flex:1 1 auto}
 .ckrow-late td{background:color-mix(in srgb,var(--crit) 6%,transparent)}
 textarea.ckmd{font:13px/1.5 var(--f-mono);min-height:280px}
 @media (min-width:1181px){body.ckside-on .secfab{right:436px;bottom:16px}body.ckside-on .secnudge{display:none}}
@@ -4002,7 +4003,8 @@ function vis(id, title, body, o = {}) {
   if (!o.table) { const m = String(body).match(/data-ct="(\d+)"/); const t = m && CTAB.d[m[1]]; if (t) o = { ...o, table: t }; }
   VIS[id] = { title, body, o };
   const tv = TABLEV.has(id) && o.table;
-  return `<section class="vis ${o.cls || ""}" data-vid="${id}"${o.style ? ` style="${o.style}"` : ""}><header><div class="vt"><h2>${o.ico ? ic(o.ico, o.col) : ""}${title}</h2>${o.sub ? `<span class="vs">${o.sub}</span>` : ""}</div><div class="va">${o.act || ""}${o.table ? `<button type="button" class="vb${tv ? " on" : ""}" data-vtab="${id}" title="${tv ? "Mostrar gráfico" : "Mostrar como tabela"}" aria-label="${tv ? "Mostrar gráfico" : "Mostrar como tabela"}" aria-pressed="${!!tv}">${ic("rows")}</button><button type="button" class="vb" data-vcsv="${id}" title="Exportar dados (CSV)" aria-label="Exportar dados em CSV">${ic("download")}</button>` : ""}${o.nofocus ? "" : `<button type="button" class="vb" data-vfocus="${id}" title="Modo foco" aria-label="Abrir em modo foco">${ic("expand")}</button>`}${o.info ? `<span class="vb" tabindex="0" ${tip(o.info)} aria-label="${esc(o.info)}">${ic("info")}</span>` : ""}</div></header><div class="vbody">${tv ? tableFrom(o.table()) : body}</div></section>`;
+  const fx = vgSpan(id), st = [fx ? `grid-column:span ${fx}` : "", o.style || ""].filter(Boolean).join(";");
+  return `<section class="vis ${o.cls || ""}" data-vid="${id}"${fx ? ` data-vgfix="${fx}"` : ""}${st ? ` style="${st}"` : ""}><header><div class="vt"><h2>${o.ico ? ic(o.ico, o.col) : ""}${title}</h2>${o.sub ? `<span class="vs">${o.sub}</span>` : ""}</div><div class="va">${o.act || ""}${o.table ? `<button type="button" class="vb${tv ? " on" : ""}" data-vtab="${id}" title="${tv ? "Mostrar gráfico" : "Mostrar como tabela"}" aria-label="${tv ? "Mostrar gráfico" : "Mostrar como tabela"}" aria-pressed="${!!tv}">${ic("rows")}</button><button type="button" class="vb" data-vcsv="${id}" title="Exportar dados (CSV)" aria-label="Exportar dados em CSV">${ic("download")}</button>` : ""}${o.nofocus ? "" : `<button type="button" class="vb" data-vfocus="${id}" title="Modo foco" aria-label="Abrir em modo foco">${ic("expand")}</button>`}${o.info ? `<span class="vb" tabindex="0" ${tip(o.info)} aria-label="${esc(o.info)}">${ic("info")}</span>` : ""}</div></header><div class="vbody">${tv ? tableFrom(o.table()) : body}</div></section>`;
 }
 function tableFrom({ cols, rows }) {
   if (!rows.length) return emptyChart();
@@ -4243,7 +4245,12 @@ function cycleTheme() {
 /* ================================================================ relatórios (estilo Power BI): grade de 12 colunas, filtros cruzados, trilho de contexto */
 let REPW = 1100;
 const railOn = () => innerWidth >= 1500;
-function vw(span) { const G = REPW, gap = 16, pad = 34; let s = span; if (G < 760) s = 12; else if (G < 1080) s = span >= 7 ? 12 : 6; const col = (G - gap * 11) / 12; return Math.max(280, Math.round(s * col + (s - 1) * gap - pad)); }
+/* largura de desenho do gráfico de um cartão. Com o id, o cartão pode ter sido alargado para fechar um vão na grade (vgPlan, em 11-main):
+   o gráfico é redesenhado na largura nova em vez de esticado. VG_FIX vale só para o mesmo estado da tela (vgKey). */
+let VG_FIX = { k: "", s: {}, n: 0 }, VG_BUSY = false; const VW_IDS = new Set();
+const vgKey = () => [PAGE, SUB, REPW, VER, PER, CMP, REF, JSON.stringify(xf()), [...TABLEV].join(",")].join("|");
+const vgSpan = id => id && VG_FIX.k && VG_FIX.k === vgKey() ? VG_FIX.s[id] : undefined;
+function vw(span, id) { const G = REPW, gap = 16, pad = 34, f = vgSpan(id); if (id) VW_IDS.add(id); let s = span; if (f) s = f; else if (G < 760) s = 12; else if (G < 1080) s = span >= 7 ? 12 : 6; const col = (G - gap * 11) / 12; return Math.max(280, Math.round(s * col + (s - 1) * gap - pad)); }
 function linProj(vals, k) { const p = vals.map((v, i) => ({ x: i, y: v })).filter(q => isNum(q.y)); if (p.length < 3) return []; const mx = avg(p.map(q => q.x)), my = avg(p.map(q => q.y)); let a = 0, b = 0; for (const q of p) { a += (q.x - mx) * (q.y - +my); b += (q.x - mx) ** 2; } const sl = b ? a / b : 0; return Array.from({ length: k }, (_, i) => my + sl * (vals.length + i - mx)); }
 const projLabels = k => Array.from({ length: k }, (_, i) => mabbr(addMonth(REF, i + 1)));
 const projLabelsDe = (mk, k) => Array.from({ length: k }, (_, i) => mabbr(addMonth(mk, i + 1)));
@@ -4300,7 +4307,7 @@ function rOverview(R) {
   const tbl = `<div class="hscroll"><table class="dt sc"><thead><tr><th>Área</th><th class="num">Dados</th><th class="num">vs ant.</th><th class="num opt">Sente</th><th class="num opt">Alvo</th><th class="opt2">Tendência</th><th class="num opt">Peso</th><th><span class="sr">Mentor</span></th></tr></thead><tbody>${rows.map(a => `<tr class="click${f.area === a.a ? " sel" : ""}${f.area && f.area !== a.a ? " dim" : ""}" data-xf="area|${esc(a.a)}" tabindex="0"><td>${areaDot(a.a)}${esc(ashort(a.a))}</td><td class="num"><span class="sbar st-${a.st}" style="--v:${(a.dados ?? 0) * 10}%;--c:${acol(a.a)}">${a.dados == null ? "–" : num(a.dados)}</span></td><td class="num">${isNum(a.dados) && isNum(a.pv) ? `<span class="${a.dados >= a.pv ? "st-good" : "st-crit"}">${sgn(a.dados - a.pv)}</span>` : "–"}</td><td class="num opt">${a.perc ?? "–"}</td><td class="num opt">${a.alvo ?? "–"}</td><td class="opt2 sparkc">${spark(a.ser, acol(a.a), { min: 0, max: 10, w: 90, h: 24 })}</td><td class="num opt">${apeso(a.a)}×</td><td><a class="iconbtn sm" href="#mentor.${AREA_INFO[a.a].id}" title="Mentor de ${esc(ashort(a.a))}" aria-label="Mentor de ${esc(ashort(a.a))}">${ic("spark")}</a></td></tr>`).join("")}</tbody></table></div>`;
   const mAnd = R.metas.filter(m => m.ativa && m.rt !== "Concluída" && (!f.area || m.area === f.area)).sort((a, b) => (a.prazo || "9").localeCompare(b.prazo || "9")).slice(0, 8);
   const inf0 = influencers("bem", { days: PER * 30, min: 20 }).filter(i => !i.k.startsWith("t:") || i.n >= 20), infS = inf0.filter(i => i.sig), inf = (infS.length ? infS : inf0).slice(0, 8);
-  const body = `${vis("ov-idx", "Índice de vida e áreas", lineChart(LN, series, { w: vw(8), h: 270, min: 0, max: 100, proj: 2, projLabels: projLabelsDe(KN.at(-1), 2), keys: KN, click: "ref", hi: KN.indexOf(REF), fmt: v => num(v, 0) }), { cls: "s8", sub: f.area ? `destaque: ${ashort(f.area)} (placar × 10)` : `${PER} meses + tendência · toque num mês para analisá-lo`, info: "Índice = média ponderada dos placares de dados das áreas × 10. As linhas finas são as áreas; filtre uma área para destacá-la.", table: () => ({ cols: [{ l: "Mês" }, ...series.map(s => ({ l: s.name, num: true, f: v => v == null ? "" : num(v) }))], rows: K.map((k, i) => [mlabel(k), ...series.map(s => s.data[i])]) }) })}
+  const body = `${vis("ov-idx", "Índice de vida e áreas", lineChart(LN, series, { w: vw(8, "ov-idx"), h: 270, min: 0, max: 100, proj: 2, projLabels: projLabelsDe(KN.at(-1), 2), keys: KN, click: "ref", hi: KN.indexOf(REF), fmt: v => num(v, 0) }), { cls: "s8", sub: f.area ? `destaque: ${ashort(f.area)} (placar × 10)` : `${PER} meses + tendência · toque num mês para analisá-lo`, info: "Índice = média ponderada dos placares de dados das áreas × 10. As linhas finas são as áreas; filtre uma área para destacá-la.", table: () => ({ cols: [{ l: "Mês" }, ...series.map(s => ({ l: s.name, num: true, f: v => v == null ? "" : num(v) }))], rows: K.map((k, i) => [mlabel(k), ...series.map(s => s.data[i])]) }) })}
     ${vis("ov-wf", "O que mudou no índice", wf, { cls: "s4", sub: `pontos que cada área somou ou tirou · toque para filtrar`, info: "Quanto cada área somou ou tirou do índice em relação ao mês de comparação, já considerando o peso da área.", table: () => ({ cols: [{ l: "Área" }, { l: "Variação (pts)", num: true, f: v => num(v, 2) }, { l: "Placar antes", num: true }, { l: "Placar agora", num: true }], rows: dl.map(x => [x.a, x.v, x.d0, x.d1]) }) })}
     ${vis("ov-mat", "Matriz das áreas", heat(AREAS.map(a => ({ l: ashort(a), key: a, color: acol(a) })), LN, (i, j) => HN[j].areas[i].dados, { xf: "area", sel: f.area }), { cls: "s7", sub: "placar de dados por mês · toque numa área para filtrar o relatório", table: () => ({ cols: [{ l: "Área" }, ...LN.map(l => ({ l, num: true, f: v => v == null ? "" : num(v) }))], rows: AREAS.map((a, i) => [a, ...HN.map(h => h.areas[i].dados)]) }) })}
     ${vis("ov-radar", "Roda: sente × dados × alvo", radar(R.areas), { cls: "s5", sub: mlabel(R.mk) })}
@@ -4326,7 +4333,7 @@ function rFin(R) {
   ];
   const HN = historyNav(PER), LN = HN.map(h => mabbr(h.mk)), KN = HN.map(h => h.mk);
   const grpData = g => HN.map(h => f.cat ? (CAT_DESP[f.cat] === g ? h.fin.cat[f.cat] || 0 : 0) : f.grp && f.grp !== g ? 0 : h.fin.grp[g] || 0);
-  const cols = colChart(LN, GRUPOS.map(g => ({ name: g, color: GCOL[g], data: grpData(g) })), { stacked: true, w: vw(8), h: 260, fmt: eurK, keys: KN, click: "ref", sel: R.mk, line: f.cat || f.grp ? [] : [{ name: "Receita", color: GCOL["Poupança"], data: HN.map(h => h.fin.rec), fmt: eurK }, { name: "Resultado", color: "var(--accent)", data: H.map(h => h.fin.res), dash: true, fmt: eurK }], target: f.cat && S.orc[f.cat] ? +S.orc[f.cat] : null, targetLabel: "orçamento" });
+  const cols = colChart(LN, GRUPOS.map(g => ({ name: g, color: GCOL[g], data: grpData(g) })), { stacked: true, w: vw(8, "fin-cols"), h: 260, fmt: eurK, keys: KN, click: "ref", sel: R.mk, line: f.cat || f.grp ? [] : [{ name: "Receita", color: GCOL["Poupança"], data: HN.map(h => h.fin.rec), fmt: eurK }, { name: "Resultado", color: "var(--accent)", data: H.map(h => h.fin.res), dash: true, fmt: eurK }], target: f.cat && S.orc[f.cat] ? +S.orc[f.cat] : null, targetLabel: "orçamento" });
   const wf = F.rec || F.desp ? waterfallH([{ l: "Receita", v: F.rec, total: true, color: GCOL["Poupança"] }, ...GRUPOS.map(g => ({ l: g, v: -(F.grp[g] || 0), color: GCOL[g] })), { l: "Aportes", v: -F.apo, color: "var(--a-pro)" }, { l: "Sobra em caixa", v: F.rec - F.desp - F.apo, total: true }]) + `<p class="note">${ic("info")}Da receita de ${eur(F.rec)}, ${F.rec ? pct((F.grp["Essencial"] || 0) / F.rec) : "–"} foi para o essencial, ${F.rec ? pct((F.grp["Estilo de vida"] || 0) / F.rec) : "–"} para estilo de vida e ${F.rec ? pct(F.apo / F.rec) : "–"} para aportes.</p>` : emptyChart("Sem receitas ou despesas no mês.");
   const cats = Object.entries(F.cat).map(([c, v]) => ({ l: c, v, color: GCOL[CAT_DESP[c] || "Estilo de vida"], key: c, sub: CAT_DESP[c] }));
   const bul = R.orcCats.filter(c => c.plan || c.real).sort((a, b) => (b.p ?? 0) - (a.p ?? 0)).map(c => ({ l: c.cat, real: c.real, plan: c.plan, pace: R.ritmo, st: c.st, key: c.cat }));
@@ -4341,12 +4348,12 @@ function rFin(R) {
     ${vis("fin-cols", "Despesas por grupo, receita e resultado", cols, { cls: "s8", sub: `${PER} meses · toque num mês para analisá-lo${f.cat ? ` · filtro: ${f.cat}` : ""}`, table: () => ({ cols: [{ l: "Mês" }, { l: "Receita", num: true, f: v => eur(v) }, ...GRUPOS.map(g => ({ l: g, num: true, f: v => eur(v) })), { l: "Aportes", num: true, f: v => eur(v) }, { l: "Resultado", num: true, f: v => eur(v) }], rows: H.map(h => [mlabel(h.mk), h.fin.rec, ...GRUPOS.map(g => h.fin.grp[g] || 0), h.fin.apo, h.fin.res]) }) })}
     ${vis("fin-wf", "Cascata do mês", wf, { cls: "s4", sub: `${mlabel(mk)} · da receita à sobra` })}
     ${vis("fin-sk", "Para onde foi o dinheiro", sankey(F), { cls: "s6", sub: "receita → grupos → categorias · toque numa categoria para filtrar" })}
-    ${vis("fin-tm", "Mapa das categorias", treemap(cats, { w: vw(6), h: 300, xf: "cat", sel: f.cat }), { cls: "s6", sub: "área proporcional ao gasto · toque para filtrar", table: () => ({ cols: [{ l: "Categoria" }, { l: "Grupo" }, { l: "Valor", num: true, f: v => eur(v, 2) }, { l: "% das despesas", num: true, f: v => pct(v, 1) }], rows: cats.sort((a, b) => b.v - a.v).map(c => [c.l, c.sub, c.v, F.desp ? c.v / F.desp : null]) }) })}
+    ${vis("fin-tm", "Mapa das categorias", treemap(cats, { w: vw(6, "fin-tm"), h: 300, xf: "cat", sel: f.cat }), { cls: "s6", sub: "área proporcional ao gasto · toque para filtrar", table: () => ({ cols: [{ l: "Categoria" }, { l: "Grupo" }, { l: "Valor", num: true, f: v => eur(v, 2) }, { l: "% das despesas", num: true, f: v => pct(v, 1) }], rows: cats.sort((a, b) => b.v - a.v).map(c => [c.l, c.sub, c.v, F.desp ? c.v / F.desp : null]) }) })}
     ${vis("fin-bul", "Orçamento × real", bullet(bul, { xf: "cat", sel: f.cat }), { cls: "s6", sub: `barra = real · traço = orçamento · pontilhado = ritmo (${pct(R.ritmo)} do mês)`, act: `<a class="lnk" href="#fin.orc">Editar orçamento</a>`, table: () => ({ cols: [{ l: "Categoria" }, { l: "Real", num: true, f: v => eur(v, 2) }, { l: "Orçamento", num: true, f: v => v ? eur(v, 2) : "" }, { l: "Uso", num: true, f: v => v == null ? "" : pct(v) }], rows: R.orcCats.map(c => [c.cat, c.real, c.plan, c.p]) }) })}
-    ${vis("fin-cum", "Gasto acumulado no mês", lineChart(days.map((_, i) => String(i + 1)), [{ name: "Este mês", color: GCOL["Estilo de vida"], data: cum }, { name: "Mês anterior", color: "var(--muted)", data: cumP, fill: false, dash: true, dots: false }, ...(orc ? [{ name: "Ritmo do orçamento", color: "var(--warn)", data: days.map((_, i) => orc * (i + 1) / n), fill: false, dash: true, dots: false }] : [])], { w: vw(6), h: 250, fmt: eurK, maxLabels: 10 }), { cls: "s6", sub: `${mlabel(mk)}${f.cat ? " · " + f.cat : f.grp ? " · " + f.grp : ""}${R.proj != null && !f.cat && !f.grp ? ` · projeção ${eur(R.proj)}` : ""}` })}
+    ${vis("fin-cum", "Gasto acumulado no mês", lineChart(days.map((_, i) => String(i + 1)), [{ name: "Este mês", color: GCOL["Estilo de vida"], data: cum }, { name: "Mês anterior", color: "var(--muted)", data: cumP, fill: false, dash: true, dots: false }, ...(orc ? [{ name: "Ritmo do orçamento", color: "var(--warn)", data: days.map((_, i) => orc * (i + 1) / n), fill: false, dash: true, dots: false }] : [])], { w: vw(6, "fin-cum"), h: 250, fmt: eurK, maxLabels: 10 }), { cls: "s6", sub: `${mlabel(mk)}${f.cat ? " · " + f.cat : f.grp ? " · " + f.grp : ""}${R.proj != null && !f.cat && !f.grp ? ` · projeção ${eur(R.proj)}` : ""}` })}
     ${vis("fin-cal", "Calendário de gastos", calMonth(mk, dmap, { fmt: v => eur(v), zero: "sem gastos" }), { cls: "s6", sub: `cor mais forte = dia mais caro${f.cat ? " · " + f.cat : ""}` })}
     ${vis("fin-top", "Maiores despesas do mês", top.length ? `<div class="hscroll"><table class="dt"><thead><tr><th>Descrição</th><th>Categoria</th><th class="num opt">Dia</th><th class="num">Valor</th><th class="opt" style="min-width:110px">Peso</th></tr></thead><tbody>${top.slice(0, 12).map(d => `<tr class="click" data-edit="lanc" data-id="${d.id}" tabindex="0"><td>${esc(d.desc || "—")}${d.origem === "diário" ? ` <span class="chip xs">diário</span>` : ""}</td><td><button type="button" class="gtag" style="--c:${GCOL[CAT_DESP[d.cat] || "Estilo de vida"]}" data-xf="cat|${esc(d.cat)}">${esc(d.cat)}</button></td><td class="num opt">${fmtD(d.data)}</td><td class="num"><span class="vcell" style="--a:${Math.round(+d.valor / mx * 50)}%">${eur(+d.valor, 2)}</span></td><td class="opt"><div class="mbar"><i style="width:${+d.valor / mx * 100}%"></i></div></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="3">${plural(top.length, "despesa", "despesas")}</td><td class="num"><b>${eur(sum(top.map(l => +l.valor)), 2)}</b></td><td class="opt"></td></tr></tfoot></table></div>` : emptyChart("Sem despesas com esses filtros."), { cls: "s6", sub: "toque para editar · toque na categoria para filtrar", table: () => ({ cols: [{ l: "Data" }, { l: "Descrição" }, { l: "Categoria" }, { l: "Valor", num: true, f: v => eur(v, 2) }], rows: top.map(l => [l.data, l.desc, l.cat, +l.valor]) }) })}
-    ${vis("fin-pl", "Patrimônio", pk.length >= 2 ? lineChart(pk.map(mabbr), [{ name: "Patrimônio líquido", color: "var(--accent)", data: pk.map(k => (+pv(k).contas || 0) + (+pv(k).reserva || 0) + (+pv(k).invest || 0) + (+pv(k).outros || 0) - (+pv(k).dividas || 0)), width: 3 }, { name: "Reserva", color: GCOL["Poupança"], data: pk.map(k => +pv(k).reserva || 0), fill: false }, { name: "Investimentos", color: acol("Aprendizado"), data: pk.map(k => +pv(k).invest || 0), fill: false }, { name: "Dívidas", color: "var(--crit)", data: pk.map(k => +pv(k).dividas || 0), fill: false, dash: true }], { w: vw(6), h: 250, fmt: eurK }) : emptyChart("Preencha o patrimônio de pelo menos dois meses em Finanças › Orçamento & patrimônio."), { cls: "s6", sub: "fim de cada mês" })}
+    ${vis("fin-pl", "Patrimônio", pk.length >= 2 ? lineChart(pk.map(mabbr), [{ name: "Patrimônio líquido", color: "var(--accent)", data: pk.map(k => (+pv(k).contas || 0) + (+pv(k).reserva || 0) + (+pv(k).invest || 0) + (+pv(k).outros || 0) - (+pv(k).dividas || 0)), width: 3 }, { name: "Reserva", color: GCOL["Poupança"], data: pk.map(k => +pv(k).reserva || 0), fill: false }, { name: "Investimentos", color: acol("Aprendizado"), data: pk.map(k => +pv(k).invest || 0), fill: false }, { name: "Dívidas", color: "var(--crit)", data: pk.map(k => +pv(k).dividas || 0), fill: false, dash: true }], { w: vw(6, "fin-pl"), h: 250, fmt: eurK }) : emptyChart("Preencha o patrimônio de pelo menos dois meses em Finanças › Orçamento & patrimônio."), { cls: "s6", sub: "fim de cada mês" })}
     ${vis("fin-ass", "Assinaturas", hbars(R.ass.sort((a, b) => b.mensal - a.mensal).map(a => ({ l: a.servico, v: a.mensal, color: a.uso === "Baixo" ? "var(--crit)" : a.uso === "Médio" ? "var(--warn)" : GCOL["Poupança"], sub: `uso ${a.uso.toLowerCase()} · ${a.periodo.toLowerCase()}`, txt: eur(a.mensal, 2) })), { empty: "Sem assinaturas cadastradas." }) + (R.economia ? `<p class="note">${ic("bolt")}Cancelar as de uso baixo libera <b>${eur(R.economia, 2)}/mês</b> (${eur(R.economia * 12)} por ano).</p>` : ""), { cls: "s6", sub: `${eur(R.assMes, 2)} por mês` })}`;
   return reportPage(R, H, kp, body + finExtras(R), ["Finanças"]);
 }
@@ -4363,7 +4370,7 @@ function rSaude(R) {
     kcard({ ico: "repeat", color: acol("Carreira"), l: "Treinos", v: R.treinos, tgt: `meta ${Math.round(C.metaTreinos * R.DR / 7)} até agora`, dl: delta(R.treinos, cmpBase(h => h.treinos), { fmt: v => num(v, 0) }), sp: spark(H.map(h => h.treinos), acol("Carreira")) }),
     kcard({ ico: "arrow", color: acol("Finanças"), l: "Passos/dia", v: R.passos == null ? "–" : num(R.passos, 0), tgt: `meta ${num(C.metaPassos, 0)}`, dl: delta(R.passos, cmpBase(h => h.passos), { fmt: v => num(v, 0) }), sp: spark(H.map(h => h.passos), acol("Finanças")) }),
   ];
-  const trend = lineChart(dts.map(fmtD), [{ name: "Humor", color: acol("Saúde mental"), data: ma("humor") }, { name: "Energia", color: acol("Lazer & criatividade"), data: ma("energia"), fill: false }, { name: "Estresse", color: "var(--crit)", data: ma("estresse"), fill: false, dash: true }, { name: "Sono (h)", color: acol("Saúde física"), data: ma("sono"), right: true, fill: false, width: 2.6 }], { w: vw(8), h: 270, min: 1, max: 5, right: { min: 4, max: 9, fmt: v => num(v, 0) + " h" }, fmt: v => num(v, 0), maxLabels: 9, dots: false });
+  const trend = lineChart(dts.map(fmtD), [{ name: "Humor", color: acol("Saúde mental"), data: ma("humor") }, { name: "Energia", color: acol("Lazer & criatividade"), data: ma("energia"), fill: false }, { name: "Estresse", color: "var(--crit)", data: ma("estresse"), fill: false, dash: true }, { name: "Sono (h)", color: acol("Saúde física"), data: ma("sono"), right: true, fill: false, width: 2.6 }], { w: vw(8, "sa-tr"), h: 270, min: 1, max: 5, right: { min: 4, max: 9, fmt: v => num(v, 0) + " h" }, fmt: v => num(v, 0), maxLabels: 9, dots: false });
   const calK = { bem: ["Humor", 1, 5, "div"], sono: ["Sono", 4.5, 9, "seq"], passos: ["Passos", null, null, "seq"], treino: ["Treinou", 0, 1, "seq"], hab: ["Hábitos", 0, 1, "seq"] }[HSV.cal];
   const map = {}; D.dates.forEach((d, i) => { const v = D.C[HSV.cal]?.[i]; if (isNum(v)) map[d] = v; });
   const sp = []; for (let i = Math.max(0, D.N - PER * 30); i < D.N; i++) if (isNum(D.C.sono[i]) && isNum(D.C.humor[i])) sp.push({ x: D.C.sono[i], y: D.C.humor[i], d: D.dates[i] });
@@ -4375,16 +4382,16 @@ function rSaude(R) {
   let wch = emptyChart("Registre o peso no check-in para ver a tendência.");
   if (ws.length >= 3) { const lab = ws.map(([d]) => fmtD(d)), vals = ws.map(([, e]) => +e.peso), f = regress(ws.map(([d, e]) => ({ x: diff(d, ws[0][0]), y: +e.peso })));
     const proj = f && mp?.prazo && mp.prazo > TODAY ? [Math.round((f.a + f.b * diff(mp.prazo, ws[0][0])) * 10) / 10] : [];
-    wch = lineChart(lab, [{ name: "Peso", color: acol("Saúde física"), data: vals, proj }], { w: vw(6), h: 240, zero: false, target: mp ? +mp.alvo : null, targetLabel: mp ? `meta ${mp.alvo} kg` : "", proj: proj.length, projLabels: proj.length ? [fmtD(mp.prazo)] : [], fmt: v => num(v, 1), maxLabels: 8 }) + (proj.length ? `<p class="note">No ritmo atual você chega a <b>${num(proj[0])} kg</b> em ${fmtDY(mp.prazo)} (meta ${num(+mp.alvo)} kg).</p>` : ""); }
+    wch = lineChart(lab, [{ name: "Peso", color: acol("Saúde física"), data: vals, proj }], { w: vw(6, "sa-peso"), h: 240, zero: false, target: mp ? +mp.alvo : null, targetLabel: mp ? `meta ${mp.alvo} kg` : "", proj: proj.length, projLabels: proj.length ? [fmtD(mp.prazo)] : [], fmt: v => num(v, 1), maxLabels: 8 }) + (proj.length ? `<p class="note">No ritmo atual você chega a <b>${num(proj[0])} kg</b> em ${fmtDY(mp.prazo)} (meta ${num(+mp.alvo)} kg).</p>` : ""); }
   const steps = aggSeries("passos", "w", 16);
   const body = `${vis("sa-tr", "Humor, energia, estresse e sono", trend, { cls: "s8", sub: "média móvel de 7 dias · últimos 90 dias · sono no eixo da direita", table: () => ({ cols: [{ l: "Dia" }, { l: "Humor", num: true }, { l: "Energia", num: true }, { l: "Estresse", num: true }, { l: "Sono", num: true }], rows: dts.map((d, i) => [d, D.C.humor[s0 + i], D.C.energia[s0 + i], D.C.estresse[s0 + i], D.C.sono[s0 + i]]) }) })}
-    ${vis("sa-sc", "Sono × humor", scatter(sp, { w: vw(4), h: 270, xl: "Sono (h)", yl: "Humor", jitter: [.12, .35], yr: [1, 5], fit: true, color: acol("Saúde mental"), op: .45 }) + (cr?.r != null ? `<p class="note">Correlação ${rWord(cr.r)} (r = ${num(cr.r, 2)}, ${cr.n} dias)${cr.fit ? ` · cada hora a mais de sono ≈ ${sgn(cr.fit.b, v => num(v, 2))} no humor` : ""}.</p>` : ""), { cls: "s4", sub: `${PER * 30} dias · cada ponto é um dia`, act: `<button type="button" class="lnk" data-cx="sono|humor">Abrir no explorador</button>` })}
+    ${vis("sa-sc", "Sono × humor", scatter(sp, { w: vw(4, "sa-sc"), h: 270, xl: "Sono (h)", yl: "Humor", jitter: [.12, .35], yr: [1, 5], fit: true, color: acol("Saúde mental"), op: .45 }) + (cr?.r != null ? `<p class="note">Correlação ${rWord(cr.r)} (r = ${num(cr.r, 2)}, ${cr.n} dias)${cr.fit ? ` · cada hora a mais de sono ≈ ${sgn(cr.fit.b, v => num(v, 2))} no humor` : ""}.</p>` : ""), { cls: "s4", sub: `${PER * 30} dias · cada ponto é um dia`, act: `<button type="button" class="lnk" data-cx="sono|humor">Abrir no explorador</button>` })}
     ${vis("sa-cal", `Ano em ${calK[0].toLowerCase()}`, `<div class="segs">${[["bem", "Humor"], ["sono", "Sono"], ["passos", "Passos"], ["treino", "Treinos"], ["hab", "Hábitos"]].map(([k, l]) => `<button type="button" class="seg" data-hscal="${k}" aria-pressed="${HSV.cal === k}">${l}</button>`).join("")}</div>${calYear(map, { mode: calK[3], min: calK[1] ?? undefined, max: calK[2] ?? undefined, fmt: v => HSV.cal === "treino" ? (v ? "treinou" : "sem treino") : HSV.cal === "hab" ? pct(v) + " dos hábitos" : HSV.cal === "passos" ? num(v, 0) + " passos" : HSV.cal === "sono" ? num(v) + " h" : "humor " + num(v), color: HSV.cal === "sono" ? acol("Saúde física") : HSV.cal === "passos" ? acol("Finanças") : "var(--accent)", click: "dday" })}`, { cls: "s12", sub: "últimas 53 semanas · toque num dia para abrir o diário daquela data" })}
-    ${vis("sa-wd", "Perfil da semana", colChart(["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"], [{ name: "Humor", color: acol("Saúde mental"), data: wdv("bem") }, { name: "Energia", color: acol("Lazer & criatividade"), data: wdv("energia") }, { name: "Estresse", color: "var(--crit)", data: wdv("estresse") }], { w: vw(4), h: 230, fmt: v => num(v, 1) }), { cls: "s4", sub: `média por dia da semana · ${PER * 30} dias` })}
+    ${vis("sa-wd", "Perfil da semana", colChart(["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"], [{ name: "Humor", color: acol("Saúde mental"), data: wdv("bem") }, { name: "Energia", color: acol("Lazer & criatividade"), data: wdv("energia") }, { name: "Estresse", color: "var(--crit)", data: wdv("estresse") }], { w: vw(4, "sa-wd"), h: 230, fmt: v => num(v, 1) }), { cls: "s4", sub: `média por dia da semana · ${PER * 30} dias` })}
     ${vis("sa-trn", "Treinos por tipo", donut(Object.entries(tr).sort((a, b) => b[1] - a[1]).map(([l, v], i) => ({ l, v, color: pal[i % pal.length] })), String(sum(Object.values(tr))), "treinos", { fmt: v => plural(v, "treino", "treinos") }), { cls: "s4", sub: `${PER * 30} dias` })}
-    ${vis("sa-hist", "Distribuição do sono", hist(D.C.sono.slice(Math.max(0, D.N - PER * 30)), { bins: 9, min: 4.5, max: 9, color: acol("Saúde física"), name: "Noites", fmt: v => num(v, 1) + " h", h: 230, w: vw(4), maxLabels: 5 }), { cls: "s4", sub: `noites por faixa de horas · meta ${num(C.metaSono)} h` })}
+    ${vis("sa-hist", "Distribuição do sono", hist(D.C.sono.slice(Math.max(0, D.N - PER * 30)), { bins: 9, min: 4.5, max: 9, color: acol("Saúde física"), name: "Noites", fmt: v => num(v, 1) + " h", h: 230, w: vw(4, "sa-hist"), maxLabels: 5 }), { cls: "s4", sub: `noites por faixa de horas · meta ${num(C.metaSono)} h` })}
     ${vis("sa-peso", "Peso", wch, { cls: "s6", sub: mp ? `meta: ${esc(mp.meta)}` : "registros semanais" })}
-    ${vis("sa-steps", "Passos por semana", colChart(steps.labels, [{ name: "Passos/dia", color: acol("Finanças"), data: steps.vals }], { w: vw(6), h: 240, target: C.metaPassos, targetLabel: "meta", legend: false, fmt: v => num(v, 0) }), { cls: "s6", sub: "média diária de cada semana · 16 semanas" })}`;
+    ${vis("sa-steps", "Passos por semana", colChart(steps.labels, [{ name: "Passos/dia", color: acol("Finanças"), data: steps.vals }], { w: vw(6, "sa-steps"), h: 240, target: C.metaPassos, targetLabel: "meta", legend: false, fmt: v => num(v, 0) }), { cls: "s6", sub: "média diária de cada semana · 16 semanas" })}`;
   return reportPage(R, H, kp, body, ["Saúde física", "Saúde mental"]);
 }
 
@@ -4414,7 +4421,7 @@ function rHab(R) {
     ${vis("hb-str", "Alívio do estresse", diverge(imp2, { fmt: v => sgn(v) }), { cls: "s4", sub: "quanto o estresse cai nos dias com o hábito" })}
     ${vis("hb-wd", "Por dia da semana", wdHeat, { cls: "s7", sub: `% dos dias cumpridos · ${PER * 30} dias` })}
     ${vis("hb-seq", "Sequências", hbars(habs.map(h => ({ l: h.nome, v: bestStreak(h.id), mark: h.streak, color: acol(h.area), txt: `${h.streak} agora · recorde ${bestStreak(h.id)}` })).sort((a, b) => b.v - a.v), { fmt: v => num(v, 0) }), { cls: "s5", sub: "barra = recorde · traço = sequência atual" })}
-    ${sel ? vis("hb-sel", `${esc(sel.nome)} · semana a semana`, lineChart(sw.labels, [{ name: "% dos dias", color: acol(sel.area), data: sw.vals }], { w: vw(12), h: 220, min: 0, max: 1, fmt: v => pct(v), target: Math.min(1, sel.meta / 7), targetLabel: `meta ${sel.meta}×/semana`, legend: false }), { cls: "s12", sub: "fração dos dias da semana em que o hábito foi feito" }) : ""}`;
+    ${sel ? vis("hb-sel", `${esc(sel.nome)} · semana a semana`, lineChart(sw.labels, [{ name: "% dos dias", color: acol(sel.area), data: sw.vals }], { w: vw(12, "hb-sel"), h: 220, min: 0, max: 1, fmt: v => pct(v), target: Math.min(1, sel.meta / 7), targetLabel: `meta ${sel.meta}×/semana`, legend: false }), { cls: "s12", sub: "fração dos dias da semana em que o hábito foi feito" }) : ""}`;
   return reportPage(R, H, kp, body, ["Saúde física", "Saúde mental"]);
 }
 
@@ -4446,7 +4453,7 @@ function rRel(R) {
   ];
   const rels = RELACAO.filter(r => S.contatos.some(c => S.pessoas.find(p => p.nome === c.pessoa)?.relacao === r));
   const relOf = n => S.pessoas.find(p => p.nome === n)?.relacao || "Amizade";
-  const HN = historyNav(PER), cm = colChart(HN.map(h => mabbr(h.mk)), rels.map(r => ({ name: r, color: acol(relArea(r)), data: HN.map(h => h.contMes.filter(c => relOf(c.pessoa) === r).length) })), { stacked: true, w: vw(6), h: 250, keys: HN.map(h => h.mk), click: "ref", sel: R.mk, fmt: v => num(v, 0) });
+  const HN = historyNav(PER), cm = colChart(HN.map(h => mabbr(h.mk)), rels.map(r => ({ name: r, color: acol(relArea(r)), data: HN.map(h => h.contMes.filter(c => relOf(c.pessoa) === r).length) })), { stacked: true, w: vw(6, "rl-cm"), h: 250, keys: HN.map(h => h.mk), click: "ref", sel: R.mk, fmt: v => num(v, 0) });
   const fb = R.pes.map(p => ({ p, c: crossData("p:" + p.nome, "bem", { days: Math.max(180, PER * 30) }) })).filter(x => x.c?.groups?.bin && x.c.groups.na >= 3).map(x => ({ l: x.p.nome, v: x.c.groups.a - x.c.groups.b, sub: `juntos ${num(x.c.groups.a)} × outros dias ${num(x.c.groups.b)} · ${x.c.groups.na} dias juntos`, go: `data-ent="p|${esc(x.p.nome)}"` })).sort((a, b) => b.v - a.v);
   const tipos = {}; R.contMes.forEach(c => tipos[c.tipo] = (tipos[c.tipo] || 0) + 1);
   const aniv = R.pes.filter(p => p.faltam != null && p.faltam <= 60).sort((a, b) => a.faltam - b.faltam);
@@ -4481,11 +4488,11 @@ function rCresc(R) {
   const lzc = {}; S.lazer.filter(l => l.data >= addDays(TODAY, -PER * 30)).forEach(l => { const o = lzc[l.cat] ||= { h: 0, s: [], c: 0, n: 0 }; o.h += +l.horas || 0; if (isNum(l.sat)) o.s.push(+l.sat); o.c += +l.custo || 0; o.n++; });
   const lpts = Object.entries(lzc).map(([c, o], i) => ({ x: o.h, y: avg(o.s) ?? 3, r: 5 + Math.sqrt(o.c) * .9, color: pal[i % 5], label: c, tip: `${c}\n${num(o.h)} h em ${o.n} atividades\nsatisfação ${num(avg(o.s))}\ncusto ${eur(o.c)}` }));
   const books = S.aprend.filter(a => a.tipo === "Livro" && a.status === "Concluído" && a.fim).sort((a, b) => b.fim.localeCompare(a.fim));
-  const body = `${vis("cr-st", "Horas de estudo por assunto", colChart(LN, ser, { stacked: true, w: vw(8), h: 260, keys: KN, click: "ref", sel: R.mk, fmt: v => num(v, 0) + " h", target: C.metaEstudo, targetLabel: "meta mensal" }), { cls: "s8", sub: `${PER} meses`, table: () => ({ cols: [{ l: "Mês" }, ...ser.map(s => ({ l: s.name, num: true, f: v => num(v) }))], rows: KN.map((k, i) => [mlabel(k), ...ser.map(s => s.data[i])]) }) })}
+  const body = `${vis("cr-st", "Horas de estudo por assunto", colChart(LN, ser, { stacked: true, w: vw(8, "cr-st"), h: 260, keys: KN, click: "ref", sel: R.mk, fmt: v => num(v, 0) + " h", target: C.metaEstudo, targetLabel: "meta mensal" }), { cls: "s8", sub: `${PER} meses`, table: () => ({ cols: [{ l: "Mês" }, ...ser.map(s => ({ l: s.name, num: true, f: v => num(v) }))], rows: KN.map((k, i) => [mlabel(k), ...ser.map(s => s.data[i])]) }) })}
     ${vis("cr-fn", "Funil de candidaturas", fun, { cls: "s4", sub: "quantas chegaram a cada etapa" })}
     ${vis("cr-cp", "Competências: atual → alvo", dumbbell(S.comp.map(c => ({ l: c.nome, a: +c.atual || 0, b: +c.alvo || 0, edit: ["comp", c.id] })), { max: 5 }), { cls: "s6", sub: "1 iniciante · 5 referência · toque para editar" })}
     ${vis("cr-pr", "O que estou aprendendo", hbars(prog, { max: 1, fmt: pct, empty: "Nada em andamento." }), { cls: "s6", sub: "progresso e horas acumuladas" })}
-    ${vis("cr-lz", "Lazer: horas × satisfação", scatter(lpts, { w: vw(6), h: 270, xl: "Horas no período", yl: "Satisfação", yr: [1, 5], op: .8 }), { cls: "s6", sub: `por categoria · tamanho = custo · ${PER * 30} dias` })}
+    ${vis("cr-lz", "Lazer: horas × satisfação", scatter(lpts, { w: vw(6, "cr-lz"), h: 270, xl: "Horas no período", yl: "Satisfação", yr: [1, 5], op: .8 }), { cls: "s6", sub: `por categoria · tamanho = custo · ${PER * 30} dias` })}
     ${vis("cr-bk", "Livros concluídos", books.length ? `<div class="list">${books.slice(0, 10).map(b => `<button type="button" class="li click" data-ent="apr|${b.id}"><div class="t">${esc(b.titulo)}<div class="m">${fmtDY(b.fim)}</div></div><span class="stars" aria-label="Nota ${b.nota || 0} de 5">${"★".repeat(+b.nota || 0)}<s>${"★".repeat(5 - (+b.nota || 0))}</s></span></button>`).join("")}</div>` : emptyChart("Nenhum livro concluído ainda."), { cls: "s6", sub: `${R.livros} no ano · meta ${C.metaLivros}` })}`;
   return reportPage(R, H, kp, body, ["Carreira", "Aprendizado", "Lazer & criatividade"]);
 }
@@ -4509,10 +4516,10 @@ function rMetas(R) {
   const eis = `<div class="eis">${quads.map((q, i) => { const ts = R.tar.filter(t => t.quad === q && (!f.area || t.area === f.area)); return `<div class="eq q${i + 1}"><div class="eqh"><b>${q.slice(4)}</b><small>${qd[i]} · ${ts.length}</small></div>${ts.slice(0, 5).map(t => `<button type="button" class="eqi" data-ent="tar|${t.id}">${esc(trunc(t.tarefa, 44))}<small class="st-${t.st}">${t.prazo ? fmtD(t.prazo) : "sem prazo"}</small></button>`).join("") || `<div class="muted small">vazio</div>`}</div>`; }).join("")}</div>`;
   const byA = AREAS.map(a => { const x = R.metas.filter(m => m.area === a && m.ativa); return { a, ok: x.filter(m => ["No ritmo", "Concluída", "Sem prazo"].includes(m.rt)).length, warn: x.filter(m => m.st === "warn").length, crit: x.filter(m => m.st === "crit").length }; }).filter(x => x.ok + x.warn + x.crit);
   const projs = [...new Set(S.tarefas.map(t => t.projeto).filter(Boolean))].map(p => { const ts = R.tar.filter(t => t.projeto === p && t.status !== "Cancelada"); return { p, n: ts.length, d: ts.filter(t => t.status === "Concluída").length, a: ts.filter(t => t.st === "crit").length }; });
-  const body = `${vis("mt-g", "Linha do tempo das metas", gantt(gr, { w: Math.max(vw(12), 760), lw: Math.min(260, vw(12) * .28), from: addDays(TODAY, -400), to: addDays(TODAY, 900) }), { cls: "s12", sub: "barra clara = início → prazo · preenchido = progresso · losango = onde deveria estar hoje · toque para editar" })}
-    ${vis("mt-q", "Progresso × tempo decorrido", scatter(qp, { w: vw(6), h: 300, xl: "Tempo decorrido (%)", yl: "Progresso (%)", xr: [0, 100], yr: [0, 100], diag: true, fmtX: v => num(v, 0), fmtY: v => num(v, 0) }), { cls: "s6", sub: "acima da diagonal = adiantada · abaixo = atrasada" })}
+  const body = `${vis("mt-g", "Linha do tempo das metas", gantt(gr, { w: Math.max(vw(12, "mt-g"), 760), lw: Math.min(260, vw(12, "mt-g") * .28), from: addDays(TODAY, -400), to: addDays(TODAY, 900) }), { cls: "s12", sub: "barra clara = início → prazo · preenchido = progresso · losango = onde deveria estar hoje · toque para editar" })}
+    ${vis("mt-q", "Progresso × tempo decorrido", scatter(qp, { w: vw(6, "mt-q"), h: 300, xl: "Tempo decorrido (%)", yl: "Progresso (%)", xr: [0, 100], yr: [0, 100], diag: true, fmtX: v => num(v, 0), fmtY: v => num(v, 0) }), { cls: "s6", sub: "acima da diagonal = adiantada · abaixo = atrasada" })}
     ${vis("mt-e", "Matriz de Eisenhower", eis, { cls: "s6", sub: "tarefas abertas · urgente = prazo em até 3 dias" })}
-    ${vis("mt-w", "Tarefas concluídas por semana", colChart(wk.map(x => x[0]), [{ name: "Concluídas", color: "var(--good)", data: wk.map(x => x[1]) }], { w: vw(6), h: 220, legend: false, fmt: v => num(v, 0) }), { cls: "s6", sub: "12 semanas" })}
+    ${vis("mt-w", "Tarefas concluídas por semana", colChart(wk.map(x => x[0]), [{ name: "Concluídas", color: "var(--good)", data: wk.map(x => x[1]) }], { w: vw(6, "mt-w"), h: 220, legend: false, fmt: v => num(v, 0) }), { cls: "s6", sub: "12 semanas" })}
     ${vis("mt-a", "Metas por área", `<div class="stk">${byA.map(x => { const t = x.ok + x.warn + x.crit; return `<div class="stkr click" data-xf="area|${esc(x.a)}" role="button" tabindex="0"><span class="hbl">${areaDot(x.a)}${esc(ashort(x.a))}</span><div class="stkb"><i class="good" style="width:${x.ok / t * 100}%"></i><i class="warn" style="width:${x.warn / t * 100}%"></i><i class="crit" style="width:${x.crit / t * 100}%"></i></div><em>${t}</em></div>`; }).join("")}</div>${legend([{ name: "No ritmo", color: "var(--good)" }, { name: "Atenção", color: "var(--warn)" }, { name: "Em risco", color: "var(--crit)" }])}`, { cls: "s6", sub: "metas ativas · toque para filtrar" })}
     ${vis("mt-p", "Projetos", projs.length ? `<div class="list">${projs.map(p => `<button type="button" class="li click" data-ent="proj|${esc(p.p)}"><div class="t">${esc(p.p)}<div class="m">${p.d} de ${p.n} concluídas${p.a ? ` · <span class="st-crit">${p.a} atrasada(s)</span>` : ""}</div><div class="mbar"><i style="width:${p.n ? p.d / p.n * 100 : 0}%"></i></div></div></button>`).join("")}</div>` : emptyChart("Use o campo Projeto nas tarefas."), { cls: "s12" })}`;
   return reportPage(R, H, kp, body, ["Carreira", "Casa & organização"]);
@@ -4584,14 +4591,14 @@ function rCruz(R) {
   const D = DAILY(), s0 = Math.max(0, D.N - CZ.days), cx = czCol(CZ.x), cy = czCol(CZ.y);
   const ts = CZ.gran === "d" ? { labels: D.dates.slice(s0).map(fmtD), a: movAvg(cx.slice(s0), 7), b: movAvg(cy.slice(s0), 7) } : (() => { const n = CZ.gran === "w" ? Math.ceil(CZ.days / 7) : Math.max(3, Math.ceil(CZ.days / 30)), A = aggSeries(CZ.x, CZ.gran, n, TODAY, cx), B = aggSeries(CZ.y, CZ.gran, n, TODAY, cy); return { labels: A.labels, a: A.vals, b: B.vals }; })();
   const bv = ts.b.filter(isNum), rlo = Math.min(...bv), rhi = Math.max(...bv), rsc = niceScale(isFinite(rlo) ? rlo : 0, isFinite(rhi) ? rhi : 1, 4);
-  const tl = lineChart(ts.labels, [{ name: mx.l, color: "var(--accent)", data: ts.a, fmt: v => mx.fmt(v) }, { name: my.l, color: "var(--a-fis)", data: ts.b, right: true, fill: false }], { w: vw(12), h: 250, zero: false, right: { min: rsc.lo, max: rsc.hi, fmt: v => my.fmt(v) }, fmt: v => mx.fmt(v), maxLabels: 12, dots: false });
+  const tl = lineChart(ts.labels, [{ name: mx.l, color: "var(--accent)", data: ts.a, fmt: v => mx.fmt(v) }, { name: my.l, color: "var(--a-fis)", data: ts.b, right: true, fill: false }], { w: vw(12, "cz-tl"), h: 250, zero: false, right: { min: rsc.lo, max: rsc.hi, fmt: v => my.fmt(v) }, fmt: v => mx.fmt(v), maxLabels: 12, dots: false });
   const core = CORE_KEYS.filter(k => metric(k)), pv = pivot();
   const base = `<p class="muted small czbase">Base: ${P.grupos.map(g => `${esc(g.g)} ${g.dias} d`).join(" · ")} nos últimos ${CZ.days} dias. Dias depois do último registro de uma área não contam como zero.</p>`;
   return `${xfBar()}<div class="rep"><div class="repmain">
     <p class="lead czlead">Pistas, não provas: o que anda junto nos seus dados, com o quanto dá para confiar. A pista boa vira experimento, e o experimento diz se mudar uma coisa muda a outra.</p>${base}
     <h3 class="czsec">Perguntas</h3><div class="vg">${vis("cz-q", "Pistas", `${Q.chips}${Q.body}`, { cls: "s12", sub: Q.info, nofocus: true })}</div>
     <h3 class="czsec">Explorar dois dados</h3><div class="vg"><div class="s12">${ctrl}</div>
-      ${vis("cz-sc", `${esc(mx.l)} × ${esc(my.l)}`, scatter(c?.rel ? [] : c?.pts || [], { w: vw(7), h: 320, xl: mx.l, yl: my.l, jitter: [jit(mx), jit(my)], fit: true, fmtX: v => mx.fmt(v), fmtY: v => my.fmt(v), op: CZ.gran === "d" ? .4 : .75, empty: c?.rel ? "Uma métrica é parte da outra: não há o que cruzar." : undefined }), { cls: "s7", sub: `cada ponto = ${CZ.gran === "d" ? "um dia" : CZ.gran === "w" ? "uma semana" : "um mês"} · linha = tendência`, table: () => ({ cols: [{ l: "Data" }, { l: mx.l, num: true }, { l: my.l, num: true }], rows: (c?.pts || []).map(p => [p.d, p.x, p.y]) }) })}
+      ${vis("cz-sc", `${esc(mx.l)} × ${esc(my.l)}`, scatter(c?.rel ? [] : c?.pts || [], { w: vw(7, "cz-sc"), h: 320, xl: mx.l, yl: my.l, jitter: [jit(mx), jit(my)], fit: true, fmtX: v => mx.fmt(v), fmtY: v => my.fmt(v), op: CZ.gran === "d" ? .4 : .75, empty: c?.rel ? "Uma métrica é parte da outra: não há o que cruzar." : undefined }), { cls: "s7", sub: `cada ponto = ${CZ.gran === "d" ? "um dia" : CZ.gran === "w" ? "uma semana" : "um mês"} · linha = tendência`, table: () => ({ cols: [{ l: "Data" }, { l: mx.l, num: true }, { l: my.l, num: true }], rows: (c?.pts || []).map(p => [p.d, p.x, p.y]) }) })}
       ${vis("cz-rd", "Leitura", czLeitura(mx, my, c), { cls: "s5", nofocus: true })}
       ${vis("cz-tl", "Lado a lado no tempo", tl, { cls: "s12", sub: CZ.gran === "d" ? "média móvel de 7 dias · Y no eixo da direita" : "Y no eixo da direita" })}</div>
     <h3 class="czsec">Visão geral</h3><div class="vg">
@@ -10361,7 +10368,7 @@ function pdClick(t) {
    Cada aba tem: cor, cena, missão (por que existe), o que resolve, de onde vêm e para onde vão os dados, e um manual curto. */
 const TAB_INFO = {
   visao: { cor: "var(--accent)", cena: "constel", foto: "Céu ao entardecer com constelações ligadas por linhas finas", missao: "O retrato do mês em uma tela: cada área da vida com nota, tendência e o que pede atenção.", resolve: "Saber em 30 segundos se o mês vai bem, sem abrir dez abas.", entra: "Tudo o que você registra nas outras abas.", sai: "Atalhos para a área que mais precisa de você.", manual: ["Escolha o mês no topo (‹ ›) para ver meses passados.", "Clique numa área para abrir o relatório dela.", "Os números vêm dos registros; a Roda da Vida mostra a sua percepção ao lado."] },
-  hoje: { cor: "var(--warn)", cena: "sunrise", foto: "Janela com luz da manhã sobre telhados de Turim e os Alpes ao fundo", missao: "Um resumo do momento: tempo lá fora, uma frase que conversa com o seu dia real, ideias para sair da rotina e o que vence hoje.", resolve: "Começar o dia sabendo o que vestir, o que importa e uma coisa boa para fazer, sem ler dez aplicativos.", entra: "Previsão hora a hora da sua cidade (gravada no Atlas), notícias positivas, seu humor, energia, tempo livre e orçamento.", sai: "Tarefas do dia, Painel do dia para registrar, Lazer para as ideias.", manual: ["Responda as 4 perguntas rápidas em “Como você está agora?”; tudo abaixo se ajusta.", "O clima chega sozinho: a previsão hora a hora da cidade escolhida é gravada no Atlas às 6h e às 13h (hora de Roma). “trocar cidade” muda a cidade.", "As ideias mudam com clima, energia, tempo e dinheiro. “Outra ideia” troca uma de cada vez.", "Para registrar sono, humor, gastos e hábitos, use o Painel do dia."] },
+  hoje: { cor: "var(--warn)", cena: "sunrise", foto: "Janela com luz da manhã sobre telhados de Turim e os Alpes ao fundo", missao: "Um resumo do momento: tempo lá fora, uma frase que conversa com o seu dia real, ideias para sair da rotina e o que vence hoje.", resolve: "Começar o dia sabendo o que vestir, o que importa e uma coisa boa para fazer, sem ler dez aplicativos.", entra: "Previsão hora a hora da sua cidade (gravada no Atlas), notícias positivas, seu humor, energia, tempo livre e orçamento.", sai: "Tarefas do dia, Painel do dia para registrar, Lazer para as ideias.", manual: ["Responda as 4 perguntas rápidas em “Como você está agora?”; tudo abaixo se ajusta.", "O clima vem da previsão hora a hora da cidade escolhida gravada no Atlas (MET Norway). A atualização automática está desligada: sem previsão gravada que cubra a hora, o Hoje diz isso em vez de inventar. “trocar cidade” muda a cidade.", "As ideias mudam com clima, energia, tempo e dinheiro. “Outra ideia” troca uma de cada vez.", "Para registrar sono, humor, gastos e hábitos, use o Painel do dia."] },
   painel: { cor: "var(--accent)", cena: "waves", foto: "Microfone de mesa ao lado de um caderno aberto", missao: "Registrar o essencial do dia em um minuto, por texto ou voz, e conferir antes que vá para as abas.", resolve: "Registro diário que não acontece porque dá trabalho.", entra: "O que você fala ou escreve.", sai: "Saúde, Finanças, Hábitos, Jornada, Lazer, Diário e Tarefas.", manual: ["Fale ou escreva o dia no campo grande; os campos se preenchem sozinhos.", "Use o microfone de um campo para ditar só aquele valor.", "“Revisar e salvar” mostra o que é novo, o que substitui e o que parece repetido.", "Um único Desfazer volta tudo o que o painel salvou."] },
   rotina: { cor: "var(--a-car)", cena: "calendar", foto: "Agenda de papel aberta na semana, com blocos coloridos de meia hora e uma xícara de café", missao: "Desenhar o dia em blocos de 30 minutos: o que você planeja, o que já está na agenda e o que de fato fez.", resolve: "Dias que somem em tarefas soltas e planos que não cabem no relógio.", entra: "Seus blocos, a Agenda (e o Google Calendar) e as tarefas com prazo.", sai: "Idiomas (o plano desconta os blocos), Hoje (a rotina do dia).", manual: ["Escolha Dia, Semana ou Mês no topo; ‹ › mudam o período e Hoje volta para hoje.", "No calendário pequeno, clique num dia para ver as horas dele, ou no número da semana para ver a semana inteira.", "Clique numa meia hora para criar um bloco de 30 min; arraste por várias para criar um bloco maior.", "Clique num bloco para editar, marcar como feito ou excluir. “Repetir” cria rotinas diárias, de dias úteis ou semanais.", "Os compromissos da Agenda e do Google aparecem tracejados: são editados na Agenda.", "“Preencher” aplica um modelo pronto (Básica, Intermediária, Avançada ou outro) no dia, na semana ou no mês.", "Lembretes: escolha uma atividade e quantos minutos antes avisar, toda semana; dá para levar ao Google Agenda para tocar no celular."] },
   inspira: { cor: "var(--warn)", cena: "spark", foto: "Mesa de trabalho com um caderno aberto, uma xícara de café e a luz da manhã", missao: "Ligar a cabeça antes de começar uma atividade: um texto curto, um aquecimento de 5 minutos, o primeiro passo do dia, frases, vídeos e música, e uma IA que acompanha a atividade em todas as abas.", resolve: "A inércia do começo: sentar para estudar, ler ou criar e não engrenar.", entra: "As atividades do seu Lazer e da sua rotina, as que você criar e o próximo bloco da Rotina.", sai: "Começos registrados, a IA de acompanhamento e atalhos para a aba de cada atividade.", manual: ["O topo mostra a atividade que combina com o próximo bloco da sua Rotina.", "Escolha a atividade, toque em Começar o aquecimento e siga os 3 passos (5 minutos).", "“Comecei” registra o começo; “outro desafio” troca o primeiro passo.", "Ativar acompanhamento chama a IA com o perfil da atividade; ela fica num botão lateral em todas as abas."] },
@@ -10463,7 +10470,7 @@ function pMapa() {
 }
 
 /* ================================================================ Hoje: resumo do momento
-   Clima (MET Norway, gravado no Atlas por uma tarefa agendada) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network),
+   Clima (MET Norway, gravado no Atlas por ferramentas/feed_hoje.py) com o que vestir e o que dá para fazer, 2–3 notícias positivas (Positive News e Good News Network),
    uma frase escolhida pelo horário e pelo que o dia está pedindo, e ideias para sair da rotina filtradas por clima, energia, tempo e dinheiro.
    Sem internet nesta visualização, clima, notícias e câmbio vêm do doc feed/hoje; sem ele, as notícias viram links. As respostas ficam em S.hojeCtx[dia]. */
 const HJ = { wx: null, wxSt: "", news: null, newsSt: "", skip: new Set(), fr: 0 };
@@ -10471,11 +10478,12 @@ const hctx = () => (S.hojeCtx[TODAY] ||= {});
 const periodo = () => { const h = new Date().getHours(); return h < 12 ? "manha" : h < 18 ? "tarde" : "noite"; };
 /* a página pode não ter acesso à internet: cada busca desiste em 7 s */
 async function fetchT(u, ms = 7000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { return await fetch(u, { signal: c.signal }); } finally { clearTimeout(t); } }
-/* feed do dia (doc compartilhado feed/hoje): uma tarefa agendada grava às 6h e às 13h (hora de Roma) a previsão hora a hora da
-   MET Norway para a cidade escolhida, as notícias boas e o câmbio do BCE. A página não alcança a internet: lê o doc, escuta as
-   mudanças (a atualização entra sem recarregar) e escolhe nas horas gravadas a hora de agora, no fuso da cidade. */
+/* feed do dia (doc compartilhado feed/hoje): ferramentas/feed_hoje.py grava a previsão hora a hora da MET Norway para a cidade
+   escolhida, as notícias boas e o câmbio do BCE. A atualização agendada foi desligada (custo zero): o doc só muda quando o script
+   roda. A página não alcança a internet: lê o doc, escuta as mudanças (entram sem recarregar) e escolhe nas horas gravadas a hora
+   de agora, no fuso da cidade. */
 let FEED = null, FEED_ST = "", FEED_P = null;
-const FEED_HORAS = "6h e às 13h (hora de Roma)";
+const FEED_OFF = "a atualização automática está desligada";
 function hjFeed() {
   if (FEED_P) return FEED_P;
   if (!DBH) { if (LOADED) { FEED_ST = "ok"; FEED_P = Promise.resolve(); } return Promise.resolve(); }
@@ -10722,12 +10730,12 @@ function hjSemClima() {
   const C = FEED?.clima, nome = cidade().nome;
   if (FEED_ST !== "ok" || HJ.wxSt === "load") return "Buscando a previsão…";
   if (!FEED && !extOk("clima")) return "O clima está desligado em Privacidade › Serviços externos.";
-  if (FEED?.erroCidade && normNome(FEED.erroCidade) === normNome(nome)) return `A atualização automática não encontrou “${nome}”. Toque em “trocar cidade” e escolha uma da lista (ou escreva o nome como aparece no mapa).`;
-  if (C?.horas?.length && !feedDaCidade()) return `A previsão de ${nome} entra na próxima atualização automática, às ${FEED_HORAS}, sem precisar recarregar. A última gravada foi de ${C.cidade}.`;
-  if (FEED) return `A última previsão gravada (${fmtDY(FEED.dia)}, ${FEED.hora}) já não cobre esta hora. Ela se atualiza sozinha às ${FEED_HORAS}; a próxima aparece aqui sem recarregar.`;
-  return `A previsão é gravada no Atlas automaticamente às ${FEED_HORAS}. A primeira aparece aqui assim que chegar, sem recarregar.`;
+  if (FEED?.erroCidade && normNome(FEED.erroCidade) === normNome(nome)) return `A última atualização não encontrou “${nome}”. Toque em “trocar cidade” e escolha uma da lista (ou escreva o nome como aparece no mapa).`;
+  if (C?.horas?.length && !feedDaCidade()) return `A previsão gravada é de ${C.cidade}. ${nome} só aparece quando houver uma previsão gravada para ela: ${FEED_OFF}.`;
+  if (FEED) return `A última previsão gravada (${fmtDY(FEED.dia)}, ${FEED.hora}) já não cobre esta hora e ${FEED_OFF}. Se uma nova for gravada, ela aparece aqui sem recarregar.`;
+  return `Nenhuma previsão gravada no Atlas e ${FEED_OFF}. Se uma for gravada, ela aparece aqui sem recarregar.`;
 }
-/* cidades com coordenadas prontas (a página não tem internet para procurar); outra cidade vai pelo nome e a tarefa agendada localiza */
+/* cidades com coordenadas prontas (a página não tem internet para procurar); outra cidade vai pelo nome e o script localiza */
 const CIDADES = [["Turim", 45.0705, 7.6868, "Torino|Turin"], ["Milão", 45.4642, 9.19, "Milano|Milan"], ["Roma", 41.9028, 12.4964, "Rome"], ["Florença", 43.7696, 11.2558, "Firenze|Florence"], ["Bolonha", 44.4949, 11.3426, "Bologna"],
   ["Gênova", 44.4056, 8.9463, "Genova|Genoa"], ["Veneza", 45.4408, 12.3155, "Venezia|Venice"], ["Nápoles", 40.8518, 14.2681, "Napoli|Naples"], ["Verona", 45.4384, 10.9916, ""], ["Pádua", 45.4064, 11.8768, "Padova|Padua"],
   ["Bérgamo", 45.6983, 9.6773, "Bergamo"], ["Bréscia", 45.5416, 10.2118, "Brescia"], ["Trieste", 45.6495, 13.7768, ""], ["Bari", 41.1171, 16.8719, ""], ["Palermo", 38.1157, 13.3615, ""], ["Catânia", 37.5079, 15.083, "Catania"],
@@ -10739,11 +10747,11 @@ const CIDADES = [["Turim", 45.0705, 7.6868, "Torino|Turin"], ["Milão", 45.4642,
   ["Zurique", 47.3769, 8.5417, "Zurich|Zürich"], ["Genebra", 46.2044, 6.1432, "Geneva|Genève"], ["Nice", 43.7102, 7.262, "Nizza"], ["Lyon", 45.764, 4.8357, "Lione"], ["Munique", 48.1351, 11.582, "Munich|München"], ["Berlim", 52.52, 13.405, "Berlin"]];
 const acharCidade = q => { const n = normNome(q); return CIDADES.find(([nome, , , alt]) => [nome, ...alt.split("|")].some(x => x && normNome(x) === n)); };
 function hjCidade() {
-  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" list="hjcl" autocomplete="off" value="${esc(cidade().nome)}"></label><datalist id="hjcl">${CIDADES.map(c => `<option value="${esc(c[0])}">`).join("")}</datalist></div><p class="muted small" id="hjcm">A previsão é atualizada automaticamente às ${FEED_HORAS}. Uma cidade nova entra na próxima atualização.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Salvar</button></div></div></form>`;
+  const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="hjcf"><h3>Cidade do clima</h3><div class="form"><label>Cidade<input type="text" id="hjci" list="hjcl" autocomplete="off" value="${esc(cidade().nome)}"></label><datalist id="hjcl">${CIDADES.map(c => `<option value="${esc(c[0])}">`).join("")}</datalist></div><p class="muted small" id="hjcm">${FEED_OFF.replace(/^./, c => c.toUpperCase())}: a cidade nova passa a valer quando houver uma previsão gravada para ela.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="hjcx">Cancelar</button><button class="btn primary">Salvar</button></div></div></form>`;
   d.showModal(); $("#hjcx").onclick = () => d.close();
   $("#hjcf").onsubmit = e => { e.preventDefault(); const q = $("#hjci").value.trim().slice(0, 80); if (!q) return; const x = acharCidade(q);
     S.cfg.cidade = x ? { nome: x[0], lat: x[1], lon: x[2] } : { nome: q }; d.close(); HJ.wx = null; HJ.wxSt = ""; try { localStorage.removeItem("atlas_wx"); } catch {}
-    touch("cfg", { label: "Cidade do clima" }); if (!feedDaCidade()) toast(x ? `${x[0]}: a previsão entra na próxima atualização automática (${FEED_HORAS}).` : `“${q}” não está na lista: a próxima atualização automática localiza pelo nome.`); };
+    touch("cfg", { label: "Cidade do clima" }); if (!feedDaCidade()) toast(x ? `${x[0]}: vale quando houver uma previsão gravada para essa cidade (${FEED_OFF}).` : `“${q}” não está na lista: vale quando houver uma previsão gravada com esse nome (${FEED_OFF}).`); };
 }
 function hjChange(t) {
   if (t.dataset.hjtempo) { const h = parseNum(t.value); hctx().tempo = h > 0 ? Math.round(Math.min(24, h) * 60) : ""; HJ.skip.clear(); touch("hojeCtx", { label: "Tempo livre", noUndo: true }); return true; }
@@ -11423,7 +11431,7 @@ function rtMini() {
   return `<div class="rtmini" role="dialog" aria-label="Escolher data"><div class="rtmh"><button type="button" class="iconbtn" data-rtmini="-1" aria-label="Mês anterior">‹</button><b>${MESES[m0.getMonth()]} ${m0.getFullYear()}</b><button type="button" class="iconbtn" data-rtmini="1" aria-label="Próximo mês">›</button></div>
     <table><thead><tr><th title="Número da semana">#</th>${["S", "T", "Q", "Q", "S", "S", "D"].map(x => `<th>${x}</th>`).join("")}</tr></thead><tbody>${weeks.map(w => `<tr class="${v === "semana" && w === wk[0] ? "sel" : ""}"><td><button type="button" class="rtwk" data-rtgo="semana|${w}" title="Ver a semana ${isoWeek(w)}">${isoWeek(w)}</button></td>${Array.from({ length: 7 }, (_, i) => { const x = addDays(w, i), n = rtOcc(x).length + rtAgenda(x).timed.length; return `<td><button type="button" class="rtmd${x.slice(0, 7) !== d.slice(0, 7) ? " out" : ""}${x === TODAY ? " today" : ""}${x === d && v === "dia" ? " sel" : ""}" data-rtgo="dia|${x}" aria-label="${fmtDL(x)}">${parse(x).getDate()}${n ? "<i></i>" : ""}</button></td>`; }).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
-/* faixa da semana: navegação rápida em qualquer largura, com as horas planejadas e o que foi cumprido */
+/* faixa da semana (só na vista Dia: na Semana o cabeçalho da grade já mostra os dias, as horas e o cumprido) */
 function rtStrip() {
   const w = rtWeek(RT.d), v = rtView();
   return `<div class="rtstrip" role="tablist" aria-label="Dias da semana"><button type="button" class="iconbtn rtsw" data-rtnavw="-1" aria-label="Semana anterior">‹</button>${w.map(d => { const X = rtDia(d), p = X.plan, f = p ? X.feito / p : 0, on = v === "dia" && d === RT.d;
@@ -11463,8 +11471,8 @@ function rtItemCard(k, id, d) {
 }
 function rtGrid(days) {
   const H = rtSH(), one = days.length === 1, hasAll = days.some(d => { const A = rtAgenda(d); return A.allday.length || A.tar.length; });
-  return `<div class="rtgrid${one ? " one" : ""}" style="--n:${days.length};--sh:${H}px"><div class="rtscroll" id="rtscroll">
-    <div class="rthead"><div class="rtcorner">${ic("clock")}</div>${days.map(d => { const X = rtDia(d); return `<button type="button" class="rtdh${d === TODAY ? " today" : ""}" data-rtgo="dia|${d}"><small>${DOWL[parse(d).getDay()].slice(0, 3)}</small><b>${parse(d).getDate()}</b>${one ? "" : `<em>${X.plan ? durTxt(X.plan) : "–"}</em>`}</button>`; }).join("")}</div>
+  return `<div class="rtgrid${one ? " one" : ""}" style="--n:${days.length};--sh:${H}px"><div class="rtscroll" id="rtscroll" data-cfgrow>
+    <div class="rthead"><div class="rtcorner">${ic("clock")}</div>${days.map(d => { const X = rtDia(d); return `<button type="button" class="rtdh${d === TODAY ? " today" : ""}" data-rtgo="dia|${d}"><small>${DOWL[parse(d).getDay()].slice(0, 3)}</small><b>${parse(d).getDate()}</b>${one ? "" : `<em>${X.plan ? durTxt(X.plan) : "livre"}</em>${X.plan ? `<i class="rtsb" title="Cumprido: ${pct(clamp(X.feito / X.plan))}"><u style="width:${clamp(X.feito / X.plan) * 100}%"></u></i>` : ""}`}</button>`; }).join("")}</div>
     ${hasAll ? `<div class="rtallrow"><div class="rtcorner"><small>dia todo</small></div>${days.map(d => `<div class="rtall">${rtAllday(d)}</div>`).join("")}</div>` : ""}
     <div class="rtbody"><div class="rttimes" style="height:${48 * H}px">${Array.from({ length: 48 }, (_, i) => `<span class="${i % 2 ? "half" : ""}" style="top:${i * H}px">${i % 2 ? ":30" : m2hm(i * 30)}</span>`).join("")}</div>${days.map(rtCol).join("")}</div></div></div>`;
 }
@@ -11518,7 +11526,7 @@ function pRotina() {
     </div>
     <div class="rtq"><span>${ic("plus")}</span><input type="text" id="rt_q" value="${esc(RT.q)}" placeholder="Criar rápido: inglês amanhã 20h 30min · academia seg qua sex 18:30–19:30 · reunião 14h–15h30" aria-label="Criar bloco por texto" autocomplete="off"><button type="button" class="btn sm primary" data-act="rtqadd"${qp?.ok ? "" : " disabled"}>Criar</button>
       <div class="rtqp${qp ? (qp.ok ? " ok" : " bad") : ""}" id="rt_qp">${qp ? rtQpHTML(qp) : ""}</div></div>
-    ${v !== "mes" ? rtStrip() : ""}
+    ${v === "dia" ? rtStrip() : ""}
     <div class="rtlay"><section class="rtcal" aria-label="${esc(P.t)}">${v === "mes" ? rtMonth() : rtGrid(v === "dia" ? [RT.d] : rtWeek(RT.d))}</section>
       <aside class="rtins">${rtInsights(days)}</aside></div></div>`;
 }
@@ -17123,7 +17131,7 @@ function trVolV() {
 }
 function trFreqV() {
   const W = trSemanas(12), P = trD().perfil;
-  return `<div class="vg">${vis("tr-freq", "Treinos por semana", colChart(W.map(w => fmtD(w.a)), [{ name: "Academia", color: "var(--a-car)", data: W.map(w => w.ses) }, { name: "Corrida", color: "var(--a-apr)", data: W.map(w => w.cor) }], { w: vw(12), h: 220, stacked: true, line: [{ name: "Meta", color: "var(--ink-2)", data: W.map(() => +P.dias || 3) }], empty: "Sem treinos nas últimas 12 semanas." }), { cls: "s12", sub: "12 semanas, de segunda a domingo" })}</div>`;
+  return `<div class="vg">${vis("tr-freq", "Treinos por semana", colChart(W.map(w => fmtD(w.a)), [{ name: "Academia", color: "var(--a-car)", data: W.map(w => w.ses) }, { name: "Corrida", color: "var(--a-apr)", data: W.map(w => w.cor) }], { w: vw(12, "tr-freq"), h: 220, stacked: true, line: [{ name: "Meta", color: "var(--ink-2)", data: W.map(() => +P.dias || 3) }], empty: "Sem treinos nas últimas 12 semanas." }), { cls: "s12", sub: "12 semanas, de segunda a domingo" })}</div>`;
 }
 function trPerfilV() {
   const d = trD(), P = d.perfil, F = TR_FAIXA[P.modo] || TR_FAIXA.medio, W = trSemanas(1)[0], w0 = weekStart(TODAY);
@@ -18264,7 +18272,7 @@ function lsCartaoRepinta(t, titulo, dow) { const box = t.closest(".lsbox"); if (
    quando, freq, min, como, gatilho: { titulo, dias, min } }] }. “Criar os lembretes do plano” transforma os gatilhos em lembretes
    semanais (Rotina › Lembretes), com o que fazer na nota. */
 const GUIA = {
-  hoje: { t: "Hoje", o: ["As 4 perguntas de “Como você está agora?”: humor, energia, tempo livre e dinheiro para lazer.", "Nada mais: clima, notícias, frase, ideias e o que vence hoje vêm sozinhos."], min: "Humor e energia (2 toques).", rap: "Abra de manhã, toque nas 4 respostas e leia o resumo do topo.", freq: "Todo dia, de manhã", tempo: 1 },
+  hoje: { t: "Hoje", o: ["As 4 perguntas de “Como você está agora?”: humor, energia, tempo livre e dinheiro para lazer.", "Nada mais: frase, ideias e o que vence hoje vêm sozinhos; clima e notícias vêm da última previsão gravada (a atualização automática está desligada)."], min: "Humor e energia (2 toques).", rap: "Abra de manhã, toque nas 4 respostas e leia o resumo do topo.", freq: "Todo dia, de manhã", tempo: 1 },
   painel: { t: "Painel do dia", o: ["Sono, humor, energia e estresse.", "Treino, passos e peso (quando tiver).", "Gastos e receitas do dia (“gastei 12,50 no almoço”).", "Hábitos feitos, contatos com pessoas, estudo, leitura e lazer.", "Uma frase do dia, que vai para o Diário.", "Tarefas novas e contas pagas."], min: "Sono, humor e os gastos.", rap: "Fale o dia de uma vez no campo grande (ou pelo microfone), confira em “Revisar e salvar”. Tudo vai para as abas certas.", freq: "Todo dia, à noite", tempo: 3 },
   rotina: { t: "Rotina", o: ["A semana em blocos de 30 min: aplique um modelo com “Preencher” (Básica, Intermediária ou Avançada).", "Durante ou no fim do dia, marque os blocos como feito, parcial ou pulado (ou “Capturar o dia” por voz).", "Lembretes das atividades que você não quer esquecer."], min: "Preencher a semana com um modelo, uma vez por semana.", rap: "Domingo ou segunda: Preencher › escolha o nível › Preencher. À noite: Capturar o dia, por voz.", freq: "Semanal (montar) e diária (marcar)", tempo: 2 },
   inspira: { t: "Inspiração", o: ["Escolha a atividade que vai começar e use o aquecimento de 5 minutos.", "Se quiser companhia, ative a IA de acompanhamento da atividade.", "Suas atividades próprias em “Minhas atividades”."], min: "Nada obrigatório: é para usar antes de começar algo.", rap: "Antes do bloco de estudo, leitura ou projeto: abra a atividade, leia o texto curto e faça o primeiro passo do desafio.", freq: "Quando for começar uma atividade", tempo: 5 },
@@ -18858,7 +18866,7 @@ let RELAYOUT = false;
 function greet() { const h = new Date().getHours(); return h < 5 ? "Boa noite" : h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite"; }
 function measureGrid() { const m = $("#main"); if (!m) return; const cs = getComputedStyle(m), w = m.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight); REPW = Math.round(w - (railOn() ? 316 : 0)); }
 function render() {
-  const R = calcAt(REF); VIS = {}; if (!RELAYOUT) CTAB.d = {};
+  const R = calcAt(REF); VIS = {}; VW_IDS.clear(); if (!RELAYOUT) CTAB.d = {};
   if (!RELAYOUT) measureGrid();
   const nm = S.cfg.nome ? esc(S.cfg.nome.split(" ")[0]) : "";
   const pages = {
@@ -18982,20 +18990,22 @@ function a11yArrow(e) {
 /* ================================================================ empacotamento: nenhum buraco entre os cartões
    Grades de cartões viram "alvenaria": cada cartão ocupa linhas de 4px conforme a altura real, a grade preenche
    os vãos (dense) e o último cartão de cada coluna estica até a base. Grades de itens iguais dividem a última linha. */
-const PACK_SEL = ".vg,.g2c,.g3c", FILL_SEL = ".mgrid,.jmgrid,.pgrid,.sjels,.sjside,.hgrid2,.xgrid,.krow,.minis", PACK_ROW = 4;
+const PACK_SEL = ".vg,.g2c,.g3c,.cadgrid", FILL_SEL = ".mgrid,.jmgrid,.pgrid,.sjels,.sjside,.hgrid2,.xgrid,.krow,.minis,.filprinc,.crlibs,.insgrid,.lzgrid,.ckpeople", PACK_ROW = 4;
 let PACK_RO = null, PACK_RAF = 0;
-const PACK_H = new WeakMap(), PACK_W = new WeakMap();
+const PACK_H = new WeakMap(), PACK_W = new WeakMap(), PACK_N = new WeakMap();
 /* só listas longas por natureza (agenda, listas, tabelas compridas) podem ganhar rolagem; gráficos e placares nunca */
 const listy = k => k.getBoundingClientRect().height > 520 && (!!k.querySelector(".agenda,.list,.bls") || k.querySelectorAll("tbody tr").length > 14);
 function packGrid(g) {
   const cs = getComputedStyle(g), cols = cs.gridTemplateColumns.split(" ").length, gap = parseFloat(cs.columnGap) || 16;
   const kids = [...g.children].filter(k => getComputedStyle(k).display !== "none");
   g.classList.add("packed");
-  for (const k of kids) { k.style.gridRowEnd = ""; k.style.height = ""; k.style.minHeight = ""; k.style.maxHeight = ""; k.classList.remove("grown", "capped"); }
-  const span = () => kids.forEach(k => { k.style.gridRowEnd = `span ${Math.max(1, Math.ceil((k.getBoundingClientRect().height + gap) / PACK_ROW))}`; });
+  for (const t of g.querySelectorAll(":scope > * textarea[data-pkta]")) { t.style.height = t.dataset.pkta; delete t.dataset.pkta; }
+  for (const k of kids) { k.style.gridRowEnd = ""; k.style.height = ""; k.style.minHeight = ""; k.style.maxHeight = ""; k.classList.remove("grown", "capped"); if (k.dataset.pkfull) { k.style.gridColumn = ""; k.style.gridRow = ""; delete k.dataset.pkfull; } }
+  const span = () => kids.forEach(k => { const h = k.getBoundingClientRect().height; PACK_N.set(k, h); k.style.gridRowEnd = `span ${Math.max(1, Math.ceil((h + gap) / PACK_ROW))}`; });
   const gaps = () => { const rs = kids.map(k => k.getBoundingClientRect()), bottom = Math.max(...rs.map(r => r.bottom));
     return { rs, list: rs.map((r, i) => { let to = bottom; rs.forEach((o, j) => { if (j !== i && o.top >= r.bottom - 1 && o.left < r.right - 2 && o.right > r.left + 2) to = Math.min(to, o.top - gap); }); return to; }) }; };
   span();
+  if (cols > 1 && kids.length && !g.classList.contains("vg")) { packCards(g, kids, cols, gap); for (const k of kids) { PACK_H.set(k, k.getBoundingClientRect().height); PACK_RO?.observe(k); } return; }
   if (cols > 1 && kids.length > 1) {
     /* vão grande ao lado de uma lista longa: a lista ganha rolagem interna em vez de o cartão curto inchar */
     for (let it = 0; it < 3; it++) {
@@ -19012,16 +19022,132 @@ function packGrid(g) {
       const h = Math.round(list[i] - r.top) + "px"; if (kids[i].classList.contains("capped")) { kids[i].style.maxHeight = ""; kids[i].style.height = h; } else kids[i].style.minHeight = h; kids[i].classList.add("grown"); } });
   }
   for (const k of kids) { PACK_H.set(k, k.getBoundingClientRect().height); PACK_RO?.observe(k); }
+  if (g.classList.contains("vg") && cols > 1 && kids.length > 1) vgPlan(g, kids);
+}
+/* grade de cartões (2 ou 3 colunas): cada cartão vai para a coluna mais curta ou ocupa a largura toda, o que deixar menos vazio.
+   Testa as combinações (até 2^10; acima disso melhora uma escolha por vez). Conta o vazio que sobra: buraco entre cartões pesa o
+   dobro do que só estica o último cartão de uma coluna; alargar um cartão que não era largo custa um pouco, para o desenho original
+   ficar quando a diferença é pequena. Cartão com gráfico de largura fixa não é alargado (o gráfico ficaria esticado). */
+/* até onde o conteúdo de um cartão chega à direita (texto, campos, imagens, caixas com fundo ou borda), em px a partir da esquerda */
+function pkDireita(k) {
+  const cr = k.getBoundingClientRect(); let mx = 0, n = 0; const rg = document.createRange();
+  const tw = document.createTreeWalker(k, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, { acceptNode: x => x.nodeType === 1 && getComputedStyle(x).display === "none" ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+  for (let x = tw.nextNode(); x && n < 3000; x = tw.nextNode(), n++) {
+    if (x.nodeType === 3) { if (x.textContent.trim()) { rg.selectNodeContents(x); for (const q of rg.getClientRects()) mx = Math.max(mx, q.right); } continue; }
+    if (/^(svg|IMG|CANVAS|INPUT|SELECT|TEXTAREA|BUTTON|VIDEO)$/.test(x.tagName)) { mx = Math.max(mx, x.getBoundingClientRect().right); continue; }
+    const cs = getComputedStyle(x); if (!/rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor) || parseFloat(cs.borderBottomWidth) || parseFloat(cs.borderRightWidth)) mx = Math.max(mx, x.getBoundingClientRect().right);
+  }
+  return mx - cr.left;
+}
+let PK_LADO = true;   /* conta o vazio à direita de um cartão alargado (os testes comparam com e sem) */
+function packCards(g, kids, cols, gap) {
+  const W = g.getBoundingClientRect().width, R = PACK_ROW, rows = h => Math.max(1, Math.ceil((h + gap) / R)), PEN = 15;
+  const full0 = kids.map(k => k.getBoundingClientRect().width >= W - 2), hS = kids.map(k => k.getBoundingClientRect().height), hF = hS.slice();
+  const ids = kids.map((k, i) => i).filter(i => !full0[i] && !kids[i].querySelector("svg.chart")), bit = new Map(ids.map((i, b) => [i, b]));
+  /* vazio à direita de um cartão alargado cujo conteúdo não acompanha a largura (mapa de calor, formulário curto), em colunas×linhas */
+  const colW = (W - (cols - 1) * (parseFloat(getComputedStyle(g).columnGap) || gap)) / cols, lado = kids.map(() => 0);
+  if (ids.length) { ids.forEach(i => { kids[i].style.gridColumn = "1 / -1"; });
+    ids.forEach(i => { const k = kids[i]; hF[i] = k.getBoundingClientRect().height; const sobra = k.getBoundingClientRect().width - parseFloat(getComputedStyle(k).paddingRight || 0) - pkDireita(k); if (sobra > 120 && PK_LADO) lado[i] = sobra / colW * rows(hF[i]); });
+    ids.forEach(i => { kids[i].style.gridColumn = ""; }); }
+  const sim = mask => {
+    const colH = new Array(cols).fill(0), last = new Array(cols).fill(-1), pl = []; let estica = 0, buraco = 0, n1 = 0;
+    const fecha = top => { for (let c = 0; c < cols; c++) { const d = top - colH[c]; if (d <= 0) continue; if (last[c] >= 0) { pl[last[c]].g += d; estica += d; } else buraco += d; } };
+    kids.forEach((k, i) => { const f = full0[i] || (bit.has(i) && (mask >> bit.get(i)) & 1);
+      if (f) { const top = Math.max(...colH), n = rows(hF[i]); fecha(top); pl.push({ i, f: true, c: 0, top, n, g: 0 }); colH.fill(top + n); last.fill(-1); if (!full0[i]) { n1++; estica += lado[i]; } }
+      else { let c = 0; for (let j = 1; j < cols; j++) if (colH[j] < colH[c]) c = j; const n = rows(hS[i]); pl.push({ i, f: false, c, top: colH[c], n, g: 0 }); colH[c] += n; last[c] = pl.length - 1; } });
+    fecha(Math.max(...colH));
+    return { s: estica + 2 * buraco + PEN * n1, pl };
+  };
+  let best = sim(kids.length === 1 && ids.length === 1 ? 1 : 0);   /* cartão sozinho na grade: largura toda (as outras colunas ficariam vazias) */
+  if (kids.length === 1) { /* decidido acima */ }
+  else if (ids.length <= 10) { for (let m = 1; m < 1 << ids.length; m++) { const r = sim(m); if (r.s < best.s) best = r; } }
+  else { let mask = 0; for (let ch = true; ch;) { ch = false; for (let b = 0; b < ids.length; b++) { const r = sim(mask ^ (1 << b)); if (r.s < best.s) { best = r; mask ^= 1 << b; ch = true; } } } }
+  for (const p of best.pl) { const k = kids[p.i]; k.dataset.pkfull = p.f && !full0[p.i] ? "w" : "1"; k.style.gridColumn = p.f ? "1 / -1" : `${p.c + 1} / span 1`; k.style.gridRow = `${p.top + 1} / span ${p.n + p.g}`;
+    PACK_N.set(k, p.f ? hF[p.i] : hS[p.i]);
+    if (p.g > 0) { k.style.minHeight = Math.round((p.n + p.g) * R - gap) + "px"; k.classList.add("grown");
+      /* cartão esticado com campo de texto: o campo ganha a altura que sobrou, em vez de ficar vazio embaixo */
+      const ta = [...k.querySelectorAll("textarea")].filter(t => t.offsetHeight >= 40).at(-1);
+      if (ta) { const extra = Math.round((p.n + p.g) * R - gap - k.getBoundingClientRect().height); if (extra > 0) { ta.dataset.pkta = ta.style.height; ta.style.height = (ta.getBoundingClientRect().height + extra) + "px"; } } } }
+}
+/* grade de relatório (12 colunas): vão que nenhum cartão de cima consegue cobrir esticando para baixo é coberto alargando um cartão
+   vizinho (à esquerda ou à direita) cuja faixa de altura cabe inteira nas colunas livres. A posição dos outros cartões não muda
+   (a colocação densa põe o cartão alargado no mesmo lugar). Gráfico desenhado com vw(n, id) é redesenhado na largura nova;
+   gráfico de largura fixa não é alargado (ficaria esticado). No máximo 3 redesenhos para o mesmo estado da tela. */
+function vgPlan(g, kids) {
+  if (VG_BUSY || REPW < 760 || !g.isConnected) return;
+  const gr = g.getBoundingClientRect(), gap = parseFloat(getComputedStyle(g).columnGap) || 16, cw = (gr.width - 11 * gap) / 12, R = 8;
+  const it = kids.map(k => { const r = k.getBoundingClientRect(), t = r.top - gr.top; return { k, vid: k.dataset.vid, c0: Math.round((r.left - gr.left) / (cw + gap)), c1: Math.round((r.right - gr.left + gap) / (cw + gap)), t, b: r.bottom - gr.top, nb: t + (PACK_N.get(k) ?? r.height) }; });
+  const H = Math.ceil(Math.max(...it.map(x => x.b)) / R); if (!H) return;
+  const occ = new Uint8Array(12 * H), mark = (c0, c1, t, b) => { for (let y = Math.max(0, Math.floor(t / R)); y < Math.min(H, Math.ceil(b / R)); y++) for (let c = c0; c < c1; c++) occ[y * 12 + c] = 1; };
+  it.forEach(x => mark(x.c0, x.c1, x.t, x.nb));   /* conta como vazio também o que um cartão só cobre por ter sido esticado */
+  const free = (c, x) => it.every(o => o === x || o.c0 > c || o.c1 <= c || o.nb <= x.t + 2 || o.t >= x.nb - 2);
+  const vazio = (c0, c1, t, b) => { let n = 0; for (let y = Math.max(0, Math.floor(t / R)); y < Math.min(H, Math.ceil(b / R)); y++) for (let c = c0; c < c1; c++) n += !occ[y * 12 + c]; return n * R; };
+  const fix = {};
+  for (let volta = 0; volta < 6; volta++) {
+    let best = null;
+    for (const x of it) {
+      if (!x.vid || x.c1 - x.c0 >= 12 || (x.k.querySelector("svg.chart") && !VW_IDS.has(x.vid))) continue;
+      for (const dir of [1, -1]) { let c0 = x.c0, c1 = x.c1;
+        for (;;) { const c = dir > 0 ? c1 : c0 - 1; if (c < 0 || c > 11 || !free(c, x)) break; if (dir > 0) c1++; else c0--; }
+        if (c1 - c0 === x.c1 - x.c0) continue;
+        const ganho = dir > 0 ? vazio(x.c1, c1, x.t, x.nb) : vazio(c0, x.c0, x.t, x.nb);
+        if (ganho > (best?.ganho || 0)) best = { x, c0, c1, ganho }; }
+    }
+    if (!best || best.ganho < 100) break;
+    mark(best.c0, best.c1, best.x.t, best.x.nb); best.x.c0 = best.c0; best.x.c1 = best.c1; fix[best.x.vid] = best.c1 - best.c0;
+  }
+  if (!Object.keys(fix).length) return;
+  const key = vgKey(); if (VG_FIX.k !== key) VG_FIX = { k: key, s: {}, n: 0 };
+  if (VG_FIX.n >= 3) return;
+  VG_FIX.n++; Object.assign(VG_FIX.s, fix);
+  VG_BUSY = true; try { render(); } finally { VG_BUSY = false; }
+  pack();   /* nova rodada sobre a grade redesenhada (o limite de 3 por estado encerra) */
 }
 function fillRow(g) {
   const kids = [...g.children].filter(k => getComputedStyle(k).display !== "none");
   for (const k of kids) k.style.gridColumn = "";
   const cs = getComputedStyle(g), tr = cs.gridTemplateColumns.split(" ").map(parseFloat), cols = tr.length, gap = parseFloat(cs.columnGap) || 0;
-  if (cols < 2 || kids.length < 2) return;
+  if (cols < 2 || !kids.length) return;
+  if (kids.length === 1) { kids[0].style.gridColumn = "1 / -1"; return; }   /* item sozinho numa grade de várias colunas: a linha toda */
   const rs = kids.map(k => k.getBoundingClientRect()), top = Math.max(...rs.map(r => r.top)), tol = Math.min(...rs.map(r => r.height)) / 2, last = kids.filter((k, i) => top - rs[i].top < tol);
   const spans = last.map(k => Math.max(1, Math.round((k.getBoundingClientRect().width + gap) / (tr[0] + gap)))), free = cols - sum(spans);
   if (free <= 0 || free >= cols) return;
   last.forEach((k, i) => { k.style.gridColumn = `span ${spans[i] + Math.floor(free / last.length) + (i < free % last.length ? 1 : 0)}`; });
+}
+/* duas colunas lado a lado (conteúdo + lateral): a mais curta cresce até a altura útil da tela, sem passar da outra, e, se ainda
+   for mais curta, acompanha a rolagem. Coluna que acompanha a rolagem e é mais alta que a tela para com a base visível. */
+const COLS_SEL = ".rtlay,.ckwrap,.sdwrap,.jcols,.sjbody,.csgrid,.diary,.dados,.rep,.jdlay", CF_TOP = 12;
+const cfVis = k => getComputedStyle(k).display !== "none" && k.getBoundingClientRect().height > 0;
+const cfPlain = cs => !/grid|table/.test(cs.display) && /rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor) && cs.backgroundImage === "none" && !parseFloat(cs.borderTopWidth) && !parseFloat(cs.borderBottomWidth);
+/* o que cresce na coluna curta: o marcado (data-cfgrow), a conversa de um mentor, ou o último cartão (se for um bloco de texto, a caixa de texto) */
+function cfElastic(col) {
+  const x = col.querySelector("[data-cfgrow]") || col.querySelector(".mchat"); if (x && cfVis(x)) return [x, "height"];
+  let e = col;
+  for (let d = 0; d < 6; d++) { const last = [...e.children].filter(cfVis).at(-1); if (!last) break; e = last; if (!(cfPlain(getComputedStyle(last)) && last.children.length)) break; }
+  if (e === col) return [col, "minHeight"];
+  const ta = [...e.querySelectorAll("textarea")].filter(cfVis).at(-1); if (ta && ta.offsetHeight >= 60) return [ta, "height"];
+  return [e, "minHeight"];
+}
+function colFit(c) {
+  for (const e of c.querySelectorAll("[data-cfp]")) { e.style[e.dataset.cfp] = e.dataset.cfo || ""; delete e.dataset.cfp; delete e.dataset.cfo; }
+  const cols = [...c.children].filter(cfVis);
+  for (const k of [...c.children]) { k.classList.remove("cfstick"); if (k.dataset.cft) { k.style.top = ""; delete k.dataset.cft; } }
+  if (cols.length !== 2) return;
+  const [a, b] = cols.map(k => k.getBoundingClientRect());
+  if (!(a.right <= b.left + 1 || b.right <= a.left + 1)) return;   /* empilhadas (tela estreita): nada a acertar */
+  let hs = Math.min(a.height, b.height), hl = Math.max(a.height, b.height); const sh = cols[a.height <= b.height ? 0 : 1], lg = cols[a.height <= b.height ? 1 : 0], avail = innerHeight - 28;   /* = as laterais com altura máxima de 100vh − 28px */
+  /* a coluna mais longa tem a conversa de um mentor: a conversa encolhe (até 280 px, rolando por dentro) antes de a outra coluna esticar */
+  const ch = hl - hs >= 24 && lg.querySelector(".mchat");
+  if (ch && cfVis(ch)) { const cur = ch.getBoundingClientRect().height, cut = Math.round(Math.min(hl - hs, cur - Math.max(280, parseFloat(getComputedStyle(ch).minHeight) || 0)));
+    if (cut > 8) { ch.dataset.cfp = "height"; ch.dataset.cfo = ch.style.height; ch.style.height = Math.round(parseFloat(getComputedStyle(ch).height) - cut) + "px"; hl = lg.getBoundingClientRect().height; } }
+  if (hl - hs >= 24) {
+    const F = Math.min(hl, Math.max(hs, avail)), grow = Math.round(F - hs);
+    if (grow > 0) { const [e, prop] = cfElastic(sh); e.dataset.cfp = prop; e.dataset.cfo = e.style[prop]; e.style[prop] = Math.round(parseFloat(getComputedStyle(e).height) + grow) + "px"; }
+    if (F < hl - 24) sh.classList.add("cfstick");
+  }
+  for (const k of cols) { const h = k.getBoundingClientRect().height;
+    if (getComputedStyle(k).position === "sticky") { k.dataset.cft = "1"; k.style.top = (h > avail + 4 ? Math.round(innerHeight - h - CF_TOP) : CF_TOP) + "px"; }
+    PACK_H.set(k, h); PACK_RO?.observe(k); }
 }
 function pack() {
   const m = $("#main"); if (!m) return;
@@ -19030,7 +19156,8 @@ function pack() {
     if (ents.some(e => { const r = e.target.getBoundingClientRect(), w = PACK_W.get(e.target); return w != null ? Math.abs(r.width - w) > 1 : Math.abs(r.height - (PACK_H.get(e.target) ?? -9)) > 1; })) { cancelAnimationFrame(PACK_RAF); PACK_RAF = requestAnimationFrame(pack); }
   });
   for (const g of m.querySelectorAll(FILL_SEL)) { fillRow(g); PACK_W.set(g, g.getBoundingClientRect().width); PACK_RO?.observe(g); }
-  for (const g of [...m.querySelectorAll(PACK_SEL)].reverse()) packGrid(g);
+  for (const g of [...m.querySelectorAll(PACK_SEL)].reverse()) if (g.isConnected) packGrid(g);
+  for (const c of $("#main").querySelectorAll(COLS_SEL)) colFit(c);
 }
 
 /* ================================================================ eventos */
