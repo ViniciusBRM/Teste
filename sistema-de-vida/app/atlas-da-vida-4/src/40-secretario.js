@@ -238,7 +238,7 @@ function secApplyProp(p) {
   if (p.tipo === "lembrete") { secData().lembretes.push({ id: uid(), texto: p.titulo, quando: p.quando, feito: false, avisado: false, at: Date.now(), origem: "Secretário" }); return ["secretario"]; }
   if (p.tipo === "adiar") { const t = S.tarefas.find(x => x.id === p.tid); if (t) t.prazo = p.prazo; return ["tarefas"]; }
   if (p.tipo === "concluir") { const t = S.tarefas.find(x => x.id === p.tid); if (t) { t.status = "Concluída"; t.concluida = TODAY; } return ["tarefas"]; }
-  if (p.tipo === "bloco") { (S.rotina ||= []).push({ id: uid(), data: p.data, ini: p.ini, fim: p.fim, titulo: p.titulo, cat: p.cat, rep: "", exc: [], st: {}, notas: p.motivo || "" }); return ["rotina"]; }
+  if (p.tipo === "bloco") { (S.rotina ||= []).push({ id: uid(), data: p.data, ini: p.ini, fim: p.fim, titulo: p.titulo, cat: p.cat, rep: "", exc: [], st: {}, notas: p.motivo || "", ...rtCorAtiv(p.titulo) }); return ["rotina"]; }
   return [];
 }
 function secDecide(chave, txt, escolha, op) {

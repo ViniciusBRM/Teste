@@ -1500,6 +1500,39 @@ button.rtad:hover,button.rtad:focus-visible{outline:2px solid var(--accent);outl
 .rtwks{display:flex;gap:10px;align-items:flex-end;margin-top:10px;height:58px}.rtwks span{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}.rtwks i{width:100%;max-width:28px;background:var(--good);border-radius:4px 4px 0 0}.rtwks small{font-size:10px;color:var(--muted)}
 .rtcard .rtch{display:grid;grid-template-columns:6px minmax(0,1fr) auto;gap:12px;align-items:start}.rtcc{width:6px;align-self:stretch;border-radius:3px;background:var(--c)}.rtcard h3{margin:0 0 4px}.rtsts{margin:4px 0 12px;display:inline-flex}.rtca{gap:6px}
 .rtdur{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.rtdur .chip{cursor:pointer}
+/* Rotina: lista suspensa de atividades em cada meia hora (fica no body, fora do #main) */
+.rtslot:hover::before{content:"▾";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;line-height:1;color:var(--accent)}
+.rta{position:fixed;z-index:78;width:310px;max-width:calc(100vw - 16px);max-height:min(460px,calc(100vh - 16px));display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;box-shadow:var(--shadow-2);padding:8px 8px 10px;outline:none}
+.rta[hidden]{display:none}
+.rta.sheet{left:0!important;right:0;bottom:0;top:auto!important;width:auto;max-width:none;max-height:76vh;border-radius:16px 16px 0 0;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));animation:rtaup .18s ease}
+@keyframes rtaup{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
+.rtah{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:0 2px 6px}.rtah b{display:block;font-size:13.5px}.rtah small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}.rtah .iconbtn{width:30px;height:30px}.rtahb{display:flex;gap:4px;flex:none}
+.rtaq{width:100%;margin:0 0 4px}
+.rtal{overflow:auto;flex:1 1 auto;min-height:60px;margin:0 -4px;padding:0 4px;overscroll-behavior:contain}
+.rtag{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:baseline;gap:8px;background:var(--surface);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 6px 4px}.rtag small{letter-spacing:0;font-weight:500}
+.rtao{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:34px;padding:4px 6px;border-radius:8px;cursor:pointer;font-size:13px}
+.rtao span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rtao small{color:var(--muted);font-size:11px;white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+.rtao.on,.rtao:hover{background:color-mix(in srgb,var(--accent) 13%,transparent)}.rtao.on{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent)}
+.rtacriar{grid-template-columns:32px minmax(0,1fr);color:var(--accent);font-weight:600}.rtacriar .ico{justify-self:center}
+.rtasw{display:inline-grid;place-items:center;width:30px;height:20px;border-radius:5px;font-size:10.5px;font-style:normal;font-weight:700;flex:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 20%,transparent);vertical-align:middle}
+.rtavz{color:var(--muted);font-size:12px;margin:2px 6px 6px}
+.rtaf{display:flex;flex-wrap:wrap;gap:6px;padding-top:8px;margin-top:6px;border-top:1px solid var(--line)}
+.rtanova{display:flex;flex-direction:column;gap:9px}.rtanova label{display:grid;gap:4px;font-size:12px;color:var(--ink-2)}
+.rtanr{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px}.rtanova input[type=color],.rtadr input[type=color]{width:100%;height:34px;padding:2px;cursor:pointer;border-radius:8px}
+.rtaprev{border-radius:7px;padding:7px 10px;font-weight:600;font-size:12.5px;box-shadow:inset 4px 0 0 rgba(0,0,0,.18);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rtamsg{color:var(--crit,#e0564f);font-size:12px;margin:0}.rtamsg:empty{display:none}
+.rtahint{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-top:4px}.rtahint:empty{display:none}
+.rtasw+b{margin-left:4px}
+@media (max-width:600px){.rta.sheet .rtao{min-height:44px}.rta.sheet .rtaf .btn{flex:1 1 auto}}
+/* “Atividades e cores” */
+.rtadlg .rtch{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.rtadlg .flbl{margin:4px 0 0}
+.rtadsrc{display:grid;gap:4px;font-size:12px;color:var(--ink-2)}
+.rtadp{display:flex;flex-wrap:wrap;gap:6px;max-height:220px;overflow:auto}
+.rtadc{display:inline-flex;align-items:center;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:600;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 16%,transparent);white-space:nowrap}
+.rtado{display:flex;flex-direction:column;gap:6px}
+.rtadr{display:grid;grid-template-columns:52px minmax(0,1fr) minmax(0,150px) auto;gap:6px;align-items:center}.rtadr input[type=text]{min-width:0}
+.rtadnova{padding-top:8px;border-top:1px dashed var(--line-2)}#rtad_msg:empty{display:none}
+@media (max-width:520px){.rtadr{grid-template-columns:44px minmax(0,1fr) auto}.rtadr select{grid-column:2/3}.rtadnova .btn{grid-column:3/4;grid-row:1/3}}
 @media (max-width:1180px){.rtlay{grid-template-columns:minmax(0,1fr)}.rtins{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}}
 @media (max-width:640px){.rtstrip{grid-template-columns:repeat(7,minmax(0,1fr))}.rtsw{display:none}.rtsd{padding:5px 2px}.rtsd .rtsm{font-size:10px}.rtpt b{font-size:20px}.rtviews{order:-1;width:100%}.rtviews .seg{flex:1;justify-content:center}.rtkpis{grid-template-columns:repeat(2,minmax(0,1fr))}.rtmc{min-height:62px;padding:3px}.rtmc i,.rtmct small{display:none}.rtmw{grid-template-columns:24px repeat(7,minmax(0,1fr))}.rtnowc{grid-template-columns:1fr}.rthead,.rtallrow,.rtbody{grid-template-columns:46px repeat(var(--n),minmax(92px,1fr))}.rtgrid.one .rthead,.rtgrid.one .rtallrow,.rtgrid.one .rtbody{grid-template-columns:46px minmax(0,1fr)}}
 /* ===== jardim interior, mandala e bússola vivas */
@@ -2205,13 +2238,13 @@ function applyLists() {
 const relArea = r => ({ "Família": "Família", "Parceria": "Amor & parceria", "Amizade": "Amizades & social", "Trabalho": "Carreira", "Mentoria": "Carreira", "Comunidade": "Propósito & espiritualidade" }[r] || "Amizades & social");
 
 /* ================================================================ estado */
-const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx", "rotina", "rotinaModelos", "jardim", "secretario", "conselho", "filosofia", "psique", "ck", "ckTar", "ckRisk", "ckIss", "ckLog", "ckDec", "ckMeet", "ckBim", "ckEl", "ckLic", "ckRel", "ckSnap", "nutri", "nutriLog", "treino", "treinoLog", "corridas", "uso", "guia", "inspira"];
+const KEYS = ["cfg", "lanc", "orc", "patr", "saude", "habitos", "marks", "roda", "alvo", "revisao", "metas", "tarefas", "pessoas", "contatos", "aprend", "estudo", "lazer", "sonhos", "docs", "rotinas", "assin", "comp", "cand", "prio", "diario", "mentores", "listas", "regras", "areasCfg", "integ", "experimentos", "radar", "fechamentos", "capitulos", "resumos", "auditoria", "priv", "eventos", "bussola", "bmExames", "bmDecisoes", "projetos", "saldoConta", "importacoes", "jornada", "carreira", "lazerHub", "contasCasa", "compras", "cadTec", "oport", "idiomas", "fut", "vidaItens", "hojeCtx", "rotina", "rotinaModelos", "jardim", "secretario", "conselho", "filosofia", "psique", "ck", "ckTar", "ckRisk", "ckIss", "ckLog", "ckDec", "ckMeet", "ckBim", "ckEl", "ckLic", "ckRel", "ckSnap", "nutri", "nutriLog", "treino", "treinoLog", "corridas", "uso", "guia", "inspira", "rotinaAtiv"];
 const EMPTY = () => ({
   cfg: { nome: "", moeda: "€", metaPoup: .2, metaReserva: 6, usoSobra: .7, maxParcela: .3, metaSono: 7.5, metaTreinos: 4, metaPassos: 8000, metaEstudo: 24, metaLivros: 12, metaLazer: 6, alertaDocs: 90, alertaAniv: 30, mentorNivel: "default", mentorTom: "Direto e caloroso", mentorNotion: true },
   lanc: [], orc: {}, patr: {}, saude: {}, habitos: [], marks: {}, roda: {}, alvo: {}, revisao: {}, metas: [], tarefas: [],
   pessoas: [], contatos: [], aprend: [], estudo: [], lazer: [], sonhos: [], docs: [], rotinas: [], assin: [], comp: [], cand: [], prio: ["", "", ""],
   diario: [], mentores: {}, listas: DEFAULT_LISTS(), regras: [], areasCfg: {}, integ: { notion: { pai: null, hist: [], tarefas: null } },
-  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {}, rotina: [], rotinaModelos: [], guia: { plano: null, segue: true }, inspira: { ativo: "", esforco: "medio", tela: false, ativs: {}, minhas: [] }, jardim: { pedras: [], talhos: [], templo: {}, folhas: [], cam: {} }, secretario: { modo: "acao", perfis: {}, conversa: [], lembretes: [], decisoes: [] }, conselho: { cfg: {}, atas: [], sessao: null }, filosofia: { triagens: [], lentes: [] }, psique: { cfg: {}, sessoes: [], processos: [], padroes: [], reflexoes: [], pauta: [], modo: { fixo: "auto", atual: "escuta", motivo: "" } }, ck: {}, ckTar: [], ckRisk: [], ckIss: [], ckLog: [], ckDec: [], ckMeet: [], ckBim: [], ckEl: [], ckLic: [], ckRel: [], ckSnap: [], nutri: {}, nutriLog: [], treino: {}, treinoLog: [], corridas: [], uso: { desde: null, r: {}, a: {}, ia: {} }
+  experimentos: [], radar: { log: [] }, fechamentos: {}, capitulos: [], resumos: {}, auditoria: [], priv: { semIA: [], cofre: null }, eventos: [], bussola: { foco: [] }, bmExames: {}, bmDecisoes: [], projetos: [], saldoConta: null, importacoes: [], jornada: { p: {}, conf: { vivos: [], notas: {}, circulos: [] } }, carreira: {}, lazerHub: {}, contasCasa: [], compras: [], cadTec: [], oport: [], idiomas: {}, fut: {}, vidaItens: [], hojeCtx: {}, rotina: [], rotinaModelos: [], rotinaAtiv: { outras: [], fonte: "" }, guia: { plano: null, segue: true }, inspira: { ativo: "", esforco: "medio", tela: false, ativs: {}, minhas: [] }, jardim: { pedras: [], talhos: [], templo: {}, folhas: [], cam: {} }, secretario: { modo: "acao", perfis: {}, conversa: [], lembretes: [], decisoes: [] }, conselho: { cfg: {}, atas: [], sessao: null }, filosofia: { triagens: [], lentes: [] }, psique: { cfg: {}, sessoes: [], processos: [], padroes: [], reflexoes: [], pauta: [], modo: { fixo: "auto", atual: "escuta", motivo: "" } }, ck: {}, ckTar: [], ckRisk: [], ckIss: [], ckLog: [], ckDec: [], ckMeet: [], ckBim: [], ckEl: [], ckLic: [], ckRel: [], ckSnap: [], nutri: {}, nutriLog: [], treino: {}, treinoLog: [], corridas: [], uso: { desde: null, r: {}, a: {}, ia: {} }
 });
 let S = EMPTY(), REF = mkey(TODAY), IS_EXAMPLE = true, STORE = null, LOADED = false, VER = 0, DBH = null;
 applyLists();
@@ -3011,6 +3044,13 @@ function exampleRedesenho(D) {
     B("Trabalho: reuniões e modelos", "Trabalho", "13:30", "17:30", "uteis"), B("Deslocamento", "Deslocamento", "17:30", "18:00", "uteis"), B("Academia", "Saúde & treino", "18:30", "19:30", "semanal", ws), B("Academia", "Saúde & treino", "18:30", "19:30", "semanal", addDays(ws, 2)), B("Academia", "Saúde & treino", "18:30", "19:30", "semanal", addDays(ws, 4)),
     B("Inglês", "Estudo", "20:00", "20:30", "uteis"), B("Leitura", "Lazer", "22:00", "22:30", "diario"), B("Meditação", "Espiritual", "06:30", "07:00", "diario"), B("Mercado e casa", "Casa", "10:00", "12:00", "semanal", addDays(ws, 5)), B("Ligar para a família", "Pessoas", "16:00", "17:00", "semanal", addDays(ws, 6))];
   for (const b of D.rotina) for (let k = 1; k <= 20; k++) { const x = addDays(TODAY, -k); if ((k + b.titulo.length) % 5) b.feitos[x] = 1; }
+  /* modelo semanal de exemplo com a cor de cada atividade (fictício): é a lista “Standard Semanal” da grade; os blocos usam as mesmas cores */
+  const COR = { "Café e planejar o dia": ["#FFEDA3", "#7A4F00"], "Deslocamento": ["#D9D9D9", "#3A3A3A"], "Trabalho: projeto e coordenação": ["#BDD7EE", "#1F3864"], "Almoço e caminhada": ["#FFEDA3", "#7A4F00"],
+    "Trabalho: reuniões e modelos": ["#BDD7EE", "#1F3864"], "Academia": ["#C6EFCE", "#006100"], "Inglês": ["#D9D2E9", "#4B2E83"], "Leitura": ["#F8CBAD", "#7A3B0C"], "Meditação": ["#B7F0D8", "#1E5631"], "Mercado e casa": ["#FCE4D6", "#833C0B"], "Ligar para a família": ["#DDEBF7", "#1F4E79"] };
+  for (const b of D.rotina) if (COR[b.titulo]) [b.cor, b.tx] = COR[b.titulo];
+  const dows = b => b.rep === "diario" ? [0, 1, 2, 3, 4, 5, 6] : b.rep === "uteis" ? [1, 2, 3, 4, 5] : [parse(b.data).getDay()];
+  D.rotinaModelos = [{ id: "m_ex_std", nome: "Rotina Semanal Standard (exemplo)", desc: "Modelo fictício: a semana típica com a cor de cada atividade.", semana: D.rotina.flatMap(b => dows(b).map(w => [w, b.ini, b.fim, b.titulo, b.cat, b.cor, b.tx])).sort((p, q) => p[0] - q[0] || p[1].localeCompare(q[1])) }];
+  D.rotinaAtiv = { outras: [{ id: "ra_ex1", nome: "Aula de cerâmica", cor: "#C9A0DC", tx: "#2E1A47", cat: "Lazer" }], fonte: "" };
   D.hojeCtx = { [TODAY]: { humor: 4, energia: "media", tempo: 60, grana: "pouco" } };
   D.oport = [{ id: id(), titulo: "Vaga de BIM Coordinator infra", empresa: "Engenharia Beta", tipo: "Vaga", estagio: "Conversa", contato: work[0]?.nome || "", prazo: d(5), passo: "Enviar portfólio atualizado" }, { id: id(), titulo: "Palestra no encontro buildingSMART local", empresa: "Comunidade", tipo: "Evento", estagio: "Ideia", contato: "", prazo: d(30), passo: "Propor tema" }];
 }
@@ -10370,7 +10410,7 @@ const TAB_INFO = {
   visao: { cor: "var(--accent)", cena: "constel", foto: "Céu ao entardecer com constelações ligadas por linhas finas", missao: "O retrato do mês em uma tela: cada área da vida com nota, tendência e o que pede atenção.", resolve: "Saber em 30 segundos se o mês vai bem, sem abrir dez abas.", entra: "Tudo o que você registra nas outras abas.", sai: "Atalhos para a área que mais precisa de você.", manual: ["Escolha o mês no topo (‹ ›) para ver meses passados.", "Clique numa área para abrir o relatório dela.", "Os números vêm dos registros; a Roda da Vida mostra a sua percepção ao lado."] },
   hoje: { cor: "var(--warn)", cena: "sunrise", foto: "Janela com luz da manhã sobre telhados de Turim e os Alpes ao fundo", missao: "Um resumo do momento: tempo lá fora, uma frase que conversa com o seu dia real, ideias para sair da rotina e o que vence hoje.", resolve: "Começar o dia sabendo o que vestir, o que importa e uma coisa boa para fazer, sem ler dez aplicativos.", entra: "Previsão hora a hora da sua cidade (gravada no Atlas), notícias positivas, seu humor, energia, tempo livre e orçamento.", sai: "Tarefas do dia, Painel do dia para registrar, Lazer para as ideias.", manual: ["Responda as 4 perguntas rápidas em “Como você está agora?”; tudo abaixo se ajusta.", "O clima vem da previsão hora a hora da cidade escolhida gravada no Atlas (MET Norway). A atualização automática está desligada: sem previsão gravada que cubra a hora, o Hoje diz isso em vez de inventar. “trocar cidade” muda a cidade.", "As ideias mudam com clima, energia, tempo e dinheiro. “Outra ideia” troca uma de cada vez.", "Para registrar sono, humor, gastos e hábitos, use o Painel do dia."] },
   painel: { cor: "var(--accent)", cena: "waves", foto: "Microfone de mesa ao lado de um caderno aberto", missao: "Registrar o essencial do dia em um minuto, por texto ou voz, e conferir antes que vá para as abas.", resolve: "Registro diário que não acontece porque dá trabalho.", entra: "O que você fala ou escreve.", sai: "Saúde, Finanças, Hábitos, Jornada, Lazer, Diário e Tarefas.", manual: ["Fale ou escreva o dia no campo grande; os campos se preenchem sozinhos.", "Use o microfone de um campo para ditar só aquele valor.", "“Revisar e salvar” mostra o que é novo, o que substitui e o que parece repetido.", "Um único Desfazer volta tudo o que o painel salvou."] },
-  rotina: { cor: "var(--a-car)", cena: "calendar", foto: "Agenda de papel aberta na semana, com blocos coloridos de meia hora e uma xícara de café", missao: "Desenhar o dia em blocos de 30 minutos: o que você planeja, o que já está na agenda e o que de fato fez.", resolve: "Dias que somem em tarefas soltas e planos que não cabem no relógio.", entra: "Seus blocos, a Agenda (e o Google Calendar) e as tarefas com prazo.", sai: "Idiomas (o plano desconta os blocos), Hoje (a rotina do dia).", manual: ["Escolha Dia, Semana ou Mês no topo; ‹ › mudam o período e Hoje volta para hoje.", "No calendário pequeno, clique num dia para ver as horas dele, ou no número da semana para ver a semana inteira.", "Clique numa meia hora para criar um bloco de 30 min; arraste por várias para criar um bloco maior.", "Clique num bloco para editar, marcar como feito ou excluir. “Repetir” cria rotinas diárias, de dias úteis ou semanais.", "Os compromissos da Agenda e do Google aparecem tracejados: são editados na Agenda.", "“Preencher” aplica um modelo pronto (Básica, Intermediária, Avançada ou outro) no dia, na semana ou no mês.", "Lembretes: escolha uma atividade e quantos minutos antes avisar, toda semana; dá para levar ao Google Agenda para tocar no celular."] },
+  rotina: { cor: "var(--a-car)", cena: "calendar", foto: "Agenda de papel aberta na semana, com blocos coloridos de meia hora e uma xícara de café", missao: "Desenhar o dia em blocos de 30 minutos: o que você planeja, o que já está na agenda e o que de fato fez.", resolve: "Dias que somem em tarefas soltas e planos que não cabem no relógio.", entra: "Seus blocos, a Agenda (e o Google Calendar) e as tarefas com prazo.", sai: "Idiomas (o plano desconta os blocos), Hoje (a rotina do dia).", manual: ["Escolha Dia, Semana ou Mês no topo; ‹ › mudam o período e Hoje volta para hoje.", "No calendário pequeno, clique num dia para ver as horas dele, ou no número da semana para ver a semana inteira.", "Clique numa meia hora vazia (ou arraste por várias): abre a lista das atividades, primeiro as do Standard Semanal, cada uma com a cor fixa, depois as Outras. Escolha e a célula fica com a cor da atividade.", "Atividade que não está na lista: digite o nome na busca e “Criar”, ou “Nova atividade”, e escolha a cor. Em “Atividades e cores” (Modelos e atalhos) você muda cor, nome e categoria das Outras.", "Clique num bloco para editar, marcar como feito ou excluir. “Repetir” cria rotinas diárias, de dias úteis ou semanais.", "Os compromissos da Agenda e do Google aparecem tracejados: são editados na Agenda.", "“Preencher” aplica um modelo pronto (Básica, Intermediária, Avançada ou outro) no dia, na semana ou no mês.", "Lembretes: escolha uma atividade e quantos minutos antes avisar, toda semana; dá para levar ao Google Agenda para tocar no celular."] },
   inspira: { cor: "var(--warn)", cena: "spark", foto: "Mesa de trabalho com um caderno aberto, uma xícara de café e a luz da manhã", missao: "Ligar a cabeça antes de começar uma atividade: um texto curto, um aquecimento de 5 minutos, o primeiro passo do dia, frases, vídeos e música, e uma IA que acompanha a atividade em todas as abas.", resolve: "A inércia do começo: sentar para estudar, ler ou criar e não engrenar.", entra: "As atividades do seu Lazer e da sua rotina, as que você criar e o próximo bloco da Rotina.", sai: "Começos registrados, a IA de acompanhamento e atalhos para a aba de cada atividade.", manual: ["O topo mostra a atividade que combina com o próximo bloco da sua Rotina.", "Escolha a atividade, toque em Começar o aquecimento e siga os 3 passos (5 minutos).", "“Comecei” registra o começo; “outro desafio” troca o primeiro passo.", "Ativar acompanhamento chama a IA com o perfil da atividade; ela fica num botão lateral em todas as abas."] },
   diario: { cor: "var(--a-men)", cena: "notebook", foto: "Caderno de capa de couro aberto, caneta tinteiro e xícara de café", missao: "O lugar das palavras: o que aconteceu, o que você sentiu e o que aprendeu, ligado às pessoas, temas e metas.", resolve: "Memória do que viveu e padrões que só aparecem escritos.", entra: "Seus textos, @pessoas, #temas e comandos “/”.", sai: "Cruzamentos, Capítulos, mentores (se você permitir).", manual: ["@ menciona uma pessoa, # marca um tema, [[ liga a uma meta ou tarefa.", "Linhas começando com / registram dados (ex.: /gasto 12 almoço).", "Em Perguntar, busque por significado: “quando me senti sozinho?”."] },
   jornada: { cor: "var(--jp-med)", cena: "lotus", foto: "Flor de lótus num lago parado ao amanhecer", missao: "Cultivar a vida interior em quatro caminhos (Espiritismo, meditação, Taoísmo e Budismo) e a bússola moral que orienta as decisões.", resolve: "Prática espiritual que fica solta, sem continuidade nem reflexão.", entra: "Sessões de prática, reflexões, exame da noite, decisões.", sai: "Métricas de prática nos Cruzamentos e o Hoje.", manual: ["Comece pela aba de um pilar e registre a estação em que você está.", "Saúde espiritual é o jardim: cada árvore cresce com um pilar, o rio com o exame da noite, e o templo com as inclinações que você trabalha.", "Na mandala, toque numa pétala para explorar; as camadas mostram ritmo e evolução.", "Práticas guarda programas guiados e sessões (com estado antes e depois).", "A Bússola moral tem o exame da noite e as oito perguntas antes de decidir."] },
@@ -11505,7 +11545,7 @@ function rtInsights(days) {
   /* ações */
   const mods = rtModsPre();
   out.push(panel(`${ic("list")}Modelos e atalhos`, `<div class="form f1"><label>Aplicar um modelo ${v === "dia" ? "neste dia" : "nesta semana"}<div class="row"><select id="rt_mod">${mods.map(m => `<option value="${m.id}"${m.id === RT.mod ? " selected" : ""}>${esc(m.nome)}${m.semana ? ` · semana, ${m.semana.length} blocos` : ""}</option>`).join("")}</select><button type="button" class="btn sm" data-act="rtmod">Aplicar</button></div></label></div>
-    <div class="row wrap">${v === "dia" ? `<button type="button" class="btn sm" data-act="rtcopy">${ic("copy")}Copiar o dia…</button>` : `<button type="button" class="btn sm" data-act="rtsavemod">${ic("plus")}Salvar a semana como modelo</button><button type="button" class="btn sm" data-act="rtcopyw">${ic("copy")}Copiar para a próxima semana</button>`}</div>
+    <div class="row wrap">${v === "dia" ? `<button type="button" class="btn sm" data-act="rtcopy">${ic("copy")}Copiar o dia…</button>` : `<button type="button" class="btn sm" data-act="rtsavemod">${ic("plus")}Salvar a semana como modelo</button><button type="button" class="btn sm" data-act="rtcopyw">${ic("copy")}Copiar para a próxima semana</button>`}<button type="button" class="btn sm" data-act="rtativ">${ic("palette")}Atividades e cores</button></div>
     <details class="futd"><summary>Ajustes da grade</summary><div class="form f3"><label>Acordo<input type="time" step="1800" data-rtcfg="rtAcordar" value="${esc(S.cfg.rtAcordar || "06:30")}"></label><label>Durmo<input type="time" step="1800" data-rtcfg="rtDormir" value="${esc(S.cfg.rtDormir || "23:00")}"></label><label>Tamanho<select data-rtcfg="rtZoom">${Object.keys(RT_Z).map(k => `<option${(S.cfg.rtZoom || "normal") === k ? " selected" : ""}>${k}</option>`).join("")}</select></label></div><p class="muted small">Teclado: ← → período · T hoje · D S M vistas · N novo bloco.</p></details>`));
   out.push(lsPanel());
   return out.join("");
@@ -11516,7 +11556,7 @@ const RT_LIMPAR = { dia: ["Limpar o dia", "neste dia"], semana: ["Limpar a seman
 function pRotina() {
   const v = rtView(), P = rtPer(), days = rtDias();
   const qp = RT.q.trim() ? rtParse(RT.q) : null;
-  setTimeout(rtScrollTo, 0);
+  setTimeout(() => { rtScrollTo(); rtaSync(); }, 0);
   return `<div class="rt2">
     <div class="rtt">
       <div class="rtnav"><button type="button" class="iconbtn" data-rtnav="-1" aria-label="${v === "dia" ? "Dia anterior" : v === "semana" ? "Semana anterior" : "Mês anterior"}">‹</button><button type="button" class="btn sm" data-rtnav="0">Hoje</button><button type="button" class="iconbtn" data-rtnav="1" aria-label="${v === "dia" ? "Próximo dia" : v === "semana" ? "Próxima semana" : "Próximo mês"}">›</button></div>
@@ -11562,13 +11602,13 @@ function rtParse(txt) {
   a = Math.floor(a / 30) * 30; if (z == null) z = a + Math.max(30, Math.ceil((dur || 30) / 30) * 30); else z = Math.ceil(z / 30) * 30;
   if (z <= a || z > 1440) return { ok: false, err: "O fim precisa ser depois do começo e no mesmo dia", titulo };
   if (!titulo) return { ok: false, err: "Diga o que é: inglês, academia, reunião…" };
-  const cat = (RT_KW.find(([rx]) => rx.test(fold(titulo))) || [0, "Outro"])[1];
-  return { ok: true, titulo, cat, ini: m2hm(a), fim: m2hm(z), dias: [...new Set(dias)].sort(), rep };
+  const at = rtaPorNome(titulo), cat = at?.cat || (RT_KW.find(([rx]) => rx.test(fold(titulo))) || [0, "Outro"])[1];
+  return { ok: true, titulo: at?.nome || titulo, cat, ini: m2hm(a), fim: m2hm(z), dias: [...new Set(dias)].sort(), rep, ...(at ? rtCorAtiv(at.nome) : {}) };
 }
-function rtQpHTML(q) { return q.ok ? `${ic("check")}<span>Vai criar <b>${esc(q.titulo)}</b> · ${q.ini}–${q.fim} · <i style="color:${rtCor(q.cat)}">${q.cat}</i> · ${q.rep ? REP_TXT[q.rep].toLowerCase() + (q.rep === "semanal" ? ` (${q.dias.map(x => DOWL[parse(x).getDay()].slice(0, 3)).join(", ")})` : "") + ` a partir de ${fmtD(q.dias[0])}` : q.dias.map(x => `${DOWL[parse(x).getDay()].slice(0, 3)} ${fmtD(x)}`).join(", ")}. Enter cria.</span>` : `${ic("info")}<span>${esc(q.err)}</span>`; }
+function rtQpHTML(q) { return q.ok ? `${ic("check")}<span>Vai criar ${q.cor ? `<i class="rtasw" style="background:${q.cor};color:${q.tx}" aria-hidden="true">Aa</i>` : ""}<b>${esc(q.titulo)}</b> · ${q.ini}–${q.fim} · <i style="color:${rtCor(q.cat)}">${q.cat}</i> · ${q.rep ? REP_TXT[q.rep].toLowerCase() + (q.rep === "semanal" ? ` (${q.dias.map(x => DOWL[parse(x).getDay()].slice(0, 3)).join(", ")})` : "") + ` a partir de ${fmtD(q.dias[0])}` : q.dias.map(x => `${DOWL[parse(x).getDay()].slice(0, 3)} ${fmtD(x)}`).join(", ")}. Enter cria.</span>` : `${ic("info")}<span>${esc(q.err)}</span>`; }
 function rtQAdd() {
   const q = rtParse(RT.q); if (!q.ok) { toast(q.err); return; }
-  const novos = (q.rep && q.rep !== "semanal" ? [q.dias[0]] : q.dias).map(d => ({ id: uid(), data: d, ini: q.ini, fim: q.fim, titulo: q.titulo, cat: q.cat, rep: q.rep, exc: [], st: {}, notas: "" }));
+  const novos = (q.rep && q.rep !== "semanal" ? [q.dias[0]] : q.dias).map(d => ({ id: uid(), data: d, ini: q.ini, fim: q.fim, titulo: q.titulo, cat: q.cat, rep: q.rep, exc: [], st: {}, notas: "", ...(q.cor ? { cor: q.cor, tx: q.tx } : {}) }));
   (S.rotina ||= []).push(...novos); RT.q = ""; if (rtView() === "dia" && !novos.some(b => rtOcc(RT.d).some(x => x.id === b.id))) RT.d = novos[0].data;
   touch("rotina", { label: "Bloco por texto" }); undoToast(`${plural(novos.length, "bloco criado", "blocos criados")}: ${q.titulo} ${q.ini}–${q.fim}`);
 }
@@ -11671,7 +11711,7 @@ function rtCard(id, day) {
   dlg.innerHTML = `<form method="dialog" class="rtcard" style="--c:${rtBC(b)}"><div class="rtch"><span class="rtcc"></span><div><h3>${esc(b.titulo)}</h3><p class="muted small">${fmtDL(day)} · ${b.ini}–${b.fim} · ${durTxt(hm2min(b.fim) - hm2min(b.ini))}<br>${esc(b.cat)}${b.rep ? ` · ${REP_TXT[b.rep]}` : ""}</p>${b.notas ? `<p>${esc(b.notas)}</p>` : ""}</div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>
     <div class="flbl">Como foi${day > TODAY ? " (ainda não aconteceu)" : ""}</div><div class="seg-g rtsts">${["feito", "parcial", "pulado"].map(s => `<button type="button" class="seg" data-rtst="${b.id}|${day}|${s}" aria-pressed="${st === s}">${ST_TXT[s]}</button>`).join("")}</div>
     <div class="lsbox">${lsCartaoHTML(b, day)}</div>
-    <div class="row wrap rtca"><button type="button" class="btn sm" data-rtedit="${b.id}|${day}">${ic("edit")}Editar</button><button type="button" class="btn sm" data-rtdup="${b.id}|${day}">${ic("copy")}Duplicar</button><button type="button" class="btn sm ghost" data-rtdel="${b.id}|${day}">${ic("trash")}${b.rep ? "Excluir neste dia" : "Excluir"}</button>${b.rep ? `<button type="button" class="btn sm ghost" data-rtdelall="${b.id}">Excluir a série</button>` : ""}</div></form>`;
+    <div class="row wrap rtca"><button type="button" class="btn sm" data-rttroca="${b.id}|${day}">${ic("palette")}Trocar atividade</button><button type="button" class="btn sm" data-rtedit="${b.id}|${day}">${ic("edit")}Editar</button><button type="button" class="btn sm" data-rtdup="${b.id}|${day}">${ic("copy")}Duplicar</button><button type="button" class="btn sm ghost" data-rtdel="${b.id}|${day}">${ic("trash")}${b.rep ? "Excluir neste dia" : "Excluir"}</button>${b.rep ? `<button type="button" class="btn sm ghost" data-rtdelall="${b.id}">Excluir a série</button>` : ""}</div></form>`;
   if (!dlg.open) dlg.showModal();
 }
 function rtForm(id, day, a, z) {
@@ -11679,7 +11719,7 @@ function rtForm(id, day, a, z) {
   const opt = (sel, fim) => RT_TIMES.filter(m => fim ? m > 0 : m < 1440).map(m => `<option${m2hm(m) === sel ? " selected" : ""}>${m2hm(m)}</option>`).join("");
   const dlg = $("#dlg");
   dlg.innerHTML = `<form method="dialog" id="rtf" class="rtf"><h3>${b ? "Editar bloco" : "Novo bloco"}</h3><div class="form f2">
-    <label class="full">O quê<input type="text" id="rt_t" value="${esc(o.titulo)}" placeholder="Ex.: Inglês, treino, revisão do projeto" autocomplete="off"></label>
+    <label class="full">O quê<input type="text" id="rt_t" value="${esc(o.titulo)}" placeholder="Ex.: Inglês, treino, revisão do projeto" autocomplete="off" list="rt_tl"><datalist id="rt_tl">${rtaTodas().map(a => `<option value="${esc(a.nome)}"></option>`).join("")}</datalist><small class="rtahint" id="rt_ah"></small></label>
     <label>Dia<input type="date" id="rt_d" value="${b && b.rep ? o.data : occDay}"${b && b.rep ? " disabled" : ""}></label>
     <label>Categoria<select id="rt_c">${RT_CATS.map(([c]) => `<option${o.cat === c ? " selected" : ""}>${c}</option>`).join("")}</select></label>
     <label>Começa<select id="rt_a">${opt(o.ini)}</select></label><label>Termina<select id="rt_z">${opt(o.fim, true)}</select></label>
@@ -11693,8 +11733,13 @@ function rtForm(id, day, a, z) {
   $("#rt_a").onchange = () => { const a1 = hm2min($("#rt_a").value), z1 = hm2min($("#rt_z").value); if (z1 <= a1) $("#rt_z").value = m2hm(Math.min(1440, a1 + 30)); msg(); }; $("#rt_z").onchange = msg; msg();
   for (const c of $$("[data-rtdur]", dlg)) c.onclick = () => { $("#rt_z").value = m2hm(Math.min(1440, hm2min($("#rt_a").value) + +c.dataset.rtdur)); msg(); };
   $("#rt_x").onclick = () => dlg.close();
+  /* nome de atividade cadastrada: mostra a cor que o bloco vai ter e propõe a categoria dela */
+  const dica = () => { const at = rtaPorNome($("#rt_t").value), h = $("#rt_ah"); if (!h) return at;
+    h.innerHTML = at ? `<i class="rtasw" style="${rtaSw(at)}" aria-hidden="true">Aa</i>${at.grupo === "p" ? "Atividade do padrão" : "Atividade de Outras"}${rtHex(at.cor) ? ": o bloco fica com esta cor" : ""}` : ""; return at; };
+  $("#rt_t").oninput = () => { const at = dica(); if (at?.cat) $("#rt_c").value = at.cat; }; dica();
   $("#rtf").onsubmit = e => { e.preventDefault(); if (!msg()) return; const t = $("#rt_t").value.trim(); if (!t) { $("#rt_t").focus(); $("#rt_msg").textContent = "Dê um nome ao bloco."; return; }
-    const rec = { ...(b || { id: uid(), st: {}, exc: [] }), titulo: t, cat: $("#rt_c").value, ini: $("#rt_a").value, fim: $("#rt_z").value, rep: $("#rt_r").value, notas: $("#rt_n").value.trim(), data: b && b.rep ? b.data : $("#rt_d").value || occDay };
+    const at = (!b || rtaK(b.titulo) !== rtaK(t)) ? rtaPorNome(t) : null, cor = at && rtHex(at.cor) ? { cor: at.cor, tx: rtHex(at.tx) || rtTx(at.cor) } : null;
+    const rec = { ...(b || { id: uid(), st: {}, exc: [] }), ...(cor || {}), titulo: at?.nome || t, cat: $("#rt_c").value, ini: $("#rt_a").value, fim: $("#rt_z").value, rep: $("#rt_r").value, notas: $("#rt_n").value.trim(), data: b && b.rep ? b.data : $("#rt_d").value || occDay };
     if (b) S.rotina = S.rotina.map(x => x.id === b.id ? rec : x); else (S.rotina ||= []).push(rec);
     if (!rec.rep && rtView() === "dia") RT.d = rec.data; dlg.close(); touch("rotina", { label: b ? "Bloco editado" : "Bloco criado" }); if (!b) undoToast(`${rec.titulo}: ${rec.ini}–${rec.fim}`); };
   dlg.showModal(); setTimeout(() => $("#rt_t")?.focus(), 30);
@@ -11731,12 +11776,14 @@ function rtClick(t) {
   /* tarefa vira bloco: no horário escrito nela; sem horário, no primeiro tempo livre do dia, e o bloco abre para ajustar */
   if (ds.rtibloco) { const [id, d] = ds.rtibloco.split("|"), t = S.tarefas.find(x => x.id === id); if (!t) return true;
     const ht = rtHoraTxt(t.tarefa), hr = ht || rtHoraTxt(t.notas), lv = rtDia(d).livres[0], a = hr ? hr.a : lv ? lv[0] : 9 * 60, z = Math.min(1440, hr ? hr.z : a + 60);
-    const b = { id: uid(), data: d, ini: m2hm(a), fim: m2hm(z), titulo: rtSemHora(t.tarefa, ht), cat: rtGuessCat(t.tarefa), rep: "", exc: [], st: {}, notas: t.notas || "" };
+    const tt = rtSemHora(t.tarefa, ht), at = rtaPorNome(tt), b = { id: uid(), data: d, ini: m2hm(a), fim: m2hm(z), titulo: at?.nome || tt, cat: at?.cat || rtGuessCat(t.tarefa), rep: "", exc: [], st: {}, notas: t.notas || "", ...rtCorAtiv(tt) };
     (S.rotina ||= []).push(b); S.tarefas = S.tarefas.filter(x => x.id !== id); $("#dlg").close(); touch("rotina", "tarefas", { label: "Tarefa virou bloco" });
     if (hr) undoToast(`Na rotina: ${b.titulo} ${b.ini}–${b.fim}`); else rtForm(b.id, d); return true; }
   if (ds.rtst) { const [id, d, s] = ds.rtst.split("|"); rtSetSt(id, d, s); if ($("#dlg").open && $(".rtcard")) rtCard(id, d); return true; }
   if (ds.rtcx) { $("#dlg").close(); return true; }
   if (ds.rtedit) { const [id, d] = ds.rtedit.split("|"); rtForm(id, d); return true; }
+  if (ds.rttroca) { const [id, d] = ds.rttroca.split("|"); $("#dlg").close(); rtaAbrir({ modo: "trocar", bid: id, d }); return true; }
+  if (ds.act === "rtativ") { rtaDlg(); return true; }
   if (ds.rtdup) { const [id, d] = ds.rtdup.split("|"), b = S.rotina.find(x => x.id === id), z = hm2min(b.fim), len = z - hm2min(b.ini), a2 = Math.min(1440 - len, z); S.rotina.push({ id: uid(), data: d, ini: m2hm(a2), fim: m2hm(a2 + len), titulo: b.titulo, cat: b.cat, rep: "", exc: [], st: {}, notas: b.notas || "", ...rtCorDe(b) }); $("#dlg").close(); touch("rotina", { label: "Bloco duplicado" }); undoToast(`Duplicado às ${m2hm(a2)}`); return true; }
   if (ds.rtdel) { const [id, d] = ds.rtdel.split("|"), b = S.rotina.find(x => x.id === id); if (b.rep) b.exc = [...(b.exc || []), d]; else S.rotina = S.rotina.filter(x => x.id !== id); $("#dlg").close(); touch("rotina", { label: "Bloco excluído" }); undoToast("Bloco excluído"); return true; }
   if (ds.rtdelall) { S.rotina = S.rotina.filter(x => x.id !== ds.rtdelall); $("#dlg").close(); touch("rotina", { label: "Série excluída" }); undoToast("Série excluída"); return true; }
@@ -11776,7 +11823,7 @@ document.addEventListener("pointerup", e => {
   const M = RT.mv; if (M) { RT.mv = null; $(".rtghost")?.remove(); if (M.moved) { RT.just = Date.now(); if (M.rs) { const b = S.rotina.find(x => x.id === M.id); if (b.rep && M.from) { rtMover(M.id, M.from, M.from, M.a0, M.z); } else { b.fim = m2hm(M.z); touch("rotina", { label: "Bloco esticado" }); undoToast(`${b.titulo}: até ${b.fim}`); } } else if (M.a !== M.a0 || M.to !== M.from) rtMover(M.id, M.from, M.to, M.a, M.z); } return; }
   const D = RT.drag; if (!D) return; RT.drag = null; rtPaintDrag();
   if (D.touch) { if (Math.abs(e.clientY - D.y0) > 8 || Math.abs(e.clientX - D.x0) > 8) return; const s = e.target.closest?.(".rtslot"); if (!s || s.dataset.rts !== `${D.d}|${D.a}`) return; }
-  const lo = Math.min(D.a, D.b), hi = Math.max(D.a, D.b) + 30; rtForm(null, D.d, lo, hi);
+  const lo = Math.min(D.a, D.b), hi = Math.max(D.a, D.b) + 30; rtaAbrir({ modo: "encher", d: D.d, a: lo, z: hi, toque: D.touch });
 });
 document.addEventListener("pointercancel", () => { if (RT.drag) { RT.drag = null; rtPaintDrag(); } if (RT.mv) { RT.mv = null; $(".rtghost")?.remove(); } });
 document.addEventListener("keydown", e => {
@@ -12892,7 +12939,7 @@ function secApplyProp(p) {
   if (p.tipo === "lembrete") { secData().lembretes.push({ id: uid(), texto: p.titulo, quando: p.quando, feito: false, avisado: false, at: Date.now(), origem: "Secretário" }); return ["secretario"]; }
   if (p.tipo === "adiar") { const t = S.tarefas.find(x => x.id === p.tid); if (t) t.prazo = p.prazo; return ["tarefas"]; }
   if (p.tipo === "concluir") { const t = S.tarefas.find(x => x.id === p.tid); if (t) { t.status = "Concluída"; t.concluida = TODAY; } return ["tarefas"]; }
-  if (p.tipo === "bloco") { (S.rotina ||= []).push({ id: uid(), data: p.data, ini: p.ini, fim: p.fim, titulo: p.titulo, cat: p.cat, rep: "", exc: [], st: {}, notas: p.motivo || "" }); return ["rotina"]; }
+  if (p.tipo === "bloco") { (S.rotina ||= []).push({ id: uid(), data: p.data, ini: p.ini, fim: p.fim, titulo: p.titulo, cat: p.cat, rep: "", exc: [], st: {}, notas: p.motivo || "", ...rtCorAtiv(p.titulo) }); return ["rotina"]; }
   return [];
 }
 function secDecide(chave, txt, escolha, op) {
@@ -17872,6 +17919,7 @@ Regras:
 - "ini" e "fim" em HH:MM, 24 h. "das 9 ao meio-dia" = 09:00 a 12:00. Só o início ("às 14h"): termina quando começa a próxima atividade, ou 30 min depois se não houver. Duração dita ("1 hora de inglês") vale. Horário não dito mas dedutível pela sequência ("logo depois", "em seguida", "depois do almoço"): deduza e marque "aprox": true. Sem como deduzir: deixe a atividade de fora e escreva a dúvida.
 - "10 da noite" = 22:00; "8 e meia" = 08:30 ou 20:30 conforme o contexto; "meia-noite" = 24:00 como fim.
 - "cat": exatamente uma destas: ${RT_CATS.map(c => c[0]).join(", ")}.
+- Atividades cadastradas da pessoa (quando o relato falar de uma delas, use o nome exatamente assim e a mesma categoria): ${rtaTodas().slice(0, 80).map(a => `${a.nome} (${a.cat})`).join("; ") || "nenhuma"}.
 - "status": "feito" para o que já aconteceu, "parcial" para o que fez só em parte, "pulado" para o que diz que não fez, "plano" para o que ainda vai fazer.
 - Blocos que já estão na rotina desse dia (quando for a mesma atividade, use o mesmo título): ${ja.length ? ja.map(b => `${b.ini}–${b.fim} ${b.titulo}`).join("; ") : "nenhum"}.
 - A pessoa costuma acordar às ${m2hm(w0)} e dormir às ${m2hm(w1)}.
@@ -17899,7 +17947,7 @@ function rtcSave() {
   for (const x of on) {
     const b = x.match && (S.rotina || []).find(y => y.id === x.match);
     if (b) { b.st = { ...(b.st || {}) }; if (b.feitos?.[d]) { b.feitos = { ...b.feitos }; delete b.feitos[d]; } if (x.st) b.st[d] = x.st; else delete b.st[d]; marcados++; continue; }
-    (S.rotina ||= []).push({ id: uid(), data: d, ini: x.ini, fim: x.fim, titulo: x.titulo, cat: x.cat, rep: "", exc: [], st: x.st ? { [d]: x.st } : {}, notas: x.nota ? `${x.nota} (Capturar)` : "Capturar" });
+    (S.rotina ||= []).push({ id: uid(), data: d, ini: x.ini, fim: x.fim, titulo: x.titulo, cat: x.cat, rep: "", exc: [], st: x.st ? { [d]: x.st } : {}, notas: x.nota ? `${x.nota} (Capturar)` : "Capturar", ...rtCorAtiv(x.titulo) });
     novos++;
   }
   rtcStopVoz(); Object.assign(RTC, { text: "", items: [], duvidas: [], src: "", msg: "", warn: false, velho: false });
@@ -17957,7 +18005,7 @@ const IAD_LBL = { orc: "Orçamento por categoria (teto mensal)", patr: "Patrimô
   filosofia: "Filosofia", psique: "Psicologia", ck: "Cockpit (perfil e projetos)", ckTar: "Cockpit · tarefas", ckRisk: "Cockpit · riscos", ckIss: "Cockpit · problemas",
   ckLog: "Cockpit · diário de bordo", ckDec: "Cockpit · decisões", ckMeet: "Cockpit · reuniões", ckBim: "Cockpit · tracker BIM", ckEl: "Cockpit · elaborati",
   ckLic: "Cockpit · lições", ckRel: "Cockpit · relatórios", nutri: "Nutri (perfil e plano)", nutriLog: "Alimentação (registros)", treino: "Personal (perfil e plano)",
-  treinoLog: "Treinos (registros)", corridas: "Corridas", rotinaModelos: "Modelos de rotina", guia: "Plano de preenchimento do Atlas", inspira: "Inspiração (atividades e acompanhamento)", areasCfg: "Áreas (ajustes)", saude: "Check-ins diários (saúde)" };
+  treinoLog: "Treinos (registros)", corridas: "Corridas", rotinaModelos: "Modelos de rotina", rotinaAtiv: "Atividades da rotina (outras, com cor)", guia: "Plano de preenchimento do Atlas", inspira: "Inspiração (atividades e acompanhamento)", areasCfg: "Áreas (ajustes)", saude: "Check-ins diários (saúde)" };
 const IAD_AREA_OF = { lanc: "Finanças", orc: "Finanças", patr: "Finanças", saldoConta: "Finanças", projetos: "Finanças", fut: "Finanças", importacoes: "Finanças", assin: "Finanças",
   regras: "Finanças", vidaItens: "Finanças", contasCasa: "Casa & organização", docs: "Casa & organização", rotinas: "Casa & organização", compras: "Casa & organização",
   nutri: "Saúde física", nutriLog: "Saúde física", treino: "Saúde física", treinoLog: "Saúde física", corridas: "Saúde física", psique: "Saúde mental", estudo: "Aprendizado",
@@ -18274,7 +18322,7 @@ function lsCartaoRepinta(t, titulo, dow) { const box = t.closest(".lsbox"); if (
 const GUIA = {
   hoje: { t: "Hoje", o: ["As 4 perguntas de “Como você está agora?”: humor, energia, tempo livre e dinheiro para lazer.", "Nada mais: frase, ideias e o que vence hoje vêm sozinhos; clima e notícias vêm da última previsão gravada (a atualização automática está desligada)."], min: "Humor e energia (2 toques).", rap: "Abra de manhã, toque nas 4 respostas e leia o resumo do topo.", freq: "Todo dia, de manhã", tempo: 1 },
   painel: { t: "Painel do dia", o: ["Sono, humor, energia e estresse.", "Treino, passos e peso (quando tiver).", "Gastos e receitas do dia (“gastei 12,50 no almoço”).", "Hábitos feitos, contatos com pessoas, estudo, leitura e lazer.", "Uma frase do dia, que vai para o Diário.", "Tarefas novas e contas pagas."], min: "Sono, humor e os gastos.", rap: "Fale o dia de uma vez no campo grande (ou pelo microfone), confira em “Revisar e salvar”. Tudo vai para as abas certas.", freq: "Todo dia, à noite", tempo: 3 },
-  rotina: { t: "Rotina", o: ["A semana em blocos de 30 min: aplique um modelo com “Preencher” (Básica, Intermediária ou Avançada).", "Durante ou no fim do dia, marque os blocos como feito, parcial ou pulado (ou “Capturar o dia” por voz).", "Lembretes das atividades que você não quer esquecer."], min: "Preencher a semana com um modelo, uma vez por semana.", rap: "Domingo ou segunda: Preencher › escolha o nível › Preencher. À noite: Capturar o dia, por voz.", freq: "Semanal (montar) e diária (marcar)", tempo: 2 },
+  rotina: { t: "Rotina", o: ["A semana em blocos de 30 min: aplique um modelo com “Preencher” (Básica, Intermediária ou Avançada).", "Para um horário solto, toque na meia hora: a lista traz as atividades do Standard (com a cor) e as Outras que você cadastrar.", "Durante ou no fim do dia, marque os blocos como feito, parcial ou pulado (ou “Capturar o dia” por voz).", "Lembretes das atividades que você não quer esquecer."], min: "Preencher a semana com um modelo, uma vez por semana.", rap: "Domingo ou segunda: Preencher › escolha o nível › Preencher. À noite: Capturar o dia, por voz.", freq: "Semanal (montar) e diária (marcar)", tempo: 2 },
   inspira: { t: "Inspiração", o: ["Escolha a atividade que vai começar e use o aquecimento de 5 minutos.", "Se quiser companhia, ative a IA de acompanhamento da atividade.", "Suas atividades próprias em “Minhas atividades”."], min: "Nada obrigatório: é para usar antes de começar algo.", rap: "Antes do bloco de estudo, leitura ou projeto: abra a atividade, leia o texto curto e faça o primeiro passo do desafio.", freq: "Quando for começar uma atividade", tempo: 5 },
   trabalho: { t: "Cockpit de Trabalho", o: ["Contexto (uma vez): seu perfil, a equipe e os projetos com marcos.", "Tarefas com prazo, estimativa e projeto; status ao longo do dia.", "Diário de bordo: o que aconteceu, riscos (r:), problemas (p:) e decisões (d:).", "Reuniões e entregas quando houver."], min: "Atualizar o status das tarefas do dia.", rap: "Alt+Shift+N de qualquer aba: “t: revisar prancha 12 sex @Ana [Projeto]”. No fim do dia, Hoje › marque o que andou.", freq: "Todo dia útil (início e fim do expediente)", tempo: 5 },
   diario: { t: "Diário", o: ["O que aconteceu, o que sentiu, o que aprendeu.", "@pessoa, #tema e [[meta]] ligam o texto ao resto do Atlas.", "Linhas com / registram dados (“/gasto 12 almoço”)."], min: "A frase do dia no Painel já entra aqui.", rap: "Uma entrada mais longa por semana; no dia a dia, a frase do Painel basta.", freq: "Semanal (texto longo)", tempo: 10 },
@@ -18858,6 +18906,230 @@ function coInit() {
   addEventListener("resize", () => { if (CO.open) coPlace(); });
   document.addEventListener("keydown", e => { if (!e.isComposing) coKey(e); });
   coFab();
+}
+
+/* ================================================================ Rotina: atividades com cor e lista suspensa em cada meia hora
+   Clicar numa meia hora vazia da grade (ou arrastar por várias) abre ali mesmo uma lista suspensa: primeiro as atividades do
+   Standard Semanal, cada uma com a cor fixa do modelo; depois as “Outras”, cadastradas aqui com a cor escolhida no seletor.
+   Escolher preenche a faixa com um bloco da cor da atividade. Encostado num bloco igual do mesmo dia, o bloco cresce em vez de
+   virar outro (como células vizinhas da planilha); horário já ocupado fica como está. A lista padrão vem do modelo salvo com
+   “Standard” no nome (ou do escolhido em “Atividades e cores”); as outras ficam em S.rotinaAtiv.outras = [{ id, nome, cor, tx, cat }].
+   O mesmo nome digitado no formulário, no texto rápido, no Capturar ou vindo do Secretário recebe a cor da atividade. */
+const RTA_PALETA = ["#9BC2E6", "#F8CBAD", "#C6E0B4", "#FFE699", "#D9D2E9", "#B4C6E7", "#F4B183", "#A9D08E", "#FFD966", "#C9A0DC", "#8EA9DB", "#E2A1A1"];
+const RTA = { ap: null, el: null };
+const rtaD = () => (S.rotinaAtiv ||= { outras: [], fonte: "" });
+const rtaK = s => fold(String(s || "").trim().replace(/\s+/g, " "));
+/* modelos de onde sai a lista padrão: o escolhido; senão os que têm “Standard” no nome; senão os de nível; senão todos */
+function rtaFontes() {
+  const M = (S.rotinaModelos || []).filter(m => Array.isArray(m.semana) && m.semana.length), f = rtaD().fonte;
+  if (f) { const m = M.find(x => x.id === f); if (m) return [m]; }
+  const std = M.filter(m => /standard/i.test(m.nome || "")); if (std.length) return std;
+  const niv = M.filter(m => m.nivel); return niv.length ? niv : M;
+}
+/* atividades padrão: um item por nome, com a cor que mais aparece (em minutos) e a categoria do modelo */
+function rtaPadrao() {
+  const map = new Map();
+  const add = (nome, cat, cor, tx, min) => { const k = rtaK(nome); if (!k) return;
+    const a = map.get(k) || { nome: String(nome).trim(), cat: cat || "Outro", cores: new Map(), min: 0 }; a.min += min;
+    const c = rtHex(cor); if (c) { const ck = c.toLowerCase() + "|" + (rtHex(tx) || "").toLowerCase(), x = a.cores.get(ck) || { cor: c, tx: rtHex(tx) || "", min: 0 }; x.min += min; a.cores.set(ck, x); }
+    map.set(k, a); };
+  const F = rtaFontes();
+  if (F.length) for (const m of F) for (const [, ini, fim, nome, cat, cor, tx] of m.semana) add(nome, cat, cor, tx, Math.max(0, hm2min(fim) - hm2min(ini)));
+  else for (const m of RT_MOD0) for (const [ini, fim, nome, cat] of m.b) add(nome, cat, "", "", Math.max(0, hm2min(fim) - hm2min(ini)));
+  return [...map.values()].map(a => { const { cor = "", tx = "" } = [...a.cores.values()].sort((p, q) => q.min - p.min)[0] || {};
+    return { nome: a.nome, cat: a.cat, cor, tx: cor ? tx || rtTx(cor) : "", min: a.min, grupo: "p" }; }).sort((p, q) => p.nome.localeCompare(q.nome, "pt"));
+}
+const rtaNomeGrupo = () => { const F = rtaFontes(); return !F.length ? "Padrão do Atlas" : F.some(m => /standard/i.test(m.nome || "")) ? "Standard Semanal" : `Padrão · ${trunc(F.map(m => m.nome).join(", "), 40)}`; };
+const rtaOutras = () => (rtaD().outras || []).map(a => ({ ...a, tx: rtHex(a.tx) || rtTx(a.cor), grupo: "o" })).sort((p, q) => p.nome.localeCompare(q.nome, "pt"));
+const rtaTodas = () => [...rtaPadrao(), ...rtaOutras()];
+const rtaPorNome = n => { const k = rtaK(n); return k ? rtaTodas().find(a => rtaK(a.nome) === k) || null : null; };
+/* cor de um bloco pelo nome: { cor, tx } da atividade com esse nome, ou nada (fica a cor da categoria) */
+const rtCorAtiv = n => { const a = rtaPorNome(n); return a && rtHex(a.cor) ? { cor: a.cor, tx: rtHex(a.tx) || rtTx(a.cor) } : {}; };
+const rtaSw = a => rtHex(a.cor) ? `background:${a.cor};color:${rtHex(a.tx) || rtTx(a.cor)}` : `background:${rtCor(a.cat)};color:#fff`;
+const rtaCorLivre = () => { const usadas = new Set(rtaTodas().map(a => (a.cor || "").toLowerCase())); return RTA_PALETA.find(c => !usadas.has(c.toLowerCase())) || RTA_PALETA[(rtaD().outras || []).length % RTA_PALETA.length]; };
+
+/* ---------------------------------------------------------------- preencher: só o que está livre, juntando com o bloco igual encostado */
+function rtaEncher(d, a, z, at) {
+  const occ = rtOcc(d).map(b => [b.a, b.z]).sort((p, q) => p[0] - q[0]), seg = []; let s = a;
+  for (const [x0, x1] of occ) { if (x1 <= s || x0 >= z) continue; if (x0 > s) seg.push([s, Math.min(x0, z)]); s = Math.max(s, x1); if (s >= z) break; }
+  if (s < z) seg.push([s, z]);
+  const cor = rtHex(at.cor), tx = cor ? rtHex(at.tx) || rtTx(cor) : "", cat = at.cat || rtGuessCat(at.nome);
+  const igual = b => !b.rep && b.data === d && rtaK(b.titulo) === rtaK(at.nome) && (rtHex(b.cor) || "").toLowerCase() === (cor || "").toLowerCase() && !rtSt(b, d);
+  let livre = 0;
+  for (const [s0, e0] of seg) {
+    livre += e0 - s0; S.rotina ||= [];
+    const L = S.rotina.find(b => igual(b) && hm2min(b.fim) === s0), R = S.rotina.find(b => igual(b) && hm2min(b.ini) === e0);
+    if (L && R) { L.fim = R.fim; S.rotina = S.rotina.filter(b => b !== R); }
+    else if (L) L.fim = m2hm(e0);
+    else if (R) R.ini = m2hm(s0);
+    else S.rotina.push({ id: uid(), data: d, ini: m2hm(s0), fim: m2hm(e0), titulo: at.nome, cat, rep: "", exc: [], st: {}, notas: "", ...(cor ? { cor, tx } : {}) });
+  }
+  return [seg.length, livre];
+}
+function rtaAplicar(at, keys = []) {
+  const ap = RTA.ap; if (!ap) return; rtaFechar();
+  if (ap.modo === "trocar") {
+    const b = (S.rotina || []).find(x => x.id === ap.bid); if (!b) { if (keys.length) touch(...keys, { label: "Nova atividade" }); return; }
+    b.titulo = at.nome; b.cat = at.cat || b.cat;
+    if (rtHex(at.cor)) { b.cor = at.cor; b.tx = rtHex(at.tx) || rtTx(at.cor); } else { delete b.cor; delete b.tx; }
+    touch("rotina", ...keys, { label: `Atividade: ${at.nome}` }); undoToast(`${at.nome}${b.rep ? " em todas as repetições" : ""}`); return;
+  }
+  const [n, livre] = rtaEncher(ap.d, ap.a, ap.z, at);
+  if (!n) { if (keys.length) touch(...keys, { label: "Nova atividade" }); toast("Esse horário já está ocupado."); return; }
+  touch("rotina", ...keys, { label: `Preencher: ${at.nome}` });
+  undoToast(`${at.nome}: ${m2hm(ap.a)}–${m2hm(ap.z)}${livre < ap.z - ap.a ? ` (${durTxt(livre)} livres; o resto já tinha bloco)` : ""}`);
+}
+
+/* ---------------------------------------------------------------- a lista suspensa (fica fora do #main: a grade redesenha sem fechá-la) */
+function rtaAbrir(o) { RTA.ap = { q: "", ativo: 0, n: 0, nova: null, ...o }; rtaPaint(); setTimeout(() => { if (!RTA.ap) return; const el = RTA.ap.toque ? RTA.el : RTA.el?.querySelector("#rta_q, #rta_nn"); el?.focus({ preventScroll: true }); }, 0); }
+function rtaFechar() { RTA.ap = null; if (RTA.el) { RTA.el.hidden = true; RTA.el.innerHTML = ""; } for (const el of $$(".rtslot.pick")) el.classList.remove("pick"); }
+function rtaLista() {
+  const ap = RTA.ap, q = rtaK(ap.q), ok = a => !q || rtaK(a.nome).includes(q) || rtaK(a.cat).includes(q);
+  const P = rtaPadrao().filter(ok), O = rtaOutras().filter(ok), criar = q && !rtaTodas().some(a => rtaK(a.nome) === q) ? ap.q.trim().replace(/\s+/g, " ").slice(0, 40) : "";
+  return { P, O, criar };
+}
+function rtaHTML() {
+  const ap = RTA.ap; if (ap.nova) return rtaNovaHTML();
+  const { P, O, criar } = rtaLista(), n = P.length + O.length; ap.n = n + (criar ? 1 : 0); ap.ativo = Math.min(ap.ativo, Math.max(0, ap.n - 1));
+  const op = (a, i) => `<div role="option" id="rta_o${i}" class="rtao${i === ap.ativo ? " on" : ""}" data-rtao="${i}" aria-selected="${i === ap.ativo}"><i class="rtasw" style="${rtaSw(a)}" aria-hidden="true">Aa</i><span>${esc(a.nome)}</span><small>${esc(a.cat || "")}</small></div>`;
+  const grupo = (id, nome, itens, base, vazio) => `<div role="group" aria-labelledby="${id}"><div class="rtag" id="${id}">${nome}<small>${itens.length}</small></div>${itens.length ? itens.map((a, i) => op(a, base + i)).join("") : `<p class="rtavz">${vazio}</p>`}</div>`;
+  const quando = ap.modo === "trocar" ? "Trocar a atividade do bloco" : `${m2hm(ap.a)}–${m2hm(ap.z)} · ${fmtDL(ap.d)}`;
+  return `<div class="rtah"><div><b>${ap.modo === "trocar" ? "Trocar atividade" : "Preencher"}</b><small>${esc(quando)}</small></div><div class="rtahb"><button type="button" class="iconbtn" data-rta="ger" aria-label="Atividades e cores (gerenciar)" title="Atividades e cores">${ic("palette")}</button><button type="button" class="iconbtn" data-rta="x" aria-label="Fechar a lista">${ic("x")}</button></div></div>
+    <input type="search" id="rta_q" class="rtaq" placeholder="Buscar ou criar atividade" value="${esc(ap.q)}" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="rta_l" aria-activedescendant="${ap.n ? `rta_o${ap.ativo}` : ""}" autocomplete="off">
+    <div class="rtal" id="rta_l" role="listbox" aria-label="Atividades">${grupo("rta_gp", esc(rtaNomeGrupo()), P, 0, ap.q ? "Nada com esse nome." : "Nenhum modelo salvo ainda.")}${grupo("rta_go", "Outras", O, P.length, ap.q ? "Nada com esse nome." : "Nenhuma ainda: crie em “Nova atividade”.")}${criar ? `<div role="option" id="rta_o${n}" class="rtao rtacriar${n === ap.ativo ? " on" : ""}" data-rtao="${n}" aria-selected="${n === ap.ativo}">${ic("plus")}<span>Criar “${esc(criar)}” em Outras</span></div>` : ""}</div>
+    <div class="rtaf"><button type="button" class="btn sm" data-rta="nova">${ic("plus")}Nova atividade</button>${ap.modo === "encher" ? `<button type="button" class="btn sm ghost" data-rta="form">Mais opções…</button>` : ""}</div>`;
+}
+function rtaNovaHTML() {
+  const ap = RTA.ap, n = ap.nova, rot = ap.modo === "encher" ? "Salvar e preencher" : ap.modo === "trocar" ? "Salvar e trocar" : "Salvar";
+  return `<form class="rtanova" id="rta_f"><div class="rtah"><div><b>Nova atividade</b><small>entra no grupo “Outras”</small></div><button type="button" class="iconbtn" data-rta="x" aria-label="Fechar a lista">${ic("x")}</button></div>
+    <label>Nome<input type="text" id="rta_nn" maxlength="40" value="${esc(n.nome)}" autocomplete="off"></label>
+    <div class="rtanr"><label>Cor<input type="color" id="rta_nc" value="${n.cor}"></label><label>Categoria<select id="rta_nk">${RT_CATS.map(([c]) => `<option${c === n.cat ? " selected" : ""}>${c}</option>`).join("")}</select></label></div>
+    <div class="rtaprev" id="rta_pv" style="background:${n.cor};color:${rtTx(n.cor)}">${esc(n.nome || "Prévia do bloco")}</div>
+    <p class="rtamsg" id="rta_msg" role="alert"></p>
+    <div class="rtaf"><button type="button" class="btn sm ghost" data-rta="volta">Voltar</button><button class="btn sm primary">${rot}</button></div></form>`;
+}
+function rtaSel() {
+  for (const el of $$(".rtslot.pick")) el.classList.remove("pick");
+  const ap = RTA.ap; if (!ap || ap.modo !== "encher") return;
+  for (const el of $$(`.rtcol[data-rtday="${ap.d}"] .rtslot`)) { const m = +el.dataset.rts.split("|")[1]; if (m >= ap.a && m < ap.z) el.classList.add("pick"); }
+}
+function rtaPos() {
+  const ap = RTA.ap, el = RTA.el; if (!ap || !el || el.hidden) return;
+  if (PAGE !== "rotina") { rtaFechar(); return; }
+  if (innerWidth <= 600) { el.classList.add("sheet"); el.style.left = el.style.top = ""; return; }
+  el.classList.remove("sheet");
+  const a1 = ap.modo === "trocar" ? $(`.rtb[data-rtb="${ap.bid}|${ap.d}"]`) || $(`.rtb[data-rtb^="${ap.bid}|"]`) : $(`.rtslot[data-rts="${ap.d}|${ap.a}"]`), a2 = ap.modo === "trocar" ? a1 : $(`.rtslot[data-rts="${ap.d}|${ap.z - 30}"]`) || a1;
+  const r1 = a1?.getBoundingClientRect(), r2 = a2?.getBoundingClientRect(), w = el.offsetWidth, h = el.offsetHeight, sc = $("#rtscroll")?.getBoundingClientRect();
+  if (r1 && (r2.bottom <= 0 || r1.top >= innerHeight || sc && (r2.bottom <= sc.top || r1.top >= sc.bottom || r1.right <= sc.left || r1.left >= sc.right))) { rtaFechar(); return; }
+  const r = r1 ? { left: r1.left, top: r1.top, bottom: r2.bottom } : { left: innerWidth / 2 - w / 2, top: 96, bottom: 96 };
+  let top = r.bottom + 4; if (top + h > innerHeight - 8) top = r.top - h - 4 >= 8 ? r.top - h - 4 : Math.max(8, innerHeight - h - 8);
+  el.style.left = `${Math.round(Math.min(Math.max(8, r.left), innerWidth - w - 8))}px`; el.style.top = `${Math.round(top)}px`;
+}
+function rtaPaint() { const el = rtaEl(); if (!RTA.ap) { rtaFechar(); return; } el.hidden = false; el.innerHTML = rtaHTML(); el.setAttribute("aria-label", RTA.ap.modo === "trocar" ? "Trocar a atividade do bloco" : "Escolher a atividade da faixa"); rtaSel(); rtaPos(); }
+/* refaz só a lista (a busca continua com o foco e o cursor onde estavam) */
+function rtaPaintLista() {
+  const el = RTA.el, t = document.createElement("div"); t.innerHTML = rtaHTML();
+  el.querySelector("#rta_l").replaceWith(t.querySelector("#rta_l")); el.querySelector("#rta_q").setAttribute("aria-activedescendant", RTA.ap.n ? `rta_o${RTA.ap.ativo}` : ""); rtaPos();
+}
+function rtaMarca() {
+  const ap = RTA.ap, el = RTA.el;
+  for (const o of el.querySelectorAll("[data-rtao]")) { const on = +o.dataset.rtao === ap.ativo; o.classList.toggle("on", on); o.setAttribute("aria-selected", on); if (on) o.scrollIntoView({ block: "nearest" }); }
+  el.querySelector("#rta_q")?.setAttribute("aria-activedescendant", ap.n ? `rta_o${ap.ativo}` : "");
+}
+function rtaEscolher(i) {
+  const { P, O, criar } = rtaLista(), opts = [...P, ...O];
+  if (i < opts.length) rtaAplicar(opts[i]); else if (criar) rtaNova(criar);
+}
+function rtaNova(nome = "") { RTA.ap.nova = { nome, cor: rtaCorLivre(), cat: nome ? rtGuessCat(nome) : "Outro" }; rtaPaint(); setTimeout(() => { const i = RTA.el?.querySelector("#rta_nn"); if (i) { i.focus(); i.select(); } }, 0); }
+/* nome repetido não entra: nem igual a uma atividade do Standard, nem a outra das Outras (ignorando maiúsculas e acentos) */
+function rtaNomeLivre(nome, exceto) { const k = rtaK(nome); return !!k && !rtaTodas().some(a => rtaK(a.nome) === k && (!exceto || a.id !== exceto)); }
+function rtaSalvarNova() {
+  const ap = RTA.ap, nome = $("#rta_nn").value.trim().replace(/\s+/g, " "), cor = rtHex($("#rta_nc").value) || rtaCorLivre(), cat = $("#rta_nk").value, msg = $("#rta_msg");
+  if (!nome) { msg.textContent = "Dê um nome à atividade."; $("#rta_nn").focus(); return; }
+  if (!rtaNomeLivre(nome)) { msg.textContent = `“${nome}” já está na lista.`; $("#rta_nn").focus(); return; }
+  const at = { id: uid(), nome, cor, tx: rtTx(cor), cat };
+  rtaD().outras = [...(rtaD().outras || []), at];
+  if (ap.modo === "lista") { rtaFechar(); touch("rotinaAtiv", { label: "Nova atividade" }); undoToast(`Nova atividade: ${nome}`); return; }
+  rtaAplicar({ ...at, grupo: "o" }, ["rotinaAtiv"]);
+}
+function rtaEl() {
+  if (RTA.el) return RTA.el;
+  const el = document.createElement("div"); el.id = "rta"; el.className = "rta"; el.hidden = true; el.tabIndex = -1; el.setAttribute("role", "dialog"); document.body.appendChild(el); RTA.el = el;
+  el.addEventListener("focusout", e => { if (RTA.ap && e.relatedTarget && !el.contains(e.relatedTarget)) rtaFechar(); });
+  el.addEventListener("click", e => {
+    const t = e.target.closest("[data-rtao],[data-rta]"); if (!t || !RTA.ap) return; e.stopPropagation();
+    if (t.dataset.rtao != null) { rtaEscolher(+t.dataset.rtao); return; }
+    const a = t.dataset.rta, ap = RTA.ap;
+    if (a === "x") rtaFechar();
+    else if (a === "nova") rtaNova(ap.q.trim() && !rtaPorNome(ap.q) ? ap.q.trim().slice(0, 40) : "");
+    else if (a === "volta") { ap.nova = null; rtaPaint(); setTimeout(() => RTA.el?.querySelector("#rta_q")?.focus(), 0); }
+    else if (a === "form") { rtaFechar(); rtForm(null, ap.d, ap.a, ap.z); }
+    else if (a === "ger") { rtaFechar(); rtaDlg(); }
+  });
+  el.addEventListener("input", e => {
+    const ap = RTA.ap; if (!ap) return;
+    if (e.target.id === "rta_q") { ap.q = e.target.value; ap.ativo = 0; rtaPaintLista(); return; }
+    if (ap.nova && (e.target.id === "rta_nn" || e.target.id === "rta_nc")) { ap.nova.nome = $("#rta_nn").value; ap.nova.cor = rtHex($("#rta_nc").value) || ap.nova.cor;
+      const pv = $("#rta_pv"); pv.textContent = ap.nova.nome.trim() || "Prévia do bloco"; pv.style.background = ap.nova.cor; pv.style.color = rtTx(ap.nova.cor); $("#rta_msg").textContent = ""; }
+  });
+  el.addEventListener("change", e => { if (e.target.id === "rta_nk" && RTA.ap?.nova) RTA.ap.nova.cat = e.target.value; });
+  el.addEventListener("submit", e => { e.preventDefault(); if (RTA.ap?.nova) rtaSalvarNova(); });
+  el.addEventListener("keydown", e => {
+    const ap = RTA.ap; if (!ap) return; e.stopPropagation();
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); if (ap.nova) { ap.nova = null; rtaPaint(); setTimeout(() => RTA.el?.querySelector("#rta_q")?.focus(), 0); } else rtaFechar(); return; }
+    if (ap.nova || e.target.id !== "rta_q") return;
+    const N = Math.max(1, ap.n);
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); ap.ativo = (ap.ativo + (e.key === "ArrowDown" ? 1 : -1) + N) % N; rtaMarca(); }
+    else if (e.key === "Home" && e.ctrlKey || e.key === "PageUp") { e.preventDefault(); ap.ativo = 0; rtaMarca(); }
+    else if (e.key === "End" && e.ctrlKey || e.key === "PageDown") { e.preventDefault(); ap.ativo = N - 1; rtaMarca(); }
+    else if (e.key === "Enter") { e.preventDefault(); if (ap.n) rtaEscolher(ap.ativo); else if (ap.q.trim()) rtaNova(ap.q.trim().slice(0, 40)); }
+  });
+  return el;
+}
+/* fora da lista, ela fecha; ao rolar ou mudar o tamanho da janela, acompanha a célula; ao trocar de aba, fecha */
+document.addEventListener("pointerdown", e => { if (RTA.ap && !e.target.closest?.("#rta")) rtaFechar(); }, true);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && RTA.ap && !e.target.closest?.("#rta")) rtaFechar(); });
+document.addEventListener("scroll", () => { if (RTA.ap) rtaPos(); }, true);
+window.addEventListener("resize", () => { if (RTA.ap) rtaPos(); });
+window.addEventListener("hashchange", () => { if (RTA.ap) rtaFechar(); });
+/* depois que a Rotina redesenha: marca de novo a faixa e reposiciona */
+function rtaSync() { if (!RTA.ap) return; if (PAGE !== "rotina") { rtaFechar(); return; } rtaSel(); rtaPos(); }
+
+/* ---------------------------------------------------------------- “Atividades e cores”: a lista padrão e o cadastro das outras */
+function rtaDlg() {
+  const dlg = $("#dlg"), P = rtaPadrao(), O = rtaOutras(), M = (S.rotinaModelos || []).filter(m => m.semana?.length), F = rtaD().fonte ? [] : rtaFontes();
+  const catSel = (sel, attr) => `<select ${attr}>${RT_CATS.map(([c]) => `<option${c === sel ? " selected" : ""}>${c}</option>`).join("")}</select>`;
+  dlg.innerHTML = `<form method="dialog" class="rtadlg" id="rtadf"><div class="rtch"><div><h3>Atividades e cores</h3><p class="muted small">É a lista suspensa de cada meia hora da grade. A cor vai junto para o bloco.</p></div><button type="button" class="iconbtn" data-rtadx aria-label="Fechar">${ic("x")}</button></div>
+    <div class="flbl">Standard Semanal · ${P.length} ${P.length === 1 ? "atividade" : "atividades"} · cor fixa do modelo</div>
+    <label class="rtadsrc">Vem do modelo<select id="rtad_f"><option value="">Automático${F.length ? ` (${esc(trunc(F.map(m => m.nome).join(", "), 60))})` : M.length ? "" : " (modelos prontos do Atlas)"}</option>${M.map(m => `<option value="${esc(m.id)}"${rtaD().fonte === m.id ? " selected" : ""}>${esc(m.nome)}</option>`).join("")}</select></label>
+    <div class="rtadp">${P.map(a => `<span class="rtadc" style="${rtaSw(a)}" title="${esc(a.cat)} · ${durTxt(a.min)} por semana no modelo">${esc(a.nome)}</span>`).join("") || `<p class="muted small">Sem atividades: salve um modelo na Rotina (Modelos e atalhos).</p>`}</div>
+    <div class="flbl">Outras · ${O.length}</div>
+    <div class="rtado">${O.map(a => `<div class="rtadr"><input type="color" value="${a.cor}" data-rtadc="${a.id}" aria-label="Cor de ${esc(a.nome)}"><input type="text" value="${esc(a.nome)}" data-rtadn="${a.id}" maxlength="40" aria-label="Nome da atividade">${catSel(a.cat, `data-rtadk="${a.id}" aria-label="Categoria de ${esc(a.nome)}"`)}<button type="button" class="iconbtn" data-rtadd="${a.id}" aria-label="Excluir ${esc(a.nome)}">${ic("trash")}</button></div>`).join("") || `<p class="muted small">Nenhuma ainda.</p>`}</div>
+    <div class="rtadr rtadnova"><input type="color" id="rtad_nc" value="${rtaCorLivre()}" aria-label="Cor da nova atividade"><input type="text" id="rtad_nn" maxlength="40" placeholder="Nova atividade" aria-label="Nome da nova atividade">${catSel("Outro", `id="rtad_nk" aria-label="Categoria da nova atividade"`)}<button type="button" class="btn sm" data-rtada>${ic("plus")}Adicionar</button></div>
+    <p class="muted small" id="rtad_msg" role="status"></p>
+    <p class="muted small">Mudar a cor, o nome ou a categoria de uma atividade de “Outras” atualiza os blocos que já a usam. Excluir só tira da lista: os blocos ficam.</p></form>`;
+  const msg = t => { const m = $("#rtad_msg"); if (m) m.textContent = t; };
+  const achar = id => (rtaD().outras || []).find(a => a.id === id);
+  const blocosDe = a => (S.rotina || []).filter(b => rtaK(b.titulo) === rtaK(a.nome) && (rtHex(b.cor) || "").toLowerCase() === (a.cor || "").toLowerCase());
+  $("[data-rtadx]", dlg).onclick = () => dlg.close();
+  $("#rtad_f").onchange = e => { rtaD().fonte = e.target.value; touch("rotinaAtiv", { label: "Lista padrão das atividades" }); rtaDlg(); };
+  for (const i of $$("[data-rtadc]", dlg)) i.onchange = () => { const a = achar(i.dataset.rtadc), c = rtHex(i.value); if (!a || !c) return; const bs = blocosDe(a);
+    a.cor = c; a.tx = rtTx(c); for (const b of bs) { b.cor = c; b.tx = a.tx; } touch("rotinaAtiv", ...(bs.length ? ["rotina"] : []), { label: `Cor de ${a.nome}` }); msg(`${a.nome}: cor nova${bs.length ? ` em ${plural(bs.length, "bloco", "blocos")}` : ""}.`); };
+  for (const i of $$("[data-rtadn]", dlg)) i.onchange = () => { const a = achar(i.dataset.rtadn), nome = i.value.trim().replace(/\s+/g, " "); if (!a) return;
+    if (!nome || !rtaNomeLivre(nome, a.id)) { i.value = a.nome; msg(nome ? `“${nome}” já está na lista.` : "O nome não pode ficar vazio."); return; }
+    const bs = blocosDe(a); for (const b of bs) b.titulo = nome; a.nome = nome; touch("rotinaAtiv", ...(bs.length ? ["rotina"] : []), { label: "Atividade renomeada" }); msg(`Renomeada${bs.length ? ` em ${plural(bs.length, "bloco", "blocos")}` : ""}.`); };
+  for (const s of $$("[data-rtadk]", dlg)) s.onchange = () => { const a = achar(s.dataset.rtadk); if (!a) return; const bs = blocosDe(a);
+    a.cat = s.value; for (const b of bs) b.cat = s.value; touch("rotinaAtiv", ...(bs.length ? ["rotina"] : []), { label: `Categoria de ${a.nome}` }); msg(`${a.nome}: ${s.value}.`); };
+  for (const b of $$("[data-rtadd]", dlg)) b.onclick = () => { const a = achar(b.dataset.rtadd); if (!a) return; rtaD().outras = rtaD().outras.filter(x => x.id !== a.id); touch("rotinaAtiv", { label: "Atividade excluída" }); undoToast(`${a.nome} saiu da lista (os blocos ficam)`); rtaDlg(); };
+  const nova = () => { const nome = $("#rtad_nn").value.trim().replace(/\s+/g, " "), cor = rtHex($("#rtad_nc").value) || rtaCorLivre();
+    if (!nome) { msg("Dê um nome à atividade."); $("#rtad_nn").focus(); return; } if (!rtaNomeLivre(nome)) { msg(`“${nome}” já está na lista.`); $("#rtad_nn").focus(); return; }
+    rtaD().outras = [...(rtaD().outras || []), { id: uid(), nome, cor, tx: rtTx(cor), cat: $("#rtad_nk").value }]; touch("rotinaAtiv", { label: "Nova atividade" }); rtaDlg(); msg(`${nome} entrou em Outras.`); setTimeout(() => $("#rtad_nn")?.focus(), 0); };
+  $("[data-rtada]", dlg).onclick = nova;
+  $("#rtad_nn").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); nova(); } };
+  $("#rtad_nn").oninput = () => { const k = $("#rtad_nk"); if (k && k.dataset.mexido !== "1") k.value = rtGuessCat($("#rtad_nn").value); };
+  $("#rtad_nk").onchange = e => { e.target.dataset.mexido = "1"; };
+  $("#rtadf").onsubmit = e => e.preventDefault();
+  if (!dlg.open) dlg.showModal();
 }
 
 

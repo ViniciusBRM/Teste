@@ -1500,6 +1500,39 @@ button.rtad:hover,button.rtad:focus-visible{outline:2px solid var(--accent);outl
 .rtwks{display:flex;gap:10px;align-items:flex-end;margin-top:10px;height:58px}.rtwks span{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}.rtwks i{width:100%;max-width:28px;background:var(--good);border-radius:4px 4px 0 0}.rtwks small{font-size:10px;color:var(--muted)}
 .rtcard .rtch{display:grid;grid-template-columns:6px minmax(0,1fr) auto;gap:12px;align-items:start}.rtcc{width:6px;align-self:stretch;border-radius:3px;background:var(--c)}.rtcard h3{margin:0 0 4px}.rtsts{margin:4px 0 12px;display:inline-flex}.rtca{gap:6px}
 .rtdur{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.rtdur .chip{cursor:pointer}
+/* Rotina: lista suspensa de atividades em cada meia hora (fica no body, fora do #main) */
+.rtslot:hover::before{content:"▾";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;line-height:1;color:var(--accent)}
+.rta{position:fixed;z-index:78;width:310px;max-width:calc(100vw - 16px);max-height:min(460px,calc(100vh - 16px));display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;box-shadow:var(--shadow-2);padding:8px 8px 10px;outline:none}
+.rta[hidden]{display:none}
+.rta.sheet{left:0!important;right:0;bottom:0;top:auto!important;width:auto;max-width:none;max-height:76vh;border-radius:16px 16px 0 0;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));animation:rtaup .18s ease}
+@keyframes rtaup{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
+.rtah{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:0 2px 6px}.rtah b{display:block;font-size:13.5px}.rtah small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}.rtah .iconbtn{width:30px;height:30px}.rtahb{display:flex;gap:4px;flex:none}
+.rtaq{width:100%;margin:0 0 4px}
+.rtal{overflow:auto;flex:1 1 auto;min-height:60px;margin:0 -4px;padding:0 4px;overscroll-behavior:contain}
+.rtag{position:sticky;top:0;z-index:1;display:flex;justify-content:space-between;align-items:baseline;gap:8px;background:var(--surface);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 6px 4px}.rtag small{letter-spacing:0;font-weight:500}
+.rtao{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:34px;padding:4px 6px;border-radius:8px;cursor:pointer;font-size:13px}
+.rtao span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rtao small{color:var(--muted);font-size:11px;white-space:nowrap;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+.rtao.on,.rtao:hover{background:color-mix(in srgb,var(--accent) 13%,transparent)}.rtao.on{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent)}
+.rtacriar{grid-template-columns:32px minmax(0,1fr);color:var(--accent);font-weight:600}.rtacriar .ico{justify-self:center}
+.rtasw{display:inline-grid;place-items:center;width:30px;height:20px;border-radius:5px;font-size:10.5px;font-style:normal;font-weight:700;flex:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 20%,transparent);vertical-align:middle}
+.rtavz{color:var(--muted);font-size:12px;margin:2px 6px 6px}
+.rtaf{display:flex;flex-wrap:wrap;gap:6px;padding-top:8px;margin-top:6px;border-top:1px solid var(--line)}
+.rtanova{display:flex;flex-direction:column;gap:9px}.rtanova label{display:grid;gap:4px;font-size:12px;color:var(--ink-2)}
+.rtanr{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px}.rtanova input[type=color],.rtadr input[type=color]{width:100%;height:34px;padding:2px;cursor:pointer;border-radius:8px}
+.rtaprev{border-radius:7px;padding:7px 10px;font-weight:600;font-size:12.5px;box-shadow:inset 4px 0 0 rgba(0,0,0,.18);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rtamsg{color:var(--crit,#e0564f);font-size:12px;margin:0}.rtamsg:empty{display:none}
+.rtahint{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-top:4px}.rtahint:empty{display:none}
+.rtasw+b{margin-left:4px}
+@media (max-width:600px){.rta.sheet .rtao{min-height:44px}.rta.sheet .rtaf .btn{flex:1 1 auto}}
+/* “Atividades e cores” */
+.rtadlg .rtch{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.rtadlg .flbl{margin:4px 0 0}
+.rtadsrc{display:grid;gap:4px;font-size:12px;color:var(--ink-2)}
+.rtadp{display:flex;flex-wrap:wrap;gap:6px;max-height:220px;overflow:auto}
+.rtadc{display:inline-flex;align-items:center;padding:4px 9px;border-radius:7px;font-size:12px;font-weight:600;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 16%,transparent);white-space:nowrap}
+.rtado{display:flex;flex-direction:column;gap:6px}
+.rtadr{display:grid;grid-template-columns:52px minmax(0,1fr) minmax(0,150px) auto;gap:6px;align-items:center}.rtadr input[type=text]{min-width:0}
+.rtadnova{padding-top:8px;border-top:1px dashed var(--line-2)}#rtad_msg:empty{display:none}
+@media (max-width:520px){.rtadr{grid-template-columns:44px minmax(0,1fr) auto}.rtadr select{grid-column:2/3}.rtadnova .btn{grid-column:3/4;grid-row:1/3}}
 @media (max-width:1180px){.rtlay{grid-template-columns:minmax(0,1fr)}.rtins{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}}
 @media (max-width:640px){.rtstrip{grid-template-columns:repeat(7,minmax(0,1fr))}.rtsw{display:none}.rtsd{padding:5px 2px}.rtsd .rtsm{font-size:10px}.rtpt b{font-size:20px}.rtviews{order:-1;width:100%}.rtviews .seg{flex:1;justify-content:center}.rtkpis{grid-template-columns:repeat(2,minmax(0,1fr))}.rtmc{min-height:62px;padding:3px}.rtmc i,.rtmct small{display:none}.rtmw{grid-template-columns:24px repeat(7,minmax(0,1fr))}.rtnowc{grid-template-columns:1fr}.rthead,.rtallrow,.rtbody{grid-template-columns:46px repeat(var(--n),minmax(92px,1fr))}.rtgrid.one .rthead,.rtgrid.one .rtallrow,.rtgrid.one .rtbody{grid-template-columns:46px minmax(0,1fr)}}
 /* ===== jardim interior, mandala e bússola vivas */

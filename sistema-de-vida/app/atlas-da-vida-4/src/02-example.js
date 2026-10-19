@@ -491,6 +491,13 @@ function exampleRedesenho(D) {
     B("Trabalho: reuniões e modelos", "Trabalho", "13:30", "17:30", "uteis"), B("Deslocamento", "Deslocamento", "17:30", "18:00", "uteis"), B("Academia", "Saúde & treino", "18:30", "19:30", "semanal", ws), B("Academia", "Saúde & treino", "18:30", "19:30", "semanal", addDays(ws, 2)), B("Academia", "Saúde & treino", "18:30", "19:30", "semanal", addDays(ws, 4)),
     B("Inglês", "Estudo", "20:00", "20:30", "uteis"), B("Leitura", "Lazer", "22:00", "22:30", "diario"), B("Meditação", "Espiritual", "06:30", "07:00", "diario"), B("Mercado e casa", "Casa", "10:00", "12:00", "semanal", addDays(ws, 5)), B("Ligar para a família", "Pessoas", "16:00", "17:00", "semanal", addDays(ws, 6))];
   for (const b of D.rotina) for (let k = 1; k <= 20; k++) { const x = addDays(TODAY, -k); if ((k + b.titulo.length) % 5) b.feitos[x] = 1; }
+  /* modelo semanal de exemplo com a cor de cada atividade (fictício): é a lista “Standard Semanal” da grade; os blocos usam as mesmas cores */
+  const COR = { "Café e planejar o dia": ["#FFEDA3", "#7A4F00"], "Deslocamento": ["#D9D9D9", "#3A3A3A"], "Trabalho: projeto e coordenação": ["#BDD7EE", "#1F3864"], "Almoço e caminhada": ["#FFEDA3", "#7A4F00"],
+    "Trabalho: reuniões e modelos": ["#BDD7EE", "#1F3864"], "Academia": ["#C6EFCE", "#006100"], "Inglês": ["#D9D2E9", "#4B2E83"], "Leitura": ["#F8CBAD", "#7A3B0C"], "Meditação": ["#B7F0D8", "#1E5631"], "Mercado e casa": ["#FCE4D6", "#833C0B"], "Ligar para a família": ["#DDEBF7", "#1F4E79"] };
+  for (const b of D.rotina) if (COR[b.titulo]) [b.cor, b.tx] = COR[b.titulo];
+  const dows = b => b.rep === "diario" ? [0, 1, 2, 3, 4, 5, 6] : b.rep === "uteis" ? [1, 2, 3, 4, 5] : [parse(b.data).getDay()];
+  D.rotinaModelos = [{ id: "m_ex_std", nome: "Rotina Semanal Standard (exemplo)", desc: "Modelo fictício: a semana típica com a cor de cada atividade.", semana: D.rotina.flatMap(b => dows(b).map(w => [w, b.ini, b.fim, b.titulo, b.cat, b.cor, b.tx])).sort((p, q) => p[0] - q[0] || p[1].localeCompare(q[1])) }];
+  D.rotinaAtiv = { outras: [{ id: "ra_ex1", nome: "Aula de cerâmica", cor: "#C9A0DC", tx: "#2E1A47", cat: "Lazer" }], fonte: "" };
   D.hojeCtx = { [TODAY]: { humor: 4, energia: "media", tempo: 60, grana: "pouco" } };
   D.oport = [{ id: id(), titulo: "Vaga de BIM Coordinator infra", empresa: "Engenharia Beta", tipo: "Vaga", estagio: "Conversa", contato: work[0]?.nome || "", prazo: d(5), passo: "Enviar portfólio atualizado" }, { id: id(), titulo: "Palestra no encontro buildingSMART local", empresa: "Comunidade", tipo: "Evento", estagio: "Ideia", contato: "", prazo: d(30), passo: "Propor tema" }];
 }

@@ -156,6 +156,7 @@ Regras:
 - "ini" e "fim" em HH:MM, 24 h. "das 9 ao meio-dia" = 09:00 a 12:00. Só o início ("às 14h"): termina quando começa a próxima atividade, ou 30 min depois se não houver. Duração dita ("1 hora de inglês") vale. Horário não dito mas dedutível pela sequência ("logo depois", "em seguida", "depois do almoço"): deduza e marque "aprox": true. Sem como deduzir: deixe a atividade de fora e escreva a dúvida.
 - "10 da noite" = 22:00; "8 e meia" = 08:30 ou 20:30 conforme o contexto; "meia-noite" = 24:00 como fim.
 - "cat": exatamente uma destas: ${RT_CATS.map(c => c[0]).join(", ")}.
+- Atividades cadastradas da pessoa (quando o relato falar de uma delas, use o nome exatamente assim e a mesma categoria): ${rtaTodas().slice(0, 80).map(a => `${a.nome} (${a.cat})`).join("; ") || "nenhuma"}.
 - "status": "feito" para o que já aconteceu, "parcial" para o que fez só em parte, "pulado" para o que diz que não fez, "plano" para o que ainda vai fazer.
 - Blocos que já estão na rotina desse dia (quando for a mesma atividade, use o mesmo título): ${ja.length ? ja.map(b => `${b.ini}–${b.fim} ${b.titulo}`).join("; ") : "nenhum"}.
 - A pessoa costuma acordar às ${m2hm(w0)} e dormir às ${m2hm(w1)}.
@@ -183,7 +184,7 @@ function rtcSave() {
   for (const x of on) {
     const b = x.match && (S.rotina || []).find(y => y.id === x.match);
     if (b) { b.st = { ...(b.st || {}) }; if (b.feitos?.[d]) { b.feitos = { ...b.feitos }; delete b.feitos[d]; } if (x.st) b.st[d] = x.st; else delete b.st[d]; marcados++; continue; }
-    (S.rotina ||= []).push({ id: uid(), data: d, ini: x.ini, fim: x.fim, titulo: x.titulo, cat: x.cat, rep: "", exc: [], st: x.st ? { [d]: x.st } : {}, notas: x.nota ? `${x.nota} (Capturar)` : "Capturar" });
+    (S.rotina ||= []).push({ id: uid(), data: d, ini: x.ini, fim: x.fim, titulo: x.titulo, cat: x.cat, rep: "", exc: [], st: x.st ? { [d]: x.st } : {}, notas: x.nota ? `${x.nota} (Capturar)` : "Capturar", ...rtCorAtiv(x.titulo) });
     novos++;
   }
   rtcStopVoz(); Object.assign(RTC, { text: "", items: [], duvidas: [], src: "", msg: "", warn: false, velho: false });

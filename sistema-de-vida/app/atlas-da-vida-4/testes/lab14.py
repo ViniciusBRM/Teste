@@ -25,7 +25,9 @@ async def main():
             chk(await pg.evaluate("document.querySelectorAll('.rtsd').length") == 7 and await pg.evaluate("document.querySelector('.rtsd.on').dataset.rtgo") == f"dia|{TS}", "faixa com os 7 dias da semana, o atual destacado")
             # clicar numa meia hora livre
             await pg.locator(f"[data-rts='{TS}|840']").scroll_into_view_if_needed(); await pg.click(f"[data-rts='{TS}|840']"); await pg.wait_for_timeout(200)
-            chk(await pg.evaluate("[document.querySelector('#rt_a').value, document.querySelector('#rt_z').value]") == ["14:00", "14:30"], "clicar às 14:00 propõe 14:00–14:30")
+            chk(await pg.evaluate("[!!RTA.ap, RTA.ap?.a, RTA.ap?.z]") == [True, 840, 870], "clicar às 14:00 abre a lista de atividades para 14:00–14:30")
+            await pg.click("#rta [data-rta=form]"); await pg.wait_for_timeout(200)
+            chk(await pg.evaluate("[document.querySelector('#rt_a').value, document.querySelector('#rt_z').value]") == ["14:00", "14:30"], "“Mais opções…” abre o bloco com 14:00–14:30")
             await pg.click("[data-rtdur='90']"); await pg.wait_for_timeout(50)
             chk(await pg.evaluate("document.querySelector('#rt_z').value") == "15:30", "atalho de duração 1 h 30")
             await pg.fill("#rt_t", "Revisar desenho"); await pg.click("#rtf .btn.primary"); await pg.wait_for_timeout(250)
@@ -147,7 +149,8 @@ async def main():
                 if v == "semana": chk(await pg.evaluate("(s => s.scrollWidth > s.clientWidth)(document.querySelector('#rtscroll'))"), "390 px: a semana rola de lado dentro da grade, com as horas fixas")
                 if v == "dia":
                     TS = await pg.evaluate("TODAY"); s = pg.locator(f"[data-rts='{TS}|1290']"); await s.scroll_into_view_if_needed(); await s.tap() if False else await s.click(); await pg.wait_for_timeout(200)
-                    chk(await pg.evaluate("document.querySelector('#rt_a')?.value") == "21:30", "no celular, tocar numa meia hora livre abre o bloco")
+                    await pg.click("#rta [data-rta=form]"); await pg.wait_for_timeout(200)
+                    chk(await pg.evaluate("document.querySelector('#rt_a')?.value") == "21:30", "no celular, tocar numa meia hora livre abre a lista; “Mais opções…” abre o bloco")
             finally:
                 for e in errs: print("  ", e)
                 if errs: bad += 1

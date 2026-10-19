@@ -184,7 +184,7 @@ function rtInsights(days) {
   /* ações */
   const mods = rtModsPre();
   out.push(panel(`${ic("list")}Modelos e atalhos`, `<div class="form f1"><label>Aplicar um modelo ${v === "dia" ? "neste dia" : "nesta semana"}<div class="row"><select id="rt_mod">${mods.map(m => `<option value="${m.id}"${m.id === RT.mod ? " selected" : ""}>${esc(m.nome)}${m.semana ? ` · semana, ${m.semana.length} blocos` : ""}</option>`).join("")}</select><button type="button" class="btn sm" data-act="rtmod">Aplicar</button></div></label></div>
-    <div class="row wrap">${v === "dia" ? `<button type="button" class="btn sm" data-act="rtcopy">${ic("copy")}Copiar o dia…</button>` : `<button type="button" class="btn sm" data-act="rtsavemod">${ic("plus")}Salvar a semana como modelo</button><button type="button" class="btn sm" data-act="rtcopyw">${ic("copy")}Copiar para a próxima semana</button>`}</div>
+    <div class="row wrap">${v === "dia" ? `<button type="button" class="btn sm" data-act="rtcopy">${ic("copy")}Copiar o dia…</button>` : `<button type="button" class="btn sm" data-act="rtsavemod">${ic("plus")}Salvar a semana como modelo</button><button type="button" class="btn sm" data-act="rtcopyw">${ic("copy")}Copiar para a próxima semana</button>`}<button type="button" class="btn sm" data-act="rtativ">${ic("palette")}Atividades e cores</button></div>
     <details class="futd"><summary>Ajustes da grade</summary><div class="form f3"><label>Acordo<input type="time" step="1800" data-rtcfg="rtAcordar" value="${esc(S.cfg.rtAcordar || "06:30")}"></label><label>Durmo<input type="time" step="1800" data-rtcfg="rtDormir" value="${esc(S.cfg.rtDormir || "23:00")}"></label><label>Tamanho<select data-rtcfg="rtZoom">${Object.keys(RT_Z).map(k => `<option${(S.cfg.rtZoom || "normal") === k ? " selected" : ""}>${k}</option>`).join("")}</select></label></div><p class="muted small">Teclado: ← → período · T hoje · D S M vistas · N novo bloco.</p></details>`));
   out.push(lsPanel());
   return out.join("");
@@ -195,7 +195,7 @@ const RT_LIMPAR = { dia: ["Limpar o dia", "neste dia"], semana: ["Limpar a seman
 function pRotina() {
   const v = rtView(), P = rtPer(), days = rtDias();
   const qp = RT.q.trim() ? rtParse(RT.q) : null;
-  setTimeout(rtScrollTo, 0);
+  setTimeout(() => { rtScrollTo(); rtaSync(); }, 0);
   return `<div class="rt2">
     <div class="rtt">
       <div class="rtnav"><button type="button" class="iconbtn" data-rtnav="-1" aria-label="${v === "dia" ? "Dia anterior" : v === "semana" ? "Semana anterior" : "Mês anterior"}">‹</button><button type="button" class="btn sm" data-rtnav="0">Hoje</button><button type="button" class="iconbtn" data-rtnav="1" aria-label="${v === "dia" ? "Próximo dia" : v === "semana" ? "Próxima semana" : "Próximo mês"}">›</button></div>
@@ -241,13 +241,13 @@ function rtParse(txt) {
   a = Math.floor(a / 30) * 30; if (z == null) z = a + Math.max(30, Math.ceil((dur || 30) / 30) * 30); else z = Math.ceil(z / 30) * 30;
   if (z <= a || z > 1440) return { ok: false, err: "O fim precisa ser depois do começo e no mesmo dia", titulo };
   if (!titulo) return { ok: false, err: "Diga o que é: inglês, academia, reunião…" };
-  const cat = (RT_KW.find(([rx]) => rx.test(fold(titulo))) || [0, "Outro"])[1];
-  return { ok: true, titulo, cat, ini: m2hm(a), fim: m2hm(z), dias: [...new Set(dias)].sort(), rep };
+  const at = rtaPorNome(titulo), cat = at?.cat || (RT_KW.find(([rx]) => rx.test(fold(titulo))) || [0, "Outro"])[1];
+  return { ok: true, titulo: at?.nome || titulo, cat, ini: m2hm(a), fim: m2hm(z), dias: [...new Set(dias)].sort(), rep, ...(at ? rtCorAtiv(at.nome) : {}) };
 }
-function rtQpHTML(q) { return q.ok ? `${ic("check")}<span>Vai criar <b>${esc(q.titulo)}</b> · ${q.ini}–${q.fim} · <i style="color:${rtCor(q.cat)}">${q.cat}</i> · ${q.rep ? REP_TXT[q.rep].toLowerCase() + (q.rep === "semanal" ? ` (${q.dias.map(x => DOWL[parse(x).getDay()].slice(0, 3)).join(", ")})` : "") + ` a partir de ${fmtD(q.dias[0])}` : q.dias.map(x => `${DOWL[parse(x).getDay()].slice(0, 3)} ${fmtD(x)}`).join(", ")}. Enter cria.</span>` : `${ic("info")}<span>${esc(q.err)}</span>`; }
+function rtQpHTML(q) { return q.ok ? `${ic("check")}<span>Vai criar ${q.cor ? `<i class="rtasw" style="background:${q.cor};color:${q.tx}" aria-hidden="true">Aa</i>` : ""}<b>${esc(q.titulo)}</b> · ${q.ini}–${q.fim} · <i style="color:${rtCor(q.cat)}">${q.cat}</i> · ${q.rep ? REP_TXT[q.rep].toLowerCase() + (q.rep === "semanal" ? ` (${q.dias.map(x => DOWL[parse(x).getDay()].slice(0, 3)).join(", ")})` : "") + ` a partir de ${fmtD(q.dias[0])}` : q.dias.map(x => `${DOWL[parse(x).getDay()].slice(0, 3)} ${fmtD(x)}`).join(", ")}. Enter cria.</span>` : `${ic("info")}<span>${esc(q.err)}</span>`; }
 function rtQAdd() {
   const q = rtParse(RT.q); if (!q.ok) { toast(q.err); return; }
-  const novos = (q.rep && q.rep !== "semanal" ? [q.dias[0]] : q.dias).map(d => ({ id: uid(), data: d, ini: q.ini, fim: q.fim, titulo: q.titulo, cat: q.cat, rep: q.rep, exc: [], st: {}, notas: "" }));
+  const novos = (q.rep && q.rep !== "semanal" ? [q.dias[0]] : q.dias).map(d => ({ id: uid(), data: d, ini: q.ini, fim: q.fim, titulo: q.titulo, cat: q.cat, rep: q.rep, exc: [], st: {}, notas: "", ...(q.cor ? { cor: q.cor, tx: q.tx } : {}) }));
   (S.rotina ||= []).push(...novos); RT.q = ""; if (rtView() === "dia" && !novos.some(b => rtOcc(RT.d).some(x => x.id === b.id))) RT.d = novos[0].data;
   touch("rotina", { label: "Bloco por texto" }); undoToast(`${plural(novos.length, "bloco criado", "blocos criados")}: ${q.titulo} ${q.ini}–${q.fim}`);
 }
@@ -350,7 +350,7 @@ function rtCard(id, day) {
   dlg.innerHTML = `<form method="dialog" class="rtcard" style="--c:${rtBC(b)}"><div class="rtch"><span class="rtcc"></span><div><h3>${esc(b.titulo)}</h3><p class="muted small">${fmtDL(day)} · ${b.ini}–${b.fim} · ${durTxt(hm2min(b.fim) - hm2min(b.ini))}<br>${esc(b.cat)}${b.rep ? ` · ${REP_TXT[b.rep]}` : ""}</p>${b.notas ? `<p>${esc(b.notas)}</p>` : ""}</div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>
     <div class="flbl">Como foi${day > TODAY ? " (ainda não aconteceu)" : ""}</div><div class="seg-g rtsts">${["feito", "parcial", "pulado"].map(s => `<button type="button" class="seg" data-rtst="${b.id}|${day}|${s}" aria-pressed="${st === s}">${ST_TXT[s]}</button>`).join("")}</div>
     <div class="lsbox">${lsCartaoHTML(b, day)}</div>
-    <div class="row wrap rtca"><button type="button" class="btn sm" data-rtedit="${b.id}|${day}">${ic("edit")}Editar</button><button type="button" class="btn sm" data-rtdup="${b.id}|${day}">${ic("copy")}Duplicar</button><button type="button" class="btn sm ghost" data-rtdel="${b.id}|${day}">${ic("trash")}${b.rep ? "Excluir neste dia" : "Excluir"}</button>${b.rep ? `<button type="button" class="btn sm ghost" data-rtdelall="${b.id}">Excluir a série</button>` : ""}</div></form>`;
+    <div class="row wrap rtca"><button type="button" class="btn sm" data-rttroca="${b.id}|${day}">${ic("palette")}Trocar atividade</button><button type="button" class="btn sm" data-rtedit="${b.id}|${day}">${ic("edit")}Editar</button><button type="button" class="btn sm" data-rtdup="${b.id}|${day}">${ic("copy")}Duplicar</button><button type="button" class="btn sm ghost" data-rtdel="${b.id}|${day}">${ic("trash")}${b.rep ? "Excluir neste dia" : "Excluir"}</button>${b.rep ? `<button type="button" class="btn sm ghost" data-rtdelall="${b.id}">Excluir a série</button>` : ""}</div></form>`;
   if (!dlg.open) dlg.showModal();
 }
 function rtForm(id, day, a, z) {
@@ -358,7 +358,7 @@ function rtForm(id, day, a, z) {
   const opt = (sel, fim) => RT_TIMES.filter(m => fim ? m > 0 : m < 1440).map(m => `<option${m2hm(m) === sel ? " selected" : ""}>${m2hm(m)}</option>`).join("");
   const dlg = $("#dlg");
   dlg.innerHTML = `<form method="dialog" id="rtf" class="rtf"><h3>${b ? "Editar bloco" : "Novo bloco"}</h3><div class="form f2">
-    <label class="full">O quê<input type="text" id="rt_t" value="${esc(o.titulo)}" placeholder="Ex.: Inglês, treino, revisão do projeto" autocomplete="off"></label>
+    <label class="full">O quê<input type="text" id="rt_t" value="${esc(o.titulo)}" placeholder="Ex.: Inglês, treino, revisão do projeto" autocomplete="off" list="rt_tl"><datalist id="rt_tl">${rtaTodas().map(a => `<option value="${esc(a.nome)}"></option>`).join("")}</datalist><small class="rtahint" id="rt_ah"></small></label>
     <label>Dia<input type="date" id="rt_d" value="${b && b.rep ? o.data : occDay}"${b && b.rep ? " disabled" : ""}></label>
     <label>Categoria<select id="rt_c">${RT_CATS.map(([c]) => `<option${o.cat === c ? " selected" : ""}>${c}</option>`).join("")}</select></label>
     <label>Começa<select id="rt_a">${opt(o.ini)}</select></label><label>Termina<select id="rt_z">${opt(o.fim, true)}</select></label>
@@ -372,8 +372,13 @@ function rtForm(id, day, a, z) {
   $("#rt_a").onchange = () => { const a1 = hm2min($("#rt_a").value), z1 = hm2min($("#rt_z").value); if (z1 <= a1) $("#rt_z").value = m2hm(Math.min(1440, a1 + 30)); msg(); }; $("#rt_z").onchange = msg; msg();
   for (const c of $$("[data-rtdur]", dlg)) c.onclick = () => { $("#rt_z").value = m2hm(Math.min(1440, hm2min($("#rt_a").value) + +c.dataset.rtdur)); msg(); };
   $("#rt_x").onclick = () => dlg.close();
+  /* nome de atividade cadastrada: mostra a cor que o bloco vai ter e propõe a categoria dela */
+  const dica = () => { const at = rtaPorNome($("#rt_t").value), h = $("#rt_ah"); if (!h) return at;
+    h.innerHTML = at ? `<i class="rtasw" style="${rtaSw(at)}" aria-hidden="true">Aa</i>${at.grupo === "p" ? "Atividade do padrão" : "Atividade de Outras"}${rtHex(at.cor) ? ": o bloco fica com esta cor" : ""}` : ""; return at; };
+  $("#rt_t").oninput = () => { const at = dica(); if (at?.cat) $("#rt_c").value = at.cat; }; dica();
   $("#rtf").onsubmit = e => { e.preventDefault(); if (!msg()) return; const t = $("#rt_t").value.trim(); if (!t) { $("#rt_t").focus(); $("#rt_msg").textContent = "Dê um nome ao bloco."; return; }
-    const rec = { ...(b || { id: uid(), st: {}, exc: [] }), titulo: t, cat: $("#rt_c").value, ini: $("#rt_a").value, fim: $("#rt_z").value, rep: $("#rt_r").value, notas: $("#rt_n").value.trim(), data: b && b.rep ? b.data : $("#rt_d").value || occDay };
+    const at = (!b || rtaK(b.titulo) !== rtaK(t)) ? rtaPorNome(t) : null, cor = at && rtHex(at.cor) ? { cor: at.cor, tx: rtHex(at.tx) || rtTx(at.cor) } : null;
+    const rec = { ...(b || { id: uid(), st: {}, exc: [] }), ...(cor || {}), titulo: at?.nome || t, cat: $("#rt_c").value, ini: $("#rt_a").value, fim: $("#rt_z").value, rep: $("#rt_r").value, notas: $("#rt_n").value.trim(), data: b && b.rep ? b.data : $("#rt_d").value || occDay };
     if (b) S.rotina = S.rotina.map(x => x.id === b.id ? rec : x); else (S.rotina ||= []).push(rec);
     if (!rec.rep && rtView() === "dia") RT.d = rec.data; dlg.close(); touch("rotina", { label: b ? "Bloco editado" : "Bloco criado" }); if (!b) undoToast(`${rec.titulo}: ${rec.ini}–${rec.fim}`); };
   dlg.showModal(); setTimeout(() => $("#rt_t")?.focus(), 30);
@@ -410,12 +415,14 @@ function rtClick(t) {
   /* tarefa vira bloco: no horário escrito nela; sem horário, no primeiro tempo livre do dia, e o bloco abre para ajustar */
   if (ds.rtibloco) { const [id, d] = ds.rtibloco.split("|"), t = S.tarefas.find(x => x.id === id); if (!t) return true;
     const ht = rtHoraTxt(t.tarefa), hr = ht || rtHoraTxt(t.notas), lv = rtDia(d).livres[0], a = hr ? hr.a : lv ? lv[0] : 9 * 60, z = Math.min(1440, hr ? hr.z : a + 60);
-    const b = { id: uid(), data: d, ini: m2hm(a), fim: m2hm(z), titulo: rtSemHora(t.tarefa, ht), cat: rtGuessCat(t.tarefa), rep: "", exc: [], st: {}, notas: t.notas || "" };
+    const tt = rtSemHora(t.tarefa, ht), at = rtaPorNome(tt), b = { id: uid(), data: d, ini: m2hm(a), fim: m2hm(z), titulo: at?.nome || tt, cat: at?.cat || rtGuessCat(t.tarefa), rep: "", exc: [], st: {}, notas: t.notas || "", ...rtCorAtiv(tt) };
     (S.rotina ||= []).push(b); S.tarefas = S.tarefas.filter(x => x.id !== id); $("#dlg").close(); touch("rotina", "tarefas", { label: "Tarefa virou bloco" });
     if (hr) undoToast(`Na rotina: ${b.titulo} ${b.ini}–${b.fim}`); else rtForm(b.id, d); return true; }
   if (ds.rtst) { const [id, d, s] = ds.rtst.split("|"); rtSetSt(id, d, s); if ($("#dlg").open && $(".rtcard")) rtCard(id, d); return true; }
   if (ds.rtcx) { $("#dlg").close(); return true; }
   if (ds.rtedit) { const [id, d] = ds.rtedit.split("|"); rtForm(id, d); return true; }
+  if (ds.rttroca) { const [id, d] = ds.rttroca.split("|"); $("#dlg").close(); rtaAbrir({ modo: "trocar", bid: id, d }); return true; }
+  if (ds.act === "rtativ") { rtaDlg(); return true; }
   if (ds.rtdup) { const [id, d] = ds.rtdup.split("|"), b = S.rotina.find(x => x.id === id), z = hm2min(b.fim), len = z - hm2min(b.ini), a2 = Math.min(1440 - len, z); S.rotina.push({ id: uid(), data: d, ini: m2hm(a2), fim: m2hm(a2 + len), titulo: b.titulo, cat: b.cat, rep: "", exc: [], st: {}, notas: b.notas || "", ...rtCorDe(b) }); $("#dlg").close(); touch("rotina", { label: "Bloco duplicado" }); undoToast(`Duplicado às ${m2hm(a2)}`); return true; }
   if (ds.rtdel) { const [id, d] = ds.rtdel.split("|"), b = S.rotina.find(x => x.id === id); if (b.rep) b.exc = [...(b.exc || []), d]; else S.rotina = S.rotina.filter(x => x.id !== id); $("#dlg").close(); touch("rotina", { label: "Bloco excluído" }); undoToast("Bloco excluído"); return true; }
   if (ds.rtdelall) { S.rotina = S.rotina.filter(x => x.id !== ds.rtdelall); $("#dlg").close(); touch("rotina", { label: "Série excluída" }); undoToast("Série excluída"); return true; }
@@ -455,7 +462,7 @@ document.addEventListener("pointerup", e => {
   const M = RT.mv; if (M) { RT.mv = null; $(".rtghost")?.remove(); if (M.moved) { RT.just = Date.now(); if (M.rs) { const b = S.rotina.find(x => x.id === M.id); if (b.rep && M.from) { rtMover(M.id, M.from, M.from, M.a0, M.z); } else { b.fim = m2hm(M.z); touch("rotina", { label: "Bloco esticado" }); undoToast(`${b.titulo}: até ${b.fim}`); } } else if (M.a !== M.a0 || M.to !== M.from) rtMover(M.id, M.from, M.to, M.a, M.z); } return; }
   const D = RT.drag; if (!D) return; RT.drag = null; rtPaintDrag();
   if (D.touch) { if (Math.abs(e.clientY - D.y0) > 8 || Math.abs(e.clientX - D.x0) > 8) return; const s = e.target.closest?.(".rtslot"); if (!s || s.dataset.rts !== `${D.d}|${D.a}`) return; }
-  const lo = Math.min(D.a, D.b), hi = Math.max(D.a, D.b) + 30; rtForm(null, D.d, lo, hi);
+  const lo = Math.min(D.a, D.b), hi = Math.max(D.a, D.b) + 30; rtaAbrir({ modo: "encher", d: D.d, a: lo, z: hi, toque: D.touch });
 });
 document.addEventListener("pointercancel", () => { if (RT.drag) { RT.drag = null; rtPaintDrag(); } if (RT.mv) { RT.mv = null; $(".rtghost")?.remove(); } });
 document.addEventListener("keydown", e => {
