@@ -249,6 +249,18 @@ a.btn { text-decoration: none; }
 .comp-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; margin: 2px 0 0; padding-top: 10px; border-top: 1px solid var(--line); }
 .comp-stats dt { font-size: 11.5px; color: var(--ink-2); }
 .comp-stats dd { margin: 0; font: 600 17px/1.2 var(--font-display); }
+.stat-btn { display: inline-flex; align-items: baseline; gap: 8px; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; cursor: pointer; }
+.stat-btn span { color: var(--accent-ink); font: 500 12px var(--font-ui); text-decoration: underline; text-underline-offset: 2px; }
+.stat-btn:hover span { text-decoration-thickness: 2px; }
+.comp-days { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid var(--line); }
+.comp-days-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; }
+.comp-days ul { display: grid; margin: 0; padding: 0; list-style: none; }
+.comp-days li button { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1px 10px; width: 100%; padding: 7px 6px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 12.5px; text-align: left; }
+.comp-days li button:hover { background: var(--hover); }
+.cd-date { font-weight: 600; white-space: nowrap; }
+.cd-why { color: var(--warn-ink); font-weight: 500; text-align: right; }
+.cd-note { grid-column: 1 / -1; overflow: hidden; color: var(--ink-2); text-overflow: ellipsis; white-space: nowrap; }
+.win-b { color: var(--warn-ink); font-size: 11px; font-weight: 600; }
 
 /* ---------- tooltip / toast / modal ---------- */
 .tip { position: fixed; z-index: 80; min-width: 170px; max-width: 280px; padding: 8px 10px; background: var(--tile); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow-lg); font-size: 12px; pointer-events: none; }
@@ -670,7 +682,7 @@ button.cday:hover { border-color: var(--ink-2); }
         <label class="slicer"><span class="slicer-l">De</span><input type="date" id="tFrom"></label>
         <label class="slicer"><span class="slicer-l">Até</span><input type="date" id="tTo"></label>
         <div class="slicer"><span class="slicer-l">Tipo</span><details class="dd" id="tTypeDD"><summary id="tTypeLabel">Todos os tipos</summary><div class="dd-menu" id="tTypeMenu"></div></details></div>
-        <div class="slicer"><span class="slicer-l">Mostrar só</span><div class="seg"><button type="button" id="tNeg" aria-pressed="false">Saldo negativo</button><button type="button" id="tPh" aria-pressed="false">Com fotos</button></div></div>
+        <div class="slicer"><span class="slicer-l">Mostrar só</span><div class="seg"><button type="button" id="tNeg" aria-pressed="false">Saldo negativo</button><button type="button" id="tPh" aria-pressed="false">Com fotos</button><button type="button" id="tLate" aria-pressed="false">Atrasos</button><button type="button" id="tEarly" aria-pressed="false">Saídas antecipadas</button><button type="button" id="tOut" aria-pressed="false">Fora da janela</button></div></div>
       </div>
       <article class="tile">
         <div class="table-wrap"><table class="tbl rows" id="tbl"></table></div>
@@ -1107,8 +1119,8 @@ const Core = (() => {
     view: 'resumo', sel: TODAY, monthCur: TODAY.slice(0, 7),
     repMonth: +TODAY.slice(8) <= 7 ? C.addMonths(TODAY.slice(0, 7), -1) : TODAY.slice(0, 7),
     period: '30d', pFrom: '', pTo: '',
-    t: { q: '', from: '', to: '', types: new Set(), neg: false, ph: false, sort: 'date', dir: -1, page: 0 },
-    tableMode: {}, focus: null,
+    t: { q: '', from: '', to: '', types: new Set(), neg: false, ph: false, late: false, early: false, out: false, sort: 'date', dir: -1, page: 0 },
+    tableMode: {}, focus: null, compOpen: null,
   };
   const UI_KEY = 'cartellino:ui';
   function loadUI() {
@@ -1546,7 +1558,7 @@ const Core = (() => {
     const psum = C.summarize(C.range(pr.from, pr.to).map(info), TODAY);
     renderKpis(sum, psum, pr);
     renderAlerts(sum);
-    renderCompliance(sum);
+    renderCompliance(sum, days);
     const H = id => (A.focus === id ? Math.max(320, Math.min(620, innerHeight - 230)) : 240);
     chartDaily($('#ch-daily'), days, H('daily'));
     chartTrend($('#ch-trend'), days, H('trend'));
@@ -1597,12 +1609,42 @@ const Core = (() => {
     if (sum.incompleta) out.push(`<button type="button" class="alert warn" data-go="registros">${icon('warn')}${plural(sum.incompleta, 'dia', 'dias')} com marcação incompleta</button>`);
     $('#rsAlerts').innerHTML = out.join('');
   }
-  function renderCompliance(sum) {
+  const COMP_LISTS = {
+    late: { title: d => `Atrasos · ingresso após ${A.settings.entradaAte}`, pick: d => d.late > 0, filter: 'late' },
+    early: { title: () => `Saídas antes de ${A.settings.saidaDe}`, pick: d => d.early > 0, filter: 'early' },
+    out: { title: () => 'Dias fora das janelas', pick: d => d.inWindow === false, filter: 'out' },
+  };
+  function compDays(days, kind) { return days.filter(d => d.rec && d.date <= TODAY && COMP_LISTS[kind].pick(d)); }
+  function windowReason(d) {
+    const p = (d.rec && d.rec.p) || {};
+    return [d.late ? `ingresso ${p.in} · +${d.late} min` : '', d.early ? `uscita ${p.out} · ${d.early} min antes` : ''].filter(Boolean).join(' · ');
+  }
+  function renderCompliance(sum, days) {
     const el = $('#compBody'); const tot = sum.workDays;
     if (!tot) { el.innerHTML = '<div class="empty">Sem dias úteis com marcações neste período.</div>'; return; }
     const ok = sum.cumprida + sum.acima, pctv = Math.round((ok / tot) * 100);
     const segs = [['cumprida', '✓ Cumprida', 'var(--good)'], ['acima', '▲ Acima (extra)', 'var(--s1)'], ['abaixo', '▼ Abaixo', 'var(--serious)'], ['incompleta', '! Incompleta', 'var(--warn)']];
     const avg = v => (v != null ? C.hm(v) : '—');
+    const lists = { late: compDays(days, 'late'), early: compDays(days, 'early'), out: compDays(days, 'out') };
+    if (A.compOpen && !lists[A.compOpen].length) A.compOpen = null;
+    const statBtn = (kind, label) => {
+      const n = lists[kind].length, open = A.compOpen === kind;
+      return n ? `<button type="button" class="stat-btn" id="cs-${kind}" data-comp="${kind}" aria-expanded="${open}" aria-controls="compDays">${label}<span>${open ? 'ocultar dias ▴' : 'ver dias ▾'}</span></button>` : label;
+    };
+    let panel = '';
+    if (A.compOpen) {
+      const L = COMP_LISTS[A.compOpen], list = lists[A.compOpen];
+      panel = `<div class="comp-days" id="compDays">
+        <div class="comp-days-h"><b>${esc(L.title())} · ${plural(list.length, 'dia', 'dias')}</b><button type="button" class="btn sm" data-comp-table="${L.filter}">Ver na tabela</button></div>
+        <ul>${list.map(d => {
+          const note = [d.type !== 'trabalho' ? C.TYPES[d.type].short : '', d.rec.note].filter(Boolean).join(' · ');
+          return `<li><button type="button" data-open-day="${d.date}" aria-label="Abrir ${esc(C.fmtLong(d.date))} no Diário">
+            <span class="cd-date">${dayLabel(d.date)}</span><span class="cd-why mono">${esc(windowReason(d))}</span>
+            ${note ? `<span class="cd-note">${esc(note.length > 90 ? note.slice(0, 89) + '…' : note)}</span>` : ''}</button></li>`;
+        }).join('')}</ul>
+        <p class="hint">Se o motivo foi autorizado (consulta, cartório, permesso), abra o dia e marque Licença ou Atestado com abono parcial: o dia deixa de contar aqui.</p>
+      </div>`;
+    }
     el.innerHTML = `
       <div class="comp-hero"><span class="comp-pct">${pctv}<small>%</small></span><span class="comp-cap">de ${plural(tot, 'dia útil', 'dias úteis')} com jornada cumprida ou acima</span></div>
       <div class="stack" role="img" aria-label="${segs.map(s => `${s[1].slice(2)}: ${sum[s[0]]}`).join(', ')}">${segs.filter(s => sum[s[0]] > 0).map(s => `<span style="flex:${sum[s[0]]};--c:${s[2]}" title="${s[1].slice(2)}: ${sum[s[0]]}"></span>`).join('')}</div>
@@ -1611,12 +1653,11 @@ const Core = (() => {
         <div><dt>Ingresso médio</dt><dd class="mono">${avg(sum.avgIn)}</dd></div>
         <div><dt>Uscita média</dt><dd class="mono">${avg(sum.avgOut)}</dd></div>
         <div><dt>Almoço médio</dt><dd>${sum.avgLunch != null ? C.dur(sum.avgLunch) : '—'}</dd></div>
-        <div><dt>Dentro das janelas</dt><dd>${sum.windowDays ? `${sum.inWindow} de ${sum.windowDays}` : '—'}</dd></div>
-        <div><dt>Atrasos · ingresso após ${esc(A.settings.entradaAte)}</dt><dd>${sum.late}</dd></div>
-        <div><dt>Saídas antes de ${esc(A.settings.saidaDe)}</dt><dd>${sum.early}</dd></div>
-      </dl>`;
+        <div><dt>Dentro das janelas</dt><dd>${sum.windowDays ? statBtn('out', `${sum.inWindow} de ${sum.windowDays}`) : '—'}</dd></div>
+        <div><dt>Atrasos · ingresso após ${esc(A.settings.entradaAte)}</dt><dd>${statBtn('late', String(sum.late))}</dd></div>
+        <div><dt>Saídas antes de ${esc(A.settings.saidaDe)}</dt><dd>${statBtn('early', String(sum.early))}</dd></div>
+      </dl>${panel}`;
   }
-
 
   /* ---------------- DOCUMENTOS NEMESIS ---------------- */
   const fmtSize = b => (b >= 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB');
@@ -2301,6 +2342,7 @@ const Core = (() => {
 
   /* ---------------- REGISTROS ---------------- */
   const PAGE = 25;
+  const freshFilters = () => ({ q: '', from: '', to: '', types: new Set(), neg: false, ph: false, late: false, early: false, out: false, sort: 'date', dir: -1, page: 0 });
   function filteredRows() {
     const t = A.t, q = t.q.trim().toLowerCase();
     const rows = A.recs.map(r => info(r.date)).filter(x => {
@@ -2309,6 +2351,9 @@ const Core = (() => {
       if (t.types.size && !t.types.has(x.type)) return false;
       if (t.neg && !(x.saldo < 0)) return false;
       if (t.ph && !(x.rec.photos && x.rec.photos.length)) return false;
+      if (t.late && !(x.late > 0)) return false;
+      if (t.early && !(x.early > 0)) return false;
+      if (t.out && x.inWindow !== false) return false;
       if (q) {
         const hay = [C.fmtDMY(x.date), C.WD[C.dow(x.date)], C.TYPES[x.type].label, x.rec.local, x.rec.motivo, x.rec.note, x.hol, (STATUS[x.status] || [])[0]].join(' ').toLowerCase();
         if (!hay.includes(q)) return false;
@@ -2328,6 +2373,7 @@ const Core = (() => {
     if ($('#tQ').value !== t.q) $('#tQ').value = t.q;
     $('#tFrom').value = t.from; $('#tTo').value = t.to;
     $('#tNeg').setAttribute('aria-pressed', String(t.neg)); $('#tPh').setAttribute('aria-pressed', String(t.ph));
+    $('#tLate').setAttribute('aria-pressed', String(t.late)); $('#tEarly').setAttribute('aria-pressed', String(t.early)); $('#tOut').setAttribute('aria-pressed', String(t.out));
     renderTypeMenu();
     const rows = filteredRows();
     const pages = Math.max(1, Math.ceil(rows.length / PAGE));
@@ -2342,7 +2388,7 @@ const Core = (() => {
         const p = x.rec.p || {}; const ph = (x.rec.photos || []).length;
         const notes = [x.rec.local, x.rec.motivo, x.rec.note].filter(Boolean).join(' · ');
         return `<tr data-date="${x.date}"><td><button type="button" class="btn sm" style="border:0;padding:0;height:auto;background:none;font-weight:600" data-open="${x.date}">${C.fmtDMY(x.date)}</button></td><td>${C.WDS[C.dow(x.date)]}</td><td>${typeChip(x.type)}</td>
-          <td class="mono">${esc(p.in || '—')}</td><td class="mono">${esc(p.lo || '—')}</td><td class="mono">${esc(p.li || '—')}</td><td class="mono">${esc(p.out || '—')}</td>
+          <td class="mono">${esc(p.in || '—')}${x.late ? ` <small class="win-b" title="Ingresso depois de ${esc(A.settings.entradaAte)}">+${x.late}</small>` : ''}</td><td class="mono">${esc(p.lo || '—')}</td><td class="mono">${esc(p.li || '—')}</td><td class="mono">${esc(p.out || '—')}${x.early ? ` <small class="win-b" title="Uscita antes de ${esc(A.settings.saidaDe)}">${C.MINUS}${x.early}</small>` : ''}</td>
           <td class="num mono">${x.lunch != null ? C.clock(x.lunch) : '—'}</td><td class="num mono">${C.clock(x.worked)}${x.ongoing ? '…' : ''}</td><td class="num mono">${C.clock(x.expected)}</td>
           <td class="num mono dcell"><i class="db" style="--w:${Math.round((Math.abs(x.saldo) / maxAbs) * 56)}px;--c:var(${x.saldo >= 0 ? '--good' : '--critical'})"></i><span class="${x.saldo > 0 ? 'pos' : x.saldo < 0 ? 'neg' : ''}">${x.saldo ? C.sClock(x.saldo) : x.status === 'incompleta' ? 'incompl.' : '00:00'}</span></td>
           <td class="wrap">${esc(notes.length > 90 ? notes.slice(0, 89) + '…' : notes)}</td><td>${ph ? `${icon('camera')} ${ph}` : ''}</td></tr>`;
@@ -2641,6 +2687,12 @@ const Core = (() => {
     $('#pFrom').addEventListener('change', e => { if (e.target.value) { A.pFrom = e.target.value; saveUI(); renderResumo(); renderHeader(); } });
     $('#pTo').addEventListener('change', e => { if (e.target.value) { A.pTo = e.target.value; saveUI(); renderResumo(); renderHeader(); } });
     $('#v-resumo').addEventListener('click', e => {
+      const cb = e.target.closest('[data-comp]');
+      if (cb) { const k = cb.dataset.comp; A.compOpen = A.compOpen === k ? null : k; renderCompliance(C.summarize(C.range(periodRange().from, periodRange().to).map(info), TODAY), C.range(periodRange().from, periodRange().to).map(info)); const n = $('#cs-' + k); if (n) n.focus(); return; }
+      const od = e.target.closest('[data-open-day]');
+      if (od) { go('diario', { date: od.dataset.openDay }); return; }
+      const ct = e.target.closest('[data-comp-table]');
+      if (ct) { const r = periodRange(); A.t = freshFilters(); A.t[ct.dataset.compTable] = true; A.t.from = r.from; A.t.to = r.to < TODAY ? r.to : TODAY; go('registros'); return; }
       const t = e.target.closest('[data-tool]'); if (!t) return;
       const tile = t.closest('.tile'); const id = tile.dataset.chart;
       if (t.dataset.tool === 'table') { A.tableMode[id] = !A.tableMode[id]; renderResumo(); }
@@ -2705,9 +2757,10 @@ const Core = (() => {
     $('#tTo').addEventListener('change', e => { A.t.to = e.target.value; A.t.page = 0; renderRegistros(); });
     $('#tNeg').addEventListener('click', () => { A.t.neg = !A.t.neg; A.t.page = 0; renderRegistros(); });
     $('#tPh').addEventListener('click', () => { A.t.ph = !A.t.ph; A.t.page = 0; renderRegistros(); });
+    ['late', 'early', 'out'].forEach(k => $('#t' + k[0].toUpperCase() + k.slice(1)).addEventListener('click', () => { A.t[k] = !A.t[k]; A.t.page = 0; renderRegistros(); }));
     $('#tTypeMenu').addEventListener('change', e => { const cb = e.target; if (cb.checked) A.t.types.add(cb.value); else A.t.types.delete(cb.value); A.t.page = 0; renderRegistros(); $('#tTypeDD').open = true; const n = $('#' + cb.id); if (n) n.focus(); });
     $('#tTypeMenu').addEventListener('click', e => { if (e.target.closest('[data-clear-types]')) { A.t.types.clear(); A.t.page = 0; renderRegistros(); } });
-    $('#tReset').addEventListener('click', () => { A.t = { q: '', from: '', to: '', types: new Set(), neg: false, ph: false, sort: 'date', dir: -1, page: 0 }; renderRegistros(); });
+    $('#tReset').addEventListener('click', () => { A.t = freshFilters(); renderRegistros(); });
     $('#tbl').addEventListener('click', e => {
       const s = e.target.closest('[data-sort]');
       if (s) { const k = s.dataset.sort; if (A.t.sort === k) A.t.dir *= -1; else { A.t.sort = k; A.t.dir = k === 'date' ? -1 : 1; } renderRegistros(); return; }
