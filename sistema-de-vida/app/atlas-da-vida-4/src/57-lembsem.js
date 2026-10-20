@@ -125,18 +125,24 @@ async function lsGcalTira(r, apagar) {
 /* ---------------------------------------------------------------- painel na Rotina e lista no Secretário */
 const LS = { dias: [], busy: "" };
 function lsPanel() {
-  const L = lsData(), A = lsAtividades(), D = secData();
+  const L = lsData(), A = lsAtividades(), D = secData(), P = lemPendentes(), nAt = L.filter(r => r.on !== false).length + P.length, tipo = LEM.tipo;
   const item = r => { const px = lsProximas(r), des = lsGcDesatual(r);
     return `<div class="lsit${r.on === false ? " off" : ""}"><div><b>${ic("clock")}${esc(r.titulo)}</b><small>${r.nota ? `${esc(r.nota)} · ` : ""}${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próximas: ${esc(px.join(", "))}` : " · não aparece nos próximos 14 dias"}${r.gcal?.on ? ` · ${des ? "<span class=\"st-warn\">Google desatualizado</span>" : "no Google Agenda"}` : ""}</small></div>
       <div class="row wrap">${LS.busy === r.id ? `<span class="muted small">Google Agenda…</span>` : `<button type="button" class="btn sm ghost" data-lsgc="${r.id}">${r.gcal?.on ? (des ? "Atualizar no Google" : "Tirar do Google") : "Pôr no Google Agenda"}</button>`}<button type="button" class="btn sm ghost" data-lson="${r.id}">${r.on === false ? "Retomar" : "Pausar"}</button><button type="button" class="btn sm ghost" data-lsdel="${r.id}" aria-label="Apagar o lembrete de ${esc(r.titulo)}">${ic("trash")}</button></div></div>`; };
-  return panel(`${ic("clock")}Lembretes <small>${L.length ? plural(L.filter(r => r.on !== false).length, "ativo", "ativos") : "nenhum"}</small>`, `${L.map(item).join("") || `<p class="muted small">Escolha uma atividade da rotina para ser avisado antes dela, toda semana.</p>`}
-    <details class="lsnew"${L.length ? "" : " open"}><summary>${ic("plus")}Novo lembrete</summary><div class="form f1">
+  const novo = LEM.novo || (!L.length && !P.length);
+  return panel(`${ic("bell")}Lembretes <small>${nAt ? plural(nAt, "ativo", "ativos") : "nenhum"}</small>`, `${P.length ? `<div class="lssec">${ic("cal")}Com data e hora</div>${lemListaHTML("rt", 12)}` : ""}
+    ${L.length ? `<div class="lssec">${ic("repeat")}Antes de uma atividade, toda semana</div>${L.map(item).join("")}` : ""}
+    ${!L.length && !P.length ? `<p class="muted small">Nenhum lembrete ainda. Crie um com data e hora (aparece na grade, na hora marcada) ou um que avisa antes de uma atividade da rotina.</p>` : ""}
+    <details class="lsnew"${novo ? " open" : ""}><summary data-act="lsnovo">${ic("plus")}Novo lembrete</summary>
+      <div class="seg-g lstipo" role="group" aria-label="Tipo de lembrete"><button type="button" class="seg" data-lemtipo="data" aria-pressed="${tipo === "data"}">Numa data e hora</button><button type="button" class="seg" data-lemtipo="ativ" aria-pressed="${tipo === "ativ"}">Antes de uma atividade</button></div>
+      ${tipo === "data" ? lemFormHTML("rt") : `<div class="form f1">
       <label>Atividade<input type="text" id="ls_t" list="ls_tl" autocomplete="off" placeholder="${esc(A[0] || "Academia")}"><datalist id="ls_tl">${A.map(t => `<option value="${esc(t)}">`).join("")}</datalist></label>
       <div class="lsdias" role="group" aria-label="Dias">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button type="button" class="seg" data-lsdia="${d}" aria-pressed="${LS.dias.includes(d)}">${DOWS[d].toLowerCase()}</button>`).join("")}<small class="muted">nenhum marcado = todo dia em que aparece</small></div>
       <label>Avisar<select id="ls_m">${LS_MIN.map(m => `<option value="${m}"${m === 10 ? " selected" : ""}>${lsMinTxt(m)}</option>`).join("")}</select></label>
-      <button type="button" class="btn sm primary" data-act="lsadd">${ic("plus")}Criar lembrete</button></div></details>
+      <p class="muted small">Avisa antes de cada bloco com esse nome na grade (de modelo, avulso ou repetido), nos dias escolhidos.</p>
+      <button type="button" class="btn sm primary" data-act="lsadd">${ic("plus")}Criar lembrete</button></div>`}</details>
     <div class="lscfg"><label class="chk"><input type="checkbox" data-lscfg="lsSom"${D.lsSom ? " checked" : ""}><span>Tocar um som no aviso</span></label>${"Notification" in window ? `<button type="button" class="lnk" data-act="lsnotif">${D.lsNotif && Notification.permission === "granted" ? "Notificações do navegador ligadas" : "Ligar notificações do navegador"}</button>` : ""}</div>
-    <p class="muted small">O Atlas avisa pelo Secretário enquanto estiver aberto. Para tocar no celular com ele fechado, ponha o lembrete no Google Agenda: vira um evento semanal, com o mesmo aviso, nos horários desta semana.</p>`);
+    <p class="muted small">O Atlas avisa pelo Secretário enquanto estiver aberto. Para tocar no celular com ele fechado, ponha o lembrete no Google Agenda: vira um evento com o mesmo aviso.</p>`);
 }
 function lsSecHTML() {
   const L = lsData(); if (!L.length) return `<div class="secsec">${ic("clock")}Toda semana</div><small class="muted">Nenhum lembrete semanal. Crie na <a href="#rotina.semana">Rotina › Lembretes</a> ou no cartão de qualquer bloco.</small>`;
@@ -146,7 +152,7 @@ function lsClick(t) {
   const ds = t.dataset;
   if (ds.lsdia != null) { const d = +ds.lsdia; LS.dias = LS.dias.includes(d) ? LS.dias.filter(x => x !== d) : [...LS.dias, d]; t.setAttribute("aria-pressed", String(LS.dias.includes(d))); return true; }
   if (ds.act === "lsadd") { const tt = $("#ls_t")?.value.trim(); if (!tt) { toast("Escolha a atividade."); $("#ls_t")?.focus(); return true; }
-    const r = lsSalvar(tt, LS.dias, $("#ls_m").value); LS.dias = []; const px = lsProximas(r, 1);
+    LEM.novo = true; const r = lsSalvar(tt, LS.dias, $("#ls_m").value); LS.dias = []; const px = lsProximas(r, 1);
     undoToast(`Lembrete: ${r.titulo}, ${lsMinTxt(r.min)}, ${lsDiasTxt(r)}${px.length ? ` · próximo ${px[0]}` : " · não aparece nos próximos 14 dias"}`); return true; }
   if (ds.lson) { const r = lsData().find(x => x.id === ds.lson); if (r) { r.on = r.on === false; touch("secretario", { label: r.on ? "Lembrete retomado" : "Lembrete pausado" }); } return true; }
   if (ds.lsdel) { const r = lsData().find(x => x.id === ds.lsdel); if (!r) return true;

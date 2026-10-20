@@ -305,7 +305,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || guClick(t) || coClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || lsClick(t) || insClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (lemClick(t) || hxClick(t) || avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || guClick(t) || coClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || lsClick(t) || insClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -351,6 +351,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); PALSEL = clamp(PALSEL + (e.key === "ArrowDown" ? 1 : -1), 0, Math.max(0, PALITEMS.length - 1)); palUpdate(); return; }
     if (e.key === "Enter") { e.preventDefault(); palRun(PALSEL); return; }
   }
+  if (e.key === "Enter" && tg.classList?.contains("lf-t") && !e.isComposing) { e.preventDefault(); lemEnter(tg); return; }
   if (tg.id === "dz_texto" && AC.open) {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); AC.sel = clamp(AC.sel + (e.key === "ArrowDown" ? 1 : -1), 0, AC.items.length - 1); acUpdate(tg); return; }
     if (e.key === "Enter" || e.key === "Tab") { e.preventDefault(); acPick(AC.sel); return; }
@@ -378,7 +379,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (nuInput(t) || trInput(t) || cfInput(t) || ckInput(t) || secInput(t) || guInput(t) || insInput(t) || coInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtcInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
+  if (lemInput(t) || hxInput(t) || nuInput(t) || trInput(t) || cfInput(t) || ckInput(t) || secInput(t) || guInput(t) || insInput(t) || coInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtcInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -393,7 +394,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || coChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || lsChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (lemChange(t) || nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || coChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || lsChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }
@@ -461,7 +462,7 @@ document.addEventListener("focusout", () => setTimeout(diaVirou, 250));
   const use = n => { try { return Promise.resolve(window.claude?.use?.(n)).catch(() => null); } catch { return Promise.resolve(null); } };
   use("sample").then(async s => { SAMPLE = s || null; if (s) { const lim = await s.limits().catch(() => null); TOOLS_MAX = lim?.tools ? (lim.tools.maxCount || 8) : 0; } if (["mentores", "mentor", "diario"].includes(PAGE)) render(); });
   use("downloads").then(d => { DL = d || null; });
-  use("mcp").then(async m => { MCP = m || null; await notionStatus(); if (PAGE === "integ") render(); gcAuto(); });
+  use("mcp").then(async m => { MCP = m || null; await notionStatus(); if (PAGE === "integ") render(); gcAuto(); lemGcSync(); });
   const loaded = await loadStore();   /* null: a conta existe mas não respondeu */
   if (loaded && Object.keys(loaded).length) { S = comPadroes(loaded); IS_EXAMPLE = false; }
   applyLists(); VER++; LOADED = true; snapAll(); UNDO.length = 0; REDO.length = 0;
@@ -470,5 +471,5 @@ document.addEventListener("focusout", () => setTimeout(diaVirou, 250));
   try { radarSync(); } catch (e) { console.warn("radar", e); }
   try { ckSnapTake(); } catch (e) { console.warn("ckSnap", e); }
   render();
-  secBoot(); coInit();
+  secBoot(); coInit(); lemGcSync();
 })();

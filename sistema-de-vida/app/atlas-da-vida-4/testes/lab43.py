@@ -35,6 +35,8 @@ async def main():
             # painel: novo lembrete para a academia, seg/qua/sex, 15 min antes
             chk(await pg.locator(".lsnew").count() == 1, "a Rotina tem o painel Lembretes com “Novo lembrete”")
             await pg.evaluate("document.querySelector('.lsnew').open = true")
+            chk(await pg.evaluate("[...document.querySelectorAll('[data-lemtipo]')].map(b => b.getAttribute('aria-pressed'))") == ["true", "false"], "o formulário novo abre em “Numa data e hora”; o semanal fica em “Antes de uma atividade”")
+            await pg.click("[data-lemtipo=ativ]"); await pg.wait_for_timeout(200)
             await pg.fill("#ls_t", "academia teste")
             for d in (1, 3, 5): await pg.click(f"[data-lsdia='{d}']")
             await pg.select_option("#ls_m", "15"); await pg.click("[data-act=lsadd]"); await pg.wait_for_timeout(250)

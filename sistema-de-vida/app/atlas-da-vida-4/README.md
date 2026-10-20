@@ -13,7 +13,8 @@ e, no Atlas 4, em Integrações → Importar → Restaurar backup. O espaço A d
   objetos campo a campo; apagado de um lado e intacto do outro sai; editado de um lado e apagado do outro fica; conflito no
   mesmo valor: vale este aparelho). Uma trava curta (`acquire` em `s__lock`) evita duas gravações simultâneas da mesma chave.
 - **Aviso ao vivo:** o documento `s__rev` guarda a revisão de cada chave; os outros aparelhos assinam e releem a chave que
-  mudou (se não tiverem edição pendente nela; se tiverem, a gravação junta). O desfazer daquela chave é descartado.
+  mudou (se não tiverem edição pendente nela; se tiverem, a gravação junta). O desfazer da memória daquela chave é descartado;
+  o histórico de alterações continua e desfaz pela diferença, sem apagar o que veio do outro aparelho.
 - **Conta que não responde ao abrir:** 4 tentativas (1, 2 e 4 s); se continuar fora, o app avisa, não grava no navegador como
   se fosse a conta, guarda o que for registrado e junta quando a conta responder (a cada 15 s, ao voltar para a aba ou no botão).
 - **Fechar ou esconder a aba:** a gravação sai na hora (`visibilitychange`/`pagehide`). Além disso, toda edição vai na hora
@@ -57,7 +58,7 @@ e, no Atlas 4, em Integrações → Importar → Restaurar backup. O espaço A d
   vazio atrás de qualquer texto que só exista nos dados de exemplo.
 
 - `python3 build.py` monta o HTML e, se o Node estiver instalado, confere a sintaxe do JavaScript.
-- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `61` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro; `25-carreira.js` é o hub de Carreira; `26-lazer.js` é o Lazer, com oito divisões e seus mentores; `27-painel.js` é o Painel do dia; `28-capas.js` as capas, missões, manuais e o Mapa do Atlas; `29-hoje2.js` o Hoje; `30-casa.js` a Casa; `31-futuro.js` Futuro financeiro e Itália & Brasil; `32-idiomas.js` Idiomas; `33-carreira2.js` Caderno técnico e Rede profissional; `34-exemplo.js` o modo exemplo; `35-painel2.js` as demais abas no Painel do dia; `36-gcal.js` o Google Calendar; `37-rotina.js` a Rotina em blocos de 30 minutos; `38-jardim.js` o jardim interior da Saúde espiritual; `39-roteiro.js` o roteiro de áudio do Painel do dia; `40-secretario.js` o Secretário da Vida, a janela flutuante que junta as abas; `41-conselho.js` a Administração Pessoal, o Conselho de Administração da vida; `42-filosofia.js` a Filosofia (estoicismo) dentro da Jornada; `43-psique.js` a aba Psicologia e o Terapeuta; `44-cockpit-config.js` a configuração versionada do agente PMO; `45-cockpit.js` o motor do Cockpit de Trabalho (calendário de dias úteis, caminho crítico, prioridade, carga, delegação, alertas, propostas e ferramentas do agente); `46-cockpit-ui.js` as telas de tarefas, equipe e contexto; `47-cockpit-reg.js` riscos, problemas, diário de bordo, decisões, lições e reuniões; `48-cockpit-rel.js` Gantt, tracker BIM, elaborati, briefing, relatórios, blocos de foco e o exemplo; `49-cockpit-agg.js` a camada de agregação pura do Dashboard (e dos KPIs do Hoje, do mapa de riscos e dos relatórios); `50-cockpit-dash.js` o Dashboard; `51-saude-ag.js` o que o Nutri e o Personal têm em comum (propostas, aprovação, painel); `52-nutri.js` a Alimentação e o Nutri; `53-treino.js` os Treinos, o Personal e o exemplo dos dois; `54-centros.js` os centros de força, dentro do Espiritismo na Jornada; `55-rotina-voz.js` o Capturar do dia na Rotina; `56-ia-dados.js` o acesso das IAs aos dados no detalhe; `61-rotina-ativ.js` a lista suspensa de atividades da grade da Rotina).
+- `src/00-head.html` tem o esqueleto e os estilos; os módulos `01` a `63` entram na ordem definida no `build.py` (`24-jornada.js` é a Jornada existencial, com a Bússola moral dentro; `25-carreira.js` é o hub de Carreira; `26-lazer.js` é o Lazer, com oito divisões e seus mentores; `27-painel.js` é o Painel do dia; `28-capas.js` as capas, missões, manuais e o Mapa do Atlas; `29-hoje2.js` o Hoje; `30-casa.js` a Casa; `31-futuro.js` Futuro financeiro e Itália & Brasil; `32-idiomas.js` Idiomas; `33-carreira2.js` Caderno técnico e Rede profissional; `34-exemplo.js` o modo exemplo; `35-painel2.js` as demais abas no Painel do dia; `36-gcal.js` o Google Calendar; `37-rotina.js` a Rotina em blocos de 30 minutos; `38-jardim.js` o jardim interior da Saúde espiritual; `39-roteiro.js` o roteiro de áudio do Painel do dia; `40-secretario.js` o Secretário da Vida, a janela flutuante que junta as abas; `41-conselho.js` a Administração Pessoal, o Conselho de Administração da vida; `42-filosofia.js` a Filosofia (estoicismo) dentro da Jornada; `43-psique.js` a aba Psicologia e o Terapeuta; `44-cockpit-config.js` a configuração versionada do agente PMO; `45-cockpit.js` o motor do Cockpit de Trabalho (calendário de dias úteis, caminho crítico, prioridade, carga, delegação, alertas, propostas e ferramentas do agente); `46-cockpit-ui.js` as telas de tarefas, equipe e contexto; `47-cockpit-reg.js` riscos, problemas, diário de bordo, decisões, lições e reuniões; `48-cockpit-rel.js` Gantt, tracker BIM, elaborati, briefing, relatórios, blocos de foco e o exemplo; `49-cockpit-agg.js` a camada de agregação pura do Dashboard (e dos KPIs do Hoje, do mapa de riscos e dos relatórios); `50-cockpit-dash.js` o Dashboard; `51-saude-ag.js` o que o Nutri e o Personal têm em comum (propostas, aprovação, painel); `52-nutri.js` a Alimentação e o Nutri; `53-treino.js` os Treinos, o Personal e o exemplo dos dois; `54-centros.js` os centros de força, dentro do Espiritismo na Jornada; `55-rotina-voz.js` o Capturar do dia na Rotina; `56-ia-dados.js` o acesso das IAs aos dados no detalhe; `61-rotina-ativ.js` a lista suspensa de atividades da grade da Rotina; `62-lembretes.js` os lembretes com data e hora; `63-historico.js` a janela do histórico de alterações, cujo motor fica no `01-core.js`).
 
 ## Administração Pessoal (o Conselho)
 
@@ -258,7 +259,20 @@ Os chakras lidos à luz da Doutrina Espírita, dentro do pilar Espiritismo (nave
   semana (`RRULE:FREQ=WEEKLY`, aviso `popup` com os mesmos minutos, disponível em vez de ocupado) com a marca `atlas-lemb:<id>` na
   descrição; a sincronização da Agenda ignora esses eventos. Mudar os minutos ou os horários mostra “Atualizar no Google” (apaga e
   recria); “Tirar do Google” e apagar a regra apagam os eventos pelos ids guardados ou, se a resposta do Google não trouxe id, pela
-  marca (`list_events` com `fullText`). Dados: `S.secretario.semanais`.
+  marca (`list_events` com `fullText`). Dados: `S.secretario.semanais`. Na grade, o bloco com regra ativa ganha um sino.
+- **Lembretes com data e hora** (`src/62-lembretes.js`): um só modelo para o Secretário, o painel Lembretes da Rotina (tipo
+  “Numa data e hora”, o padrão; “Antes de uma atividade” é a regra semanal acima), o botão Lembrete da linha de criação rápida,
+  “Lembrete aqui” na lista suspensa de cada meia hora e o cartão. O formulário tem Lembrar de, Data, Hora, Repetir (não repete,
+  todo dia, dias úteis, toda semana, todo mês, todo ano) e Avisar (na hora até 1 dia antes). A frase preenche os campos enquanto
+  se escreve (“dentista 25/10 às 15h”, “às 3 da tarde”, “daqui a 2 horas”, “28 de outubro”, “remédio todo dia às 8”, “toda segunda
+  às 9h30”, “todo dia 5”); campo mexido à mão não muda mais, e o que está nos campos é o que vale. O leitor antigo do Secretário
+  errava 5 de 12 frases comuns (“às 3 da tarde” virava 03:00 do dia seguinte, “25/10 às 15h” virava hoje); `lab49.py` confere 14.
+  Cada lembrete aparece na hora exata na grade Dia e Semana (linha tracejada e etiqueta com sino, que abre o cartão: Feito,
+  Editar, Google Agenda, Tirar só deste dia, Apagar), no Mês, no minicalendário, na faixa da semana (sino com o número), nos
+  Próximos 7 dias do Hoje e no Agora do Secretário; não ocupa tempo nem entra em conflito com os blocos. Avisa uma vez por
+  ocorrência (os que repetem, uma vez por dia). “Também no Google Agenda” cria um evento com a repetição (`RRULE`), o aviso e a
+  marca `atlas-lemb:l:<id>`; o id fica também em `S.integ.lemGc`, e evento de lembrete que sumiu (apagado ou desfeito) sai do
+  Google. Dados: `S.secretario.lembretes = [{ id, texto, quando, rep, min, feito, avisado, feitos, avisados, exc, gcal }]`.
 - **Hoje:** tempo livre em 2 h, 4 h ou 6 h, ou outro valor escrito em horas (1, 1,5, 3…).
 - **Painel do dia:** “Recomeçar do zero” no topo (e “Limpar” no rodapé) limpa o painel num toque, com desfazer; o que já foi salvo nas abas continua lá.
 
@@ -349,6 +363,25 @@ Com o Atlas aberto depois da meia-noite, a data muda sozinha (a cada minuto e ao
 para o dia novo, e o que estava no dia velho acompanha (mês do relatório, Rotina, Captura e um Painel do dia vazio). Um
 rascunho do Painel fica no dia em que foi escrito, com aviso; se um campo estiver em edição, a virada espera ele perder o foco.
 
+## Desfazer e histórico de alterações (`src/01-core.js` + `src/63-historico.js`)
+
+Cada passo desfazível (o `touch` com rótulo) também vai para um histórico com o que mudou item a item: item criado ou apagado numa
+lista com `id`, campos mudados de um item, ou o valor que mudou num caminho. O histórico fica neste aparelho (`localStorage`
+`atlas4_hx`, até 150 passos e ~900 KB; passo grande demais fica listado sem o desfazer), sobrevive a recarregar a página e junta os
+passos de duas abas abertas. Desfazer um passo antigo volta só o que aquele passo mudou e que continua como ele deixou: o que veio
+depois fica, e o aviso conta as partes que mudaram de novo. O passo mais recente desfaz pela fotografia da memória, exato.
+
+- **Aviso com Desfazer:** o aviso que vem logo depois de uma mudança ganha o botão Desfazer daquele passo (desfaz aquele, mesmo que
+  outro tenha vindo depois). Se a pessoa criou ou apagou algo e o módulo não avisou, o Atlas avisa sozinho (só para o que a pessoa
+  acabou de fazer, não para gravações em segundo plano). Salvar uma edição no formulário padrão também avisa. O aviso dura 8 s
+  com botão, não some com o mouse em cima, não bloqueia o toque no que está embaixo (só o botão recebe o toque), usa a largura do
+  texto no celular e, com uma janela aberta, aparece dentro dela, por cima do fundo escuro (antes ficava atrás, sem dar para tocar).
+- **Janela Histórico de alterações:** botão de relógio no topo (ao lado de desfazer e refazer) e na busca (Ctrl K). Lista por dia,
+  com a aba, o que mudou (+ criado, − apagado, campos), busca, Desfazer em cada passo, Refazer no que foi desfeito e “Ir para”.
+- **Ctrl Z depois de recarregar:** com a memória vazia, a seta de desfazer (que mostra o que vai desfazer) e o Ctrl Z desfazem o
+  último passo guardado, e Refazer volta. No modo exemplo, não mexem nos passos dos dados reais.
+- **Apagar o que não tinha como apagar:** experimentos (antes só dava para cancelar) e modelos salvos da Rotina.
+
 ## Testes (Playwright + Chromium)
 
 Rode de dentro de `testes/`, depois do build. Cada script imprime `PASS`/`FAIL` por verificação e o total no fim.
@@ -405,6 +438,7 @@ O relógio do navegador fica fixo em 09/10/2026, 10:00 (sexta), para os testes n
 | `lab46.py` | Atlas 4 · IA de acompanhamento: ativar, perfil e esforço no pedido (quick/default/complex), ferramentas, contexto guardado, tela compartilhada (texto da aba e campos), avaliar outra aba, imagem anexada só onde há imagens, notas de progresso, ao lado do Secretário, desativar e reativar com a conversa, outra atividade com outro perfil, celular (uma janela de cada vez), modo exemplo |
 | `flows.py`, `edge.py`, `sjflows.py` | fluxos herdados do Atlas original |
 | `lab47.py` | Atlas 4 · sem vazios entre as caixas: Rotina na Semana com um cabeçalho de datas só (a faixa de dias só no Dia), grade da Rotina na altura útil da janela acompanhando a rolagem e terminando junto com os painéis, a janela mais alta faz a grade crescer, coluna principal curta cresce até a lateral (Cockpit · Mês), relatório alarga o cartão e redesenha o gráfico sem esticar, nenhum vazio de 120×180 px em 21 telas em nenhuma posição de rolagem, cartão sozinho na largura toda, celular sem ajustes e sem rolagem lateral |
+| `lab49.py` | Atlas 4 · lembretes com data e hora (14 frases, formulário no Secretário e na Rotina, campo mexido à mão, grade, Mês, minicalendário, Hoje, cartão com Feito só do dia, Tirar só deste dia, Apagar com Desfazer, “Lembrete aqui”, aviso na hora e N min antes, diário uma vez por dia, atrasados, proposta da IA, Google Agenda com repetição e aviso, desfazer que tira o evento do Google) e desfazer em qualquer aba (Desfazer em criar e editar, aviso dentro da janela aberta, histórico com passo antigo, conflito, Desfazer de um aviso antigo, aviso automático, apagar experimento e modelo, recarregar e Ctrl Z, campo vazio, duas abas, modo exemplo, celular) |
 | `lab48.py` | Atlas 4 · Rotina › lista suspensa de atividades: só as do modelo Standard, uma vez cada, a cor de mais minutos; abre na célula com a busca em foco, dois grupos (Standard e Outras), cor de cada uma, combobox e listbox; escolher preenche com nome, categoria, fundo e letra; vizinho igual cresce; arrastar por cima de bloco ocupado preenche só o livre (e o aviso diz), desfazer, juntar dos dois lados; setas, Esc, clicar fora; criar em Outras pela busca com seletor de cor e prévia, banco, aparece no grupo Outras; nome repetido recusado, Voltar; “Mais opções…” com sugestões e categoria; “Trocar atividade” no cartão; “Atividades e cores” (recolorir e renomear levam os blocos, adicionar com categoria sugerida, excluir deixa os blocos, escolher o modelo de origem); texto rápido; semana; celular com painel de baixo sem teclado e opções de 44 px |
 | `furos.py 1440 900 ex` | varredura de todas as telas (largura, altura, `ex` ou `vazio`): vazio entre caixas e caixa esticada, em cada posição de rolagem |
 | `smoke.py 390 dark`, `holes.py 1024` | todas as páginas numa largura/tema; buracos entre cartões |

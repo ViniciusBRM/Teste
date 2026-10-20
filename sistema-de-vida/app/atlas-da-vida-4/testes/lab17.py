@@ -77,7 +77,7 @@ async def main():
             chk(await pg.evaluate("secData().lembretes.length") == n1 and "Para quando" in await pg.evaluate("secData().conversa.at(-1).content"), "sem hora, ele pergunta para quando em vez de chutar")
             await pg.evaluate("secData().lembretes.push({ id: 'lx', texto: 'Tomar o remédio', quando: (d => `${iso(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`)(new Date(Date.now() - 60e3)), feito: false, avisado: false }); secToggle(false); secTick()"); await pg.wait_for_timeout(300)
             chk(await pg.evaluate("[SEC.open, SEC.tab, secData().lembretes.find(x => x.id === 'lx').avisado]") == [True, "lembretes", True] and "Tomar o remédio" in await pg.text_content("#secbody"), "na hora, o lembrete abre a janela e avisa")
-            await pg.click("[data-secdo='lemok|lx']"); await pg.wait_for_timeout(150)
+            await pg.click("#secbody [data-lemok^='lx|']"); await pg.wait_for_timeout(150)
             chk(await pg.evaluate("secData().lembretes.find(x => x.id === 'lx').feito"), "marcar como feito")
             # conflitos
             await pg.evaluate("S.rotina.push({ id: 'cb1', data: TODAY, ini: '23:00', fim: '23:30', titulo: 'Leitura', cat: 'Lazer', rep: '', exc: [], st: {} }); S.eventos.push({ id: 'ce1', data: TODAY, hora: '23:00', fim: '23:30', titulo: 'Chamada com Tóquio' }); touch('rotina', 'eventos')"); await pg.wait_for_timeout(200)

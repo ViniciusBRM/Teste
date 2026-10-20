@@ -5,11 +5,12 @@
      hábitos, rotina, exame da noite, radar (orçamento, humor, metas, sequências), pessoas, idiomas e o jardim.
    - Para decidir: conflitos entre áreas (bloco da rotina × agenda, dia sobrecarregado, prioridades altas atrasadas);
      o Secretário não escolhe, só apresenta as opções.
-   - Lembretes: criados por texto ou voz (“me lembre de ligar para a mãe amanhã às 18h”); avisam dentro do Atlas na hora.
+   - Lembretes: criados por texto ou voz (“me lembre de ligar para a mãe amanhã às 18h”) ou no formulário com Data, Hora, Repetir e
+     Avisar (62-lembretes); aparecem na grade da Rotina e avisam dentro do Atlas na hora (e no Google Agenda, se marcado).
    - Conversa: o Claude com ferramentas para ver qualquer aba, consultar os mentores (só para coletar informação), propor
      ações e levantar conflitos. Nada vira registro sem a pessoa confirmar; tudo passa pelo registro de Privacidade.
    Modos (perfis de imposição, editáveis): Enfoque, Ação, Reflexão e Relaxo mudam o tom, o que aparece e a proatividade.
-   Dados: secretario = { modo, perfis, conversa, lembretes: [{id, texto, quando, feito, avisado}], decisoes: [{id, chave, escolha, data}], tts }. */
+   Dados: secretario = { modo, perfis, conversa, lembretes: [{id, texto, quando, rep, min, feito, avisado, feitos, avisados, exc, gcal}] (ver 62-lembretes), decisoes: [{id, chave, escolha, data}], tts }. */
 const SEC = { open: false, tab: "agora", input: "", live: null, ouvindo: false, nudge: null, cfg: false, conf: {}, rec: null };
 const SEC_MODOS = {
   enfoque: { nome: "Enfoque", ico: "target", desc: "Só o que importa hoje, uma coisa por vez.", tom: "curto e firme; uma coisa por vez; diga o que pode esperar e corte distrações", pro: "media", mostra: "hoje" },
@@ -46,7 +47,7 @@ function secItems() {
   for (const p of R.pes.filter(p => p.faltam != null && p.faltam >= 0 && p.faltam <= 7)) add({ id: "aniv:" + p.id, area: "Família", st: p.faltam <= 1 ? "warn" : "info", txt: `Aniversário de ${p.nome}`, sub: p.faltam === 0 ? "é hoje" : p.faltam === 1 ? "amanhã" : `em ${p.faltam} dias`, go: "pessoas.lista" });
   const late = R.pes.filter(p => p.st === "crit" && +p.freq).sort((a, b) => b.ratio - a.ratio)[0];
   if (late) add({ id: "pes:" + late.id, area: "Família", st: "info", txt: `Falar com ${late.nome}`, sub: late.txt || "contato atrasado", go: "pessoas.lista" });
-  for (const l of secData().lembretes.filter(l => !l.feito && l.quando && l.quando.slice(0, 10) <= d)) { const past = new Date(l.quando) <= new Date(); add({ id: "lem:" + l.id, area: "Lembretes", st: past ? "crit" : "warn", txt: l.texto, sub: `${past ? "era para" : "hoje às"} ${l.quando.slice(11, 16)}${l.quando.slice(0, 10) < d ? ` de ${fmtD(l.quando.slice(0, 10))}` : ""}`, acts: [["Feito", `lemok|${l.id}`]], go: null }); }
+  for (const x of lemDeHoje(d)) add({ id: `lem:${x.l.id}:${x.d}`, area: "Lembretes", st: x.passou ? "crit" : "warn", txt: x.l.texto, sub: `${x.passou ? "era para" : "hoje às"} ${x.hm}${x.d < d ? ` de ${fmtD(x.d)}` : ""}${x.l.rep ? ` · ${lemRepTxt(x.l.rep, lemDia(x.l))}` : ""}`, acts: [["Feito", `lemok|${x.l.id}|${x.d}`]], go: null });
   try { const a = jdAsks()[0]; if (a) add({ id: "jd:" + a[3], area: "Propósito & espiritualidade", st: "info", txt: `Jardim: ${a[1]}`, sub: a[2], go: "jornada.jardim" }); } catch (e) { console.warn("jardim", e); }
   const rk = { crit: 0, warn: 1, info: 2 };
   return out.sort((a, b) => rk[a.st] - rk[b.st]);
@@ -77,32 +78,12 @@ function secPadroes() {
 
 /* ---------------------------------------------------------------- lembretes: “me lembre de X amanhã às 18h” */
 const SEC_DOW = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
-function secParseLembrete(txt) {
-  let F = fold(txt), t = String(txt), when = null, day = null, hm = null;
-  const m1 = F.match(/\bem\s+(\d+|meia|uma|um)\s*(min|minutos?|h|horas?)\b/);
-  if (m1) { const n = m1[1] === "meia" ? 30 : /^um/.test(m1[1]) ? 1 : +m1[1], ms = /^m/.test(m1[2]) ? n * 60e3 : (m1[1] === "meia" ? 30 * 60e3 : n * 3600e3); when = new Date(Date.now() + ms); }
-  if (!when) {
-    if (/\bdepois de amanha\b/.test(F)) day = addDays(TODAY, 2); else if (/\bamanha\b/.test(F)) day = addDays(TODAY, 1); else if (/\bhoje\b/.test(F)) day = TODAY;
-    const dm = F.match(/\bdia\s+(\d{1,2})(?:\/(\d{1,2}))?\b/); if (dm) { const y = +TODAY.slice(0, 4), mo = dm[2] ? +dm[2] : +TODAY.slice(5, 7); let c = `${y}-${pad(mo)}-${pad(+dm[1])}`; if (c < TODAY) c = dm[2] ? `${y + 1}-${pad(mo)}-${pad(+dm[1])}` : addMonth(c.slice(0, 7), 1) + "-" + pad(+dm[1]); day = c; }
-    const wd = SEC_DOW.findIndex(w => new RegExp(`\\b${w}(-feira)?\\b`).test(F)); if (!day && wd >= 0) { let k = (wd - parse(TODAY).getDay() + 7) % 7 || 7; day = addDays(TODAY, k); }
-    const tm = F.match(/\b(?:as|a|ao)\s+(\d{1,2})(?:[:h](\d{2}))?\s*(?:h|horas)?\b/) || F.match(/\b(\d{1,2})[:h](\d{2})\b/) || F.match(/\b(\d{1,2})\s*h\b/);
-    if (/\bmeio[- ]dia\b/.test(F)) hm = [12, 0]; else if (tm) hm = [+tm[1], +(tm[2] || 0)];
-    if (hm && hm[0] > 23) hm = null;
-    if (day || hm) { day ||= TODAY; hm ||= [9, 0]; if (day === TODAY && hm[0] * 60 + hm[1] <= secNowMin() && !/\bhoje\b/.test(F)) day = addDays(TODAY, 1); when = new Date(`${day}T${pad(hm[0])}:${pad(hm[1])}:00`); }
-  }
-  /* \b do JS não conhece ã/à; as fronteiras aqui são "não letra, não dígito" */
-  const W = re => new RegExp(`(?<![\\p{L}\\d])(?:${re})(?![\\p{L}\\d])`, "giu");
-  t = t.replace(/^\s*(?:secret[aá]rio,?\s*)?(?:me\s+)?(?:(?:cria(?:r)?\s+(?:um\s+)?)?lembrete|lembr[ae]r?(?:-me)?(?![\p{L}]))\s*(?:de|para|que)?\s*/iu, "")
-    .replace(W("em\\s+(?:\\d+|meia|uma|um)\\s*(?:min|minutos?|h|horas?)"), "").replace(W("depois de amanhã|depois de amanha|amanhã|amanha|hoje"), "").replace(W("dia\\s+\\d{1,2}(?:/\\d{1,2})?"), "")
-    .replace(W(`(?:(?:na|no)\\s+)?(?:domingo|segunda|terça|terca|quarta|quinta|sexta|sábado|sabado)(?:-feira)?`), "").replace(W("(?:às|as|ao|à|a)\\s+\\d{1,2}(?:[:h]\\d{2})?\\s*(?:h|horas)?"), "").replace(W("\\d{1,2}[:h]\\d{2}"), "").replace(W("(?:(?:ao|à|a)\\s+)?meio[- ]dia"), "").replace(/\s{2,}/g, " ").replace(/[\s,.;]+$/, "").trim();
-  if (!t) return null;
-  const quando = when ? `${iso(when)}T${pad(when.getHours())}:${pad(when.getMinutes())}` : "";
-  return { texto: t[0].toUpperCase() + t.slice(1), quando };
-}
-function secLembrar(l) { secData().lembretes.push({ id: uid(), texto: l.texto.slice(0, 200), quando: l.quando, feito: false, avisado: false, at: Date.now(), origem: l.origem || "você" }); touch("secretario", { label: "Lembrete criado" }); }
+/* a frase vira lembrete pelo leitor do 62-lembretes (dd/mm, “3 da tarde”, “daqui a 2 horas”, “todo dia às 8”…). Sem data, hora nem
+   repetição na frase, quando fica vazio: o Secretário pergunta em vez de chutar */
+function secParseLembrete(txt) { const P = lemParse(txt); if (!P.texto) return null; const tem = P.achou.data || P.achou.hora || P.achou.rep; return { texto: P.texto, quando: tem && P.data && P.hora ? `${P.data}T${P.hora}` : "", rep: tem ? P.rep : "" }; }
+function secLembrar(l) { secData().lembretes.push({ id: uid(), texto: l.texto.slice(0, 200), quando: l.quando, rep: l.rep || "", min: +l.min || 0, feito: false, avisado: false, at: Date.now(), origem: l.origem || "você" }); touch("secretario", { label: `Lembrete criado: ${trunc(l.texto, 40)}` }); }
 function secTick() {
-  if (!LOADED) return; if (lsTick()) return; const L = secData().lembretes, now = new Date(), due = L.filter(l => !l.feito && !l.avisado && l.quando && new Date(l.quando) <= now);
-  if (due.length) { for (const l of due) l.avisado = true; touch("secretario", { noUndo: true, noRender: true }); SEC.nudge = { txt: due.length === 1 ? `Lembrete: ${due[0].texto}` : `${due.length} lembretes agora`, crit: true, at: Date.now() }; SEC.tab = "lembretes"; SEC.open = true; secLS("open", true); toast(SEC.nudge.txt); secPaint(); return; }
+  if (!LOADED) return; if (lsTick()) return; if (lemTick()) return;
   /* proatividade: avisa uma vez por dia o que é novo, conforme o perfil */
   const pf = secPerfil(); if (SEC.open || pf.pro === "baixa" || pf.pro === "minima") { secFab(); return; }
   const seen = secLS("seen") || {}, day = seen[TODAY] || [], its = secItems().filter(i => i.st === "crit" || (pf.pro === "alta" && i.st === "warn")).filter(i => !day.includes(i.id));
@@ -118,7 +99,7 @@ function secAbaFacts(aba, ctx) {
   if (aba === "tarefas") return S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && aiAreaOk(t.area)).sort((a, b) => (a.prazo || "9").localeCompare(b.prazo || "9")).slice(0, 40).map(t => `- [${t.id}] ${t.tarefa} · ${t.prio || "Média"}${t.prazo ? " · prazo " + t.prazo : ""}${t.area ? " · " + t.area : ""}`).join("\n") || "nenhuma tarefa aberta";
   if (aba === "rotina") return [TODAY, addDays(TODAY, 1)].map(dd => { const X = rtDia(dd); return `${dd}: ${rtOcc(dd).map(b => `${b.ini}–${b.fim} ${b.titulo}${b.st ? " (" + b.st + ")" : ""}`).join("; ") || "sem blocos"}. Livre: ${num((X.livre || 0) / 60, 1)} h. Conflitos: ${(X.conf || []).length}.`; }).join("\n");
   if (aba === "jornada") return aiAreaOk("Propósito & espiritualidade") ? [...J_ORDER.map(p => jPilarFacts(p, false).slice(0, 4).join(" ")), `Bússola: prática ${bmScores(28).idx == null ? "sem exames" : pct(bmScores(28).idx)} em 4 semanas; exames em 7 dias: ${Array.from({ length: 7 }, (_, i) => addDays(TODAY, -i)).filter(x => bmEx()[x]).length}.`].join("\n") : "setor privado";
-  if (aba === "lembretes") return secData().lembretes.filter(l => !l.feito).map(l => `- ${l.quando || "sem hora"} · ${l.texto}`).join("\n") || "nenhum lembrete pendente";
+  if (aba === "lembretes") return lemPendentes().map(l => `- ${l.quando || "sem hora"} · ${l.texto}${l.rep ? ` · repete: ${lemRepTxt(l.rep, lemDia(l))}, próxima ${lemProx(l) || "—"}` : ""}${+l.min ? ` · avisa ${lemMinTxt(l.min)}` : ""}`).join("\n") || "nenhum lembrete pendente";
   if (aba === "agora") return secItems().filter(i => aiAreaOk(i.area)).map(i => `- [${i.st}] ${i.area}: ${i.txt} (${i.sub})`).join("\n");
   return "aba desconhecida";
 }
@@ -157,8 +138,8 @@ function secTools(live) {
         note("consultar_mentor", `${MENTOR_DEF[mid].nome}: ${trunc(inp.pergunta, 60)}`);
         const r = await aiCall(`${MENTOR_DEF[mid].nome} (consultado pelo Secretário)`, () => [{ role: "user", content: mentorPrompt(mid, false) + iadPromptMentor(mid, true, 120000) + `\n\nO Secretário da Vida, que coordena o app, pede um relatório para a pessoa. Responda só com informação, em até 120 palavras: progresso, bloqueios e oportunidades, com números. Não proponha registros, não decida nada e não use ferramentas.` }, { role: "user", content: String(inp.pergunta).slice(0, 600) }], { signal: ctx?.signal || live.ctl.signal, modelTier: "quick", cache: true });
         return String(r.text || "").replace(/```atlas[\s\S]*?```/g, "").trim().slice(0, 2500); } },
-    { name: "propor", description: "Propõe uma ação que a pessoa confirma ou descarta num cartão. Tipos: tarefa (titulo, prazo, prioridade), lembrete (titulo, quando AAAA-MM-DDTHH:MM), adiar (tarefa_id, prazo), concluir (tarefa_id), bloco (titulo, data, inicio HH:MM, fim HH:MM ou duracao_min, categoria da rotina): use bloco para TODA atividade com horário (montar o dia, reunião, estudo, treino), um por atividade, e tarefa só para o que tem prazo sem hora marcada. Nada é feito sem confirmação.",
-      inputSchema: { type: "object", properties: { tipo: { type: "string", enum: ["tarefa", "lembrete", "adiar", "concluir", "bloco"] }, titulo: { type: "string" }, prazo: { type: "string" }, prioridade: { type: "string", enum: ["Alta", "Média", "Baixa"] }, quando: { type: "string" }, tarefa_id: { type: "string" }, data: { type: "string" }, inicio: { type: "string" }, fim: { type: "string" }, categoria: { type: "string" }, duracao_min: { type: "number" }, motivo: { type: "string" } }, required: ["tipo"] },
+    { name: "propor", description: "Propõe uma ação que a pessoa confirma ou descarta num cartão. Tipos: tarefa (titulo, prazo, prioridade), lembrete (titulo, quando AAAA-MM-DDTHH:MM, e se repete: repetir diario|uteis|semanal|mensal|anual, avisar_min), adiar (tarefa_id, prazo), concluir (tarefa_id), bloco (titulo, data, inicio HH:MM, fim HH:MM ou duracao_min, categoria da rotina): use bloco para TODA atividade com horário (montar o dia, reunião, estudo, treino), um por atividade, e tarefa só para o que tem prazo sem hora marcada. Nada é feito sem confirmação.",
+      inputSchema: { type: "object", properties: { tipo: { type: "string", enum: ["tarefa", "lembrete", "adiar", "concluir", "bloco"] }, titulo: { type: "string" }, prazo: { type: "string" }, prioridade: { type: "string", enum: ["Alta", "Média", "Baixa"] }, quando: { type: "string" }, tarefa_id: { type: "string" }, data: { type: "string" }, inicio: { type: "string" }, fim: { type: "string" }, categoria: { type: "string" }, duracao_min: { type: "number" }, motivo: { type: "string" }, repetir: { type: "string", enum: ["", "diario", "uteis", "semanal", "mensal", "anual"] }, avisar_min: { type: "number" } }, required: ["tipo"] },
       execute: inp => { const p = secMkProp(inp); if (p.erro) throw new Error(p.erro); live.acoes.push(p); note("propor", p.rotulo); return { ok: true, status: "aguardando confirmação da pessoa" }; } },
     { name: "levantar_conflito", description: "Leva à pessoa um conflito ou ambiguidade entre prioridades ou áreas, com 2 a 4 opções. Ela decide; você não escolhe. Retorna {ok}.",
       inputSchema: { type: "object", properties: { titulo: { type: "string" }, contexto: { type: "string" }, opcoes: { type: "array", items: { type: "string" } } }, required: ["titulo", "opcoes"] },
@@ -174,7 +155,8 @@ function secMkProp(inp) {
   if (tipo === "tarefa") { const ht = rtHoraTxt(inp.titulo), hd = rtHoraTxt(inp.motivo), h = ht || (hd && !hd.so ? hd : null);   // na descrição, só faixa (“09:00–10:30”) vale
     if (h && (!inp.prazo || /^\d{4}-\d{2}-\d{2}$/.test(inp.prazo))) return secMkProp({ ...inp, tipo: "bloco", titulo: rtSemHora(inp.titulo, ht), data: inp.prazo || inp.data || TODAY, inicio: m2hm(h.a), fim: m2hm(h.z), deTarefa: true }); }
   if (tipo === "tarefa") return { id, tipo, titulo: String(inp.titulo || "").slice(0, 200), prazo: /^\d{4}-\d{2}-\d{2}$/.test(inp.prazo || "") ? inp.prazo : "", prio: ["Alta", "Média", "Baixa"].includes(inp.prioridade) ? inp.prioridade : "Média", motivo: inp.motivo || "", rotulo: `tarefa: ${trunc(inp.titulo, 60)}`, status: "pendente" };
-  if (tipo === "lembrete") { const q = String(inp.quando || ""); if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(q)) return { erro: "quando precisa ser AAAA-MM-DDTHH:MM" }; return { id, tipo, titulo: String(inp.titulo || "").slice(0, 200), quando: q.slice(0, 16), motivo: inp.motivo || "", rotulo: `lembrete: ${trunc(inp.titulo, 50)} · ${fmtD(q.slice(0, 10))} às ${q.slice(11, 16)}`, status: "pendente" }; }
+  if (tipo === "lembrete") { const q = String(inp.quando || ""); if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(q)) return { erro: "quando precisa ser AAAA-MM-DDTHH:MM" }; const rp = inp.repetir in LEM_REP ? inp.repetir : "", mn = LEM_MIN.includes(+inp.avisar_min) ? +inp.avisar_min : 0;
+    return { id, tipo, titulo: String(inp.titulo || "").slice(0, 200), quando: q.slice(0, 16), rep: rp, min: mn, motivo: inp.motivo || "", rotulo: `lembrete: ${trunc(inp.titulo, 50)} · ${fmtD(q.slice(0, 10))} às ${q.slice(11, 16)}${rp ? ` · ${lemRepTxt(rp, q.slice(0, 10))}` : ""}`, status: "pendente" }; }
   if (tipo === "adiar" || tipo === "concluir") { if (!t) return { erro: "Tarefa não encontrada; use o id de ver_aba(tarefas)." }; if (tipo === "adiar" && !/^\d{4}-\d{2}-\d{2}$/.test(inp.prazo || "")) return { erro: "prazo AAAA-MM-DD obrigatório" }; return { id, tipo, tid: t.id, titulo: t.tarefa, prazo: inp.prazo || "", motivo: inp.motivo || "", rotulo: `${tipo}: ${trunc(t.tarefa, 50)}`, status: "pendente" }; }
   if (tipo === "bloco") {
     /* aceita “9:00”, “9h”, “9h30”, “09.00”; sem fim, usa a duração ou 1 h; sem início, procura o horário no título ou no motivo */
@@ -216,7 +198,7 @@ function secLocal(text) {
   const mm = F.match(/\bmodo\s+(enfoque|foco|acao|reflexao|relaxo|relax|descanso)\b/);
   if (mm) { const m = { foco: "enfoque", relax: "relaxo", descanso: "relaxo" }[mm[1]] || mm[1]; D.modo = m; touch("secretario", { noUndo: true, noRender: true }); return say(`Modo **${SEC_MODOS[m].nome}**: ${SEC_MODOS[m].desc}`); }
   if (/^\s*(secretario,?\s*)?(me\s+)?(lembr|cria(r)?\s+(um\s+)?lembrete|lembrete)/.test(F)) { const l = secParseLembrete(text); if (!l) return say("Lembrar de quê? Ex.: “me lembre de ligar para o banco amanhã às 10”."); if (!l.quando) return say(`Para quando é “${l.texto}”? Diga, por exemplo, “hoje às 18h”, “amanhã às 9” ou “em 30 minutos”.`);
-    secLembrar(l); return say(`Combinado: **${l.texto}**, ${l.quando.slice(0, 10) === TODAY ? "hoje" : fmtDL(l.quando.slice(0, 10))} às ${l.quando.slice(11, 16)}. Aviso aqui no Atlas na hora (com o Atlas aberto).`); }
+    secLembrar(l); return say(`Combinado: **${l.texto}**, ${lemQuandoTxt(l.quando.slice(0, 10), l.quando.slice(11, 16))}${l.rep ? `, ${lemRepTxt(l.rep, l.quando.slice(0, 10))}` : ""}. Aparece na Rotina e eu aviso aqui na hora (com o Atlas aberto). Para mudar, abra a aba Lembretes.`); }
   const go = F.match(/^\s*(abr[ae]|abrir|ir para|vai para|mostra(r)?)\s+(?:a\s+|o\s+)?(?:aba\s+)?(.+)$/);
   if (go) { const hit = SEC_GO.find(([rx]) => rx.test(go[3])); if (hit) { setHash(...hit[1].split(".")); return say(`Abri ${hit[1].split(".")[0]}.`); } }
   if (/^\s*(resumo|o que (tenho|vence|falta)|agenda de hoje|status|como estou)\b/.test(F)) { const its = secFilt(secItems()); return say(its.length ? `${its.slice(0, 6).map(i => `- ${i.st === "crit" ? "**" : ""}${i.txt}${i.st === "crit" ? "**" : ""} · ${i.sub}`).join("\n")}${its.length > 6 ? `\n\n…e mais ${its.length - 6} no Agora.` : ""}` : "Nada pendente agora. Bom momento para respirar ou adiantar algo."); }
@@ -230,12 +212,12 @@ function secDo(code, el) {
   if (k === "ckdone") { const t = (S.ckTar || []).find(x => x.id === a); if (!t) return; ckSetStatus(t.id, "concluída"); undoToast(`Concluída: ${t.cod} · ${trunc(t.titulo, 50)}`); return; }
   if (k === "tadiar") { const t = S.tarefas.find(x => x.id === a); if (!t) return; t.prazo = addDays(TODAY, 1); touch("tarefas", { label: "Tarefa adiada" }); undoToast(`Adiada para amanhã: ${trunc(t.tarefa, 50)}`); return; }
   if (k === "conta") { const c = (S.contasCasa || []).find(z => z.id === a); if (!c) return; c.pagos = { ...(c.pagos || {}), [b]: TODAY }; const ks = ["contasCasa"], cat = /aluguel|condom/i.test(c.cat || "") ? "Moradia" : "Contas da casa"; if (+c.valor > 0 && cat in CAT_DESP) { S.lanc.push({ id: uid(), data: TODAY, tipo: "Despesa", cat, desc: c.conta, valor: +c.valor, conta: c.debito === "Sim" ? "Conta corrente" : "PIX / transferência", origem: "secretário" }); ks.push("lanc"); } touch(...ks, { label: "Conta paga" }); undoToast(`Conta paga: ${c.conta} · ${eur(+c.valor || 0, 2)} lançado`); return; }
-  if (k === "lemok") { const l = secData().lembretes.find(x => x.id === a); if (l) { l.feito = true; touch("secretario", { label: "Lembrete feito" }); } return; }
-  if (k === "lemdel") { const D = secData(); D.lembretes = D.lembretes.filter(x => x.id !== a); touch("secretario", { label: "Lembrete apagado" }); undoToast("Lembrete apagado"); return; }
+  if (k === "lemok") { const l = lemFeitoSet(a, b || TODAY, true); if (l) undoToast(`Feito: ${trunc(l.texto, 40)}`); return; }
+  if (k === "lemdel") { lemApagar(a); return; }
 }
 function secApplyProp(p) {
   if (p.tipo === "tarefa") { S.tarefas.push({ id: uid(), tarefa: p.titulo, projeto: "", area: "", prio: p.prio, prazo: p.prazo, status: "A fazer", concluida: "", meta: "", notas: p.motivo, origem: "Secretário" }); return ["tarefas"]; }
-  if (p.tipo === "lembrete") { secData().lembretes.push({ id: uid(), texto: p.titulo, quando: p.quando, feito: false, avisado: false, at: Date.now(), origem: "Secretário" }); return ["secretario"]; }
+  if (p.tipo === "lembrete") { secData().lembretes.push({ id: uid(), texto: p.titulo, quando: p.quando, rep: p.rep || "", min: +p.min || 0, feito: false, avisado: false, at: Date.now(), origem: "Secretário" }); return ["secretario"]; }
   if (p.tipo === "adiar") { const t = S.tarefas.find(x => x.id === p.tid); if (t) t.prazo = p.prazo; return ["tarefas"]; }
   if (p.tipo === "concluir") { const t = S.tarefas.find(x => x.id === p.tid); if (t) { t.status = "Concluída"; t.concluida = TODAY; } return ["tarefas"]; }
   if (p.tipo === "bloco") { (S.rotina ||= []).push({ id: uid(), data: p.data, ini: p.ini, fim: p.fim, titulo: p.titulo, cat: p.cat, rep: "", exc: [], st: {}, notas: p.motivo || "", ...rtCorAtiv(p.titulo) }); return ["rotina"]; }
@@ -267,14 +249,14 @@ function secAgoraHTML() {
   return h;
 }
 function secLembHTML() {
-  const L = secData().lembretes.filter(l => !l.feito).sort((a, b) => (a.quando || "9").localeCompare(b.quando || "9")), F = secData().lembretes.filter(l => l.feito).slice(-5).reverse(), now = new Date();
-  return `<div class="secnew"><input type="text" id="sec_lem" placeholder="Ligar para o banco amanhã às 10" aria-label="Novo lembrete"><button type="button" class="btn sm primary" data-act="seclemadd">${ic("plus")}Lembrar</button></div><small class="muted">Aviso dentro do Atlas na hora marcada, com ele aberto.</small>
-    ${L.length ? L.map(l => { const past = l.quando && new Date(l.quando) <= now; return `<div class="secit ${past ? "st-crit" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(l.texto)}</b><small>${l.quando ? `${l.quando.slice(0, 10) === TODAY ? "hoje" : fmtDL(l.quando.slice(0, 10))} às ${l.quando.slice(11, 16)}` : "sem hora"}${l.origem && l.origem !== "você" ? ` · ${esc(l.origem)}` : ""}</small><div class="secacts"><button type="button" class="btn sm" data-secdo="lemok|${l.id}">${ic("check")}Feito</button><button type="button" class="btn sm ghost" data-secdo="lemdel|${l.id}" aria-label="Apagar">${ic("trash")}</button></div></div></div>`; }).join("") : `<div class="secempty">${ic("clock")}Nenhum lembrete pendente.</div>`}
+  const F = secData().lembretes.filter(l => !l.rep && l.feito).slice(-5).reverse();
+  return `${lemFormHTML("sec")}<small class="muted">Aparece na Rotina na hora marcada e avisa aqui, com o Atlas aberto. Marcando o Google Agenda, avisa também no celular.</small>
+    ${lemPendentes().length ? `<div class="secsec">${ic("bell")}Próximos<small>${lemPendentes().length}</small></div>${lemListaHTML("sec")}` : `<div class="secempty">${ic("bell")}Nenhum lembrete pendente.</div>`}
     ${lsSecHTML()}
-    ${F.length ? `<div class="secsec">Feitos</div>${F.map(l => `<div class="secit done"><i class="secdot"></i><div class="secb"><s>${esc(l.texto)}</s></div></div>`).join("")}` : ""}`;
+    ${F.length ? `<div class="secsec">Feitos</div>${F.map(l => `<div class="secit done"><i class="secdot"></i><div class="secb"><s>${esc(l.texto)}</s><div class="secacts"><button type="button" class="btn sm ghost" data-lemok="${l.id}|${lemDia(l)}|0">${ic("undo")}Reabrir</button></div></div></div>`).join("")}` : ""}`;
 }
 function secPropHTML(mi, p) {
-  const lab = { tarefa: "Criar tarefa", lembrete: "Criar lembrete", adiar: "Adiar tarefa", concluir: "Concluir tarefa", bloco: "Criar bloco na rotina" }[p.tipo], det = p.tipo === "tarefa" ? [p.prazo && "até " + fmtD(p.prazo), p.prio].filter(Boolean).join(" · ") : p.tipo === "lembrete" ? `${fmtD(p.quando.slice(0, 10))} às ${p.quando.slice(11, 16)}` : p.tipo === "adiar" ? `novo prazo ${fmtD(p.prazo)}` : p.tipo === "bloco" ? `${fmtD(p.data)} ${p.ini}–${p.fim} · ${p.cat}` : "";
+  const lab = { tarefa: "Criar tarefa", lembrete: "Criar lembrete", adiar: "Adiar tarefa", concluir: "Concluir tarefa", bloco: "Criar bloco na rotina" }[p.tipo], det = p.tipo === "tarefa" ? [p.prazo && "até " + fmtD(p.prazo), p.prio].filter(Boolean).join(" · ") : p.tipo === "lembrete" ? `${fmtD(p.quando.slice(0, 10))} às ${p.quando.slice(11, 16)}${p.rep ? ` · ${lemRepTxt(p.rep, p.quando.slice(0, 10))}` : ""}` : p.tipo === "adiar" ? `novo prazo ${fmtD(p.prazo)}` : p.tipo === "bloco" ? `${fmtD(p.data)} ${p.ini}–${p.fim} · ${p.cat}` : "";
   return `<div class="prop ${p.status}"><div class="prop-t">${ic({ tarefa: "checksq", lembrete: "clock", adiar: "cal", concluir: "check", bloco: "week" }[p.tipo] || "plus")}<div><span class="prop-k">${lab}</span><b>${esc(p.titulo)}</b><small>${esc(det)}</small>${p.motivo ? `<p>${esc(p.motivo)}</p>` : ""}</div></div>
     <div class="prop-a">${p.status === "pendente" ? (mi >= 0 ? `<button type="button" class="btn sm primary" data-secp="${mi}|${p.id}|ok">${ic("check")}Confirmar</button><button type="button" class="btn sm ghost" data-secp="${mi}|${p.id}|no">Descartar</button>` : `<span class="muted">aguarde a resposta terminar</span>`) : p.status === "aceita" ? `<span class="pill good">Feito</span>` : `<span class="pill none">Descartada</span>`}</div></div>`;
 }
@@ -300,7 +282,7 @@ function secCfgHTML() {
     ${D.conversa.length ? `<button type="button" class="btn sm ghost" data-act="secclear">${ic("trash")}Limpar a conversa</button>` : ""}`;
 }
 function secHTML() {
-  const D = secData(), pf = secPerfil(), n = secFilt(secItems()).filter(i => i.st !== "info").length, nl = D.lembretes.filter(l => !l.feito && l.quando && new Date(l.quando) <= new Date()).length, ai = !!SAMPLE && !AI_OFF;
+  const D = secData(), pf = secPerfil(), n = secFilt(secItems()).filter(i => i.st !== "info").length, nl = lemAtrasados().length, ai = !!SAMPLE && !AI_OFF;
   const tabs = [["agora", "Agora", n], ["conversa", "Conversa", 0], ["lembretes", "Lembretes", nl], ["guia", "Guia", 0]];
   const body = SEC.cfg ? secCfgHTML() : SEC.tab === "conversa" ? secChatHTML() : SEC.tab === "lembretes" ? secLembHTML() : SEC.tab === "guia" ? guHTML() : secAgoraHTML();
   return `<header class="sech" data-secdrag="1"><span class="secav">${ic("brief")}</span><div class="sect"><b>Secretário da Vida</b><small>${esc(pf.nome)} · ${ai ? "IA pronta" : "sem IA: modo local"}</small></div>
@@ -312,7 +294,7 @@ function secHTML() {
     <i class="secgrip" aria-hidden="true"></i>`;
 }
 function secFab() {
-  let f = $("#secfab"); if (!f) return; const n = LOADED ? secFilt(secItems()).filter(i => i.st === "crit").length + secData().lembretes.filter(l => !l.feito && l.quando && new Date(l.quando) <= new Date()).length : 0, nu = SEC.nudge && !SEC.open && Date.now() - SEC.nudge.at < 15 * 60e3 ? SEC.nudge : null;
+  let f = $("#secfab"); if (!f) return; const n = LOADED ? secFilt(secItems()).filter(i => i.st === "crit").length + lemAtrasados().length : 0, nu = SEC.nudge && !SEC.open && Date.now() - SEC.nudge.at < 15 * 60e3 ? SEC.nudge : null;
   f.hidden = SEC.open; f.innerHTML = `${ic("brief")}<span>Secretário</span>${n ? `<i>${n}</i>` : ""}`; f.classList.toggle("crit", !!n);
   const b = $("#secnudge"); if (b) { b.hidden = !nu || SEC.open; if (nu) b.innerHTML = `<span>${esc(nu.txt)}</span><button type="button" class="btn sm" data-act="secopen">Ver</button><button type="button" class="iconbtn" data-act="secnudgex" aria-label="Dispensar">${ic("x")}</button>`; }
 }
@@ -362,7 +344,6 @@ function secClick(t) {
   if (a === "secsend") { const v = ($("#sec_in")?.value || "").trim(); SEC.input = ""; secAsk(v); return true; }
   if (a === "secstop") { SEC.live?.ctl.abort(); return true; }
   if (a === "secmic") { secMic(); return true; }
-  if (a === "seclemadd") { const v = ($("#sec_lem")?.value || "").trim(); const l = secParseLembrete(/lembr/i.test(v) ? v : "lembre de " + v); if (!l) { toast("Escreva o que lembrar."); return true; } if (!l.quando) { toast("Diga quando: “hoje às 18h”, “amanhã às 9”, “em 30 minutos”."); return true; } secLembrar(l); toast(`Lembrete para ${l.quando.slice(0, 10) === TODAY ? "hoje" : fmtD(l.quando.slice(0, 10))} às ${l.quando.slice(11, 16)}`); secPaint(); return true; }
   if (ds.secgo) { setHash(...ds.secgo.split(".")); if (innerWidth <= 640) secToggle(false); return true; }
   if (ds.secdo) { const c = ds.secdo; if (ds.crit && !SEC.conf[c]) { SEC.conf = { [c]: 1 }; secPaint(); return true; } SEC.conf = {}; secDo(c); secPaint(); return true; }
   if (ds.seccf) { const [i, j] = ds.seccf.split("|").map(Number), c = secConflitos()[i]; if (c) { const [l, op] = c.ops[j]; secDecide(c.chave, c.txt, l, op); secPaint(); } return true; }
@@ -371,13 +352,13 @@ function secClick(t) {
   if (ds.secc) { const [mi, cid, j] = ds.secc.split("|"), m = secData().conversa[+mi], c = m?.conflitos?.find(x => x.id === cid); if (!c || c.escolha) return true; c.escolha = c.ops[+j]; secDecide("ia:" + c.id, c.titulo, c.escolha); secPaint(); if (SAMPLE && !SEC.live) secAsk(`Decidi: ${c.escolha}. Siga a partir daí.`); return true; }
   return true;
 }
-function secInput(t) { if (t.id === "sec_in") { SEC.input = t.value; t.style.height = "auto"; t.style.height = Math.min(120, t.scrollHeight) + "px"; return true; } return !!t.closest?.("#sec") && t.id === "sec_lem"; }
+function secInput(t) { if (t.id === "sec_in") { SEC.input = t.value; t.style.height = "auto"; t.style.height = Math.min(120, t.scrollHeight) + "px"; return true; } return false; }
 function secChange(t) { if (!t.dataset.secpf) return !!t.closest?.("#sec"); const [m, k] = t.dataset.secpf.split("|"), D = secData(); D.perfis[m] = { ...(D.perfis[m] || {}), [k]: t.value }; touch("secretario", { noUndo: true, noRender: true }); secPaint(); return true; }
 function secBoot() {
   if ($("#sec")) return;
   document.body.insertAdjacentHTML("beforeend", `<button type="button" id="secfab" class="secfab" aria-label="Abrir o Secretário da Vida"></button><div id="secnudge" class="secnudge" role="status" hidden></div><section id="sec" class="secw" role="dialog" aria-label="Secretário da Vida" hidden></section>`);
   SEC.open = !!secLS("open"); secPlace(); secPaint();
-  document.addEventListener("keydown", e => { if (e.target.id === "sec_in" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); const v = e.target.value.trim(); SEC.input = ""; e.target.value = ""; secAsk(v); } if (e.target.id === "sec_lem" && e.key === "Enter") { e.preventDefault(); $('[data-act="seclemadd"]')?.click(); } if (e.key === "Escape" && SEC.open && e.target.closest?.("#sec")) secToggle(false); });
+  document.addEventListener("keydown", e => { if (e.target.id === "sec_in" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); const v = e.target.value.trim(); SEC.input = ""; e.target.value = ""; secAsk(v); } if (e.key === "Escape" && SEC.open && e.target.closest?.("#sec")) secToggle(false); });
   /* mover pelo cabeçalho e guardar o tamanho quando a janela é redimensionada pelo canto */
   let drag = null;
   document.addEventListener("pointerdown", e => { const h = e.target.closest?.("[data-secdrag]"); if (!h || e.target.closest("button") || innerWidth <= 640) return; const w = $("#sec"), r = w.getBoundingClientRect(); drag = { dx: e.clientX - r.left, dy: e.clientY - r.top }; h.setPointerCapture?.(e.pointerId); e.preventDefault(); });

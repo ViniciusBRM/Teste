@@ -192,9 +192,9 @@ const UNDO = [], REDO = [];
 function snapAll() { SNAP = {}; for (const k of KEYS) SNAP[k] = JSON.stringify(S[k] ?? null); }
 function touch(...keys) {
   const opts = keys.length && typeof keys[keys.length - 1] === "object" ? keys.pop() : {};
-  const before = {};
-  for (const k of keys) { const now = JSON.stringify(S[k] ?? null); if (now !== SNAP[k]) { before[k] = SNAP[k]; SNAP[k] = now; if (!EX_MODE && !IS_EXAMPLE) walPut(k, now); } }
-  if (Object.keys(before).length && !opts.noUndo) { UNDO.push({ b: before, l: opts.label || "" }); if (UNDO.length > 80) UNDO.shift(); REDO.length = 0; }
+  const before = {}, after = {};
+  for (const k of keys) { const now = JSON.stringify(S[k] ?? null); if (now !== SNAP[k]) { before[k] = SNAP[k]; after[k] = now; SNAP[k] = now; if (!EX_MODE && !IS_EXAMPLE) walPut(k, now); } }
+  if (Object.keys(before).length && !opts.noUndo) { UNDO.push({ b: before, l: opts.label || "", h: hxNovo(before, after, opts) }); if (UNDO.length > 80) UNDO.shift(); REDO.length = 0; }
   VER++;
   if (EX_MODE) {} else if (IS_EXAMPLE) { IS_EXAMPLE = false; KEYS.forEach(k => dirty.add(k)); } else Object.keys(before).forEach(k => dirty.add(k));
   if (keys.includes("listas")) applyLists();
@@ -205,10 +205,135 @@ function swapState(from, to, msg) {
   const e = from.pop(); if (!e) { toast(msg[1]); return; }
   const back = {};
   for (const k in e.b) { back[k] = SNAP[k]; S[k] = e.b[k] == null ? EMPTY()[k] : JSON.parse(e.b[k]); SNAP[k] = e.b[k] ?? JSON.stringify(S[k]); dirty.add(k); if (!EX_MODE) walPut(k, SNAP[k]); }
-  to.push({ b: back, l: e.l }); VER++; applyLists(); flushSoon(); render(); toast(e.l ? `${msg[0]}: ${e.l}` : msg[0]);
+  to.push({ b: back, l: e.l, h: e.h }); hxMarca(e.h, from === UNDO); VER++; applyLists(); flushSoon(); render();
+  toast(e.l ? `${msg[0]}: ${e.l}` : msg[0], { l: from === UNDO ? "Refazer" : "Desfazer", f: from === UNDO ? redo : undo });
+  if ("secretario" in e.b || "integ" in e.b) lemGcSync();   /* lembrete que sumiu ou voltou: o evento no Google acompanha */
 }
-const undo = () => swapState(UNDO, REDO, ["Desfeito", "Nada para desfazer"]);
+const undo = () => UNDO.length ? swapState(UNDO, REDO, ["Desfeito", "Nada para desfazer"]) : EX_MODE ? toast("Nada para desfazer") : hxVolta();   /* memória vazia (recarregou): o histórico guardado */
 const redo = () => swapState(REDO, UNDO, ["Refeito", "Nada para refazer"]);
+/* ---------------------------------------------------------------- histórico de alterações
+   Cada passo desfazível também entra aqui, com o que mudou item a item (não a chave inteira): lançamento criado, campo mudado,
+   bloco apagado. Fica neste aparelho (localStorage atlas4_hx, até 150 passos), sobrevive a recarregar a página, e cada passo pode
+   ser desfeito sozinho, mesmo depois de outros: volta só o que aquele passo mudou e que não mudou de novo depois (o resto fica
+   como está, e o aviso conta quantas partes ficaram). O passo mais recente desfaz pela fotografia (UNDO), exato.
+   Passo: { h, t, l (rótulo), pg (aba), k: { chave: operações }, s: resumo, u: desfeito, of/dir (quando desfaz ou refaz outro) }.
+   Operações: ["+", caminho, item, i] item criado numa lista com id; ["-", caminho, item, i] apagado; ["~", caminho, id, { campo:
+   [tinha antes, valor antes, tem depois, valor depois] }] campos mudados; ["=", caminho, tinha, antes, tem, depois] o resto. */
+const HX = { L: [], ok: false, seq: 0, ult: "", ultT: 0, t: null, st: null, max: 150, kb: 900, gesto: 0 };
+/* o aviso automático só vale para o que a pessoa acabou de fazer (toque, tecla, digitação), não para gravações em segundo plano */
+for (const ev of ["pointerdown", "keydown", "submit", "change", "input"]) document.addEventListener(ev, () => { HX.gesto = Date.now(); }, true);
+const HXK = "atlas4_hx", HX_INT = new Set(["upd", "at", "ts", "updatedAt", "editado"]);
+const hxClone = v => v == null || typeof v !== "object" ? v : JSON.parse(JSON.stringify(v));
+const hxIdList = a => Array.isArray(a) && a.every(x => isObj(x) && x.id != null);
+const hxVazio = v => v == null || (Array.isArray(v) ? !v.length : isObj(v) && !Object.keys(v).length);
+function hxDiff(b, a, path, ops) {
+  if (jeq(b, a)) return;
+  if (hxIdList(b) && hxIdList(a)) {
+    const B = new Map(b.map((x, i) => [String(x.id), [x, i]])), A = new Map(a.map((x, i) => [String(x.id), [x, i]]));
+    for (const [id, [x, i]] of B) if (!A.has(id)) ops.push(["-", path, x, i]);
+    for (const [id, [x, i]] of A) { const o = B.get(id); if (!o) { ops.push(["+", path, x, i]); continue; } if (jeq(o[0], x)) continue;
+      const f = {}; for (const k of new Set([...Object.keys(o[0]), ...Object.keys(x)])) if (!jeq(o[0][k], x[k])) f[k] = [k in o[0], o[0][k] ?? null, k in x, x[k] ?? null];
+      ops.push(["~", path, id, f]); }
+    return;
+  }
+  if (isObj(b) && isObj(a)) {
+    for (const k of new Set([...Object.keys(b), ...Object.keys(a)])) {
+      if (!(k in a)) { if (!hxVazio(b[k])) ops.push(["=", [...path, k], true, b[k], false, null]); } else if (!(k in b)) { if (!hxVazio(a[k])) ops.push(["=", [...path, k], false, null, true, a[k]]); } else hxDiff(b[k], a[k], [...path, k], ops); }
+    return;
+  }
+  ops.push(["=", path, b !== undefined && b !== null, b ?? null, a !== undefined && a !== null, a ?? null]);
+}
+/* aplica as operações ao valor atual: dir -1 desfaz, +1 refaz. Só muda o que ainda está como o passo deixou */
+function hxAplica(root, ops, dir) {
+  let ok = 0, conf = 0;
+  const no = (path, n) => { let o = root; const ks = ["v", ...path]; for (const k of ks.slice(0, ks.length - n)) { if (o == null || typeof o !== "object" || !(k in o)) return null; o = o[k]; } return o; };
+  const igual = (obj, k, h, v) => { const tem = obj != null && typeof obj === "object" && k in obj && obj[k] !== undefined; return h ? tem && jeq(obj[k], v) : !tem || obj[k] === null; };
+  const troca = (obj, k, fromH, fromV, toH, toV) => {
+    if (igual(obj, k, fromH, fromV)) { if (toH) obj[k] = hxClone(toV); else if (Array.isArray(obj) || k === "v") obj[k] = null; else delete obj[k]; return 1; }
+    return igual(obj, k, toH, toV) ? 0 : -1; };
+  for (const op of dir < 0 ? [...ops].reverse() : ops) {
+    const t = op[0], path = op[1];
+    if (t === "=") { const par = no(path, 1); if (par == null || typeof par !== "object") { conf++; continue; } const k = ["v", ...path].at(-1);
+      const r = dir < 0 ? troca(par, k, op[4], op[5], op[2], op[3]) : troca(par, k, op[2], op[3], op[4], op[5]); if (r < 0) conf++; else ok += r; continue; }
+    const list = no(path, 0); if (!Array.isArray(list)) { conf++; continue; }
+    if (t === "+" || t === "-") { const item = op[2], i = list.findIndex(x => String(x?.id) === String(item.id)), poe = (t === "+") === (dir > 0);
+      if (poe && i < 0) { list.splice(Math.min(op[3], list.length), 0, hxClone(item)); ok++; } else if (!poe && i >= 0) { list.splice(i, 1); ok++; }
+      continue; }
+    if (t === "~") { const it = list.find(x => String(x?.id) === String(op[2])); if (!it) { conf++; continue; }
+      for (const [k, [hb, bv, ha, av]] of Object.entries(op[3])) { const r = dir < 0 ? troca(it, k, ha, av, hb, bv) : troca(it, k, hb, bv, ha, av); if (r < 0) conf++; else ok += r; } }
+  }
+  return { ok, conf };
+}
+const hxTitulo = x => { if (x == null || typeof x !== "object") return x == null ? "" : String(x); for (const k of ["titulo", "texto", "tarefa", "nome", "desc", "meta", "conta", "doc", "sonho", "rotina", "empresa", "titulo_it", "item", "pergunta", "situacao", "cod", "habito", "assunto"]) if (typeof x[k] === "string" && x[k].trim()) return x[k]; return ""; };
+/* resumo: quantos itens criados, apagados e campos mudados, e o nome dos primeiros itens */
+function hxResumo(k) {
+  const s = { a: 0, r: 0, m: 0, it: [] }, nome = x => { const t = hxTitulo(x); if (t && s.it.length < 3 && !s.it.includes(t)) s.it.push(trunc(t, 50)); };
+  for (const ops of Object.values(k || {})) for (const op of ops) {
+    if (op[0] === "+") { s.a++; nome(op[2]); } else if (op[0] === "-") { s.r++; nome(op[2]); } else if (op[0] === "~") s.m += Math.max(1, Object.keys(op[3]).filter(f => !HX_INT.has(f)).length);
+    else if (!op[2] && op[4] && isObj(op[5])) { s.a++; nome(op[5]); } else if (op[2] && !op[4] && isObj(op[3])) { s.r++; nome(op[3]); } else s.m++; }
+  return s;
+}
+function hxCarrega() { if (HX.ok) return; HX.ok = true; try { const v = JSON.parse(localStorage.getItem(HXK) || "[]"); if (Array.isArray(v)) HX.L = [...v.filter(e => e && e.h), ...HX.L]; } catch {} }
+function hxProc(e) {
+  if (!e?.raw) return; const k = {};
+  try { for (const [key, [b, a]] of Object.entries(e.raw)) { const ops = []; hxDiff(b == null ? null : JSON.parse(b), a == null ? null : JSON.parse(a), [], ops); if (ops.length) k[key] = ops; } e.k = k; }
+  catch (err) { console.warn("histórico", err); e.k = null; }
+  delete e.raw; e.s = hxResumo(e.k);
+}
+function hxNovo(before, after, opts) {
+  if (EX_MODE || !LOADED) return "";
+  hxCarrega(); const h = "h" + Date.now().toString(36) + (++HX.seq).toString(36), raw = {};
+  for (const k in before) raw[k] = [before[k] ?? null, after[k] ?? null];
+  const e = { h, t: Date.now(), l: String(opts.label || "").slice(0, 120), pg: typeof PAGE === "string" ? PAGE + (SUB ? "." + SUB : "") : "", raw, ...(opts.hxOf ? { of: opts.hxOf, dir: opts.hxDir } : {}) };
+  HX.L.push(e); HX.ult = h; HX.ultT = Date.now();
+  if (e.of) hxMarca(h, false);
+  clearTimeout(HX.t); HX.t = setTimeout(hxDepois, 40);
+  return h;
+}
+/* depois do clique: calcula as diferenças, mostra Desfazer se nada foi avisado e algo foi criado ou apagado, e guarda */
+function hxDepois() {
+  for (const e of HX.L) if (e.raw) hxProc(e);
+  const e = HX.L.at(-1);
+  if (e && !e.of && e.h === HX.ult && UNDO.at(-1)?.h === e.h && TST.at < e.t && (e.s?.a || e.s?.r) && e.t - HX.gesto < 2000) toast(hxRotulo(e), hxAct(e.h));
+  hxGuarda();
+}
+const hxGet = h => (hxCarrega(), HX.L.find(x => x.h === h));
+function hxRotulo(e) {
+  const s = e.s || {}, it = s.it?.length ? `: ${s.it.join(", ")}` : "";
+  if (e.l) return e.l + (s.it?.length && !s.it.some(t => e.l.includes(t)) && (s.a || s.r) ? it : "");
+  return s.a && !s.r ? `${plural(s.a, "item criado", "itens criados")}${it}` : s.r && !s.a ? `${plural(s.r, "item apagado", "itens apagados")}${it}` : "Alteração salva";
+}
+function hxMarca(h, desfeito, n = 0) { const e = h && hxGet(h); if (!e || n > 8) return; e.u = desfeito; if (e.of) hxMarca(e.of, e.dir < 0 ? !desfeito : desfeito, n + 1); hxGuarda(); }
+function hxGuarda() {
+  clearTimeout(HX.st); HX.st = setTimeout(() => {
+    if (EX_MODE) return; for (const e of HX.L) if (e.raw) hxProc(e);
+    try { const g = JSON.parse(localStorage.getItem(HXK) || "[]"), meus = new Set(HX.L.map(e => e.h)); if (Array.isArray(g)) { const de = g.filter(e => e?.h && !meus.has(e.h)); if (de.length) HX.L = [...HX.L, ...de].sort((a, b) => a.t - b.t); } } catch {}
+    let L = HX.L.slice(-HX.max).map(e => { const j = e.k ? JSON.stringify(e.k) : ""; return j.length > 250000 ? { ...e, k: null, grande: true } : e; }), js = JSON.stringify(L);
+    while (js.length > HX.kb * 1000 && L.length > 10) { L = L.slice(Math.ceil(L.length / 5)); js = JSON.stringify(L); }
+    try { localStorage.setItem(HXK, js); } catch { try { L = L.slice(-30); localStorage.setItem(HXK, JSON.stringify(L)); } catch {} }
+    if (HX.L.length > HX.max + 50) HX.L = HX.L.slice(-HX.max);
+  }, 300);
+}
+/* o botão Desfazer de um aviso desfaz aquele passo, mesmo que outro tenha vindo depois */
+const hxAct = h => h ? { l: "Desfazer", h, f: () => hxDesfazer(h) } : { l: "Desfazer", f: undo };
+function hxDesfazer(h, dir = -1) {
+  if (!h) { dir < 0 ? undo() : redo(); return; }
+  if (dir < 0 && UNDO.at(-1)?.h === h) { undo(); return; }
+  if (dir > 0 && REDO.at(-1)?.h === h) { redo(); return; }
+  const e = hxGet(h); if (!e) { toast("Esse passo não está mais no histórico deste aparelho."); return; }
+  hxProc(e);
+  if (!e.k) { toast("Esse passo foi grande demais para guardar no histórico: só dava para desfazer na hora."); return; }
+  if (dir < 0 ? e.u : !e.u) { toast(dir < 0 ? "Esse passo já foi desfeito." : "Esse passo já está valendo."); return; }
+  if (EX_MODE) { toast("Desligue o modo exemplo para mexer no histórico dos seus dados."); return; }
+  const keys = Object.keys(e.k).filter(k => KEYS.includes(k)); let ok = 0, conf = 0;
+  for (const k of keys) { const root = { v: hxClone(S[k] ?? null) }, r = hxAplica(root, e.k[k], dir); S[k] = root.v ?? EMPTY()[k]; ok += r.ok; conf += r.conf; }
+  const antes = HX.ult; touch(...keys, { label: `${dir < 0 ? "Desfeito" : "Refeito"}: ${e.l || hxRotulo(e)}`, hxOf: h, hxDir: dir });
+  if (HX.ult === antes) hxMarca(h, dir < 0);   /* nada mudou de fato (já estava assim): só marca */
+  toast(`${dir < 0 ? "Desfeito" : "Refeito"}: ${e.l || hxRotulo(e)}${conf ? ` · ${plural(conf, "parte mudou", "partes mudaram")} depois e ficou como está` : ""}`, { l: dir < 0 ? "Refazer" : "Desfazer", h, f: () => hxDesfazer(h, -dir) });
+  if (keys.includes("secretario") || keys.includes("integ")) lemGcSync();
+  if (typeof hxPaint === "function") hxPaint();
+}
+
 
 /* ================================================================ gravação
    Cada chave de S é um documento s_<chave> em data/users/<id>. Acima de ~180 KB, o valor vira partes s_<chave>.g<geração>.<i>
@@ -470,13 +595,33 @@ async function retryLoad() {
 document.addEventListener("visibilitychange", () => { if (!document.hidden && DB_FAIL) retryLoad(); });
 
 /* ================================================================ avisos */
-function toast(t, act) {
-  const el = $("#toast"); if (!el) return;
-  el.innerHTML = `<span>${esc(t)}</span>${act ? `<button type="button" class="tbtn" id="toastAct">${esc(act.l)}</button>` : ""}`;
-  el.hidden = false; if (act) $("#toastAct").onclick = () => { el.hidden = true; act.f(); };
-  clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; }, act ? 5200 : 2000);
+/* Um aviso que vem logo depois de uma mudança desfazível ganha o botão Desfazer (daquele passo). Um aviso sem botão não apaga o
+   Desfazer que está na tela: o texto entra junto. Com uma janela (diálogo) aberta, o aviso aparece dentro dela, por cima do fundo;
+   se a janela fecha com o Desfazer na tela, ele volta para a página. Com o mouse ou o foco em cima, não some. */
+const TST = { at: 0, act: null, txt: "", el: null };
+function toastEl() {
+  const base = $("#toast"), dlg = [...document.querySelectorAll("dialog[open]")].filter(d => { try { return d.matches(":modal"); } catch { return false; } }).at(-1);
+  if (!dlg) { for (const x of $$(".toast.dlgt")) x.hidden = true; return base; }
+  if (base) base.hidden = true;
+  let el = dlg.querySelector(":scope > .toast.dlgt"); if (!el) { el = document.createElement("div"); el.className = "toast dlgt"; el.setAttribute("role", "status"); el.setAttribute("aria-live", "polite"); el.hidden = true; dlg.appendChild(el); }
+  if (!dlg.dataset.tobs) { dlg.dataset.tobs = "1"; new MutationObserver(() => { const t = TST.el; if (t && !t.isConnected && t.dataset.dlg === dlg.id && !t.hidden && dlg.open && TST.act) dlg.appendChild(t); }).observe(dlg, { childList: true }); }
+  el.dataset.dlg = dlg.id || ""; return el;
 }
-const undoToast = msg => toast(msg, { l: "Desfazer", f: undo });
+function toast(t, act) {
+  t = String(t ?? "");
+  if (!act && HX.ult && Date.now() - HX.ultT < 600 && UNDO.at(-1)?.h === HX.ult) act = hxAct(HX.ult);
+  const el = toastEl(); if (!el) return;
+  if (!act && TST.act && !el.hidden && Date.now() - TST.at < 4000) { if (!TST.txt.includes(t)) { TST.txt += ` · ${t}`; const sp = el.querySelector("span"); if (sp) sp.textContent = TST.txt; } return; }
+  for (const x of $$("#toastAct")) x.removeAttribute("id");   /* o botão do aviso visível é o único #toastAct */
+  el.innerHTML = `<span>${esc(t)}</span>${act ? `<button type="button" class="tbtn" id="toastAct">${esc(act.l)}</button>` : ""}`;
+  el.hidden = false; TST.at = Date.now(); TST.act = act || null; TST.txt = t; TST.el = el;
+  if (act) el.querySelector(".tbtn").onclick = () => { el.hidden = true; TST.act = null; act.f(); };
+  if (!el.dataset.hv) { el.dataset.hv = "1"; const fim = ms => { clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; TST.act = null; }, ms); };
+    el.addEventListener("mouseenter", () => clearTimeout(toast.t)); el.addEventListener("focusin", () => clearTimeout(toast.t)); el.addEventListener("mouseleave", () => fim(2500)); }
+  clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; TST.act = null; }, act ? 8000 : 2600);
+}
+document.addEventListener("close", e => { const t = e.target?.querySelector?.(":scope > .toast.dlgt"); if (t && !t.hidden && TST.act && Date.now() - TST.at < 7000) { const txt = TST.txt, a = TST.act; t.remove(); toast(txt, a); } }, true);
+const undoToast = msg => toast(msg, hxAct(HX.ult && Date.now() - HX.ultT < 1500 ? HX.ult : UNDO.at(-1)?.h));
 function saveStatus(st) {
   const el = $("#savest"); if (!el) return;
   const t = EX_MODE ? ["ex", "Modo exemplo · não salvo"] : st === "saving" ? ["saving", "Salvando…"] : DB_FAIL ? ["err", "Sem conexão com a conta · guardando neste aparelho"] : SAVE_ERR ? ["err", "Não salvo · tentando de novo"] : IS_EXAMPLE ? ["ex", "Exemplo · não salvo"]

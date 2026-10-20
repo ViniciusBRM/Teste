@@ -87,7 +87,7 @@ function rtaHTML() {
   return `<div class="rtah"><div><b>${ap.modo === "trocar" ? "Trocar atividade" : "Preencher"}</b><small>${esc(quando)}</small></div><div class="rtahb"><button type="button" class="iconbtn" data-rta="ger" aria-label="Atividades e cores (gerenciar)" title="Atividades e cores">${ic("palette")}</button><button type="button" class="iconbtn" data-rta="x" aria-label="Fechar a lista">${ic("x")}</button></div></div>
     <input type="search" id="rta_q" class="rtaq" placeholder="Buscar ou criar atividade" value="${esc(ap.q)}" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="rta_l" aria-activedescendant="${ap.n ? `rta_o${ap.ativo}` : ""}" autocomplete="off">
     <div class="rtal" id="rta_l" role="listbox" aria-label="Atividades">${grupo("rta_gp", esc(rtaNomeGrupo()), P, 0, ap.q ? "Nada com esse nome." : "Nenhum modelo salvo ainda.")}${grupo("rta_go", "Outras", O, P.length, ap.q ? "Nada com esse nome." : "Nenhuma ainda: crie em “Nova atividade”.")}${criar ? `<div role="option" id="rta_o${n}" class="rtao rtacriar${n === ap.ativo ? " on" : ""}" data-rtao="${n}" aria-selected="${n === ap.ativo}">${ic("plus")}<span>Criar “${esc(criar)}” em Outras</span></div>` : ""}</div>
-    <div class="rtaf"><button type="button" class="btn sm" data-rta="nova">${ic("plus")}Nova atividade</button>${ap.modo === "encher" ? `<button type="button" class="btn sm ghost" data-rta="form">Mais opções…</button>` : ""}</div>`;
+    <div class="rtaf"><button type="button" class="btn sm" data-rta="nova">${ic("plus")}Nova atividade</button>${ap.modo === "encher" ? `<button type="button" class="btn sm ghost" data-rta="lem" title="Lembrete com data e hora neste horário">${ic("bell")}Lembrete aqui</button><button type="button" class="btn sm ghost" data-rta="form">Mais opções…</button>` : ""}</div>`;
 }
 function rtaNovaHTML() {
   const ap = RTA.ap, n = ap.nova, rot = ap.modo === "encher" ? "Salvar e preencher" : ap.modo === "trocar" ? "Salvar e trocar" : "Salvar";
@@ -154,6 +154,7 @@ function rtaEl() {
     else if (a === "nova") rtaNova(ap.q.trim() && !rtaPorNome(ap.q) ? ap.q.trim().slice(0, 40) : "");
     else if (a === "volta") { ap.nova = null; rtaPaint(); setTimeout(() => RTA.el?.querySelector("#rta_q")?.focus(), 0); }
     else if (a === "form") { rtaFechar(); rtForm(null, ap.d, ap.a, ap.z); }
+    else if (a === "lem") { rtaFechar(); lemDlg(null, { d: ap.d, h: m2hm(ap.a) }); }
     else if (a === "ger") { rtaFechar(); rtaDlg(); }
   });
   el.addEventListener("input", e => {

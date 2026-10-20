@@ -94,7 +94,7 @@ function expCard(x) {
     ${x.hipotese ? `<p class="exph">${esc(x.hipotese)}</p>` : ""}${done ? "" : expToday(x, an)}${expStrip(x, an)}
     <p class="muted small">${an.st ? `COM ${expFmt(x.metrica, an.st.mB)} × SEM ${expFmt(x.metrica, an.st.mA)} · ${sgn(an.st.d, v => num(v, 2))}` : "sem comparação ainda"}${an.adher != null ? ` · adesão ${pct(an.adher)}` : ""}</p>
     ${x.conclusao && done ? `<div class="note">${ic("flask")}<span>${esc(x.conclusao)}</span></div>` : ""}
-    <div class="row wrap"><button type="button" class="btn sm" data-expsel="${x.id}">${ic("scatter")}${EXP.sel === x.id ? "Fechar análise" : "Ver análise"}</button>${done ? `<button type="button" class="btn sm ghost" data-expreopen="${x.id}">Reabrir</button>` : `<button type="button" class="btn sm ghost" data-expedit="${x.id}">${ic("edit")}Editar</button>`}</div></article>`;
+    <div class="row wrap"><button type="button" class="btn sm" data-expsel="${x.id}">${ic("scatter")}${EXP.sel === x.id ? "Fechar análise" : "Ver análise"}</button>${done ? `<button type="button" class="btn sm ghost" data-expreopen="${x.id}">Reabrir</button>` : `<button type="button" class="btn sm ghost" data-expedit="${x.id}">${ic("edit")}Editar</button>`}<button type="button" class="btn sm ghost danger" data-expdel="${x.id}" aria-label="Apagar o experimento ${esc(x.titulo)}">${ic("trash")}Apagar</button></div></article>`;
 }
 function expDetail(x) {
   const an = expAnalyze(x), w = Math.min(760, Math.max(300, (REPW || 900) - 60));
@@ -145,7 +145,7 @@ function pExp(R) {
       ${act.map(expCard).join("") || panel(`${ic("flask")}Nenhum experimento em andamento`, `<p class="muted">Comece por uma das ideias tiradas dos seus cruzamentos, ou crie o seu.</p>`)}
       ${panel(`${ic("bolt")}Ideias a partir dos seus dados`, ideas.length ? ideas.map((it, i) => `<div class="expidea"><div><b>${esc(it.intervencao)}</b><small>${esc(expMetricL(it.metrica))} · r = ${num(it.r, 2)} em ${it.n} dias</small></div><button type="button" class="btn sm" data-expidea="${i}">${ic("flask")}Testar</button></div>`).join("") : `<div class="empty">Registre algumas semanas de check-in e hábitos para o Atlas sugerir testes.</div>`)}
       ${panel(`${ic("book")}Lições aprendidas <small>${done.length}</small>`, done.length ? done.map(x => { const an = expAnalyze(x); return `<div class="lesson"><div class="row">${vpill(an)}<b>${esc(x.titulo)}</b></div><p>${esc(x.conclusao || expSentence(x, an))}</p><button type="button" class="lnk" data-expsel="${x.id}">ver análise</button></div>`; }).join("") : `<div class="empty">Quando você encerrar um experimento, o resultado fica aqui e na memória do mentor da área.</div>`, { cls: done.length > 2 ? "span2" : "" })}
-      ${L.filter(x => x.status === "cancelado").length ? panel(`${ic("x")}Cancelados`, L.filter(x => x.status === "cancelado").map(x => `<div class="li"><span>${esc(x.titulo)}</span><button type="button" class="lnk" data-expreopen="${x.id}">reabrir</button></div>`).join("")) : ""}</div>`;
+      ${L.filter(x => x.status === "cancelado").length ? panel(`${ic("x")}Cancelados`, L.filter(x => x.status === "cancelado").map(x => `<div class="li"><span>${esc(x.titulo)}</span><span class="row"><button type="button" class="lnk" data-expreopen="${x.id}">reabrir</button><button type="button" class="lnk" data-expdel="${x.id}">apagar</button></span></div>`).join("")) : ""}</div>`;
 }
 function openExpForm(id, preset = {}) {
   const x = id ? S.experimentos.find(z => z.id === id) : { titulo: "", hipotese: "", intervencao: "", metrica: "bem", direcao: "aumentar", desenho: "alternado", bloco: 3, dias: 28, inicio: addDays(TODAY, 1), defasagem: 0, ...preset };
@@ -185,6 +185,7 @@ function expClick(t) {
   if (ds.expad) { const [id, v, d] = ds.expad.split("|"), x = S.experimentos.find(z => z.id === id); if (!x) return true; const day = d || TODAY; x.adesao = { ...(x.adesao || {}) }; if (x.adesao[day] === +v) delete x.adesao[day]; else x.adesao[day] = +v; touch("experimentos", { label: "Adesão marcada" }); return true; }
   if (ds.expend) { expEnd(ds.expend); return true; }
   if (ds.expcancel) { if (!t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar cancelamento"; return true; } const x = S.experimentos.find(z => z.id === ds.expcancel); if (x) { x.status = "cancelado"; touch("experimentos", { label: "Experimento cancelado" }); undoToast("Experimento cancelado"); } return true; }
+  if (ds.expdel) { if (!t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar: apagar"; return true; } const x = S.experimentos.find(z => z.id === ds.expdel); if (x) { S.experimentos = S.experimentos.filter(z => z !== x); if (EXP.sel === x.id) EXP.sel = null; touch("experimentos", { label: `Experimento apagado: ${trunc(x.titulo, 40)}` }); undoToast(`Experimento apagado: ${trunc(x.titulo, 40)}`); } return true; }
   if (ds.expreopen) { const x = S.experimentos.find(z => z.id === ds.expreopen); if (x) { x.status = "ativo"; delete x.fim; touch("experimentos", { label: "Experimento reaberto" }); } return true; }
   return false;
 }

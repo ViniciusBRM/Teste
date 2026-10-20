@@ -35,6 +35,8 @@ const ICONS = {
   sliders: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
   undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+  bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 1.8H4.4z"/><path d="M10 20.6a2.1 2.1 0 0 0 4 0"/>',
+  hist: '<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.8v4.7h4.7"/><path d="M12 7.5V12l3 2"/>',
   redo: '<path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
@@ -180,7 +182,8 @@ function topbar(R, title, sub) {
     <div class="ttl"><div class="crumb">${crumb}</div><h1>${title}</h1>${sub ? `<div class="sub">${sub}</div>` : ""}</div>
     <div class="tools"><button type="button" class="exbtn${EX_MODE ? " on" : ""}${EX_BUSY ? " busy" : ""}" data-act="extog" aria-pressed="${EX_MODE}" aria-busy="${EX_BUSY}" title="Liga e desliga dados fictícios em todas as abas; nada é salvo enquanto estiver ligado">${ic("eye")}<span>Exemplo</span><i class="exsw" aria-hidden="true"></i></button><button type="button" class="capbtn" data-act="cap" title="Capturar: escreva ou dite o que aconteceu" aria-label="Capturar">${ic("bolt")}<span>Capturar</span></button><button type="button" class="srch" data-act="pal" aria-label="Buscar">${ic("search")}<span>Buscar</span></button>
       <div class="monthpick" aria-label="Mês de referência"><button type="button" data-act="mprev" aria-label="Mês anterior">‹</button><span>${mlabel(REF)}</span><button type="button" data-act="mnext" aria-label="Próximo mês">›</button>${+TODAY.slice(8) <= 7 && REF === addMonth(mkey(TODAY), -1) ? `<small class="mfecha" title="Nos dias 1 a 7, as telas mensais abrem no mês que acabou de fechar, para você conferir e revisar. Toque em Hoje para ver ${mlabel(mkey(TODAY))}.">mês fechando</small>` : ""}${REF !== mkey(TODAY) ? `<button type="button" class="mnow" data-act="mnow">Hoje</button>` : ""}</div>
-      <button type="button" class="iconbtn" data-act="undo" title="Desfazer (Ctrl+Z)" aria-label="Desfazer"${UNDO.length ? "" : " disabled"}>${ic("undo")}</button><button type="button" class="iconbtn" data-act="redo" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer"${REDO.length ? "" : " disabled"}>${ic("redo")}</button></div></header>`;
+      ${(() => { const u = UNDO.at(-1)?.l || (UNDO.length ? "" : hxVisiveis().slice().reverse().find(x => !x.u && x.k && Object.keys(x.k).length)?.l), r = REDO.at(-1)?.l, pode = UNDO.length || (!EX_MODE && hxPodeVoltar());
+        return `<button type="button" class="iconbtn" data-act="undo" title="${esc(`Desfazer${u ? ": " + u : ""} (Ctrl+Z)`)}" aria-label="${esc(`Desfazer${u ? ": " + u : ""}`)}"${pode ? "" : " disabled"}>${ic("undo")}</button><button type="button" class="iconbtn" data-act="redo" title="${esc(`Refazer${r ? ": " + r : ""} (Ctrl+Shift+Z)`)}" aria-label="Refazer"${REDO.length ? "" : " disabled"}>${ic("redo")}</button><button type="button" class="iconbtn" data-act="hxopen" title="Histórico de alterações: desfaça qualquer passo, mesmo depois de recarregar" aria-label="Histórico de alterações">${ic("hist")}</button>`; })()}</div></header>`;
 }
 const subtabs = () => { if (!SUBS[PAGE] || PAGE === "rotina") return ""; const cur = SUBS[PAGE].find(x => x[0] === SUB), on = k => SUB === k || cur?.[2] === k;
   return `<nav class="subtabs" aria-label="Seções">${SUBS[PAGE].filter(x => !x[2] && !(PAGE === "carreira" && x[0] === "geotecnia" && !crGeoOn() && SUB !== "geotecnia")).map(([k, l]) => `<a href="#${PAGE}.${k}" class="st${on(k) ? " on" : ""}"${on(k) ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>`; };
@@ -302,7 +305,7 @@ function openForm(key, id, preset) {
     if (key === "metas" && id && cur.meta && rec.meta !== cur.meta) S.tarefas.forEach(t => { if (t.meta === cur.meta) t.meta = rec.meta; });
     if (key === "lanc" && id && rec.cat && rec.cat !== cur.cat && rec.desc) setTimeout(() => offerRule(rec.desc, rec.tipo || "Despesa", rec.cat), 400);
     if (id) S[key] = S[key].map(x => x.id === id ? rec : x); else S[key].push(rec);
-    dlg.close(); touch(key, "tarefas", "contatos", "diario", { label: `${sc.t} ${id ? "editado(a)" : "criado(a)"}` }); if (!id) undoToast(`${sc.t} adicionado(a)`); };
+    dlg.close(); touch(key, "tarefas", "contatos", "diario", { label: `${sc.t} ${id ? "editado(a)" : "criado(a)"}` }); undoToast(`${sc.t} ${id ? "editado(a)" : "adicionado(a)"}${hxTitulo(rec) ? `: ${trunc(hxTitulo(rec), 40)}` : ""}`); };
   dlg.showModal(); setTimeout(() => $("input,select", dlg)?.focus(), 30);
 }
 /* renomear uma pessoa atualiza contatos e menções no diário */
@@ -391,6 +394,7 @@ function palItems(q) {
   add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
   add("Ações", "Guia do Atlas", "O que preencher em cada aba, aberto ao lado no Secretário", "compass", () => guAbrir(guAtual()), "guia tutorial manual ajuda preencher como usar");
   add("Ações", "Secretário da Vida", "Abre a janela do secretário: agora, lembretes e conversa", "brief", () => secToggle(true), "secretario assistente lembrete agenda resumo");
+  add("Ações", "Novo lembrete", "Com data, hora e repetição: aparece na Rotina e avisa na hora", "bell", () => lemDlg(null, { d: TODAY, h: lemHoraSug(TODAY) }), "lembrar alarme");
   add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("jornada", "exame"), "bussola moral exame consciencia valores");
   add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("jornada", "decidir"), "dilema decisao etica moral");
   add("Ações", "Escrever uma reflexão da jornada", "Espiritismo, meditação, Taoísmo ou Budismo", "lotus", () => setHash("jornada", "inicio"), "jornada reflexao insight espiritual");
@@ -413,6 +417,7 @@ function palItems(q) {
   add("Ações", "Conversar com o Mentor do Equilíbrio", "Visão de todas as áreas", "council", () => setHash("mentor", "conselho"), "mentor");
   add("Ações", "Exportar backup completo", "JSON", "download", () => exportBackup(), "backup");
   add("Ações", "Desfazer", "Ctrl Z", "undo", () => undo());
+  add("Ações", "Histórico de alterações", "O que foi criado, mudado ou apagado, com Desfazer em cada passo", "hist", () => hxDlg(), "desfazer");   /* poucas palavras: a busca aceita letras salteadas e lista longa casa com nomes */
   add("Ações", "Alternar tema claro/escuro", "", "sun", () => cycleTheme(), "tema dark light");
   for (const [, items] of NAV) for (const [k, l, i] of items) add("Páginas", l, "", i, () => setHash(k));
   for (const [p, subs] of Object.entries(SUBS)) for (const [s, l] of subs) if (s !== "rel" && s !== "feed") add("Páginas", `${pageTitle(p)} › ${l}`, "", "arrow", () => setHash(p, s));

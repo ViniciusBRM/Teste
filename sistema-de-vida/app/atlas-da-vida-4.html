@@ -1432,7 +1432,7 @@ tr.dim td{opacity:.5}
 .rtmd,.rtwk{width:100%;height:32px;border:0;background:none;border-radius:8px;cursor:pointer;font-size:12.5px;color:var(--ink);position:relative;display:grid;place-items:center;padding:0}
 .rtmd:hover,.rtwk:hover{background:var(--surface-3)}.rtmd.out{color:var(--muted);opacity:.6}.rtmd.today{font-weight:700;color:var(--accent)}.rtmd.sel{background:var(--accent);color:var(--accent-ink)}
 .rtmd i{position:absolute;bottom:3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:currentColor;opacity:.6}.rtwk{font-size:10.5px;color:var(--muted)}
-.rtq{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:5px 6px 5px 12px}
+.rtq{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:5px 6px 5px 12px}
 .rtq:focus-within{border-color:var(--accent)}.rtq>span .ico{width:16px;height:16px;color:var(--accent)}.rtq input{border:0;background:none;padding:6px 0;box-shadow:none}.rtq input:focus{outline:none}
 .rtqp{grid-column:1/-1;display:none;align-items:center;gap:6px;font-size:12.5px;padding:2px 2px 4px}.rtqp.ok,.rtqp.bad{display:flex}.rtqp.ok{color:var(--ink-2)}.rtqp.bad{color:var(--warn)}.rtqp .ico{width:14px;height:14px}.rtqp i{font-style:normal;font-weight:600}
 .rtstrip{display:grid;grid-template-columns:32px repeat(7,minmax(0,1fr)) 32px;gap:6px;align-items:stretch}
@@ -2050,6 +2050,66 @@ svg g[tabindex]:focus-visible>:not(text){stroke:var(--accent);stroke-width:2.5px
   button.lnk{min-height:24px}.ckmt{min-height:24px;padding:4px 6px}
   .seg,.mchip{min-height:30px}
 }
+/* lembretes com data e hora (62-lembretes): na grade, linha tracejada na hora exata e etiqueta com sino */
+.rtlem{position:absolute;left:0;right:0;height:0;z-index:4;pointer-events:none;border-top:2px dashed color-mix(in srgb,var(--accent) 75%,transparent)}
+.rtlem.ok{border-top-color:color-mix(in srgb,var(--muted) 55%,transparent)}
+.rtlemp{pointer-events:auto;position:absolute;right:3px;top:calc(-11px + var(--k,0) * 22px);max-width:calc(100% - 6px);display:inline-flex;align-items:center;gap:4px;height:21px;padding:0 8px 0 6px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);font:600 11px/1 var(--f-ui);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);white-space:nowrap;overflow:hidden}
+.rtlemp .ico{width:13px;height:13px;flex:none}
+.rtlemp b{font-weight:700;flex:none}
+.rtlemp span{overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.rtlem.ok .rtlemp{background:var(--surface-3);color:var(--ink-2);text-decoration:line-through}
+.rtlemp:hover,.rtlemp:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.rtbsino .ico{width:11px;height:11px;vertical-align:-1px;margin-left:3px}
+.rtmc i.l{border-left:3px solid var(--accent);color:var(--ink);font-weight:600}
+.lemf{display:flex;flex-direction:column;gap:8px}
+.lemf label>span{display:block;font-size:12px;color:var(--ink-2);margin-bottom:3px}
+.lemf input:not([type=checkbox]),.lemf select{width:100%;min-width:0}
+.lemf-r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.lemdlg .lemf-r{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:560px){.lemdlg .lemf-r{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lemf-pv{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.lemf-f{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.lemf-f .chk span{font-size:12.5px}
+.lemlista{display:flex;flex-direction:column;gap:6px;margin:4px 0 8px}
+.lemit{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:start;padding:7px 8px;border:1px solid var(--line);border-radius:10px}
+.lemit.st-crit{border-color:color-mix(in srgb,var(--crit) 45%,var(--line))}
+.lemic{color:var(--accent);padding-top:2px}
+.lemic .ico{width:16px;height:16px}
+.lemb{min-width:0}
+.lemb b{display:block;font-weight:600;overflow-wrap:anywhere}
+.lemb small{color:var(--ink-2);font-size:12px}
+.lemacts{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:420px){.lemit{grid-template-columns:22px minmax(0,1fr)}.lemacts{grid-column:1/-1;justify-content:flex-start}}
+.lemcc{background:var(--accent)}
+.lemdlg h3 .ico{width:20px;height:20px;color:var(--accent);margin-right:6px;vertical-align:-2px}
+.lssec{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);margin:10px 0 4px}
+.lssec .ico{width:14px;height:14px}
+.lstipo{margin:8px 0 10px;display:flex;flex-wrap:wrap}
+.lstipo .seg{flex:1 1 auto}
+.rtq .rtqlem{flex:none;white-space:nowrap}@media (max-width:560px){.rtq .rtqlem .rtqlt{display:none}.rtsml{display:none}}
+.rtins .lemit{grid-template-columns:22px minmax(0,1fr)}.rtins .lemacts{grid-column:1/-1;justify-content:flex-start}
+.rtsm .ico{width:11px;height:11px;vertical-align:-1px;margin-left:2px}
+#sec .lemf{padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+#sec .lemlista .lemf{border-color:var(--accent)}
+/* histórico de alterações (63-historico) */
+#dlg:has(form.hxdlg){width:min(780px,calc(100vw - 32px))}
+.hxdlg .rtch{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start}
+.hxdlg h3 .ico{width:22px;height:22px;margin-right:8px;vertical-align:-3px;color:var(--accent)}
+.hxq{width:100%}
+.hxl{display:flex;flex-direction:column;gap:6px;max-height:min(58vh,560px);overflow:auto;padding-right:2px}
+.hxd{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);margin:8px 0 2px}
+.hxr{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:10px;align-items:start;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.hxr time{font:600 12px var(--f-ui);color:var(--ink-2);padding-top:2px}
+.hxb{min-width:0}.hxb b{display:block;overflow-wrap:anywhere}
+.hxb small{display:block;color:var(--ink-2);font-size:12px;overflow-wrap:anywhere}
+.hxb .hxdet{color:var(--muted)}
+.hxa{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.hxr.u{opacity:.72}.hxr.u b{text-decoration:line-through}
+.hxmais{align-self:center;margin:6px 0}
+@media (max-width:560px){.hxr{grid-template-columns:40px minmax(0,1fr)}.hxa{grid-column:1/-1;justify-content:flex-start}}
+.toast.dlgt{z-index:5}
+/* o aviso não bloqueia o que está embaixo (arrastar na grade, tocar num bloco): só o botão recebe o toque */
+.toast{pointer-events:none;width:max-content}.toast .tbtn{pointer-events:auto;flex:none}
 </style>
 
 <div class="app">
@@ -2259,9 +2319,9 @@ const UNDO = [], REDO = [];
 function snapAll() { SNAP = {}; for (const k of KEYS) SNAP[k] = JSON.stringify(S[k] ?? null); }
 function touch(...keys) {
   const opts = keys.length && typeof keys[keys.length - 1] === "object" ? keys.pop() : {};
-  const before = {};
-  for (const k of keys) { const now = JSON.stringify(S[k] ?? null); if (now !== SNAP[k]) { before[k] = SNAP[k]; SNAP[k] = now; if (!EX_MODE && !IS_EXAMPLE) walPut(k, now); } }
-  if (Object.keys(before).length && !opts.noUndo) { UNDO.push({ b: before, l: opts.label || "" }); if (UNDO.length > 80) UNDO.shift(); REDO.length = 0; }
+  const before = {}, after = {};
+  for (const k of keys) { const now = JSON.stringify(S[k] ?? null); if (now !== SNAP[k]) { before[k] = SNAP[k]; after[k] = now; SNAP[k] = now; if (!EX_MODE && !IS_EXAMPLE) walPut(k, now); } }
+  if (Object.keys(before).length && !opts.noUndo) { UNDO.push({ b: before, l: opts.label || "", h: hxNovo(before, after, opts) }); if (UNDO.length > 80) UNDO.shift(); REDO.length = 0; }
   VER++;
   if (EX_MODE) {} else if (IS_EXAMPLE) { IS_EXAMPLE = false; KEYS.forEach(k => dirty.add(k)); } else Object.keys(before).forEach(k => dirty.add(k));
   if (keys.includes("listas")) applyLists();
@@ -2272,10 +2332,135 @@ function swapState(from, to, msg) {
   const e = from.pop(); if (!e) { toast(msg[1]); return; }
   const back = {};
   for (const k in e.b) { back[k] = SNAP[k]; S[k] = e.b[k] == null ? EMPTY()[k] : JSON.parse(e.b[k]); SNAP[k] = e.b[k] ?? JSON.stringify(S[k]); dirty.add(k); if (!EX_MODE) walPut(k, SNAP[k]); }
-  to.push({ b: back, l: e.l }); VER++; applyLists(); flushSoon(); render(); toast(e.l ? `${msg[0]}: ${e.l}` : msg[0]);
+  to.push({ b: back, l: e.l, h: e.h }); hxMarca(e.h, from === UNDO); VER++; applyLists(); flushSoon(); render();
+  toast(e.l ? `${msg[0]}: ${e.l}` : msg[0], { l: from === UNDO ? "Refazer" : "Desfazer", f: from === UNDO ? redo : undo });
+  if ("secretario" in e.b || "integ" in e.b) lemGcSync();   /* lembrete que sumiu ou voltou: o evento no Google acompanha */
 }
-const undo = () => swapState(UNDO, REDO, ["Desfeito", "Nada para desfazer"]);
+const undo = () => UNDO.length ? swapState(UNDO, REDO, ["Desfeito", "Nada para desfazer"]) : EX_MODE ? toast("Nada para desfazer") : hxVolta();   /* memória vazia (recarregou): o histórico guardado */
 const redo = () => swapState(REDO, UNDO, ["Refeito", "Nada para refazer"]);
+/* ---------------------------------------------------------------- histórico de alterações
+   Cada passo desfazível também entra aqui, com o que mudou item a item (não a chave inteira): lançamento criado, campo mudado,
+   bloco apagado. Fica neste aparelho (localStorage atlas4_hx, até 150 passos), sobrevive a recarregar a página, e cada passo pode
+   ser desfeito sozinho, mesmo depois de outros: volta só o que aquele passo mudou e que não mudou de novo depois (o resto fica
+   como está, e o aviso conta quantas partes ficaram). O passo mais recente desfaz pela fotografia (UNDO), exato.
+   Passo: { h, t, l (rótulo), pg (aba), k: { chave: operações }, s: resumo, u: desfeito, of/dir (quando desfaz ou refaz outro) }.
+   Operações: ["+", caminho, item, i] item criado numa lista com id; ["-", caminho, item, i] apagado; ["~", caminho, id, { campo:
+   [tinha antes, valor antes, tem depois, valor depois] }] campos mudados; ["=", caminho, tinha, antes, tem, depois] o resto. */
+const HX = { L: [], ok: false, seq: 0, ult: "", ultT: 0, t: null, st: null, max: 150, kb: 900, gesto: 0 };
+/* o aviso automático só vale para o que a pessoa acabou de fazer (toque, tecla, digitação), não para gravações em segundo plano */
+for (const ev of ["pointerdown", "keydown", "submit", "change", "input"]) document.addEventListener(ev, () => { HX.gesto = Date.now(); }, true);
+const HXK = "atlas4_hx", HX_INT = new Set(["upd", "at", "ts", "updatedAt", "editado"]);
+const hxClone = v => v == null || typeof v !== "object" ? v : JSON.parse(JSON.stringify(v));
+const hxIdList = a => Array.isArray(a) && a.every(x => isObj(x) && x.id != null);
+const hxVazio = v => v == null || (Array.isArray(v) ? !v.length : isObj(v) && !Object.keys(v).length);
+function hxDiff(b, a, path, ops) {
+  if (jeq(b, a)) return;
+  if (hxIdList(b) && hxIdList(a)) {
+    const B = new Map(b.map((x, i) => [String(x.id), [x, i]])), A = new Map(a.map((x, i) => [String(x.id), [x, i]]));
+    for (const [id, [x, i]] of B) if (!A.has(id)) ops.push(["-", path, x, i]);
+    for (const [id, [x, i]] of A) { const o = B.get(id); if (!o) { ops.push(["+", path, x, i]); continue; } if (jeq(o[0], x)) continue;
+      const f = {}; for (const k of new Set([...Object.keys(o[0]), ...Object.keys(x)])) if (!jeq(o[0][k], x[k])) f[k] = [k in o[0], o[0][k] ?? null, k in x, x[k] ?? null];
+      ops.push(["~", path, id, f]); }
+    return;
+  }
+  if (isObj(b) && isObj(a)) {
+    for (const k of new Set([...Object.keys(b), ...Object.keys(a)])) {
+      if (!(k in a)) { if (!hxVazio(b[k])) ops.push(["=", [...path, k], true, b[k], false, null]); } else if (!(k in b)) { if (!hxVazio(a[k])) ops.push(["=", [...path, k], false, null, true, a[k]]); } else hxDiff(b[k], a[k], [...path, k], ops); }
+    return;
+  }
+  ops.push(["=", path, b !== undefined && b !== null, b ?? null, a !== undefined && a !== null, a ?? null]);
+}
+/* aplica as operações ao valor atual: dir -1 desfaz, +1 refaz. Só muda o que ainda está como o passo deixou */
+function hxAplica(root, ops, dir) {
+  let ok = 0, conf = 0;
+  const no = (path, n) => { let o = root; const ks = ["v", ...path]; for (const k of ks.slice(0, ks.length - n)) { if (o == null || typeof o !== "object" || !(k in o)) return null; o = o[k]; } return o; };
+  const igual = (obj, k, h, v) => { const tem = obj != null && typeof obj === "object" && k in obj && obj[k] !== undefined; return h ? tem && jeq(obj[k], v) : !tem || obj[k] === null; };
+  const troca = (obj, k, fromH, fromV, toH, toV) => {
+    if (igual(obj, k, fromH, fromV)) { if (toH) obj[k] = hxClone(toV); else if (Array.isArray(obj) || k === "v") obj[k] = null; else delete obj[k]; return 1; }
+    return igual(obj, k, toH, toV) ? 0 : -1; };
+  for (const op of dir < 0 ? [...ops].reverse() : ops) {
+    const t = op[0], path = op[1];
+    if (t === "=") { const par = no(path, 1); if (par == null || typeof par !== "object") { conf++; continue; } const k = ["v", ...path].at(-1);
+      const r = dir < 0 ? troca(par, k, op[4], op[5], op[2], op[3]) : troca(par, k, op[2], op[3], op[4], op[5]); if (r < 0) conf++; else ok += r; continue; }
+    const list = no(path, 0); if (!Array.isArray(list)) { conf++; continue; }
+    if (t === "+" || t === "-") { const item = op[2], i = list.findIndex(x => String(x?.id) === String(item.id)), poe = (t === "+") === (dir > 0);
+      if (poe && i < 0) { list.splice(Math.min(op[3], list.length), 0, hxClone(item)); ok++; } else if (!poe && i >= 0) { list.splice(i, 1); ok++; }
+      continue; }
+    if (t === "~") { const it = list.find(x => String(x?.id) === String(op[2])); if (!it) { conf++; continue; }
+      for (const [k, [hb, bv, ha, av]] of Object.entries(op[3])) { const r = dir < 0 ? troca(it, k, ha, av, hb, bv) : troca(it, k, hb, bv, ha, av); if (r < 0) conf++; else ok += r; } }
+  }
+  return { ok, conf };
+}
+const hxTitulo = x => { if (x == null || typeof x !== "object") return x == null ? "" : String(x); for (const k of ["titulo", "texto", "tarefa", "nome", "desc", "meta", "conta", "doc", "sonho", "rotina", "empresa", "titulo_it", "item", "pergunta", "situacao", "cod", "habito", "assunto"]) if (typeof x[k] === "string" && x[k].trim()) return x[k]; return ""; };
+/* resumo: quantos itens criados, apagados e campos mudados, e o nome dos primeiros itens */
+function hxResumo(k) {
+  const s = { a: 0, r: 0, m: 0, it: [] }, nome = x => { const t = hxTitulo(x); if (t && s.it.length < 3 && !s.it.includes(t)) s.it.push(trunc(t, 50)); };
+  for (const ops of Object.values(k || {})) for (const op of ops) {
+    if (op[0] === "+") { s.a++; nome(op[2]); } else if (op[0] === "-") { s.r++; nome(op[2]); } else if (op[0] === "~") s.m += Math.max(1, Object.keys(op[3]).filter(f => !HX_INT.has(f)).length);
+    else if (!op[2] && op[4] && isObj(op[5])) { s.a++; nome(op[5]); } else if (op[2] && !op[4] && isObj(op[3])) { s.r++; nome(op[3]); } else s.m++; }
+  return s;
+}
+function hxCarrega() { if (HX.ok) return; HX.ok = true; try { const v = JSON.parse(localStorage.getItem(HXK) || "[]"); if (Array.isArray(v)) HX.L = [...v.filter(e => e && e.h), ...HX.L]; } catch {} }
+function hxProc(e) {
+  if (!e?.raw) return; const k = {};
+  try { for (const [key, [b, a]] of Object.entries(e.raw)) { const ops = []; hxDiff(b == null ? null : JSON.parse(b), a == null ? null : JSON.parse(a), [], ops); if (ops.length) k[key] = ops; } e.k = k; }
+  catch (err) { console.warn("histórico", err); e.k = null; }
+  delete e.raw; e.s = hxResumo(e.k);
+}
+function hxNovo(before, after, opts) {
+  if (EX_MODE || !LOADED) return "";
+  hxCarrega(); const h = "h" + Date.now().toString(36) + (++HX.seq).toString(36), raw = {};
+  for (const k in before) raw[k] = [before[k] ?? null, after[k] ?? null];
+  const e = { h, t: Date.now(), l: String(opts.label || "").slice(0, 120), pg: typeof PAGE === "string" ? PAGE + (SUB ? "." + SUB : "") : "", raw, ...(opts.hxOf ? { of: opts.hxOf, dir: opts.hxDir } : {}) };
+  HX.L.push(e); HX.ult = h; HX.ultT = Date.now();
+  if (e.of) hxMarca(h, false);
+  clearTimeout(HX.t); HX.t = setTimeout(hxDepois, 40);
+  return h;
+}
+/* depois do clique: calcula as diferenças, mostra Desfazer se nada foi avisado e algo foi criado ou apagado, e guarda */
+function hxDepois() {
+  for (const e of HX.L) if (e.raw) hxProc(e);
+  const e = HX.L.at(-1);
+  if (e && !e.of && e.h === HX.ult && UNDO.at(-1)?.h === e.h && TST.at < e.t && (e.s?.a || e.s?.r) && e.t - HX.gesto < 2000) toast(hxRotulo(e), hxAct(e.h));
+  hxGuarda();
+}
+const hxGet = h => (hxCarrega(), HX.L.find(x => x.h === h));
+function hxRotulo(e) {
+  const s = e.s || {}, it = s.it?.length ? `: ${s.it.join(", ")}` : "";
+  if (e.l) return e.l + (s.it?.length && !s.it.some(t => e.l.includes(t)) && (s.a || s.r) ? it : "");
+  return s.a && !s.r ? `${plural(s.a, "item criado", "itens criados")}${it}` : s.r && !s.a ? `${plural(s.r, "item apagado", "itens apagados")}${it}` : "Alteração salva";
+}
+function hxMarca(h, desfeito, n = 0) { const e = h && hxGet(h); if (!e || n > 8) return; e.u = desfeito; if (e.of) hxMarca(e.of, e.dir < 0 ? !desfeito : desfeito, n + 1); hxGuarda(); }
+function hxGuarda() {
+  clearTimeout(HX.st); HX.st = setTimeout(() => {
+    if (EX_MODE) return; for (const e of HX.L) if (e.raw) hxProc(e);
+    try { const g = JSON.parse(localStorage.getItem(HXK) || "[]"), meus = new Set(HX.L.map(e => e.h)); if (Array.isArray(g)) { const de = g.filter(e => e?.h && !meus.has(e.h)); if (de.length) HX.L = [...HX.L, ...de].sort((a, b) => a.t - b.t); } } catch {}
+    let L = HX.L.slice(-HX.max).map(e => { const j = e.k ? JSON.stringify(e.k) : ""; return j.length > 250000 ? { ...e, k: null, grande: true } : e; }), js = JSON.stringify(L);
+    while (js.length > HX.kb * 1000 && L.length > 10) { L = L.slice(Math.ceil(L.length / 5)); js = JSON.stringify(L); }
+    try { localStorage.setItem(HXK, js); } catch { try { L = L.slice(-30); localStorage.setItem(HXK, JSON.stringify(L)); } catch {} }
+    if (HX.L.length > HX.max + 50) HX.L = HX.L.slice(-HX.max);
+  }, 300);
+}
+/* o botão Desfazer de um aviso desfaz aquele passo, mesmo que outro tenha vindo depois */
+const hxAct = h => h ? { l: "Desfazer", h, f: () => hxDesfazer(h) } : { l: "Desfazer", f: undo };
+function hxDesfazer(h, dir = -1) {
+  if (!h) { dir < 0 ? undo() : redo(); return; }
+  if (dir < 0 && UNDO.at(-1)?.h === h) { undo(); return; }
+  if (dir > 0 && REDO.at(-1)?.h === h) { redo(); return; }
+  const e = hxGet(h); if (!e) { toast("Esse passo não está mais no histórico deste aparelho."); return; }
+  hxProc(e);
+  if (!e.k) { toast("Esse passo foi grande demais para guardar no histórico: só dava para desfazer na hora."); return; }
+  if (dir < 0 ? e.u : !e.u) { toast(dir < 0 ? "Esse passo já foi desfeito." : "Esse passo já está valendo."); return; }
+  if (EX_MODE) { toast("Desligue o modo exemplo para mexer no histórico dos seus dados."); return; }
+  const keys = Object.keys(e.k).filter(k => KEYS.includes(k)); let ok = 0, conf = 0;
+  for (const k of keys) { const root = { v: hxClone(S[k] ?? null) }, r = hxAplica(root, e.k[k], dir); S[k] = root.v ?? EMPTY()[k]; ok += r.ok; conf += r.conf; }
+  const antes = HX.ult; touch(...keys, { label: `${dir < 0 ? "Desfeito" : "Refeito"}: ${e.l || hxRotulo(e)}`, hxOf: h, hxDir: dir });
+  if (HX.ult === antes) hxMarca(h, dir < 0);   /* nada mudou de fato (já estava assim): só marca */
+  toast(`${dir < 0 ? "Desfeito" : "Refeito"}: ${e.l || hxRotulo(e)}${conf ? ` · ${plural(conf, "parte mudou", "partes mudaram")} depois e ficou como está` : ""}`, { l: dir < 0 ? "Refazer" : "Desfazer", h, f: () => hxDesfazer(h, -dir) });
+  if (keys.includes("secretario") || keys.includes("integ")) lemGcSync();
+  if (typeof hxPaint === "function") hxPaint();
+}
+
 
 /* ================================================================ gravação
    Cada chave de S é um documento s_<chave> em data/users/<id>. Acima de ~180 KB, o valor vira partes s_<chave>.g<geração>.<i>
@@ -2537,13 +2722,33 @@ async function retryLoad() {
 document.addEventListener("visibilitychange", () => { if (!document.hidden && DB_FAIL) retryLoad(); });
 
 /* ================================================================ avisos */
-function toast(t, act) {
-  const el = $("#toast"); if (!el) return;
-  el.innerHTML = `<span>${esc(t)}</span>${act ? `<button type="button" class="tbtn" id="toastAct">${esc(act.l)}</button>` : ""}`;
-  el.hidden = false; if (act) $("#toastAct").onclick = () => { el.hidden = true; act.f(); };
-  clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; }, act ? 5200 : 2000);
+/* Um aviso que vem logo depois de uma mudança desfazível ganha o botão Desfazer (daquele passo). Um aviso sem botão não apaga o
+   Desfazer que está na tela: o texto entra junto. Com uma janela (diálogo) aberta, o aviso aparece dentro dela, por cima do fundo;
+   se a janela fecha com o Desfazer na tela, ele volta para a página. Com o mouse ou o foco em cima, não some. */
+const TST = { at: 0, act: null, txt: "", el: null };
+function toastEl() {
+  const base = $("#toast"), dlg = [...document.querySelectorAll("dialog[open]")].filter(d => { try { return d.matches(":modal"); } catch { return false; } }).at(-1);
+  if (!dlg) { for (const x of $$(".toast.dlgt")) x.hidden = true; return base; }
+  if (base) base.hidden = true;
+  let el = dlg.querySelector(":scope > .toast.dlgt"); if (!el) { el = document.createElement("div"); el.className = "toast dlgt"; el.setAttribute("role", "status"); el.setAttribute("aria-live", "polite"); el.hidden = true; dlg.appendChild(el); }
+  if (!dlg.dataset.tobs) { dlg.dataset.tobs = "1"; new MutationObserver(() => { const t = TST.el; if (t && !t.isConnected && t.dataset.dlg === dlg.id && !t.hidden && dlg.open && TST.act) dlg.appendChild(t); }).observe(dlg, { childList: true }); }
+  el.dataset.dlg = dlg.id || ""; return el;
 }
-const undoToast = msg => toast(msg, { l: "Desfazer", f: undo });
+function toast(t, act) {
+  t = String(t ?? "");
+  if (!act && HX.ult && Date.now() - HX.ultT < 600 && UNDO.at(-1)?.h === HX.ult) act = hxAct(HX.ult);
+  const el = toastEl(); if (!el) return;
+  if (!act && TST.act && !el.hidden && Date.now() - TST.at < 4000) { if (!TST.txt.includes(t)) { TST.txt += ` · ${t}`; const sp = el.querySelector("span"); if (sp) sp.textContent = TST.txt; } return; }
+  for (const x of $$("#toastAct")) x.removeAttribute("id");   /* o botão do aviso visível é o único #toastAct */
+  el.innerHTML = `<span>${esc(t)}</span>${act ? `<button type="button" class="tbtn" id="toastAct">${esc(act.l)}</button>` : ""}`;
+  el.hidden = false; TST.at = Date.now(); TST.act = act || null; TST.txt = t; TST.el = el;
+  if (act) el.querySelector(".tbtn").onclick = () => { el.hidden = true; TST.act = null; act.f(); };
+  if (!el.dataset.hv) { el.dataset.hv = "1"; const fim = ms => { clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; TST.act = null; }, ms); };
+    el.addEventListener("mouseenter", () => clearTimeout(toast.t)); el.addEventListener("focusin", () => clearTimeout(toast.t)); el.addEventListener("mouseleave", () => fim(2500)); }
+  clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; TST.act = null; }, act ? 8000 : 2600);
+}
+document.addEventListener("close", e => { const t = e.target?.querySelector?.(":scope > .toast.dlgt"); if (t && !t.hidden && TST.act && Date.now() - TST.at < 7000) { const txt = TST.txt, a = TST.act; t.remove(); toast(txt, a); } }, true);
+const undoToast = msg => toast(msg, hxAct(HX.ult && Date.now() - HX.ultT < 1500 ? HX.ult : UNDO.at(-1)?.h));
 function saveStatus(st) {
   const el = $("#savest"); if (!el) return;
   const t = EX_MODE ? ["ex", "Modo exemplo · não salvo"] : st === "saving" ? ["saving", "Salvando…"] : DB_FAIL ? ["err", "Sem conexão com a conta · guardando neste aparelho"] : SAVE_ERR ? ["err", "Não salvo · tentando de novo"] : IS_EXAMPLE ? ["ex", "Exemplo · não salvo"]
@@ -2709,7 +2914,7 @@ function exampleData() {
   ckExemplo(D);
   sdExemplo(D);
   cfExemplo(D);
-  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], semanais: [{ id: "ls_ex1", titulo: "Academia", dias: [], min: 15, on: true }], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${addDays(TODAY, 1)}T09:00` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }] };
+  D.secretario = { modo: "acao", perfis: {}, conversa: [], decisoes: [], semanais: [{ id: "ls_ex1", titulo: "Academia", dias: [], min: 15, on: true }], lembretes: [{ id: "lm1", texto: "Ligar para a mãe", quando: (h => h > 23 ? `${addDays(TODAY, 1)}T09:00` : `${TODAY}T${pad(h)}:00`)(new Date().getHours() + 2), feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm2", texto: "Levar os documentos do permesso", quando: `${addDays(TODAY, 1)}T09:00`, feito: false, avisado: false, at: Date.now(), origem: "você" }, { id: "lm3", texto: "Tomar a vitamina D", quando: `${TODAY}T08:00`, rep: "diario", min: 0, feitos: { [TODAY]: 1 }, at: Date.now(), origem: "você" }] };
   return D;
 }
 
@@ -3872,6 +4077,8 @@ const ICONS = {
   sliders: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
   undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>',
+  bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.6 1.8H4.4z"/><path d="M10 20.6a2.1 2.1 0 0 0 4 0"/>',
+  hist: '<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.8v4.7h4.7"/><path d="M12 7.5V12l3 2"/>',
   redo: '<path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   x: '<path d="M6 6l12 12M18 6L6 18"/>',
@@ -4017,7 +4224,8 @@ function topbar(R, title, sub) {
     <div class="ttl"><div class="crumb">${crumb}</div><h1>${title}</h1>${sub ? `<div class="sub">${sub}</div>` : ""}</div>
     <div class="tools"><button type="button" class="exbtn${EX_MODE ? " on" : ""}${EX_BUSY ? " busy" : ""}" data-act="extog" aria-pressed="${EX_MODE}" aria-busy="${EX_BUSY}" title="Liga e desliga dados fictícios em todas as abas; nada é salvo enquanto estiver ligado">${ic("eye")}<span>Exemplo</span><i class="exsw" aria-hidden="true"></i></button><button type="button" class="capbtn" data-act="cap" title="Capturar: escreva ou dite o que aconteceu" aria-label="Capturar">${ic("bolt")}<span>Capturar</span></button><button type="button" class="srch" data-act="pal" aria-label="Buscar">${ic("search")}<span>Buscar</span></button>
       <div class="monthpick" aria-label="Mês de referência"><button type="button" data-act="mprev" aria-label="Mês anterior">‹</button><span>${mlabel(REF)}</span><button type="button" data-act="mnext" aria-label="Próximo mês">›</button>${+TODAY.slice(8) <= 7 && REF === addMonth(mkey(TODAY), -1) ? `<small class="mfecha" title="Nos dias 1 a 7, as telas mensais abrem no mês que acabou de fechar, para você conferir e revisar. Toque em Hoje para ver ${mlabel(mkey(TODAY))}.">mês fechando</small>` : ""}${REF !== mkey(TODAY) ? `<button type="button" class="mnow" data-act="mnow">Hoje</button>` : ""}</div>
-      <button type="button" class="iconbtn" data-act="undo" title="Desfazer (Ctrl+Z)" aria-label="Desfazer"${UNDO.length ? "" : " disabled"}>${ic("undo")}</button><button type="button" class="iconbtn" data-act="redo" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer"${REDO.length ? "" : " disabled"}>${ic("redo")}</button></div></header>`;
+      ${(() => { const u = UNDO.at(-1)?.l || (UNDO.length ? "" : hxVisiveis().slice().reverse().find(x => !x.u && x.k && Object.keys(x.k).length)?.l), r = REDO.at(-1)?.l, pode = UNDO.length || (!EX_MODE && hxPodeVoltar());
+        return `<button type="button" class="iconbtn" data-act="undo" title="${esc(`Desfazer${u ? ": " + u : ""} (Ctrl+Z)`)}" aria-label="${esc(`Desfazer${u ? ": " + u : ""}`)}"${pode ? "" : " disabled"}>${ic("undo")}</button><button type="button" class="iconbtn" data-act="redo" title="${esc(`Refazer${r ? ": " + r : ""} (Ctrl+Shift+Z)`)}" aria-label="Refazer"${REDO.length ? "" : " disabled"}>${ic("redo")}</button><button type="button" class="iconbtn" data-act="hxopen" title="Histórico de alterações: desfaça qualquer passo, mesmo depois de recarregar" aria-label="Histórico de alterações">${ic("hist")}</button>`; })()}</div></header>`;
 }
 const subtabs = () => { if (!SUBS[PAGE] || PAGE === "rotina") return ""; const cur = SUBS[PAGE].find(x => x[0] === SUB), on = k => SUB === k || cur?.[2] === k;
   return `<nav class="subtabs" aria-label="Seções">${SUBS[PAGE].filter(x => !x[2] && !(PAGE === "carreira" && x[0] === "geotecnia" && !crGeoOn() && SUB !== "geotecnia")).map(([k, l]) => `<a href="#${PAGE}.${k}" class="st${on(k) ? " on" : ""}"${on(k) ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>`; };
@@ -4139,7 +4347,7 @@ function openForm(key, id, preset) {
     if (key === "metas" && id && cur.meta && rec.meta !== cur.meta) S.tarefas.forEach(t => { if (t.meta === cur.meta) t.meta = rec.meta; });
     if (key === "lanc" && id && rec.cat && rec.cat !== cur.cat && rec.desc) setTimeout(() => offerRule(rec.desc, rec.tipo || "Despesa", rec.cat), 400);
     if (id) S[key] = S[key].map(x => x.id === id ? rec : x); else S[key].push(rec);
-    dlg.close(); touch(key, "tarefas", "contatos", "diario", { label: `${sc.t} ${id ? "editado(a)" : "criado(a)"}` }); if (!id) undoToast(`${sc.t} adicionado(a)`); };
+    dlg.close(); touch(key, "tarefas", "contatos", "diario", { label: `${sc.t} ${id ? "editado(a)" : "criado(a)"}` }); undoToast(`${sc.t} ${id ? "editado(a)" : "adicionado(a)"}${hxTitulo(rec) ? `: ${trunc(hxTitulo(rec), 40)}` : ""}`); };
   dlg.showModal(); setTimeout(() => $("input,select", dlg)?.focus(), 30);
 }
 /* renomear uma pessoa atualiza contatos e menções no diário */
@@ -4228,6 +4436,7 @@ function palItems(q) {
   add("Ações", "Projetos e aquisições", "Planejar compras e projetos com prazo, financiamento e mentor", "target", () => setHash("fin", "projetos"), "projeto aquisicao compra financiamento carro casa");
   add("Ações", "Guia do Atlas", "O que preencher em cada aba, aberto ao lado no Secretário", "compass", () => guAbrir(guAtual()), "guia tutorial manual ajuda preencher como usar");
   add("Ações", "Secretário da Vida", "Abre a janela do secretário: agora, lembretes e conversa", "brief", () => secToggle(true), "secretario assistente lembrete agenda resumo");
+  add("Ações", "Novo lembrete", "Com data, hora e repetição: aparece na Rotina e avisa na hora", "bell", () => lemDlg(null, { d: TODAY, h: lemHoraSug(TODAY) }), "lembrar alarme");
   add("Ações", "Exame da noite", "Bússola moral: valores do dia, vigilância e serviço", "compass", () => setHash("jornada", "exame"), "bussola moral exame consciencia valores");
   add("Ações", "Decidir com a bússola", "Oito perguntas das cinco tradições para um dilema", "compass", () => setHash("jornada", "decidir"), "dilema decisao etica moral");
   add("Ações", "Escrever uma reflexão da jornada", "Espiritismo, meditação, Taoísmo ou Budismo", "lotus", () => setHash("jornada", "inicio"), "jornada reflexao insight espiritual");
@@ -4250,6 +4459,7 @@ function palItems(q) {
   add("Ações", "Conversar com o Mentor do Equilíbrio", "Visão de todas as áreas", "council", () => setHash("mentor", "conselho"), "mentor");
   add("Ações", "Exportar backup completo", "JSON", "download", () => exportBackup(), "backup");
   add("Ações", "Desfazer", "Ctrl Z", "undo", () => undo());
+  add("Ações", "Histórico de alterações", "O que foi criado, mudado ou apagado, com Desfazer em cada passo", "hist", () => hxDlg(), "desfazer");   /* poucas palavras: a busca aceita letras salteadas e lista longa casa com nomes */
   add("Ações", "Alternar tema claro/escuro", "", "sun", () => cycleTheme(), "tema dark light");
   for (const [, items] of NAV) for (const [k, l, i] of items) add("Páginas", l, "", i, () => setHash(k));
   for (const [p, subs] of Object.entries(SUBS)) for (const [s, l] of subs) if (s !== "rel" && s !== "feed") add("Páginas", `${pageTitle(p)} › ${l}`, "", "arrow", () => setHash(p, s));
@@ -4318,9 +4528,10 @@ function agenda(R, days = 14, max = 40) {
     if (e.rep === "anual") { if (anivP.has(e.pessoa)) continue;   /* o aniversário já entra pela ficha da pessoa */
       for (let d = TODAY; d <= until; d = addDays(d, 1)) if (evNoDia(e, d)) { ev.push({ d, l: e.titulo, s: "todo ano", ico: "heart", a: null, edit: e.id }); break; } continue; }
     if (e.data >= TODAY && e.data <= until) ev.push({ d: e.data, l: `${e.hora ? e.hora + " · " : ""}${e.titulo}`, s: e.local || "agenda", ico: "cal", a: null, edit: e.id }); }
+  ev.push(...lemAgendaItens(until));
   const f = xf(), all = ev.filter(e => !f.area || e.a === f.area).sort((a, b) => a.d.localeCompare(b.d)), list = all.slice(0, max), by = {};
   for (const e of list) (by[e.d < TODAY ? "late" : e.d] ||= []).push(e);
-  return Object.keys(by).length ? `<div class="agenda">${Object.entries(by).map(([d, es]) => `<div class="agd"><div class="agh${d === "late" ? " st-crit" : d === TODAY ? " now" : ""}">${d === "late" ? "Atrasado" : d === TODAY ? "Hoje" : d === addDays(TODAY, 1) ? "Amanhã" : fmtDL(d)}</div>${es.map(e => `<button type="button" class="agi" ${e.ent ? `data-ent="${esc(e.ent)}"` : e.go ? `data-go="${e.go}"` : e.done ? `data-done="${e.done}" title="Marcar a rotina como feita hoje"` : e.edit ? `data-edit="eventos" data-id="${e.edit}"` : ""} style="--c:${e.a ? acol(e.a) : "var(--muted)"}">${ic(e.ico)}<span>${esc(e.l)}<small>${esc(e.s)}${d === "late" ? " · " + fmtD(e.d) : ""}</small></span></button>`).join("")}</div>`).join("")}${all.length > list.length ? `<div class="more">+ ${plural(all.length - list.length, "item", "itens")} até ${fmtD(until)} · exporte tudo para o Google Agenda em <a class="lnk" href="#integ">Integrações</a></div>` : ""}</div>` : `<div class="empty">Nada marcado para os próximos ${days} dias.</div>`;
+  return Object.keys(by).length ? `<div class="agenda">${Object.entries(by).map(([d, es]) => `<div class="agd"><div class="agh${d === "late" ? " st-crit" : d === TODAY ? " now" : ""}">${d === "late" ? "Atrasado" : d === TODAY ? "Hoje" : d === addDays(TODAY, 1) ? "Amanhã" : fmtDL(d)}</div>${es.map(e => `<button type="button" class="agi" ${e.lem ? `data-rtlem="${esc(e.lem)}"` : e.ent ? `data-ent="${esc(e.ent)}"` : e.go ? `data-go="${e.go}"` : e.done ? `data-done="${e.done}" title="Marcar a rotina como feita hoje"` : e.edit ? `data-edit="eventos" data-id="${e.edit}"` : ""} style="--c:${e.a ? acol(e.a) : "var(--muted)"}">${ic(e.ico)}<span>${esc(e.l)}<small>${esc(e.s)}${d === "late" ? " · " + fmtD(e.d) : ""}</small></span></button>`).join("")}</div>`).join("")}${all.length > list.length ? `<div class="more">+ ${plural(all.length - list.length, "item", "itens")} até ${fmtD(until)} · exporte tudo para o Google Agenda em <a class="lnk" href="#integ">Integrações</a></div>` : ""}</div>` : `<div class="empty">Nada marcado para os próximos ${days} dias.</div>`;
 }
 
 /* ---------------------------------------------------------------- Visão geral */
@@ -6623,7 +6834,7 @@ function expCard(x) {
     ${x.hipotese ? `<p class="exph">${esc(x.hipotese)}</p>` : ""}${done ? "" : expToday(x, an)}${expStrip(x, an)}
     <p class="muted small">${an.st ? `COM ${expFmt(x.metrica, an.st.mB)} × SEM ${expFmt(x.metrica, an.st.mA)} · ${sgn(an.st.d, v => num(v, 2))}` : "sem comparação ainda"}${an.adher != null ? ` · adesão ${pct(an.adher)}` : ""}</p>
     ${x.conclusao && done ? `<div class="note">${ic("flask")}<span>${esc(x.conclusao)}</span></div>` : ""}
-    <div class="row wrap"><button type="button" class="btn sm" data-expsel="${x.id}">${ic("scatter")}${EXP.sel === x.id ? "Fechar análise" : "Ver análise"}</button>${done ? `<button type="button" class="btn sm ghost" data-expreopen="${x.id}">Reabrir</button>` : `<button type="button" class="btn sm ghost" data-expedit="${x.id}">${ic("edit")}Editar</button>`}</div></article>`;
+    <div class="row wrap"><button type="button" class="btn sm" data-expsel="${x.id}">${ic("scatter")}${EXP.sel === x.id ? "Fechar análise" : "Ver análise"}</button>${done ? `<button type="button" class="btn sm ghost" data-expreopen="${x.id}">Reabrir</button>` : `<button type="button" class="btn sm ghost" data-expedit="${x.id}">${ic("edit")}Editar</button>`}<button type="button" class="btn sm ghost danger" data-expdel="${x.id}" aria-label="Apagar o experimento ${esc(x.titulo)}">${ic("trash")}Apagar</button></div></article>`;
 }
 function expDetail(x) {
   const an = expAnalyze(x), w = Math.min(760, Math.max(300, (REPW || 900) - 60));
@@ -6674,7 +6885,7 @@ function pExp(R) {
       ${act.map(expCard).join("") || panel(`${ic("flask")}Nenhum experimento em andamento`, `<p class="muted">Comece por uma das ideias tiradas dos seus cruzamentos, ou crie o seu.</p>`)}
       ${panel(`${ic("bolt")}Ideias a partir dos seus dados`, ideas.length ? ideas.map((it, i) => `<div class="expidea"><div><b>${esc(it.intervencao)}</b><small>${esc(expMetricL(it.metrica))} · r = ${num(it.r, 2)} em ${it.n} dias</small></div><button type="button" class="btn sm" data-expidea="${i}">${ic("flask")}Testar</button></div>`).join("") : `<div class="empty">Registre algumas semanas de check-in e hábitos para o Atlas sugerir testes.</div>`)}
       ${panel(`${ic("book")}Lições aprendidas <small>${done.length}</small>`, done.length ? done.map(x => { const an = expAnalyze(x); return `<div class="lesson"><div class="row">${vpill(an)}<b>${esc(x.titulo)}</b></div><p>${esc(x.conclusao || expSentence(x, an))}</p><button type="button" class="lnk" data-expsel="${x.id}">ver análise</button></div>`; }).join("") : `<div class="empty">Quando você encerrar um experimento, o resultado fica aqui e na memória do mentor da área.</div>`, { cls: done.length > 2 ? "span2" : "" })}
-      ${L.filter(x => x.status === "cancelado").length ? panel(`${ic("x")}Cancelados`, L.filter(x => x.status === "cancelado").map(x => `<div class="li"><span>${esc(x.titulo)}</span><button type="button" class="lnk" data-expreopen="${x.id}">reabrir</button></div>`).join("")) : ""}</div>`;
+      ${L.filter(x => x.status === "cancelado").length ? panel(`${ic("x")}Cancelados`, L.filter(x => x.status === "cancelado").map(x => `<div class="li"><span>${esc(x.titulo)}</span><span class="row"><button type="button" class="lnk" data-expreopen="${x.id}">reabrir</button><button type="button" class="lnk" data-expdel="${x.id}">apagar</button></span></div>`).join("")) : ""}</div>`;
 }
 function openExpForm(id, preset = {}) {
   const x = id ? S.experimentos.find(z => z.id === id) : { titulo: "", hipotese: "", intervencao: "", metrica: "bem", direcao: "aumentar", desenho: "alternado", bloco: 3, dias: 28, inicio: addDays(TODAY, 1), defasagem: 0, ...preset };
@@ -6714,6 +6925,7 @@ function expClick(t) {
   if (ds.expad) { const [id, v, d] = ds.expad.split("|"), x = S.experimentos.find(z => z.id === id); if (!x) return true; const day = d || TODAY; x.adesao = { ...(x.adesao || {}) }; if (x.adesao[day] === +v) delete x.adesao[day]; else x.adesao[day] = +v; touch("experimentos", { label: "Adesão marcada" }); return true; }
   if (ds.expend) { expEnd(ds.expend); return true; }
   if (ds.expcancel) { if (!t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar cancelamento"; return true; } const x = S.experimentos.find(z => z.id === ds.expcancel); if (x) { x.status = "cancelado"; touch("experimentos", { label: "Experimento cancelado" }); undoToast("Experimento cancelado"); } return true; }
+  if (ds.expdel) { if (!t.dataset.c) { t.dataset.c = 1; t.textContent = "Confirmar: apagar"; return true; } const x = S.experimentos.find(z => z.id === ds.expdel); if (x) { S.experimentos = S.experimentos.filter(z => z !== x); if (EXP.sel === x.id) EXP.sel = null; touch("experimentos", { label: `Experimento apagado: ${trunc(x.titulo, 40)}` }); undoToast(`Experimento apagado: ${trunc(x.titulo, 40)}`); } return true; }
   if (ds.expreopen) { const x = S.experimentos.find(z => z.id === ds.expreopen); if (x) { x.status = "ativo"; delete x.fim; touch("experimentos", { label: "Experimento reaberto" }); } return true; }
   return false;
 }
@@ -10410,7 +10622,7 @@ const TAB_INFO = {
   visao: { cor: "var(--accent)", cena: "constel", foto: "Céu ao entardecer com constelações ligadas por linhas finas", missao: "O retrato do mês em uma tela: cada área da vida com nota, tendência e o que pede atenção.", resolve: "Saber em 30 segundos se o mês vai bem, sem abrir dez abas.", entra: "Tudo o que você registra nas outras abas.", sai: "Atalhos para a área que mais precisa de você.", manual: ["Escolha o mês no topo (‹ ›) para ver meses passados.", "Clique numa área para abrir o relatório dela.", "Os números vêm dos registros; a Roda da Vida mostra a sua percepção ao lado."] },
   hoje: { cor: "var(--warn)", cena: "sunrise", foto: "Janela com luz da manhã sobre telhados de Turim e os Alpes ao fundo", missao: "Um resumo do momento: tempo lá fora, uma frase que conversa com o seu dia real, ideias para sair da rotina e o que vence hoje.", resolve: "Começar o dia sabendo o que vestir, o que importa e uma coisa boa para fazer, sem ler dez aplicativos.", entra: "Previsão hora a hora da sua cidade (gravada no Atlas), notícias positivas, seu humor, energia, tempo livre e orçamento.", sai: "Tarefas do dia, Painel do dia para registrar, Lazer para as ideias.", manual: ["Responda as 4 perguntas rápidas em “Como você está agora?”; tudo abaixo se ajusta.", "O clima vem da previsão hora a hora da cidade escolhida gravada no Atlas (MET Norway). A atualização automática está desligada: sem previsão gravada que cubra a hora, o Hoje diz isso em vez de inventar. “trocar cidade” muda a cidade.", "As ideias mudam com clima, energia, tempo e dinheiro. “Outra ideia” troca uma de cada vez.", "Para registrar sono, humor, gastos e hábitos, use o Painel do dia."] },
   painel: { cor: "var(--accent)", cena: "waves", foto: "Microfone de mesa ao lado de um caderno aberto", missao: "Registrar o essencial do dia em um minuto, por texto ou voz, e conferir antes que vá para as abas.", resolve: "Registro diário que não acontece porque dá trabalho.", entra: "O que você fala ou escreve.", sai: "Saúde, Finanças, Hábitos, Jornada, Lazer, Diário e Tarefas.", manual: ["Fale ou escreva o dia no campo grande; os campos se preenchem sozinhos.", "Use o microfone de um campo para ditar só aquele valor.", "“Revisar e salvar” mostra o que é novo, o que substitui e o que parece repetido.", "Um único Desfazer volta tudo o que o painel salvou."] },
-  rotina: { cor: "var(--a-car)", cena: "calendar", foto: "Agenda de papel aberta na semana, com blocos coloridos de meia hora e uma xícara de café", missao: "Desenhar o dia em blocos de 30 minutos: o que você planeja, o que já está na agenda e o que de fato fez.", resolve: "Dias que somem em tarefas soltas e planos que não cabem no relógio.", entra: "Seus blocos, a Agenda (e o Google Calendar) e as tarefas com prazo.", sai: "Idiomas (o plano desconta os blocos), Hoje (a rotina do dia).", manual: ["Escolha Dia, Semana ou Mês no topo; ‹ › mudam o período e Hoje volta para hoje.", "No calendário pequeno, clique num dia para ver as horas dele, ou no número da semana para ver a semana inteira.", "Clique numa meia hora vazia (ou arraste por várias): abre a lista das atividades, primeiro as do Standard Semanal, cada uma com a cor fixa, depois as Outras. Escolha e a célula fica com a cor da atividade.", "Atividade que não está na lista: digite o nome na busca e “Criar”, ou “Nova atividade”, e escolha a cor. Em “Atividades e cores” (Modelos e atalhos) você muda cor, nome e categoria das Outras.", "Clique num bloco para editar, marcar como feito ou excluir. “Repetir” cria rotinas diárias, de dias úteis ou semanais.", "Os compromissos da Agenda e do Google aparecem tracejados: são editados na Agenda.", "“Preencher” aplica um modelo pronto (Básica, Intermediária, Avançada ou outro) no dia, na semana ou no mês.", "Lembretes: escolha uma atividade e quantos minutos antes avisar, toda semana; dá para levar ao Google Agenda para tocar no celular."] },
+  rotina: { cor: "var(--a-car)", cena: "calendar", foto: "Agenda de papel aberta na semana, com blocos coloridos de meia hora e uma xícara de café", missao: "Desenhar o dia em blocos de 30 minutos: o que você planeja, o que já está na agenda e o que de fato fez.", resolve: "Dias que somem em tarefas soltas e planos que não cabem no relógio.", entra: "Seus blocos, os lembretes, a Agenda (e o Google Calendar) e as tarefas com prazo.", sai: "Idiomas (o plano desconta os blocos), Hoje (a rotina do dia).", manual: ["Escolha Dia, Semana ou Mês no topo; ‹ › mudam o período e Hoje volta para hoje.", "No calendário pequeno, clique num dia para ver as horas dele, ou no número da semana para ver a semana inteira.", "Clique numa meia hora vazia (ou arraste por várias): abre a lista das atividades, primeiro as do Standard Semanal, cada uma com a cor fixa, depois as Outras. Escolha e a célula fica com a cor da atividade.", "Atividade que não está na lista: digite o nome na busca e “Criar”, ou “Nova atividade”, e escolha a cor. Em “Atividades e cores” (Modelos e atalhos) você muda cor, nome e categoria das Outras.", "Clique num bloco para editar, marcar como feito ou excluir. “Repetir” cria rotinas diárias, de dias úteis ou semanais.", "Os compromissos da Agenda e do Google aparecem tracejados: são editados na Agenda.", "“Preencher” aplica um modelo pronto (Básica, Intermediária, Avançada ou outro) no dia, na semana ou no mês.", "Lembrete com data e hora: botão Lembrete (ao lado de Criar), “Lembrete aqui” na lista de uma meia hora, ou no Secretário. Escreva a frase (“dentista 25/10 às 15h”, “remédio todo dia às 8”): Data e Hora se preenchem para você conferir. Ele aparece na grade na hora exata, com um sino, e no Mês.", "Lembrete antes de uma atividade: em Lembretes › Novo › “Antes de uma atividade”, escolha a atividade e quantos minutos antes avisar, toda semana. Os dois tipos podem ir ao Google Agenda para tocar no celular.", "Errou? Todo aviso de criado ou apagado tem Desfazer. O relógio no topo abre o Histórico de alterações: desfaça qualquer passo, mesmo depois de recarregar a página."] },
   inspira: { cor: "var(--warn)", cena: "spark", foto: "Mesa de trabalho com um caderno aberto, uma xícara de café e a luz da manhã", missao: "Ligar a cabeça antes de começar uma atividade: um texto curto, um aquecimento de 5 minutos, o primeiro passo do dia, frases, vídeos e música, e uma IA que acompanha a atividade em todas as abas.", resolve: "A inércia do começo: sentar para estudar, ler ou criar e não engrenar.", entra: "As atividades do seu Lazer e da sua rotina, as que você criar e o próximo bloco da Rotina.", sai: "Começos registrados, a IA de acompanhamento e atalhos para a aba de cada atividade.", manual: ["O topo mostra a atividade que combina com o próximo bloco da sua Rotina.", "Escolha a atividade, toque em Começar o aquecimento e siga os 3 passos (5 minutos).", "“Comecei” registra o começo; “outro desafio” troca o primeiro passo.", "Ativar acompanhamento chama a IA com o perfil da atividade; ela fica num botão lateral em todas as abas."] },
   diario: { cor: "var(--a-men)", cena: "notebook", foto: "Caderno de capa de couro aberto, caneta tinteiro e xícara de café", missao: "O lugar das palavras: o que aconteceu, o que você sentiu e o que aprendeu, ligado às pessoas, temas e metas.", resolve: "Memória do que viveu e padrões que só aparecem escritos.", entra: "Seus textos, @pessoas, #temas e comandos “/”.", sai: "Cruzamentos, Capítulos, mentores (se você permitir).", manual: ["@ menciona uma pessoa, # marca um tema, [[ liga a uma meta ou tarefa.", "Linhas começando com / registram dados (ex.: /gasto 12 almoço).", "Em Perguntar, busque por significado: “quando me senti sozinho?”."] },
   jornada: { cor: "var(--jp-med)", cena: "lotus", foto: "Flor de lótus num lago parado ao amanhecer", missao: "Cultivar a vida interior em quatro caminhos (Espiritismo, meditação, Taoísmo e Budismo) e a bússola moral que orienta as decisões.", resolve: "Prática espiritual que fica solta, sem continuidade nem reflexão.", entra: "Sessões de prática, reflexões, exame da noite, decisões.", sai: "Métricas de prática nos Cruzamentos e o Hoje.", manual: ["Comece pela aba de um pilar e registre a estação em que você está.", "Saúde espiritual é o jardim: cada árvore cresce com um pilar, o rio com o exame da noite, e o templo com as inclinações que você trabalha.", "Na mandala, toque numa pétala para explorar; as camadas mostram ritmo e evolução.", "Práticas guarda programas guiados e sessões (com estado antes e depois).", "A Bússola moral tem o exame da noite e as oito perguntas antes de decidir."] },
@@ -11363,6 +11575,7 @@ function gcClick(t) {
    Vistas dia, semana e mês sincronizadas pela mesma data (RT.d). A grade cobre as 24 h com rolagem própria, cabeçalho e horas fixos,
    e abre perto de agora (ou do primeiro bloco). Blocos: S.rotina = { id, data, ini, fim, titulo, cat, rep, exc[], st{dia: feito|parcial|pulado}, notas }
    (o antigo feitos{dia:1} continua valendo como “feito”). Modelos: S.rotinaModelos. A Agenda e o Google aparecem tracejados, só leitura.
+   Os lembretes com data e hora (62-lembretes) aparecem na hora exata, com linha tracejada e sino, e não ocupam tempo nem entram em conflito.
    Arrastar no vazio cria; arrastar um bloco move (também entre dias na semana); a alça de baixo estica. Um bloco repetido movido vira
    exceção naquele dia e uma cópia avulsa no novo horário, como nas agendas. */
 const RT = { d: TODAY, drag: null, mv: null, just: 0, q: "", pick: false, scrolled: "", pre: "" };
@@ -11432,7 +11645,7 @@ function rtAgenda(d) {
   const tar = [], tarH = [];
   for (const t of [...S.tarefas.filter(t => t.prazo === d && t.status !== "Concluída" && t.status !== "Cancelada"), ...ckMinhas(t => ckOpen(t) && t.prazo === d)]) {
     const h = rtHoraTxt(t.tarefa) || rtHoraTxt(t.notas); if (h) tarH.push({ id: t.id, titulo: t.ck ? t.tarefa : rtSemHora(t.tarefa, h), a: h.a, z: h.z, tarefa: t.ck ? "k" : "t", dia: false }); else tar.push(t); }
-  return { timed: [...ev.filter(e => !e.dia), ...tarH], allday: [...aniv, ...ev.filter(e => e.dia)], tar };
+  return { timed: [...ev.filter(e => !e.dia), ...tarH], allday: [...aniv, ...ev.filter(e => e.dia)], tar, lem: lemDoDia(d) };
 }
 /* colunas para itens que se sobrepõem */
 function rtLayout(items) {
@@ -11469,13 +11682,13 @@ function rtMini() {
   const d = RT.d, m0 = parse(d.slice(0, 8) + "01"), first = weekStart(iso(m0)), v = rtView(), wk = rtWeek(d);
   const weeks = Array.from({ length: 6 }, (_, i) => addDays(first, i * 7)).filter((w, i) => i < 5 || w.slice(0, 7) === d.slice(0, 7));
   return `<div class="rtmini" role="dialog" aria-label="Escolher data"><div class="rtmh"><button type="button" class="iconbtn" data-rtmini="-1" aria-label="Mês anterior">‹</button><b>${MESES[m0.getMonth()]} ${m0.getFullYear()}</b><button type="button" class="iconbtn" data-rtmini="1" aria-label="Próximo mês">›</button></div>
-    <table><thead><tr><th title="Número da semana">#</th>${["S", "T", "Q", "Q", "S", "S", "D"].map(x => `<th>${x}</th>`).join("")}</tr></thead><tbody>${weeks.map(w => `<tr class="${v === "semana" && w === wk[0] ? "sel" : ""}"><td><button type="button" class="rtwk" data-rtgo="semana|${w}" title="Ver a semana ${isoWeek(w)}">${isoWeek(w)}</button></td>${Array.from({ length: 7 }, (_, i) => { const x = addDays(w, i), n = rtOcc(x).length + rtAgenda(x).timed.length; return `<td><button type="button" class="rtmd${x.slice(0, 7) !== d.slice(0, 7) ? " out" : ""}${x === TODAY ? " today" : ""}${x === d && v === "dia" ? " sel" : ""}" data-rtgo="dia|${x}" aria-label="${fmtDL(x)}">${parse(x).getDate()}${n ? "<i></i>" : ""}</button></td>`; }).join("")}</tr>`).join("")}</tbody></table></div>`;
+    <table><thead><tr><th title="Número da semana">#</th>${["S", "T", "Q", "Q", "S", "S", "D"].map(x => `<th>${x}</th>`).join("")}</tr></thead><tbody>${weeks.map(w => `<tr class="${v === "semana" && w === wk[0] ? "sel" : ""}"><td><button type="button" class="rtwk" data-rtgo="semana|${w}" title="Ver a semana ${isoWeek(w)}">${isoWeek(w)}</button></td>${Array.from({ length: 7 }, (_, i) => { const x = addDays(w, i), n = rtOcc(x).length + rtAgenda(x).timed.length + lemDoDia(x).length; return `<td><button type="button" class="rtmd${x.slice(0, 7) !== d.slice(0, 7) ? " out" : ""}${x === TODAY ? " today" : ""}${x === d && v === "dia" ? " sel" : ""}" data-rtgo="dia|${x}" aria-label="${fmtDL(x)}">${parse(x).getDate()}${n ? "<i></i>" : ""}</button></td>`; }).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 /* faixa da semana (só na vista Dia: na Semana o cabeçalho da grade já mostra os dias, as horas e o cumprido) */
 function rtStrip() {
   const w = rtWeek(RT.d), v = rtView();
   return `<div class="rtstrip" role="tablist" aria-label="Dias da semana"><button type="button" class="iconbtn rtsw" data-rtnavw="-1" aria-label="Semana anterior">‹</button>${w.map(d => { const X = rtDia(d), p = X.plan, f = p ? X.feito / p : 0, on = v === "dia" && d === RT.d;
-    return `<button type="button" role="tab" aria-selected="${on}" class="rtsd${on ? " on" : ""}${d === TODAY ? " today" : ""}" data-rtgo="dia|${d}"><small>${DOWL[parse(d).getDay()].slice(0, 3)}</small><b>${parse(d).getDate()}</b><span class="rtsm">${p ? `${num(p / 60, p % 60 ? 1 : 0)} h` : "livre"}</span><i class="rtsb"><u style="width:${clamp(f) * 100}%"></u></i></button>`; }).join("")}<button type="button" class="iconbtn rtsw" data-rtnavw="1" aria-label="Próxima semana">›</button></div>`;
+    return `<button type="button" role="tab" aria-selected="${on}" class="rtsd${on ? " on" : ""}${d === TODAY ? " today" : ""}" data-rtgo="dia|${d}"><small>${DOWL[parse(d).getDay()].slice(0, 3)}</small><b>${parse(d).getDate()}</b><span class="rtsm">${p ? `${num(p / 60, p % 60 ? 1 : 0)} h` : "livre"}${(n => n ? `<span class="rtsml" title="${plural(n, "lembrete", "lembretes")}"> ${ic("bell")}${n}</span>` : "")(lemDoDia(d).length)}</span><i class="rtsb"><u style="width:${clamp(f) * 100}%"></u></i></button>`; }).join("")}<button type="button" class="iconbtn rtsw" data-rtnavw="1" aria-label="Próxima semana">›</button></div>`;
 }
 function rtCol(d) {
   const H = rtSH(), X = rtDia(d), occ = rtLayout(X.bs), ag = rtLayout(X.A.timed.filter(e => e.a != null)), [w0, w1] = rtWake(), cf = new Set(X.conf.map(([b]) => b.id));
@@ -11484,11 +11697,13 @@ function rtCol(d) {
   const sobre = e => X.bs.some(b => b.a < e.z && e.a < b.z);
   const slots = Array.from({ length: 48 }, (_, i) => `<div class="rtslot${i % 2 ? " half" : ""}" data-rts="${d}|${i * 30}" data-h="${m2hm(i * 30)}"></div>`).join("");
   const sleep = w1 > w0 ? `<div class="rtsleep" style="top:0;height:${w0 / 30 * H}px"></div><div class="rtsleep" style="top:${w1 / 30 * H}px;height:${(1440 - w1) / 30 * H}px"></div>` : `<div class="rtsleep" style="top:${w1 / 30 * H}px;height:${(w0 - w1) / 30 * H}px"></div>`;
-  const now = d === TODAY ? `<div class="rtnow" style="top:${nowMin() / 30 * H}px"><span>${m2hm(nowMin())}</span></div>` : "";
+  const now = d === TODAY ? `<div class="rtnow" style="top:${nowMin() / 30 * H}px"><span>${m2hm(nowMin())}</span></div>` : "", dow = parse(d).getDay();
+  const sino = b => { const r = lsRegra(b.titulo, dow); return r && r.on !== false ? `<span class="rtbsino" title="Lembrete ${esc(lsMinTxt(r.min))}">${ic("bell")}</span>` : ""; };
+  const nl = {}, lems = (X.A.lem || []).map(l => { const k = nl[l.a] = (nl[l.a] || 0) + 1; return `<div class="rtlem${l.feito ? " ok" : ""}" style="top:${l.a / 30 * H}px;--k:${k - 1}"><button type="button" class="rtlemp" data-rtlem="${esc(l.id)}|${d}" title="${esc(`Lembrete ${l.hm} · ${l.texto}${l.l.rep ? " · " + lemRepTxt(l.l.rep, lemDia(l.l)) : ""}${l.feito ? " · feito" : ""} · toque para abrir`)}" aria-label="${esc(`Lembrete às ${l.hm}: ${l.texto}${l.feito ? ", feito" : ""}`)}">${ic("bell")}<b>${l.hm}</b><span>${esc(l.texto)}</span></button></div>`; }).join("");
   return `<div class="rtcol${d === TODAY ? " today" : ""}" style="height:${48 * H}px" data-rtday="${d}">${sleep}${slots}
-    ${occ.map(b => { const len = b.z - b.a, tiny = len / 30 * H < 34; return `<div role="button" tabindex="0" class="rtb${rtHex(b.cor) ? " cor" : ""}${b.st ? " st-" + b.st : ""}${tiny ? " tiny" : ""}${cf.has(b.id) ? " conf" : ""}" style="${pos(b, b.n || 1, b.col)};${rtBStyle(b)}" data-rtb="${b.id}|${d}" title="${esc(`${b.ini}–${b.fim} · ${b.titulo}${b.rep ? " · " + REP_TXT[b.rep] : ""}${b.st ? " · " + ST_TXT[b.st] : ""}`)}"><b>${b.st === "feito" ? "✓ " : b.st === "pulado" ? "✕ " : ""}${esc(b.titulo)}</b><small>${b.ini}–${b.fim}${b.rep ? ` ${ic("repeat")}` : ""}</small><i class="rtrs" data-rtrs="${b.id}|${d}" aria-hidden="true"></i></div>`; }).join("")}
+    ${occ.map(b => { const len = b.z - b.a, tiny = len / 30 * H < 34; return `<div role="button" tabindex="0" class="rtb${rtHex(b.cor) ? " cor" : ""}${b.st ? " st-" + b.st : ""}${tiny ? " tiny" : ""}${cf.has(b.id) ? " conf" : ""}" style="${pos(b, b.n || 1, b.col)};${rtBStyle(b)}" data-rtb="${b.id}|${d}" title="${esc(`${b.ini}–${b.fim} · ${b.titulo}${b.rep ? " · " + REP_TXT[b.rep] : ""}${b.st ? " · " + ST_TXT[b.st] : ""}`)}"><b>${b.st === "feito" ? "✓ " : b.st === "pulado" ? "✕ " : ""}${esc(b.titulo)}</b><small>${b.ini}–${b.fim}${b.rep ? ` ${ic("repeat")}` : ""}${sino(b)}</small><i class="rtrs" data-rtrs="${b.id}|${d}" aria-hidden="true"></i></div>`; }).join("")}
     ${ag.map(e => { const k = e.tarefa || "e", qual = e.tarefa === "k" ? "Tarefa do Cockpit" : e.tarefa ? "Tarefa" : `Agenda${e.gcal ? ", Google" : ""}`;
-      return `<div role="button" tabindex="0" class="rte${e.gcal ? " gcal" : ""}${e.tarefa ? " tk" : ""}" style="${sobre(e) ? pos(e, e.n || 1, e.col, 50, 50) : pos(e, e.n || 1, e.col)}" data-rtitem="${k}|${e.id}|${d}" title="${esc(`${m2hm(e.a)}–${m2hm(Math.min(e.z, 1440))} · ${e.titulo}${e.local ? " · " + e.local : ""} (${qual}) · toque para abrir`)}"><b>${esc(e.titulo)}</b><small>${m2hm(e.a)} · ${e.tarefa ? "tarefa" : e.gcal ? "Google" : "agenda"}</small></div>`; }).join("")}${now}</div>`;
+      return `<div role="button" tabindex="0" class="rte${e.gcal ? " gcal" : ""}${e.tarefa ? " tk" : ""}" style="${sobre(e) ? pos(e, e.n || 1, e.col, 50, 50) : pos(e, e.n || 1, e.col)}" data-rtitem="${k}|${e.id}|${d}" title="${esc(`${m2hm(e.a)}–${m2hm(Math.min(e.z, 1440))} · ${e.titulo}${e.local ? " · " + e.local : ""} (${qual}) · toque para abrir`)}"><b>${esc(e.titulo)}</b><small>${m2hm(e.a)} · ${e.tarefa ? "tarefa" : e.gcal ? "Google" : "agenda"}</small></div>`; }).join("")}${lems}${now}</div>`;
 }
 function rtAllday(d) { const A = rtAgenda(d); return [...A.allday.map(e => e.pessoa ? `<button type="button" class="rtad e anual" data-ent="p|${esc(e.nome)}" title="Aniversário, todo ano · toque para abrir a ficha">${ic("heart")}${esc(e.titulo)}</button>` : `<button type="button" class="rtad e${e.anual ? " anual" : ""}" data-rtitem="e|${e.id}|${d}" title="${e.anual ? "Todo ano" : "Agenda, sem horário"} · toque para abrir">${ic(e.anual ? "heart" : "cal")}${esc(e.titulo)}</button>`), ...A.tar.map(t => `<button type="button" class="rtad t" data-rtitem="${t.ck ? "k" : "t"}|${t.id}|${d}" title="${t.ck ? "Tarefa do Cockpit de Trabalho" : "Tarefa com prazo, sem horário"} · toque para abrir">${ic("checksq")}${esc(t.tarefa)}</button>`)].join(""); }
 /* cartão de um item que não é bloco (compromisso da agenda ou tarefa com prazo no dia): pôr na rotina, concluir, editar ou apagar */
@@ -11518,7 +11733,7 @@ function rtGrid(days) {
 }
 function rtMonth() {
   const d = RT.d, m0 = d.slice(0, 7), first = weekStart(m0 + "-01"), weeks = Array.from({ length: 6 }, (_, i) => addDays(first, i * 7)).filter((w, i) => i < 5 || w.slice(0, 7) === m0);
-  return `<div class="rtmonth"><div class="rtmw hd"><span>#</span>${["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map(x => `<span>${x}</span>`).join("")}</div>${weeks.map(w => `<div class="rtmw"><button type="button" class="rtwk" data-rtgo="semana|${w}" title="Ver a semana">${isoWeek(w)}</button>${Array.from({ length: 7 }, (_, i) => { const x = addDays(w, i), X = rtDia(x), bs = X.bs.sort((p, q) => p.a - q.a), items = [...bs.map(b => `<i style="--c:${rtBC(b)}"${b.st ? ` class="st-${b.st}"` : ""}>${b.ini} ${esc(b.titulo)}</i>`), ...X.A.timed.map(e => `<i class="e">${m2hm(e.a)} ${esc(e.titulo)}</i>`), ...X.A.allday.map(e => `<i class="e">${esc(e.titulo)}</i>`)], pf = X.plan ? X.feito / X.plan : 0;
+  return `<div class="rtmonth"><div class="rtmw hd"><span>#</span>${["seg", "ter", "qua", "qui", "sex", "sáb", "dom"].map(x => `<span>${x}</span>`).join("")}</div>${weeks.map(w => `<div class="rtmw"><button type="button" class="rtwk" data-rtgo="semana|${w}" title="Ver a semana">${isoWeek(w)}</button>${Array.from({ length: 7 }, (_, i) => { const x = addDays(w, i), X = rtDia(x), bs = X.bs.sort((p, q) => p.a - q.a), items = [...X.A.lem.map(l => `<i class="e l${l.feito ? " st-feito" : ""}">${l.hm} ${esc(l.texto)}</i>`), ...bs.map(b => `<i style="--c:${rtBC(b)}"${b.st ? ` class="st-${b.st}"` : ""}>${b.ini} ${esc(b.titulo)}</i>`), ...X.A.timed.map(e => `<i class="e">${m2hm(e.a)} ${esc(e.titulo)}</i>`), ...X.A.allday.map(e => `<i class="e">${esc(e.titulo)}</i>`)], pf = X.plan ? X.feito / X.plan : 0;
     return `<button type="button" class="rtmc${x.slice(0, 7) !== m0 ? " out" : ""}${x === TODAY ? " today" : ""}" data-rtgo="dia|${x}" aria-label="${fmtDL(x)}: ${items.length} itens"><span class="rtmct"><b>${parse(x).getDate()}</b>${X.plan ? `<small>${durTxt(X.plan)}</small>` : ""}</span>${X.plan && x < TODAY ? `<i class="rtsb"><u style="width:${clamp(pf) * 100}%"></u></i>` : ""}${items.slice(0, 3).join("")}${items.length > 3 ? `<em>+${items.length - 3}</em>` : ""}</button>`; }).join("")}</div>`).join("")}</div>`;
 }
 function rtInsights(days) {
@@ -11544,7 +11759,7 @@ function rtInsights(days) {
     : `${hbars(Object.entries(AD.per).filter(([, [, m]]) => m).sort((p, q) => q[1][1] - p[1][1]).map(([c, [v2, m]]) => ({ l: c, v: v2 / m, color: rtCor(c) })), { fmt: pct, max: 1 })}<div class="rtwks">${wks.map(w => { const [v2, m] = AD.wk[w]; return `<span title="Semana de ${fmtD(w)}: ${pct(v2 / m)}"><i style="height:${Math.max(4, v2 / m * 40)}px"></i><small>${fmtD(w)}</small></span>`; }).join("")}</div>`));
   /* ações */
   const mods = rtModsPre();
-  out.push(panel(`${ic("list")}Modelos e atalhos`, `<div class="form f1"><label>Aplicar um modelo ${v === "dia" ? "neste dia" : "nesta semana"}<div class="row"><select id="rt_mod">${mods.map(m => `<option value="${m.id}"${m.id === RT.mod ? " selected" : ""}>${esc(m.nome)}${m.semana ? ` · semana, ${m.semana.length} blocos` : ""}</option>`).join("")}</select><button type="button" class="btn sm" data-act="rtmod">Aplicar</button></div></label></div>
+  out.push(panel(`${ic("list")}Modelos e atalhos`, `<div class="form f1"><label>Aplicar um modelo ${v === "dia" ? "neste dia" : "nesta semana"}<div class="row"><select id="rt_mod">${mods.map(m => `<option value="${m.id}"${m.id === RT.mod ? " selected" : ""}>${esc(m.nome)}${m.semana ? ` · semana, ${m.semana.length} blocos` : ""}</option>`).join("")}</select><button type="button" class="btn sm" data-act="rtmod">Aplicar</button>${(S.rotinaModelos || []).length ? `<button type="button" class="iconbtn" data-act="rtmoddel" aria-label="Apagar o modelo escolhido" title="Apagar o modelo escolhido (os seus; os prontos do Atlas ficam)">${ic("trash")}</button>` : ""}</div></label></div>
     <div class="row wrap">${v === "dia" ? `<button type="button" class="btn sm" data-act="rtcopy">${ic("copy")}Copiar o dia…</button>` : `<button type="button" class="btn sm" data-act="rtsavemod">${ic("plus")}Salvar a semana como modelo</button><button type="button" class="btn sm" data-act="rtcopyw">${ic("copy")}Copiar para a próxima semana</button>`}<button type="button" class="btn sm" data-act="rtativ">${ic("palette")}Atividades e cores</button></div>
     <details class="futd"><summary>Ajustes da grade</summary><div class="form f3"><label>Acordo<input type="time" step="1800" data-rtcfg="rtAcordar" value="${esc(S.cfg.rtAcordar || "06:30")}"></label><label>Durmo<input type="time" step="1800" data-rtcfg="rtDormir" value="${esc(S.cfg.rtDormir || "23:00")}"></label><label>Tamanho<select data-rtcfg="rtZoom">${Object.keys(RT_Z).map(k => `<option${(S.cfg.rtZoom || "normal") === k ? " selected" : ""}>${k}</option>`).join("")}</select></label></div><p class="muted small">Teclado: ← → período · T hoje · D S M vistas · N novo bloco.</p></details>`));
   out.push(lsPanel());
@@ -11564,7 +11779,7 @@ function pRotina() {
       <div class="seg-g rtviews" role="group" aria-label="Visualização">${[["dia", "Dia"], ["semana", "Semana"], ["mes", "Mês"]].map(([k, l]) => `<button type="button" class="seg" data-rtv="${k}" aria-pressed="${v === k}">${l}</button>`).join("")}</div>
       <div class="row rtbtns"><button type="button" class="btn sm rtpre" data-act="rtpre" title="Preenche ${RT_LIMPAR[v][1]} com um modelo pronto (Básica, Intermediária, Avançada ou outro salvo)">${ic("bolt")}<span>Preencher</span></button><button type="button" class="btn sm ghost danger rtclr" data-act="rtclear" title="Tira os blocos da rotina ${RT_LIMPAR[v][1]}. Pede confirmação antes." aria-label="${RT_LIMPAR[v][0]}">${ic("trash")}<span>${RT_LIMPAR[v][0]}</span></button><button type="button" class="btn sm" data-act="rtcap" title="Conte o dia por voz ou texto: cada atividade vai para a faixa de horário dela">${ic("mic")}Capturar o dia</button><button type="button" class="btn sm primary" data-act="rtnovo">${ic("plus")}Novo bloco</button></div>
     </div>
-    <div class="rtq"><span>${ic("plus")}</span><input type="text" id="rt_q" value="${esc(RT.q)}" placeholder="Criar rápido: inglês amanhã 20h 30min · academia seg qua sex 18:30–19:30 · reunião 14h–15h30" aria-label="Criar bloco por texto" autocomplete="off"><button type="button" class="btn sm primary" data-act="rtqadd"${qp?.ok ? "" : " disabled"}>Criar</button>
+    <div class="rtq"><span>${ic("plus")}</span><input type="text" id="rt_q" value="${esc(RT.q)}" placeholder="Criar rápido: inglês amanhã 20h 30min · academia seg qua sex 18:30–19:30 · reunião 14h–15h30" aria-label="Criar bloco por texto" autocomplete="off"><button type="button" class="btn sm primary" data-act="rtqadd"${qp?.ok ? "" : " disabled"}>Criar</button><button type="button" class="btn sm rtqlem" data-act="lemnovo" title="Lembrete com data e hora: aparece na grade, na hora marcada, e avisa">${ic("bell")}<span class="rtqlt">Lembrete</span></button>
       <div class="rtqp${qp ? (qp.ok ? " ok" : " bad") : ""}" id="rt_qp">${qp ? rtQpHTML(qp) : ""}</div></div>
     ${v === "dia" ? rtStrip() : ""}
     <div class="rtlay"><section class="rtcal" aria-label="${esc(P.t)}">${v === "mes" ? rtMonth() : rtGrid(v === "dia" ? [RT.d] : rtWeek(RT.d))}</section>
@@ -11662,9 +11877,9 @@ function rtCopiar(de, para) {
 /* ---------------------------------------------------------------- limpar o período (dia, semana ou mês)
    Blocos avulsos do período são apagados; dos que se repetem, sai só a ocorrência no período (a série continua nos outros dias).
    Tarefas com horário ocupam a grade: saem junto se a pessoa deixar marcado (e saem também da aba Tarefas). Compromissos da
-   agenda, aniversários, tarefas sem horário e as do Cockpit ficam. Tudo num passo só de desfazer. */
+   agenda, aniversários, tarefas sem horário, as do Cockpit e os lembretes ficam. Tudo num passo só de desfazer. */
 function rtAlvoLimpar(days) {
-  const D = new Set(days), av = (S.rotina || []).filter(b => !b.rep && D.has(b.data)), rep = [], tar = new Set(), ag = new Set(), an = new Set(), ts = new Set(), ck = new Set();
+  const D = new Set(days), av = (S.rotina || []).filter(b => !b.rep && D.has(b.data)), rep = [], tar = new Set(), ag = new Set(), an = new Set(), ts = new Set(), ck = new Set(), lm = new Set();
   let marc = av.filter(b => rtSt(b, b.data)).length;
   for (const d of days) {
     for (const b of rtOcc(d)) if (b.rep) { rep.push([b.id, d]); if (b.st) marc++; }
@@ -11672,8 +11887,9 @@ function rtAlvoLimpar(days) {
     for (const e of A.timed) (e.tarefa === "t" ? tar : e.tarefa === "k" ? ck : ag).add(e.id);
     for (const e of A.allday) (e.pessoa || e.anual ? an : ag).add(e.id);
     for (const t of A.tar) (t.ck ? ck : ts).add(t.id);
+    for (const l of A.lem || []) lm.add(l.id);
   }
-  return { av, rep, tar, marc, fica: [[ag.size, "compromisso da agenda", "compromissos da agenda"], [an.size, "aniversário", "aniversários"], [ts.size, "tarefa sem horário", "tarefas sem horário"], [ck.size, "tarefa do Cockpit", "tarefas do Cockpit"]].filter(x => x[0]).map(([n, a, b]) => plural(n, a, b)) };
+  return { av, rep, tar, marc, fica: [[ag.size, "compromisso da agenda", "compromissos da agenda"], [an.size, "aniversário", "aniversários"], [ts.size, "tarefa sem horário", "tarefas sem horário"], [ck.size, "tarefa do Cockpit", "tarefas do Cockpit"], [lm.size, "lembrete", "lembretes"]].filter(x => x[0]).map(([n, a, b]) => plural(n, a, b)) };
 }
 function rtLimparDlg() {
   const v = rtView(), days = rtDias(), X = rtAlvoLimpar(days), nb = X.av.length + X.rep.length, nt = X.tar.size;
@@ -11792,6 +12008,9 @@ function rtClick(t) {
   if (ds.act === "rtnovo") { const m = RT.d === TODAY ? Math.ceil(nowMin() / 30) * 30 : 9 * 60; rtForm(null, RT.d, Math.min(m, 1410)); return true; }
   if (ds.act === "rtqadd") { rtQAdd(); return true; }
   if (ds.act === "rtmod") { const id = RT.mod = $("#rt_mod").value, mod = [...RT_MOD0, ...(S.rotinaModelos || [])].find(m => m.id === id); if (mod) rtAplicar(mod, rtView() === "dia" ? [RT.d] : rtWeek(RT.d)); return true; }
+  if (ds.act === "rtmoddel") { const id = $("#rt_mod")?.value, m = (S.rotinaModelos || []).find(x => x.id === id); if (!m) { toast("Esse modelo é um dos prontos do Atlas: não sai da lista."); return true; }
+    if (!t.dataset.c) { t.dataset.c = 1; t.title = t.ariaLabel = `Confirmar: apagar “${m.nome}”`; t.classList.add("danger"); toast(`Toque de novo no lixo para apagar o modelo “${m.nome}”. Os blocos já aplicados ficam.`); return true; }
+    S.rotinaModelos = S.rotinaModelos.filter(x => x !== m); RT.mod = null; if (rtaD().fonte === m.id) rtaD().fonte = ""; touch("rotinaModelos", "rotinaAtiv", { label: `Modelo apagado: ${m.nome}` }); undoToast(`Modelo apagado: ${m.nome} (os blocos já aplicados ficam)`); return true; }
   if (ds.act === "rtsavemod") { const w = rtWeek(RT.d), semana = w.flatMap(d => rtOcc(d).map(b => [parse(d).getDay(), b.ini, b.fim, b.titulo, b.cat, ...(rtHex(b.cor) ? [b.cor, rtHex(b.tx) || ""] : [])])); if (!semana.length) { toast("A semana está vazia."); return true; } const nome = `Semana de ${fmtD(w[0])}`; (S.rotinaModelos ||= []).push({ id: uid(), nome, semana }); touch("rotinaModelos", { label: "Modelo salvo" }); undoToast(`Modelo “${nome}” salvo com ${semana.length} blocos`); return true; }
   if (ds.act === "rtcopyw") { let n = 0, p = 0; for (const d of rtWeek(RT.d)) { const [a, b] = rtCopiar(d, addDays(d, 7)); n += a; p += b; } touch("rotina", { label: "Semana copiada" }); undoToast(`${plural(n, "bloco copiado", "blocos copiados")} para a próxima semana${p ? ` · ${p} pulado(s) por conflito` : ""}`); return true; }
   if (ds.act === "rtcopy") { const d = $("#dlg"); d.innerHTML = `<form method="dialog" id="rtcpf"><h3>Copiar ${fmtDL(RT.d)}</h3><div class="form"><label>Para o dia<input type="date" id="rt_cpd" value="${addDays(RT.d, 1)}"></label></div><p class="muted small">Copia os blocos deste dia como blocos avulsos. Horários que já têm algo são pulados.</p><div class="dlgfoot"><div></div><div class="row"><button type="button" class="btn" id="rtcpx">Cancelar</button><button class="btn primary">Copiar</button></div></div></form>`; d.showModal(); $("#rtcpx").onclick = () => d.close();
@@ -12706,11 +12925,12 @@ function pd3Click(t) {
      hábitos, rotina, exame da noite, radar (orçamento, humor, metas, sequências), pessoas, idiomas e o jardim.
    - Para decidir: conflitos entre áreas (bloco da rotina × agenda, dia sobrecarregado, prioridades altas atrasadas);
      o Secretário não escolhe, só apresenta as opções.
-   - Lembretes: criados por texto ou voz (“me lembre de ligar para a mãe amanhã às 18h”); avisam dentro do Atlas na hora.
+   - Lembretes: criados por texto ou voz (“me lembre de ligar para a mãe amanhã às 18h”) ou no formulário com Data, Hora, Repetir e
+     Avisar (62-lembretes); aparecem na grade da Rotina e avisam dentro do Atlas na hora (e no Google Agenda, se marcado).
    - Conversa: o Claude com ferramentas para ver qualquer aba, consultar os mentores (só para coletar informação), propor
      ações e levantar conflitos. Nada vira registro sem a pessoa confirmar; tudo passa pelo registro de Privacidade.
    Modos (perfis de imposição, editáveis): Enfoque, Ação, Reflexão e Relaxo mudam o tom, o que aparece e a proatividade.
-   Dados: secretario = { modo, perfis, conversa, lembretes: [{id, texto, quando, feito, avisado}], decisoes: [{id, chave, escolha, data}], tts }. */
+   Dados: secretario = { modo, perfis, conversa, lembretes: [{id, texto, quando, rep, min, feito, avisado, feitos, avisados, exc, gcal}] (ver 62-lembretes), decisoes: [{id, chave, escolha, data}], tts }. */
 const SEC = { open: false, tab: "agora", input: "", live: null, ouvindo: false, nudge: null, cfg: false, conf: {}, rec: null };
 const SEC_MODOS = {
   enfoque: { nome: "Enfoque", ico: "target", desc: "Só o que importa hoje, uma coisa por vez.", tom: "curto e firme; uma coisa por vez; diga o que pode esperar e corte distrações", pro: "media", mostra: "hoje" },
@@ -12747,7 +12967,7 @@ function secItems() {
   for (const p of R.pes.filter(p => p.faltam != null && p.faltam >= 0 && p.faltam <= 7)) add({ id: "aniv:" + p.id, area: "Família", st: p.faltam <= 1 ? "warn" : "info", txt: `Aniversário de ${p.nome}`, sub: p.faltam === 0 ? "é hoje" : p.faltam === 1 ? "amanhã" : `em ${p.faltam} dias`, go: "pessoas.lista" });
   const late = R.pes.filter(p => p.st === "crit" && +p.freq).sort((a, b) => b.ratio - a.ratio)[0];
   if (late) add({ id: "pes:" + late.id, area: "Família", st: "info", txt: `Falar com ${late.nome}`, sub: late.txt || "contato atrasado", go: "pessoas.lista" });
-  for (const l of secData().lembretes.filter(l => !l.feito && l.quando && l.quando.slice(0, 10) <= d)) { const past = new Date(l.quando) <= new Date(); add({ id: "lem:" + l.id, area: "Lembretes", st: past ? "crit" : "warn", txt: l.texto, sub: `${past ? "era para" : "hoje às"} ${l.quando.slice(11, 16)}${l.quando.slice(0, 10) < d ? ` de ${fmtD(l.quando.slice(0, 10))}` : ""}`, acts: [["Feito", `lemok|${l.id}`]], go: null }); }
+  for (const x of lemDeHoje(d)) add({ id: `lem:${x.l.id}:${x.d}`, area: "Lembretes", st: x.passou ? "crit" : "warn", txt: x.l.texto, sub: `${x.passou ? "era para" : "hoje às"} ${x.hm}${x.d < d ? ` de ${fmtD(x.d)}` : ""}${x.l.rep ? ` · ${lemRepTxt(x.l.rep, lemDia(x.l))}` : ""}`, acts: [["Feito", `lemok|${x.l.id}|${x.d}`]], go: null });
   try { const a = jdAsks()[0]; if (a) add({ id: "jd:" + a[3], area: "Propósito & espiritualidade", st: "info", txt: `Jardim: ${a[1]}`, sub: a[2], go: "jornada.jardim" }); } catch (e) { console.warn("jardim", e); }
   const rk = { crit: 0, warn: 1, info: 2 };
   return out.sort((a, b) => rk[a.st] - rk[b.st]);
@@ -12778,32 +12998,12 @@ function secPadroes() {
 
 /* ---------------------------------------------------------------- lembretes: “me lembre de X amanhã às 18h” */
 const SEC_DOW = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
-function secParseLembrete(txt) {
-  let F = fold(txt), t = String(txt), when = null, day = null, hm = null;
-  const m1 = F.match(/\bem\s+(\d+|meia|uma|um)\s*(min|minutos?|h|horas?)\b/);
-  if (m1) { const n = m1[1] === "meia" ? 30 : /^um/.test(m1[1]) ? 1 : +m1[1], ms = /^m/.test(m1[2]) ? n * 60e3 : (m1[1] === "meia" ? 30 * 60e3 : n * 3600e3); when = new Date(Date.now() + ms); }
-  if (!when) {
-    if (/\bdepois de amanha\b/.test(F)) day = addDays(TODAY, 2); else if (/\bamanha\b/.test(F)) day = addDays(TODAY, 1); else if (/\bhoje\b/.test(F)) day = TODAY;
-    const dm = F.match(/\bdia\s+(\d{1,2})(?:\/(\d{1,2}))?\b/); if (dm) { const y = +TODAY.slice(0, 4), mo = dm[2] ? +dm[2] : +TODAY.slice(5, 7); let c = `${y}-${pad(mo)}-${pad(+dm[1])}`; if (c < TODAY) c = dm[2] ? `${y + 1}-${pad(mo)}-${pad(+dm[1])}` : addMonth(c.slice(0, 7), 1) + "-" + pad(+dm[1]); day = c; }
-    const wd = SEC_DOW.findIndex(w => new RegExp(`\\b${w}(-feira)?\\b`).test(F)); if (!day && wd >= 0) { let k = (wd - parse(TODAY).getDay() + 7) % 7 || 7; day = addDays(TODAY, k); }
-    const tm = F.match(/\b(?:as|a|ao)\s+(\d{1,2})(?:[:h](\d{2}))?\s*(?:h|horas)?\b/) || F.match(/\b(\d{1,2})[:h](\d{2})\b/) || F.match(/\b(\d{1,2})\s*h\b/);
-    if (/\bmeio[- ]dia\b/.test(F)) hm = [12, 0]; else if (tm) hm = [+tm[1], +(tm[2] || 0)];
-    if (hm && hm[0] > 23) hm = null;
-    if (day || hm) { day ||= TODAY; hm ||= [9, 0]; if (day === TODAY && hm[0] * 60 + hm[1] <= secNowMin() && !/\bhoje\b/.test(F)) day = addDays(TODAY, 1); when = new Date(`${day}T${pad(hm[0])}:${pad(hm[1])}:00`); }
-  }
-  /* \b do JS não conhece ã/à; as fronteiras aqui são "não letra, não dígito" */
-  const W = re => new RegExp(`(?<![\\p{L}\\d])(?:${re})(?![\\p{L}\\d])`, "giu");
-  t = t.replace(/^\s*(?:secret[aá]rio,?\s*)?(?:me\s+)?(?:(?:cria(?:r)?\s+(?:um\s+)?)?lembrete|lembr[ae]r?(?:-me)?(?![\p{L}]))\s*(?:de|para|que)?\s*/iu, "")
-    .replace(W("em\\s+(?:\\d+|meia|uma|um)\\s*(?:min|minutos?|h|horas?)"), "").replace(W("depois de amanhã|depois de amanha|amanhã|amanha|hoje"), "").replace(W("dia\\s+\\d{1,2}(?:/\\d{1,2})?"), "")
-    .replace(W(`(?:(?:na|no)\\s+)?(?:domingo|segunda|terça|terca|quarta|quinta|sexta|sábado|sabado)(?:-feira)?`), "").replace(W("(?:às|as|ao|à|a)\\s+\\d{1,2}(?:[:h]\\d{2})?\\s*(?:h|horas)?"), "").replace(W("\\d{1,2}[:h]\\d{2}"), "").replace(W("(?:(?:ao|à|a)\\s+)?meio[- ]dia"), "").replace(/\s{2,}/g, " ").replace(/[\s,.;]+$/, "").trim();
-  if (!t) return null;
-  const quando = when ? `${iso(when)}T${pad(when.getHours())}:${pad(when.getMinutes())}` : "";
-  return { texto: t[0].toUpperCase() + t.slice(1), quando };
-}
-function secLembrar(l) { secData().lembretes.push({ id: uid(), texto: l.texto.slice(0, 200), quando: l.quando, feito: false, avisado: false, at: Date.now(), origem: l.origem || "você" }); touch("secretario", { label: "Lembrete criado" }); }
+/* a frase vira lembrete pelo leitor do 62-lembretes (dd/mm, “3 da tarde”, “daqui a 2 horas”, “todo dia às 8”…). Sem data, hora nem
+   repetição na frase, quando fica vazio: o Secretário pergunta em vez de chutar */
+function secParseLembrete(txt) { const P = lemParse(txt); if (!P.texto) return null; const tem = P.achou.data || P.achou.hora || P.achou.rep; return { texto: P.texto, quando: tem && P.data && P.hora ? `${P.data}T${P.hora}` : "", rep: tem ? P.rep : "" }; }
+function secLembrar(l) { secData().lembretes.push({ id: uid(), texto: l.texto.slice(0, 200), quando: l.quando, rep: l.rep || "", min: +l.min || 0, feito: false, avisado: false, at: Date.now(), origem: l.origem || "você" }); touch("secretario", { label: `Lembrete criado: ${trunc(l.texto, 40)}` }); }
 function secTick() {
-  if (!LOADED) return; if (lsTick()) return; const L = secData().lembretes, now = new Date(), due = L.filter(l => !l.feito && !l.avisado && l.quando && new Date(l.quando) <= now);
-  if (due.length) { for (const l of due) l.avisado = true; touch("secretario", { noUndo: true, noRender: true }); SEC.nudge = { txt: due.length === 1 ? `Lembrete: ${due[0].texto}` : `${due.length} lembretes agora`, crit: true, at: Date.now() }; SEC.tab = "lembretes"; SEC.open = true; secLS("open", true); toast(SEC.nudge.txt); secPaint(); return; }
+  if (!LOADED) return; if (lsTick()) return; if (lemTick()) return;
   /* proatividade: avisa uma vez por dia o que é novo, conforme o perfil */
   const pf = secPerfil(); if (SEC.open || pf.pro === "baixa" || pf.pro === "minima") { secFab(); return; }
   const seen = secLS("seen") || {}, day = seen[TODAY] || [], its = secItems().filter(i => i.st === "crit" || (pf.pro === "alta" && i.st === "warn")).filter(i => !day.includes(i.id));
@@ -12819,7 +13019,7 @@ function secAbaFacts(aba, ctx) {
   if (aba === "tarefas") return S.tarefas.filter(t => t.status !== "Concluída" && t.status !== "Cancelada" && aiAreaOk(t.area)).sort((a, b) => (a.prazo || "9").localeCompare(b.prazo || "9")).slice(0, 40).map(t => `- [${t.id}] ${t.tarefa} · ${t.prio || "Média"}${t.prazo ? " · prazo " + t.prazo : ""}${t.area ? " · " + t.area : ""}`).join("\n") || "nenhuma tarefa aberta";
   if (aba === "rotina") return [TODAY, addDays(TODAY, 1)].map(dd => { const X = rtDia(dd); return `${dd}: ${rtOcc(dd).map(b => `${b.ini}–${b.fim} ${b.titulo}${b.st ? " (" + b.st + ")" : ""}`).join("; ") || "sem blocos"}. Livre: ${num((X.livre || 0) / 60, 1)} h. Conflitos: ${(X.conf || []).length}.`; }).join("\n");
   if (aba === "jornada") return aiAreaOk("Propósito & espiritualidade") ? [...J_ORDER.map(p => jPilarFacts(p, false).slice(0, 4).join(" ")), `Bússola: prática ${bmScores(28).idx == null ? "sem exames" : pct(bmScores(28).idx)} em 4 semanas; exames em 7 dias: ${Array.from({ length: 7 }, (_, i) => addDays(TODAY, -i)).filter(x => bmEx()[x]).length}.`].join("\n") : "setor privado";
-  if (aba === "lembretes") return secData().lembretes.filter(l => !l.feito).map(l => `- ${l.quando || "sem hora"} · ${l.texto}`).join("\n") || "nenhum lembrete pendente";
+  if (aba === "lembretes") return lemPendentes().map(l => `- ${l.quando || "sem hora"} · ${l.texto}${l.rep ? ` · repete: ${lemRepTxt(l.rep, lemDia(l))}, próxima ${lemProx(l) || "—"}` : ""}${+l.min ? ` · avisa ${lemMinTxt(l.min)}` : ""}`).join("\n") || "nenhum lembrete pendente";
   if (aba === "agora") return secItems().filter(i => aiAreaOk(i.area)).map(i => `- [${i.st}] ${i.area}: ${i.txt} (${i.sub})`).join("\n");
   return "aba desconhecida";
 }
@@ -12858,8 +13058,8 @@ function secTools(live) {
         note("consultar_mentor", `${MENTOR_DEF[mid].nome}: ${trunc(inp.pergunta, 60)}`);
         const r = await aiCall(`${MENTOR_DEF[mid].nome} (consultado pelo Secretário)`, () => [{ role: "user", content: mentorPrompt(mid, false) + iadPromptMentor(mid, true, 120000) + `\n\nO Secretário da Vida, que coordena o app, pede um relatório para a pessoa. Responda só com informação, em até 120 palavras: progresso, bloqueios e oportunidades, com números. Não proponha registros, não decida nada e não use ferramentas.` }, { role: "user", content: String(inp.pergunta).slice(0, 600) }], { signal: ctx?.signal || live.ctl.signal, modelTier: "quick", cache: true });
         return String(r.text || "").replace(/```atlas[\s\S]*?```/g, "").trim().slice(0, 2500); } },
-    { name: "propor", description: "Propõe uma ação que a pessoa confirma ou descarta num cartão. Tipos: tarefa (titulo, prazo, prioridade), lembrete (titulo, quando AAAA-MM-DDTHH:MM), adiar (tarefa_id, prazo), concluir (tarefa_id), bloco (titulo, data, inicio HH:MM, fim HH:MM ou duracao_min, categoria da rotina): use bloco para TODA atividade com horário (montar o dia, reunião, estudo, treino), um por atividade, e tarefa só para o que tem prazo sem hora marcada. Nada é feito sem confirmação.",
-      inputSchema: { type: "object", properties: { tipo: { type: "string", enum: ["tarefa", "lembrete", "adiar", "concluir", "bloco"] }, titulo: { type: "string" }, prazo: { type: "string" }, prioridade: { type: "string", enum: ["Alta", "Média", "Baixa"] }, quando: { type: "string" }, tarefa_id: { type: "string" }, data: { type: "string" }, inicio: { type: "string" }, fim: { type: "string" }, categoria: { type: "string" }, duracao_min: { type: "number" }, motivo: { type: "string" } }, required: ["tipo"] },
+    { name: "propor", description: "Propõe uma ação que a pessoa confirma ou descarta num cartão. Tipos: tarefa (titulo, prazo, prioridade), lembrete (titulo, quando AAAA-MM-DDTHH:MM, e se repete: repetir diario|uteis|semanal|mensal|anual, avisar_min), adiar (tarefa_id, prazo), concluir (tarefa_id), bloco (titulo, data, inicio HH:MM, fim HH:MM ou duracao_min, categoria da rotina): use bloco para TODA atividade com horário (montar o dia, reunião, estudo, treino), um por atividade, e tarefa só para o que tem prazo sem hora marcada. Nada é feito sem confirmação.",
+      inputSchema: { type: "object", properties: { tipo: { type: "string", enum: ["tarefa", "lembrete", "adiar", "concluir", "bloco"] }, titulo: { type: "string" }, prazo: { type: "string" }, prioridade: { type: "string", enum: ["Alta", "Média", "Baixa"] }, quando: { type: "string" }, tarefa_id: { type: "string" }, data: { type: "string" }, inicio: { type: "string" }, fim: { type: "string" }, categoria: { type: "string" }, duracao_min: { type: "number" }, motivo: { type: "string" }, repetir: { type: "string", enum: ["", "diario", "uteis", "semanal", "mensal", "anual"] }, avisar_min: { type: "number" } }, required: ["tipo"] },
       execute: inp => { const p = secMkProp(inp); if (p.erro) throw new Error(p.erro); live.acoes.push(p); note("propor", p.rotulo); return { ok: true, status: "aguardando confirmação da pessoa" }; } },
     { name: "levantar_conflito", description: "Leva à pessoa um conflito ou ambiguidade entre prioridades ou áreas, com 2 a 4 opções. Ela decide; você não escolhe. Retorna {ok}.",
       inputSchema: { type: "object", properties: { titulo: { type: "string" }, contexto: { type: "string" }, opcoes: { type: "array", items: { type: "string" } } }, required: ["titulo", "opcoes"] },
@@ -12875,7 +13075,8 @@ function secMkProp(inp) {
   if (tipo === "tarefa") { const ht = rtHoraTxt(inp.titulo), hd = rtHoraTxt(inp.motivo), h = ht || (hd && !hd.so ? hd : null);   // na descrição, só faixa (“09:00–10:30”) vale
     if (h && (!inp.prazo || /^\d{4}-\d{2}-\d{2}$/.test(inp.prazo))) return secMkProp({ ...inp, tipo: "bloco", titulo: rtSemHora(inp.titulo, ht), data: inp.prazo || inp.data || TODAY, inicio: m2hm(h.a), fim: m2hm(h.z), deTarefa: true }); }
   if (tipo === "tarefa") return { id, tipo, titulo: String(inp.titulo || "").slice(0, 200), prazo: /^\d{4}-\d{2}-\d{2}$/.test(inp.prazo || "") ? inp.prazo : "", prio: ["Alta", "Média", "Baixa"].includes(inp.prioridade) ? inp.prioridade : "Média", motivo: inp.motivo || "", rotulo: `tarefa: ${trunc(inp.titulo, 60)}`, status: "pendente" };
-  if (tipo === "lembrete") { const q = String(inp.quando || ""); if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(q)) return { erro: "quando precisa ser AAAA-MM-DDTHH:MM" }; return { id, tipo, titulo: String(inp.titulo || "").slice(0, 200), quando: q.slice(0, 16), motivo: inp.motivo || "", rotulo: `lembrete: ${trunc(inp.titulo, 50)} · ${fmtD(q.slice(0, 10))} às ${q.slice(11, 16)}`, status: "pendente" }; }
+  if (tipo === "lembrete") { const q = String(inp.quando || ""); if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(q)) return { erro: "quando precisa ser AAAA-MM-DDTHH:MM" }; const rp = inp.repetir in LEM_REP ? inp.repetir : "", mn = LEM_MIN.includes(+inp.avisar_min) ? +inp.avisar_min : 0;
+    return { id, tipo, titulo: String(inp.titulo || "").slice(0, 200), quando: q.slice(0, 16), rep: rp, min: mn, motivo: inp.motivo || "", rotulo: `lembrete: ${trunc(inp.titulo, 50)} · ${fmtD(q.slice(0, 10))} às ${q.slice(11, 16)}${rp ? ` · ${lemRepTxt(rp, q.slice(0, 10))}` : ""}`, status: "pendente" }; }
   if (tipo === "adiar" || tipo === "concluir") { if (!t) return { erro: "Tarefa não encontrada; use o id de ver_aba(tarefas)." }; if (tipo === "adiar" && !/^\d{4}-\d{2}-\d{2}$/.test(inp.prazo || "")) return { erro: "prazo AAAA-MM-DD obrigatório" }; return { id, tipo, tid: t.id, titulo: t.tarefa, prazo: inp.prazo || "", motivo: inp.motivo || "", rotulo: `${tipo}: ${trunc(t.tarefa, 50)}`, status: "pendente" }; }
   if (tipo === "bloco") {
     /* aceita “9:00”, “9h”, “9h30”, “09.00”; sem fim, usa a duração ou 1 h; sem início, procura o horário no título ou no motivo */
@@ -12917,7 +13118,7 @@ function secLocal(text) {
   const mm = F.match(/\bmodo\s+(enfoque|foco|acao|reflexao|relaxo|relax|descanso)\b/);
   if (mm) { const m = { foco: "enfoque", relax: "relaxo", descanso: "relaxo" }[mm[1]] || mm[1]; D.modo = m; touch("secretario", { noUndo: true, noRender: true }); return say(`Modo **${SEC_MODOS[m].nome}**: ${SEC_MODOS[m].desc}`); }
   if (/^\s*(secretario,?\s*)?(me\s+)?(lembr|cria(r)?\s+(um\s+)?lembrete|lembrete)/.test(F)) { const l = secParseLembrete(text); if (!l) return say("Lembrar de quê? Ex.: “me lembre de ligar para o banco amanhã às 10”."); if (!l.quando) return say(`Para quando é “${l.texto}”? Diga, por exemplo, “hoje às 18h”, “amanhã às 9” ou “em 30 minutos”.`);
-    secLembrar(l); return say(`Combinado: **${l.texto}**, ${l.quando.slice(0, 10) === TODAY ? "hoje" : fmtDL(l.quando.slice(0, 10))} às ${l.quando.slice(11, 16)}. Aviso aqui no Atlas na hora (com o Atlas aberto).`); }
+    secLembrar(l); return say(`Combinado: **${l.texto}**, ${lemQuandoTxt(l.quando.slice(0, 10), l.quando.slice(11, 16))}${l.rep ? `, ${lemRepTxt(l.rep, l.quando.slice(0, 10))}` : ""}. Aparece na Rotina e eu aviso aqui na hora (com o Atlas aberto). Para mudar, abra a aba Lembretes.`); }
   const go = F.match(/^\s*(abr[ae]|abrir|ir para|vai para|mostra(r)?)\s+(?:a\s+|o\s+)?(?:aba\s+)?(.+)$/);
   if (go) { const hit = SEC_GO.find(([rx]) => rx.test(go[3])); if (hit) { setHash(...hit[1].split(".")); return say(`Abri ${hit[1].split(".")[0]}.`); } }
   if (/^\s*(resumo|o que (tenho|vence|falta)|agenda de hoje|status|como estou)\b/.test(F)) { const its = secFilt(secItems()); return say(its.length ? `${its.slice(0, 6).map(i => `- ${i.st === "crit" ? "**" : ""}${i.txt}${i.st === "crit" ? "**" : ""} · ${i.sub}`).join("\n")}${its.length > 6 ? `\n\n…e mais ${its.length - 6} no Agora.` : ""}` : "Nada pendente agora. Bom momento para respirar ou adiantar algo."); }
@@ -12931,12 +13132,12 @@ function secDo(code, el) {
   if (k === "ckdone") { const t = (S.ckTar || []).find(x => x.id === a); if (!t) return; ckSetStatus(t.id, "concluída"); undoToast(`Concluída: ${t.cod} · ${trunc(t.titulo, 50)}`); return; }
   if (k === "tadiar") { const t = S.tarefas.find(x => x.id === a); if (!t) return; t.prazo = addDays(TODAY, 1); touch("tarefas", { label: "Tarefa adiada" }); undoToast(`Adiada para amanhã: ${trunc(t.tarefa, 50)}`); return; }
   if (k === "conta") { const c = (S.contasCasa || []).find(z => z.id === a); if (!c) return; c.pagos = { ...(c.pagos || {}), [b]: TODAY }; const ks = ["contasCasa"], cat = /aluguel|condom/i.test(c.cat || "") ? "Moradia" : "Contas da casa"; if (+c.valor > 0 && cat in CAT_DESP) { S.lanc.push({ id: uid(), data: TODAY, tipo: "Despesa", cat, desc: c.conta, valor: +c.valor, conta: c.debito === "Sim" ? "Conta corrente" : "PIX / transferência", origem: "secretário" }); ks.push("lanc"); } touch(...ks, { label: "Conta paga" }); undoToast(`Conta paga: ${c.conta} · ${eur(+c.valor || 0, 2)} lançado`); return; }
-  if (k === "lemok") { const l = secData().lembretes.find(x => x.id === a); if (l) { l.feito = true; touch("secretario", { label: "Lembrete feito" }); } return; }
-  if (k === "lemdel") { const D = secData(); D.lembretes = D.lembretes.filter(x => x.id !== a); touch("secretario", { label: "Lembrete apagado" }); undoToast("Lembrete apagado"); return; }
+  if (k === "lemok") { const l = lemFeitoSet(a, b || TODAY, true); if (l) undoToast(`Feito: ${trunc(l.texto, 40)}`); return; }
+  if (k === "lemdel") { lemApagar(a); return; }
 }
 function secApplyProp(p) {
   if (p.tipo === "tarefa") { S.tarefas.push({ id: uid(), tarefa: p.titulo, projeto: "", area: "", prio: p.prio, prazo: p.prazo, status: "A fazer", concluida: "", meta: "", notas: p.motivo, origem: "Secretário" }); return ["tarefas"]; }
-  if (p.tipo === "lembrete") { secData().lembretes.push({ id: uid(), texto: p.titulo, quando: p.quando, feito: false, avisado: false, at: Date.now(), origem: "Secretário" }); return ["secretario"]; }
+  if (p.tipo === "lembrete") { secData().lembretes.push({ id: uid(), texto: p.titulo, quando: p.quando, rep: p.rep || "", min: +p.min || 0, feito: false, avisado: false, at: Date.now(), origem: "Secretário" }); return ["secretario"]; }
   if (p.tipo === "adiar") { const t = S.tarefas.find(x => x.id === p.tid); if (t) t.prazo = p.prazo; return ["tarefas"]; }
   if (p.tipo === "concluir") { const t = S.tarefas.find(x => x.id === p.tid); if (t) { t.status = "Concluída"; t.concluida = TODAY; } return ["tarefas"]; }
   if (p.tipo === "bloco") { (S.rotina ||= []).push({ id: uid(), data: p.data, ini: p.ini, fim: p.fim, titulo: p.titulo, cat: p.cat, rep: "", exc: [], st: {}, notas: p.motivo || "", ...rtCorAtiv(p.titulo) }); return ["rotina"]; }
@@ -12968,14 +13169,14 @@ function secAgoraHTML() {
   return h;
 }
 function secLembHTML() {
-  const L = secData().lembretes.filter(l => !l.feito).sort((a, b) => (a.quando || "9").localeCompare(b.quando || "9")), F = secData().lembretes.filter(l => l.feito).slice(-5).reverse(), now = new Date();
-  return `<div class="secnew"><input type="text" id="sec_lem" placeholder="Ligar para o banco amanhã às 10" aria-label="Novo lembrete"><button type="button" class="btn sm primary" data-act="seclemadd">${ic("plus")}Lembrar</button></div><small class="muted">Aviso dentro do Atlas na hora marcada, com ele aberto.</small>
-    ${L.length ? L.map(l => { const past = l.quando && new Date(l.quando) <= now; return `<div class="secit ${past ? "st-crit" : ""}"><i class="secdot"></i><div class="secb"><b>${esc(l.texto)}</b><small>${l.quando ? `${l.quando.slice(0, 10) === TODAY ? "hoje" : fmtDL(l.quando.slice(0, 10))} às ${l.quando.slice(11, 16)}` : "sem hora"}${l.origem && l.origem !== "você" ? ` · ${esc(l.origem)}` : ""}</small><div class="secacts"><button type="button" class="btn sm" data-secdo="lemok|${l.id}">${ic("check")}Feito</button><button type="button" class="btn sm ghost" data-secdo="lemdel|${l.id}" aria-label="Apagar">${ic("trash")}</button></div></div></div>`; }).join("") : `<div class="secempty">${ic("clock")}Nenhum lembrete pendente.</div>`}
+  const F = secData().lembretes.filter(l => !l.rep && l.feito).slice(-5).reverse();
+  return `${lemFormHTML("sec")}<small class="muted">Aparece na Rotina na hora marcada e avisa aqui, com o Atlas aberto. Marcando o Google Agenda, avisa também no celular.</small>
+    ${lemPendentes().length ? `<div class="secsec">${ic("bell")}Próximos<small>${lemPendentes().length}</small></div>${lemListaHTML("sec")}` : `<div class="secempty">${ic("bell")}Nenhum lembrete pendente.</div>`}
     ${lsSecHTML()}
-    ${F.length ? `<div class="secsec">Feitos</div>${F.map(l => `<div class="secit done"><i class="secdot"></i><div class="secb"><s>${esc(l.texto)}</s></div></div>`).join("")}` : ""}`;
+    ${F.length ? `<div class="secsec">Feitos</div>${F.map(l => `<div class="secit done"><i class="secdot"></i><div class="secb"><s>${esc(l.texto)}</s><div class="secacts"><button type="button" class="btn sm ghost" data-lemok="${l.id}|${lemDia(l)}|0">${ic("undo")}Reabrir</button></div></div></div>`).join("")}` : ""}`;
 }
 function secPropHTML(mi, p) {
-  const lab = { tarefa: "Criar tarefa", lembrete: "Criar lembrete", adiar: "Adiar tarefa", concluir: "Concluir tarefa", bloco: "Criar bloco na rotina" }[p.tipo], det = p.tipo === "tarefa" ? [p.prazo && "até " + fmtD(p.prazo), p.prio].filter(Boolean).join(" · ") : p.tipo === "lembrete" ? `${fmtD(p.quando.slice(0, 10))} às ${p.quando.slice(11, 16)}` : p.tipo === "adiar" ? `novo prazo ${fmtD(p.prazo)}` : p.tipo === "bloco" ? `${fmtD(p.data)} ${p.ini}–${p.fim} · ${p.cat}` : "";
+  const lab = { tarefa: "Criar tarefa", lembrete: "Criar lembrete", adiar: "Adiar tarefa", concluir: "Concluir tarefa", bloco: "Criar bloco na rotina" }[p.tipo], det = p.tipo === "tarefa" ? [p.prazo && "até " + fmtD(p.prazo), p.prio].filter(Boolean).join(" · ") : p.tipo === "lembrete" ? `${fmtD(p.quando.slice(0, 10))} às ${p.quando.slice(11, 16)}${p.rep ? ` · ${lemRepTxt(p.rep, p.quando.slice(0, 10))}` : ""}` : p.tipo === "adiar" ? `novo prazo ${fmtD(p.prazo)}` : p.tipo === "bloco" ? `${fmtD(p.data)} ${p.ini}–${p.fim} · ${p.cat}` : "";
   return `<div class="prop ${p.status}"><div class="prop-t">${ic({ tarefa: "checksq", lembrete: "clock", adiar: "cal", concluir: "check", bloco: "week" }[p.tipo] || "plus")}<div><span class="prop-k">${lab}</span><b>${esc(p.titulo)}</b><small>${esc(det)}</small>${p.motivo ? `<p>${esc(p.motivo)}</p>` : ""}</div></div>
     <div class="prop-a">${p.status === "pendente" ? (mi >= 0 ? `<button type="button" class="btn sm primary" data-secp="${mi}|${p.id}|ok">${ic("check")}Confirmar</button><button type="button" class="btn sm ghost" data-secp="${mi}|${p.id}|no">Descartar</button>` : `<span class="muted">aguarde a resposta terminar</span>`) : p.status === "aceita" ? `<span class="pill good">Feito</span>` : `<span class="pill none">Descartada</span>`}</div></div>`;
 }
@@ -13001,7 +13202,7 @@ function secCfgHTML() {
     ${D.conversa.length ? `<button type="button" class="btn sm ghost" data-act="secclear">${ic("trash")}Limpar a conversa</button>` : ""}`;
 }
 function secHTML() {
-  const D = secData(), pf = secPerfil(), n = secFilt(secItems()).filter(i => i.st !== "info").length, nl = D.lembretes.filter(l => !l.feito && l.quando && new Date(l.quando) <= new Date()).length, ai = !!SAMPLE && !AI_OFF;
+  const D = secData(), pf = secPerfil(), n = secFilt(secItems()).filter(i => i.st !== "info").length, nl = lemAtrasados().length, ai = !!SAMPLE && !AI_OFF;
   const tabs = [["agora", "Agora", n], ["conversa", "Conversa", 0], ["lembretes", "Lembretes", nl], ["guia", "Guia", 0]];
   const body = SEC.cfg ? secCfgHTML() : SEC.tab === "conversa" ? secChatHTML() : SEC.tab === "lembretes" ? secLembHTML() : SEC.tab === "guia" ? guHTML() : secAgoraHTML();
   return `<header class="sech" data-secdrag="1"><span class="secav">${ic("brief")}</span><div class="sect"><b>Secretário da Vida</b><small>${esc(pf.nome)} · ${ai ? "IA pronta" : "sem IA: modo local"}</small></div>
@@ -13013,7 +13214,7 @@ function secHTML() {
     <i class="secgrip" aria-hidden="true"></i>`;
 }
 function secFab() {
-  let f = $("#secfab"); if (!f) return; const n = LOADED ? secFilt(secItems()).filter(i => i.st === "crit").length + secData().lembretes.filter(l => !l.feito && l.quando && new Date(l.quando) <= new Date()).length : 0, nu = SEC.nudge && !SEC.open && Date.now() - SEC.nudge.at < 15 * 60e3 ? SEC.nudge : null;
+  let f = $("#secfab"); if (!f) return; const n = LOADED ? secFilt(secItems()).filter(i => i.st === "crit").length + lemAtrasados().length : 0, nu = SEC.nudge && !SEC.open && Date.now() - SEC.nudge.at < 15 * 60e3 ? SEC.nudge : null;
   f.hidden = SEC.open; f.innerHTML = `${ic("brief")}<span>Secretário</span>${n ? `<i>${n}</i>` : ""}`; f.classList.toggle("crit", !!n);
   const b = $("#secnudge"); if (b) { b.hidden = !nu || SEC.open; if (nu) b.innerHTML = `<span>${esc(nu.txt)}</span><button type="button" class="btn sm" data-act="secopen">Ver</button><button type="button" class="iconbtn" data-act="secnudgex" aria-label="Dispensar">${ic("x")}</button>`; }
 }
@@ -13063,7 +13264,6 @@ function secClick(t) {
   if (a === "secsend") { const v = ($("#sec_in")?.value || "").trim(); SEC.input = ""; secAsk(v); return true; }
   if (a === "secstop") { SEC.live?.ctl.abort(); return true; }
   if (a === "secmic") { secMic(); return true; }
-  if (a === "seclemadd") { const v = ($("#sec_lem")?.value || "").trim(); const l = secParseLembrete(/lembr/i.test(v) ? v : "lembre de " + v); if (!l) { toast("Escreva o que lembrar."); return true; } if (!l.quando) { toast("Diga quando: “hoje às 18h”, “amanhã às 9”, “em 30 minutos”."); return true; } secLembrar(l); toast(`Lembrete para ${l.quando.slice(0, 10) === TODAY ? "hoje" : fmtD(l.quando.slice(0, 10))} às ${l.quando.slice(11, 16)}`); secPaint(); return true; }
   if (ds.secgo) { setHash(...ds.secgo.split(".")); if (innerWidth <= 640) secToggle(false); return true; }
   if (ds.secdo) { const c = ds.secdo; if (ds.crit && !SEC.conf[c]) { SEC.conf = { [c]: 1 }; secPaint(); return true; } SEC.conf = {}; secDo(c); secPaint(); return true; }
   if (ds.seccf) { const [i, j] = ds.seccf.split("|").map(Number), c = secConflitos()[i]; if (c) { const [l, op] = c.ops[j]; secDecide(c.chave, c.txt, l, op); secPaint(); } return true; }
@@ -13072,13 +13272,13 @@ function secClick(t) {
   if (ds.secc) { const [mi, cid, j] = ds.secc.split("|"), m = secData().conversa[+mi], c = m?.conflitos?.find(x => x.id === cid); if (!c || c.escolha) return true; c.escolha = c.ops[+j]; secDecide("ia:" + c.id, c.titulo, c.escolha); secPaint(); if (SAMPLE && !SEC.live) secAsk(`Decidi: ${c.escolha}. Siga a partir daí.`); return true; }
   return true;
 }
-function secInput(t) { if (t.id === "sec_in") { SEC.input = t.value; t.style.height = "auto"; t.style.height = Math.min(120, t.scrollHeight) + "px"; return true; } return !!t.closest?.("#sec") && t.id === "sec_lem"; }
+function secInput(t) { if (t.id === "sec_in") { SEC.input = t.value; t.style.height = "auto"; t.style.height = Math.min(120, t.scrollHeight) + "px"; return true; } return false; }
 function secChange(t) { if (!t.dataset.secpf) return !!t.closest?.("#sec"); const [m, k] = t.dataset.secpf.split("|"), D = secData(); D.perfis[m] = { ...(D.perfis[m] || {}), [k]: t.value }; touch("secretario", { noUndo: true, noRender: true }); secPaint(); return true; }
 function secBoot() {
   if ($("#sec")) return;
   document.body.insertAdjacentHTML("beforeend", `<button type="button" id="secfab" class="secfab" aria-label="Abrir o Secretário da Vida"></button><div id="secnudge" class="secnudge" role="status" hidden></div><section id="sec" class="secw" role="dialog" aria-label="Secretário da Vida" hidden></section>`);
   SEC.open = !!secLS("open"); secPlace(); secPaint();
-  document.addEventListener("keydown", e => { if (e.target.id === "sec_in" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); const v = e.target.value.trim(); SEC.input = ""; e.target.value = ""; secAsk(v); } if (e.target.id === "sec_lem" && e.key === "Enter") { e.preventDefault(); $('[data-act="seclemadd"]')?.click(); } if (e.key === "Escape" && SEC.open && e.target.closest?.("#sec")) secToggle(false); });
+  document.addEventListener("keydown", e => { if (e.target.id === "sec_in" && e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); const v = e.target.value.trim(); SEC.input = ""; e.target.value = ""; secAsk(v); } if (e.key === "Escape" && SEC.open && e.target.closest?.("#sec")) secToggle(false); });
   /* mover pelo cabeçalho e guardar o tamanho quando a janela é redimensionada pelo canto */
   let drag = null;
   document.addEventListener("pointerdown", e => { const h = e.target.closest?.("[data-secdrag]"); if (!h || e.target.closest("button") || innerWidth <= 640) return; const w = $("#sec"), r = w.getBoundingClientRect(); drag = { dx: e.clientX - r.left, dy: e.clientY - r.top }; h.setPointerCapture?.(e.pointerId); e.preventDefault(); });
@@ -18270,18 +18470,24 @@ async function lsGcalTira(r, apagar) {
 /* ---------------------------------------------------------------- painel na Rotina e lista no Secretário */
 const LS = { dias: [], busy: "" };
 function lsPanel() {
-  const L = lsData(), A = lsAtividades(), D = secData();
+  const L = lsData(), A = lsAtividades(), D = secData(), P = lemPendentes(), nAt = L.filter(r => r.on !== false).length + P.length, tipo = LEM.tipo;
   const item = r => { const px = lsProximas(r), des = lsGcDesatual(r);
     return `<div class="lsit${r.on === false ? " off" : ""}"><div><b>${ic("clock")}${esc(r.titulo)}</b><small>${r.nota ? `${esc(r.nota)} · ` : ""}${esc(lsDiasTxt(r))} · ${lsMinTxt(r.min)}${px.length ? ` · próximas: ${esc(px.join(", "))}` : " · não aparece nos próximos 14 dias"}${r.gcal?.on ? ` · ${des ? "<span class=\"st-warn\">Google desatualizado</span>" : "no Google Agenda"}` : ""}</small></div>
       <div class="row wrap">${LS.busy === r.id ? `<span class="muted small">Google Agenda…</span>` : `<button type="button" class="btn sm ghost" data-lsgc="${r.id}">${r.gcal?.on ? (des ? "Atualizar no Google" : "Tirar do Google") : "Pôr no Google Agenda"}</button>`}<button type="button" class="btn sm ghost" data-lson="${r.id}">${r.on === false ? "Retomar" : "Pausar"}</button><button type="button" class="btn sm ghost" data-lsdel="${r.id}" aria-label="Apagar o lembrete de ${esc(r.titulo)}">${ic("trash")}</button></div></div>`; };
-  return panel(`${ic("clock")}Lembretes <small>${L.length ? plural(L.filter(r => r.on !== false).length, "ativo", "ativos") : "nenhum"}</small>`, `${L.map(item).join("") || `<p class="muted small">Escolha uma atividade da rotina para ser avisado antes dela, toda semana.</p>`}
-    <details class="lsnew"${L.length ? "" : " open"}><summary>${ic("plus")}Novo lembrete</summary><div class="form f1">
+  const novo = LEM.novo || (!L.length && !P.length);
+  return panel(`${ic("bell")}Lembretes <small>${nAt ? plural(nAt, "ativo", "ativos") : "nenhum"}</small>`, `${P.length ? `<div class="lssec">${ic("cal")}Com data e hora</div>${lemListaHTML("rt", 12)}` : ""}
+    ${L.length ? `<div class="lssec">${ic("repeat")}Antes de uma atividade, toda semana</div>${L.map(item).join("")}` : ""}
+    ${!L.length && !P.length ? `<p class="muted small">Nenhum lembrete ainda. Crie um com data e hora (aparece na grade, na hora marcada) ou um que avisa antes de uma atividade da rotina.</p>` : ""}
+    <details class="lsnew"${novo ? " open" : ""}><summary data-act="lsnovo">${ic("plus")}Novo lembrete</summary>
+      <div class="seg-g lstipo" role="group" aria-label="Tipo de lembrete"><button type="button" class="seg" data-lemtipo="data" aria-pressed="${tipo === "data"}">Numa data e hora</button><button type="button" class="seg" data-lemtipo="ativ" aria-pressed="${tipo === "ativ"}">Antes de uma atividade</button></div>
+      ${tipo === "data" ? lemFormHTML("rt") : `<div class="form f1">
       <label>Atividade<input type="text" id="ls_t" list="ls_tl" autocomplete="off" placeholder="${esc(A[0] || "Academia")}"><datalist id="ls_tl">${A.map(t => `<option value="${esc(t)}">`).join("")}</datalist></label>
       <div class="lsdias" role="group" aria-label="Dias">${[1, 2, 3, 4, 5, 6, 0].map(d => `<button type="button" class="seg" data-lsdia="${d}" aria-pressed="${LS.dias.includes(d)}">${DOWS[d].toLowerCase()}</button>`).join("")}<small class="muted">nenhum marcado = todo dia em que aparece</small></div>
       <label>Avisar<select id="ls_m">${LS_MIN.map(m => `<option value="${m}"${m === 10 ? " selected" : ""}>${lsMinTxt(m)}</option>`).join("")}</select></label>
-      <button type="button" class="btn sm primary" data-act="lsadd">${ic("plus")}Criar lembrete</button></div></details>
+      <p class="muted small">Avisa antes de cada bloco com esse nome na grade (de modelo, avulso ou repetido), nos dias escolhidos.</p>
+      <button type="button" class="btn sm primary" data-act="lsadd">${ic("plus")}Criar lembrete</button></div>`}</details>
     <div class="lscfg"><label class="chk"><input type="checkbox" data-lscfg="lsSom"${D.lsSom ? " checked" : ""}><span>Tocar um som no aviso</span></label>${"Notification" in window ? `<button type="button" class="lnk" data-act="lsnotif">${D.lsNotif && Notification.permission === "granted" ? "Notificações do navegador ligadas" : "Ligar notificações do navegador"}</button>` : ""}</div>
-    <p class="muted small">O Atlas avisa pelo Secretário enquanto estiver aberto. Para tocar no celular com ele fechado, ponha o lembrete no Google Agenda: vira um evento semanal, com o mesmo aviso, nos horários desta semana.</p>`);
+    <p class="muted small">O Atlas avisa pelo Secretário enquanto estiver aberto. Para tocar no celular com ele fechado, ponha o lembrete no Google Agenda: vira um evento com o mesmo aviso.</p>`);
 }
 function lsSecHTML() {
   const L = lsData(); if (!L.length) return `<div class="secsec">${ic("clock")}Toda semana</div><small class="muted">Nenhum lembrete semanal. Crie na <a href="#rotina.semana">Rotina › Lembretes</a> ou no cartão de qualquer bloco.</small>`;
@@ -18291,7 +18497,7 @@ function lsClick(t) {
   const ds = t.dataset;
   if (ds.lsdia != null) { const d = +ds.lsdia; LS.dias = LS.dias.includes(d) ? LS.dias.filter(x => x !== d) : [...LS.dias, d]; t.setAttribute("aria-pressed", String(LS.dias.includes(d))); return true; }
   if (ds.act === "lsadd") { const tt = $("#ls_t")?.value.trim(); if (!tt) { toast("Escolha a atividade."); $("#ls_t")?.focus(); return true; }
-    const r = lsSalvar(tt, LS.dias, $("#ls_m").value); LS.dias = []; const px = lsProximas(r, 1);
+    LEM.novo = true; const r = lsSalvar(tt, LS.dias, $("#ls_m").value); LS.dias = []; const px = lsProximas(r, 1);
     undoToast(`Lembrete: ${r.titulo}, ${lsMinTxt(r.min)}, ${lsDiasTxt(r)}${px.length ? ` · próximo ${px[0]}` : " · não aparece nos próximos 14 dias"}`); return true; }
   if (ds.lson) { const r = lsData().find(x => x.id === ds.lson); if (r) { r.on = r.on === false; touch("secretario", { label: r.on ? "Lembrete retomado" : "Lembrete pausado" }); } return true; }
   if (ds.lsdel) { const r = lsData().find(x => x.id === ds.lsdel); if (!r) return true;
@@ -18322,7 +18528,7 @@ function lsCartaoRepinta(t, titulo, dow) { const box = t.closest(".lsbox"); if (
 const GUIA = {
   hoje: { t: "Hoje", o: ["As 4 perguntas de “Como você está agora?”: humor, energia, tempo livre e dinheiro para lazer.", "Nada mais: frase, ideias e o que vence hoje vêm sozinhos; clima e notícias vêm da última previsão gravada (a atualização automática está desligada)."], min: "Humor e energia (2 toques).", rap: "Abra de manhã, toque nas 4 respostas e leia o resumo do topo.", freq: "Todo dia, de manhã", tempo: 1 },
   painel: { t: "Painel do dia", o: ["Sono, humor, energia e estresse.", "Treino, passos e peso (quando tiver).", "Gastos e receitas do dia (“gastei 12,50 no almoço”).", "Hábitos feitos, contatos com pessoas, estudo, leitura e lazer.", "Uma frase do dia, que vai para o Diário.", "Tarefas novas e contas pagas."], min: "Sono, humor e os gastos.", rap: "Fale o dia de uma vez no campo grande (ou pelo microfone), confira em “Revisar e salvar”. Tudo vai para as abas certas.", freq: "Todo dia, à noite", tempo: 3 },
-  rotina: { t: "Rotina", o: ["A semana em blocos de 30 min: aplique um modelo com “Preencher” (Básica, Intermediária ou Avançada).", "Para um horário solto, toque na meia hora: a lista traz as atividades do Standard (com a cor) e as Outras que você cadastrar.", "Durante ou no fim do dia, marque os blocos como feito, parcial ou pulado (ou “Capturar o dia” por voz).", "Lembretes das atividades que você não quer esquecer."], min: "Preencher a semana com um modelo, uma vez por semana.", rap: "Domingo ou segunda: Preencher › escolha o nível › Preencher. À noite: Capturar o dia, por voz.", freq: "Semanal (montar) e diária (marcar)", tempo: 2 },
+  rotina: { t: "Rotina", o: ["A semana em blocos de 30 min: aplique um modelo com “Preencher” (Básica, Intermediária ou Avançada).", "Para um horário solto, toque na meia hora: a lista traz as atividades do Standard (com a cor) e as Outras que você cadastrar.", "Durante ou no fim do dia, marque os blocos como feito, parcial ou pulado (ou “Capturar o dia” por voz).", "Lembretes com data e hora (“dentista 25/10 às 15h”) ou antes de uma atividade: aparecem na grade, na hora certa."], min: "Preencher a semana com um modelo, uma vez por semana.", rap: "Domingo ou segunda: Preencher › escolha o nível › Preencher. À noite: Capturar o dia, por voz.", freq: "Semanal (montar) e diária (marcar)", tempo: 2 },
   inspira: { t: "Inspiração", o: ["Escolha a atividade que vai começar e use o aquecimento de 5 minutos.", "Se quiser companhia, ative a IA de acompanhamento da atividade.", "Suas atividades próprias em “Minhas atividades”."], min: "Nada obrigatório: é para usar antes de começar algo.", rap: "Antes do bloco de estudo, leitura ou projeto: abra a atividade, leia o texto curto e faça o primeiro passo do desafio.", freq: "Quando for começar uma atividade", tempo: 5 },
   trabalho: { t: "Cockpit de Trabalho", o: ["Contexto (uma vez): seu perfil, a equipe e os projetos com marcos.", "Tarefas com prazo, estimativa e projeto; status ao longo do dia.", "Diário de bordo: o que aconteceu, riscos (r:), problemas (p:) e decisões (d:).", "Reuniões e entregas quando houver."], min: "Atualizar o status das tarefas do dia.", rap: "Alt+Shift+N de qualquer aba: “t: revisar prancha 12 sex @Ana [Projeto]”. No fim do dia, Hoje › marque o que andou.", freq: "Todo dia útil (início e fim do expediente)", tempo: 5 },
   diario: { t: "Diário", o: ["O que aconteceu, o que sentiu, o que aprendeu.", "@pessoa, #tema e [[meta]] ligam o texto ao resto do Atlas.", "Linhas com / registram dados (“/gasto 12 almoço”)."], min: "A frase do dia no Painel já entra aqui.", rap: "Uma entrada mais longa por semana; no dia a dia, a frase do Painel basta.", freq: "Semanal (texto longo)", tempo: 10 },
@@ -18997,7 +19203,7 @@ function rtaHTML() {
   return `<div class="rtah"><div><b>${ap.modo === "trocar" ? "Trocar atividade" : "Preencher"}</b><small>${esc(quando)}</small></div><div class="rtahb"><button type="button" class="iconbtn" data-rta="ger" aria-label="Atividades e cores (gerenciar)" title="Atividades e cores">${ic("palette")}</button><button type="button" class="iconbtn" data-rta="x" aria-label="Fechar a lista">${ic("x")}</button></div></div>
     <input type="search" id="rta_q" class="rtaq" placeholder="Buscar ou criar atividade" value="${esc(ap.q)}" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-controls="rta_l" aria-activedescendant="${ap.n ? `rta_o${ap.ativo}` : ""}" autocomplete="off">
     <div class="rtal" id="rta_l" role="listbox" aria-label="Atividades">${grupo("rta_gp", esc(rtaNomeGrupo()), P, 0, ap.q ? "Nada com esse nome." : "Nenhum modelo salvo ainda.")}${grupo("rta_go", "Outras", O, P.length, ap.q ? "Nada com esse nome." : "Nenhuma ainda: crie em “Nova atividade”.")}${criar ? `<div role="option" id="rta_o${n}" class="rtao rtacriar${n === ap.ativo ? " on" : ""}" data-rtao="${n}" aria-selected="${n === ap.ativo}">${ic("plus")}<span>Criar “${esc(criar)}” em Outras</span></div>` : ""}</div>
-    <div class="rtaf"><button type="button" class="btn sm" data-rta="nova">${ic("plus")}Nova atividade</button>${ap.modo === "encher" ? `<button type="button" class="btn sm ghost" data-rta="form">Mais opções…</button>` : ""}</div>`;
+    <div class="rtaf"><button type="button" class="btn sm" data-rta="nova">${ic("plus")}Nova atividade</button>${ap.modo === "encher" ? `<button type="button" class="btn sm ghost" data-rta="lem" title="Lembrete com data e hora neste horário">${ic("bell")}Lembrete aqui</button><button type="button" class="btn sm ghost" data-rta="form">Mais opções…</button>` : ""}</div>`;
 }
 function rtaNovaHTML() {
   const ap = RTA.ap, n = ap.nova, rot = ap.modo === "encher" ? "Salvar e preencher" : ap.modo === "trocar" ? "Salvar e trocar" : "Salvar";
@@ -19064,6 +19270,7 @@ function rtaEl() {
     else if (a === "nova") rtaNova(ap.q.trim() && !rtaPorNome(ap.q) ? ap.q.trim().slice(0, 40) : "");
     else if (a === "volta") { ap.nova = null; rtaPaint(); setTimeout(() => RTA.el?.querySelector("#rta_q")?.focus(), 0); }
     else if (a === "form") { rtaFechar(); rtForm(null, ap.d, ap.a, ap.z); }
+    else if (a === "lem") { rtaFechar(); lemDlg(null, { d: ap.d, h: m2hm(ap.a) }); }
     else if (a === "ger") { rtaFechar(); rtaDlg(); }
   });
   el.addEventListener("input", e => {
@@ -19131,6 +19338,441 @@ function rtaDlg() {
   $("#rtadf").onsubmit = e => e.preventDefault();
   if (!dlg.open) dlg.showModal();
 }
+
+/* ================================================================ lembretes com data e hora: um só modelo para o Secretário, a Rotina e o calendário
+   S.secretario.lembretes = [{ id, texto, quando: "AAAA-MM-DDTHH:MM" (a primeira vez), rep: "" | diario | uteis | semanal | mensal | anual,
+   min (avisa N min antes), feito / avisado (sem repetição), feitos / avisados { dia: 1 } e exc [dias pulados] (com repetição), at, origem,
+   gcal { on, id, sig, at } }]. Aparecem na hora exata na grade da Rotina (Dia e Semana), no Mês, no minicalendário, nos Próximos 7 dias
+   do Hoje e no Agora do Secretário. O formulário é o mesmo no Secretário, no painel da Rotina e no cartão: lê a frase (“dentista 25/10
+   às 15h”) e preenche Data e Hora enquanto se escreve, para conferir antes de salvar; o que estiver nos campos é o que vale.
+   Com “Também no Google Agenda”, vira evento com aviso no Google (toca no celular com o Atlas fechado). O id de cada evento criado fica
+   também em S.integ.lemGc { idDoLembrete: { e: idDoEvento, d: dia } }: se o lembrete some (apagado ou desfeito), o evento sai do Google. */
+const LEM_REP = { "": "Não repete", diario: "Todo dia", uteis: "Dias úteis (seg–sex)", semanal: "Toda semana", mensal: "Todo mês", anual: "Todo ano" };
+const LEM_MIN = [0, 5, 10, 15, 30, 60, 120, 1440];
+const lemMinTxt = m => +m >= 1440 ? "1 dia antes" : +m >= 60 ? `${+m / 60} h antes` : +m ? `${+m} min antes` : "na hora";
+const lemList = () => secData().lembretes;
+const lemDia = l => { const d = String(l?.quando || "").slice(0, 10); return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : ""; };
+const lemHM = l => { const h = String(l?.quando || "").slice(11, 16); return /^\d{2}:\d{2}$/.test(h) ? h : ""; };
+const LEM = { tipo: "data", draft: {}, ed: "", novo: false };   // tipo do formulário no painel da Rotina; rascunhos; edição no Secretário
+
+/* ---------------------------------------------------------------- quando acontece */
+function lemNoDia(l, d) {
+  const d0 = lemDia(l); if (!d0 || !d || d < d0) return false;
+  if (!l.rep) return d === d0;
+  if ((l.exc || []).includes(d)) return false;
+  const x = parse(d), x0 = parse(d0), w = x.getDay();
+  if (l.rep === "diario") return true;
+  if (l.rep === "uteis") return w >= 1 && w <= 5;
+  if (l.rep === "semanal") return w === x0.getDay();
+  if (l.rep === "mensal") return x.getDate() === x0.getDate();   // dia 31 pula os meses que não têm 31, como no Google
+  if (l.rep === "anual") return evNoDia({ data: d0, rep: "anual" }, d);
+  return false;
+}
+const lemFeito = (l, d) => l.rep ? !!(l.feitos || {})[d] : !!l.feito;
+const lemT = (d, hm) => new Date(`${d}T${hm}:00`);
+/* ocorrências de um dia, para a grade, o mês e o Hoje */
+function lemDoDia(d) {
+  const out = [];
+  for (const l of lemList()) { const hm = lemHM(l); if (hm && lemNoDia(l, d)) out.push({ id: l.id, l, texto: l.texto, hm, a: hm2min(hm), d, feito: lemFeito(l, d) }); }
+  return out.sort((p, q) => p.a - q.a);
+}
+/* próxima ocorrência ainda não feita (a de hoje conta, mesmo se a hora passou) */
+function lemProx(l, from = TODAY) {
+  const d0 = lemDia(l); if (!d0) return ""; if (!l.rep) return d0;
+  let d = from > d0 ? from : d0;
+  for (let i = 0; i < 400; i++, d = addDays(d, 1)) if (lemNoDia(l, d) && !(l.feitos || {})[d]) return d;
+  return "";
+}
+function lemRepTxt(rep, d) {
+  if (!rep || !d) return ""; const x = parse(d), w = x.getDay();
+  return rep === "diario" ? "todo dia" : rep === "uteis" ? "dias úteis" : rep === "semanal" ? `${w === 0 || w === 6 ? "todo" : "toda"} ${DOWL[w]}` : rep === "mensal" ? `todo dia ${x.getDate()}` : rep === "anual" ? `todo ano em ${fmtD(d)}` : "";
+}
+const lemQuandoTxt = (d, hm) => `${d === TODAY ? "hoje" : d === addDays(TODAY, 1) ? "amanhã" : d === addDays(TODAY, -1) ? "ontem" : fmtDL(d)} às ${hm}`;
+/* o que já devia ter acontecido e não foi marcado: os avulsos vencidos e as repetições de hoje que passaram */
+function lemAtrasados(now = new Date()) {
+  const hoje = iso(now), out = [];
+  for (const l of lemList()) { const hm = lemHM(l); if (!hm) continue;
+    if (!l.rep) { if (!l.feito && lemT(lemDia(l), hm) <= now) out.push({ l, d: lemDia(l) }); continue; }
+    if (lemNoDia(l, hoje) && !(l.feitos || {})[hoje] && lemT(hoje, hm) <= now) out.push({ l, d: hoje }); }
+  return out;
+}
+/* para o Agora do Secretário: avulsos de hoje ou vencidos e repetições de hoje, ainda não feitos */
+function lemDeHoje(d = TODAY, now = new Date()) {
+  const out = [];
+  for (const l of lemList()) { const hm = lemHM(l); if (!hm) continue;
+    const dd = l.rep ? (lemNoDia(l, d) ? d : "") : lemDia(l); if (!dd || dd > d || lemFeito(l, dd)) continue;
+    out.push({ l, d: dd, hm, passou: lemT(dd, hm) <= now }); }
+  return out.sort((p, q) => (p.d + p.hm).localeCompare(q.d + q.hm));
+}
+/* avisos devidos agora: na hora (ou N min antes), uma vez; repetições valem para hoje e para amanhã cedo (aviso antes da meia-noite) */
+function lemDevidos(now = new Date()) {
+  const out = [], hoje = iso(now);
+  for (const l of lemList()) { const hm = lemHM(l); if (!hm || l.on === false) continue; const min = +l.min || 0;
+    if (!l.rep) { if (l.feito || l.avisado) continue; const t = lemT(lemDia(l), hm); if (now >= new Date(t - min * 60e3)) out.push({ l, d: lemDia(l), t }); continue; }
+    for (const d of [hoje, addDays(hoje, 1)]) { if (!lemNoDia(l, d) || (l.feitos || {})[d] || (l.avisados || {})[d]) continue;
+      const t = lemT(d, hm); if (now >= new Date(t - min * 60e3) && now - t < 12 * 3600e3) out.push({ l, d, t }); } }
+  return out.sort((p, q) => p.t - q.t);
+}
+/* chamado pelo relógio do Secretário: devolve true quando avisou */
+function lemTick(now = new Date()) {
+  if (!LOADED) return false; const due = lemDevidos(now); if (!due.length) return false;   /* no modo exemplo também (como antes): é parte da demonstração */
+  const hoje = iso(now);
+  for (const x of due) { if (!x.l.rep) { x.l.avisado = true; continue; } const a = {}; for (const [k, v] of Object.entries(x.l.avisados || {})) if (k >= addDays(hoje, -7)) a[k] = v; a[x.d] = 1; x.l.avisados = a; }
+  touch("secretario", { noUndo: true, noRender: true });
+  const um = x => `Lembrete: ${x.l.texto}${x.t > now || x.d !== hoje ? ` (${lemQuandoTxt(x.d, lemHM(x.l))})` : ""}`;
+  const txt = due.length === 1 ? um(due[0]) : `${due.length} lembretes: ${due.map(x => x.l.texto).join(", ")}`;
+  SEC.nudge = { txt, crit: true, at: Date.now() }; SEC.tab = "lembretes"; SEC.open = true; secLS("open", true); toast(txt); secPaint();
+  lsNotifica(txt); if (secData().lsSom) lsSom();
+  return true;
+}
+
+/* ---------------------------------------------------------------- feito, apagar */
+function lemFeitoSet(id, d, v = true) {
+  const l = lemList().find(x => x.id === id); if (!l) return null;
+  if (l.rep) { const f = { ...(l.feitos || {}) }; if (v) f[d] = 1; else delete f[d]; l.feitos = f; } else l.feito = !!v;
+  touch("secretario", { label: `${v ? "Lembrete feito" : "Lembrete reaberto"}: ${trunc(l.texto, 40)}` }); return l;
+}
+function lemApagar(id, d, so) {
+  const D = secData(), l = D.lembretes.find(x => x.id === id); if (!l) return;
+  if (so && l.rep && d) { l.exc = [...new Set([...(l.exc || []), d])]; touch("secretario", { label: `Lembrete fora de ${fmtD(d)}: ${trunc(l.texto, 40)}` }); undoToast(`${trunc(l.texto, 40)}: saiu só de ${fmtDL(d)}${l.gcal?.on ? " (no Google, use “Atualizar no Google”)" : ""}`); return; }
+  D.lembretes = D.lembretes.filter(x => x !== l); touch("secretario", { label: `Lembrete apagado: ${trunc(l.texto, 40)}` });
+  undoToast(`Lembrete apagado: ${trunc(l.texto, 40)}${lemGcReg()[l.id] ? ", também do Google Agenda" : ""}`);
+  if (lemGcReg()[l.id]) lemGcSync();
+}
+
+/* ---------------------------------------------------------------- ler a frase: “dentista 25/10 às 15h”, “remédio todo dia às 8” */
+const LEM_MES = { janeiro: 0, fevereiro: 1, marco: 2, abril: 3, maio: 4, junho: 5, julho: 6, agosto: 7, setembro: 8, outubro: 9, novembro: 10, dezembro: 11, jan: 0, fev: 1, mar: 2, abr: 3, mai: 4, jun: 5, jul: 6, ago: 7, set: 8, out: 9, nov: 10, dez: 11 };
+const LEM_NUM = { um: 1, uma: 1, dois: 2, duas: 2, tres: 3, quatro: 4, cinco: 5, seis: 6, dez: 10, quinze: 15, vinte: 20, trinta: 30, quarenta: 40, cinquenta: 50 };
+const LEM_DOWF = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+const LEM_PER = { manha: 9 * 60, tarde: 15 * 60, noite: 20 * 60, madrugada: 6 * 60, cedo: 8 * 60 };
+const lemN = s => /^\d+$/.test(s) ? +s : LEM_NUM[s] ?? NaN;
+function lemData(dd, mm, yy, hoje) {
+  if (!(mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31)) return null;
+  const y0 = yy ? (+yy < 100 ? 2000 + +yy : +yy) : +hoje.slice(0, 4), ok = y => { const x = new Date(y, mm - 1, dd); return x.getMonth() === mm - 1 ? iso(x) : null; };
+  let r = ok(y0); if (!r) return null; if (!yy && r < hoje) r = ok(y0 + 1) || r; return r;
+}
+/* o próximo dia N do mês (este mês, se ainda não passou; senão o próximo mês que tem o dia N) */
+function lemDiaDoMes(n, hoje, passouHoje = false) {
+  const x = parse(hoje.slice(0, 8) + "01");
+  for (let i = 0; i < 14; i++) { const c = new Date(x.getFullYear(), x.getMonth() + i, n), s = iso(c); if (c.getDate() === n && (s > hoje || (s === hoje && !passouHoje))) return s; }
+  return null;
+}
+function lemParse(txt, now = new Date()) {
+  const T = String(txt || "").slice(0, 300), F = fold(T), cut = [], hoje = iso(now), nm = now.getHours() * 60 + now.getMinutes();
+  let day = null, hm = null, rep = "", wd = -1, prox = false, per = "", hojeX = false, rel = null, mdia = 0, meiaNoite = false, temData = false;
+  const W = s => new RegExp(`(?<![a-z0-9])(?:${s})(?![a-z0-9])`, "g");
+  const hit = (re, fn) => { for (const m of F.matchAll(re)) { const a = m.index, z = a + m[0].length; if (cut.some(([p, q]) => a < q && z > p)) continue; if (fn(m, a, z) === false) continue; cut.push([a, z]); } };
+  const DW = "segunda|terca|quarta|quinta|sexta|sabado|domingo";
+  /* repetição */
+  hit(W("(?:(?:todos|todas) os dias|todo santo dia|diariamente|todo dia(?!\\s+\\d))"), () => { rep = "diario"; });
+  hit(W("(?:em |nos )?dias uteis|de segunda a sexta(?:-feira)?"), () => { rep = "uteis"; });
+  hit(W(`(?:toda|todas as|todo|todos os)\\s+(${DW})s?(?:-feira|\\s+feira)?s?`), m => { rep = "semanal"; wd = LEM_DOWF.indexOf(m[1]); temData = true; });
+  hit(W("toda semana|todas as semanas|semanalmente"), () => { rep ||= "semanal"; });
+  hit(W("todo dia (\\d{1,2})(?: de cada mes| do mes)?"), m => { const n = +m[1]; if (n < 1 || n > 31) return false; rep = "mensal"; mdia = n; temData = true; });
+  hit(W("todo mes|todos os meses|mensalmente"), () => { rep ||= "mensal"; });
+  hit(W("todo ano|todos os anos|anualmente"), () => { rep ||= "anual"; });
+  /* daqui a / em N minutos ou horas */
+  hit(W("(?:em|daqui a|daqui)\\s+(?:(meia)\\s+hora|(\\d+|uma|um|duas|dois|tres)\\s*(?:h|hs|horas?)(?:\\s*e\\s*(?:(meia)|(\\d{1,2})\\s*(?:min|minutos?)?)|(\\d{2})(?!\\d))?|(\\d+|um|uma|dois|duas|tres|cinco|dez|quinze|vinte|trinta|quarenta|cinquenta)\\s*(?:min|mins|minutos?))"), m => {
+    const mins = m[1] ? 30 : m[2] != null ? lemN(m[2]) * 60 + (m[3] ? 30 : m[4] ? +m[4] : m[5] ? +m[5] : 0) : lemN(m[6]);
+    if (!(mins > 0) || mins > 7 * 1440) return false; rel = mins; });
+  /* dia */
+  hit(W("depois de amanha"), () => { day = addDays(hoje, 2); temData = true; });
+  hit(W("amanha"), () => { day ??= addDays(hoje, 1); temData = true; });
+  hit(W("hoje"), () => { day ??= hoje; hojeX = true; temData = true; });
+  hit(W("(?:(?:no|para o|pro|ate o|ate)\\s+)?(?:dia\\s+)?(\\d{1,2})/(\\d{1,2})(?:/(\\d{4}|\\d{2}))?"), m => { const r = lemData(+m[1], +m[2], m[3], hoje); if (!r) return false; day = r; temData = true; });
+  hit(W(`(?:(?:no|para o|pro|ate o|ate)\\s+)?(?:dia\\s+)?(\\d{1,2})\\s+de\\s+(${Object.keys(LEM_MES).join("|")})\\.?(?:\\s+de\\s+(\\d{4}))?`), m => { const r = lemData(+m[1], LEM_MES[m[2]] + 1, m[3], hoje); if (!r) return false; day = r; temData = true; });
+  hit(W("(?:(?:no|para o|pro|ate o)\\s+)?dia\\s+(\\d{1,2})(?!\\s*[/:h\\d])"), m => { const n = +m[1]; if (n < 1 || n > 31) return false; day = lemDiaDoMes(n, hoje); temData = !!day; if (!day) return false; });
+  hit(W(`(?:(?:na|no|nesta|neste|esta|este|para|pra)\\s+)?(?:(proxim[oa])\\s+)?(${DW})(?:-feira|\\s+feira)?(?:\\s+(que vem))?(?!\\s+(?:vez|vezes|chance|opcao|mao|parte|via|guerra))`), m => { if (wd >= 0) return false; wd = LEM_DOWF.indexOf(m[2]); prox = !!(m[1] || m[3]); temData = true; });
+  hit(W("(?:na\\s+)?(?:semana que vem|proxima semana)"), () => { if (wd < 0 && !day) { day = weekStart(addDays(hoje, 7)); temData = true; } });
+  /* hora */
+  hit(W("(?:(?:ao|a|as)\\s+)?meio[- ]dia(?:\\s+e\\s+meia)?"), m => { hm = 12 * 60 + (/meia$/.test(m[0]) ? 30 : 0); });
+  hit(W("(?:(?:a|as)\\s+)?meia[- ]noite"), () => { hm = 0; meiaNoite = true; });
+  hit(W("(?:(as|a|ao|pelas|la pelas|para as|pras|ate as)\\s+)?(\\d{1,2})(?:(:|h)(\\d{2}))?\\s*(hs?(?![a-z])|horas?)?(?:\\s+e\\s+(meia|quinze|\\d{1,2})(?!\\s*(?:min|minutos|[/:\\d])))?(?:\\s+(?:da|de)\\s+(manha|tarde|noite|madrugada))?"), (m, a, z) => {
+    const [, pre, hh, sep, mm, suf, e, pd] = m, orig = T.slice(a, a + 3).toLowerCase();
+    let ok = !!(sep && mm) || /^hs?$/.test(suf || "") || !!pd;
+    if (!ok && pre) { const acento = orig.startsWith("às") || orig.startsWith("à "), depois = F.slice(z);
+      ok = pre === "as" ? (acento || /^\s*(?:$|[,.;!?)]|(?:da|de|do|no|na|em|e|amanha|hoje|depois|dia|pra|para|todo|toda|todos|todas|segunda|terca|quarta|quinta|sexta|sabado|domingo)(?![a-z]))/.test(depois) || /^horas?$/.test(suf || ""))
+        : pre === "a" || pre === "ao" ? (acento || /^horas?$/.test(suf || "")) : true; }
+    if (!ok) return false;
+    let h = +hh, mi = mm ? +mm : e === "meia" ? 30 : e === "quinze" ? 15 : e ? +e : 0;
+    if (pd === "tarde" || pd === "noite") { if (h < 12) h += 12; else if (h === 12 && pd === "noite") { h = 0; meiaNoite = true; } }
+    if (h > 23 || mi > 59) return false; hm = h * 60 + mi; });
+  /* “à noite”, “de manhã”, “pela tarde” (o “hoje”/“amanhã” antes já saiu); “cedo” só logo depois de hoje/amanhã (“dormir cedo” não é hora) */
+  hit(W("(?:(?:de|pela|a|na|nesta|esta)\\s+)(manha|tarde|noite|madrugada)|(?:bem\\s+)?cedo"), (m, a) => { if (!m[1] && !/(?:amanha|hoje)\s+$/.test(F.slice(Math.max(0, a - 8), a))) return false; per = m[1] || "cedo"; });
+  /* juntar */
+  let d = day, achouHora = hm != null || rel != null;
+  if (hm == null && per) { hm = LEM_PER[per]; achouHora = true; }
+  if (rel != null) { const t = new Date(now.getTime() + rel * 60e3); d = iso(t); hm = t.getHours() * 60 + t.getMinutes(); temData = true; }
+  else {
+    if (wd >= 0 && !day) { let k = (wd - now.getDay() + 7) % 7; if (k === 0 && (prox || (hm ?? 9 * 60) <= nm)) k = 7; d = addDays(hoje, k); }
+    if (rep === "mensal" && mdia && !day) d = lemDiaDoMes(mdia, hoje, (hm ?? 9 * 60) <= nm);
+    if (!d && (hm != null || rep)) { d = hoje; if ((hm ?? 9 * 60) <= nm && !hojeX) d = addDays(hoje, 1); }
+    if (meiaNoite && d) d = addDays(d, 1);
+    if (d && hm == null) hm = d === hoje ? Math.min(23 * 60 + 30, (Math.floor(nm / 60) + 1) * 60) : 9 * 60;
+  }
+  /* o texto sem as expressões de tempo */
+  let t = "", last = 0; for (const [a, z] of cut.sort((p, q) => p[0] - q[0])) { t += T.slice(last, a) + " "; last = Math.max(last, z); } t += T.slice(last);
+  t = t.replace(/^\s*(?:secret[aá]rio,?\s*)?(?:me\s+)?(?:(?:cria(?:r)?\s+(?:um\s+)?)?lembrete:?|lembr[ae]r?(?:-me)?(?![\p{L}]))\s*(?:de|para|que)?\s*/iu, "")
+    .replace(/\s{2,}/g, " ").replace(/\s+([,.;:!?])/g, "$1").replace(/^[\s,;:.–—-]+/, "");
+  for (let i = 0; i < 3; i++) t = t.replace(/(?:[\s,;:.–—-]+|\s+(?:de|para|pra|no|na|em|às|as|à|e))+$/iu, "");
+  t = t.trim();
+  return { texto: t ? t[0].toUpperCase() + t.slice(1) : "", data: d || "", hora: hm != null ? m2hm(hm) : "", rep, achou: { data: temData, hora: achouHora, rep: !!rep } };
+}
+
+/* ---------------------------------------------------------------- formulário (o mesmo nos três lugares) */
+function lemHoraSug(d) { if (d !== TODAY) return "09:00"; return m2hm(Math.min(23 * 60 + 30, Math.ceil((nowMin() + 15) / 30) * 30)); }
+const lemDKey = (p, id) => p + (id ? ":" + id : "");
+function lemFormHTML(p, l = null, pre = {}) {
+  const dr = LEM.draft[lemDKey(p, l?.id)], D = secData();
+  const v = dr || { t: l ? l.texto : pre.texto || "", d: l ? lemDia(l) || TODAY : pre.d || TODAY, h: l ? lemHM(l) || "09:00" : pre.h || lemHoraSug(pre.d || TODAY), r: l ? l.rep || "" : pre.rep || "", m: l ? +l.min || 0 : 0, g: l ? !!l.gcal?.on : !!D.lemGcal, soft: !l && !pre.d ? "1" : "" };
+  const fl = dr ? Object.entries(dr.f || {}).map(([k, x]) => ` data-${k}="${x}"`).join("") : v.soft ? ' data-dsoft="1"' : "";
+  const i = s => `lf_${p}_${s}`;
+  return `<div class="lemf" data-lemf="${p}" data-lemid="${esc(l?.id || "")}"${fl}>
+    <label class="lemf-t" for="${i("t")}"><span>Lembrar de</span><input type="text" class="lf-t" id="${i("t")}" value="${esc(v.t)}" placeholder="Ex.: dentista 25/10 às 15h" autocomplete="off" maxlength="240" enterkeyhint="done"></label>
+    <div class="lemf-r">
+      <label for="${i("d")}"><span>Data</span><input type="date" class="lf-d" id="${i("d")}" value="${esc(v.d)}"></label>
+      <label for="${i("h")}"><span>Hora</span><input type="time" class="lf-h" id="${i("h")}" value="${esc(v.h)}"></label>
+      <label for="${i("r")}"><span>Repetir</span><select class="lf-r" id="${i("r")}">${Object.entries(LEM_REP).map(([k, x]) => `<option value="${k}"${k === v.r ? " selected" : ""}>${x}</option>`).join("")}</select></label>
+      <label for="${i("m")}"><span>Avisar</span><select class="lf-m" id="${i("m")}">${LEM_MIN.map(m => `<option value="${m}"${m === +v.m ? " selected" : ""}>${lemMinTxt(m)}</option>`).join("")}</select></label>
+    </div>
+    <p class="lemf-pv" aria-live="polite">${lemPrevHTML(lemLerV(v))}</p>
+    <div class="lemf-f"><label class="chk"><input type="checkbox" class="lf-g"${v.g ? " checked" : ""}><span>Também no Google Agenda (avisa no celular)</span></label>
+      <div class="row">${l ? `<button type="button" class="btn sm ghost" data-lemx="${p}">Cancelar</button>` : ""}<button type="button" class="btn sm primary" data-lemsave="${p}">${ic(l ? "check" : "bell")}${l ? "Salvar" : "Lembrar"}</button></div></div></div>`;
+}
+const lemLerV = v => { const P = lemParse(v.t); return { texto: P.texto, d: v.d, h: v.h, r: v.r, m: +v.m || 0, g: !!v.g }; };
+function lemLer(root) {
+  const q = c => root.querySelector(c), P = lemParse(q(".lf-t")?.value || "");
+  return { texto: P.texto.slice(0, 200), d: q(".lf-d")?.value || "", h: (q(".lf-h")?.value || "").slice(0, 5), r: q(".lf-r")?.value || "", m: +(q(".lf-m")?.value || 0), g: !!q(".lf-g")?.checked, P };
+}
+function lemPrevHTML(o) {
+  if (!o.texto) return `Escreva o que lembrar. A data e a hora podem ir na frase (“dentista 25/10 às 15h”, “remédio todo dia às 8”) ou nos campos.`;
+  if (!o.d || !o.h) return `<span class="st-warn">Falta ${!o.d ? "a data" : "a hora"}.</span>`;
+  const t = lemT(o.d, o.h), passou = !o.r && new Date(t - o.m * 60e3) <= new Date();
+  return `<b>${esc(trunc(o.texto, 70))}</b> · ${esc(lemQuandoTxt(o.d, o.h))}${o.r ? ` · ${esc(lemRepTxt(o.r, o.d))}` : ""}${o.m ? ` · aviso ${esc(lemMinTxt(o.m))}` : ""} · aparece na Rotina${o.g ? " e no Google Agenda" : ""}${passou ? ` · <span class="st-warn">esse horário já passou: avisa assim que salvar</span>` : ""}`;
+}
+function lemPrev(root) { const pv = root.querySelector(".lemf-pv"); if (pv) pv.innerHTML = lemPrevHTML(lemLer(root)); }
+/* a frase preenche os campos que a pessoa ainda não mexeu; a data “de partida” (hoje) muda até com só a hora (às 9 depois das 9 = amanhã) */
+function lemAuto(root) {
+  const P = lemParse(root.querySelector(".lf-t").value), ds = root.dataset, set = (c, v) => { const el = root.querySelector(c); if (el && v && el.value !== v) el.value = v; };
+  if (!ds.mand && (P.achou.data || (P.achou.hora && ds.dsoft))) set(".lf-d", P.data);
+  if (!ds.manh && P.achou.hora) set(".lf-h", P.hora);
+  if (!ds.manr && P.achou.rep) set(".lf-r", P.rep);
+}
+function lemDraft(root) {
+  const p = root.dataset.lemf, q = c => root.querySelector(c), f = {}; for (const k of ["mand", "manh", "manr", "dsoft"]) if (root.dataset[k]) f[k] = root.dataset[k];
+  LEM.draft[lemDKey(p, root.dataset.lemid)] = { t: q(".lf-t").value, d: q(".lf-d").value, h: q(".lf-h").value, r: q(".lf-r").value, m: q(".lf-m").value, g: q(".lf-g").checked, f };
+}
+function lemSalvar(root) {
+  const p = root.dataset.lemf, id = root.dataset.lemid, o = lemLer(root), foco = c => root.querySelector(c)?.focus();
+  if (!o.texto) { toast("Escreva o que lembrar."); foco(".lf-t"); return null; }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(o.d)) { toast("Escolha a data do lembrete."); foco(".lf-d"); return null; }
+  if (!/^\d{2}:\d{2}$/.test(o.h)) { toast("Escolha a hora do lembrete."); foco(".lf-h"); return null; }
+  const quando = `${o.d}T${o.h}`, D = secData(); let l = id ? D.lembretes.find(x => x.id === id) : null;
+  if (id && !l) { toast("Esse lembrete não existe mais."); return null; }
+  if (l) {
+    const mudou = l.quando !== quando || (l.rep || "") !== o.r || (+l.min || 0) !== o.m;
+    Object.assign(l, { texto: o.texto, quando, rep: o.r, min: o.m });
+    if (mudou) { l.avisado = false; l.feito = false; if (l.avisados) { const a = { ...l.avisados }; delete a[TODAY]; delete a[addDays(TODAY, 1)]; l.avisados = a; } if (!o.r) { delete l.feitos; delete l.avisados; delete l.exc; } }
+  } else { l = { id: uid(), texto: o.texto, quando, rep: o.r, min: o.m, feito: false, avisado: false, at: Date.now(), origem: "você" }; D.lembretes.push(l); }
+  if (!!D.lemGcal !== o.g) D.lemGcal = o.g;
+  delete LEM.draft[lemDKey(p, id)]; if (p === "rt") LEM.novo = true; if (p === "sece") LEM.ed = "";
+  touch("secretario", { label: `${id ? "Lembrete alterado" : "Lembrete criado"}: ${trunc(o.texto, 40)}` });
+  undoToast(`${id ? "Lembrete alterado" : "Lembrete criado"}: ${trunc(o.texto, 40)} · ${lemQuandoTxt(o.d, o.h)}${o.r ? ` · ${lemRepTxt(o.r, o.d)}` : ""}`);
+  if (o.g && (!l.gcal?.on || lemGcDesatual(l))) lemGcalPor(l); else if (!o.g && l.gcal?.on) lemGcalTira(l);
+  return l;
+}
+function lemDepois(p) {
+  if (p === "dlg") $("#dlg")?.close();
+  secPaint(); if (p === "sec") setTimeout(() => $("#sec [data-lemf=sec] .lf-t")?.focus(), 0);
+}
+function lemEnter(el) { const root = el.closest("[data-lemf]"); if (!root) return; const l = lemSalvar(root); if (l) lemDepois(root.dataset.lemf); }
+
+/* ---------------------------------------------------------------- listas, cartão e diálogo */
+function lemItemHTML(l, ctx) {
+  const hm = lemHM(l), d = l.rep ? lemProx(l) : lemDia(l), feito = d ? lemFeito(l, d) : false, now = new Date(), atras = !!(hm && d && !feito && lemT(d, hm) <= now);
+  const quando = hm && d ? lemQuandoTxt(d, hm) : "sem data e hora", gc = l.gcal?.on ? (lemGcDesatual(l) ? " · <span class=\"st-warn\">Google desatualizado</span>" : " · Google Agenda") : "";
+  return `<div class="lemit${atras ? " st-crit" : ""}"><span class="lemic">${ic("bell")}</span><div class="lemb"><b>${esc(l.texto)}</b><small>${esc(quando)}${l.rep ? ` · ${esc(lemRepTxt(l.rep, lemDia(l)))}` : ""}${+l.min ? ` · aviso ${esc(lemMinTxt(l.min))}` : ""}${gc}${l.origem && l.origem !== "você" ? ` · ${esc(l.origem)}` : ""}</small></div>
+    <div class="lemacts">${atras || (d === TODAY && !feito) ? `<button type="button" class="btn sm" data-lemok="${esc(l.id)}|${d}|1">${ic("check")}Feito</button>` : ""}${hm && d ? `<button type="button" class="iconbtn" data-lemver="${d}" aria-label="Ver ${esc(l.texto)} na Rotina" title="Ver na Rotina">${ic("cal")}</button>` : ""}<button type="button" class="iconbtn" data-lemed="${esc(l.id)}|${ctx}" aria-label="Editar o lembrete ${esc(l.texto)}" title="Editar">${ic("edit")}</button><button type="button" class="iconbtn" data-lemdel="${esc(l.id)}" aria-label="Apagar o lembrete ${esc(l.texto)}" title="Apagar">${ic("trash")}</button></div></div>`;
+}
+/* pendentes primeiro (avulsos não feitos e repetições pela próxima vez), em ordem de hora */
+function lemPendentes() {
+  return lemList().filter(l => l.rep || !l.feito).map(l => { const d = l.rep ? lemProx(l) : lemDia(l), hm = lemHM(l); return { l, k: d && hm ? `${d}T${hm}` : "9999" }; }).sort((p, q) => p.k.localeCompare(q.k)).map(x => x.l);
+}
+function lemListaHTML(ctx, max = 40) {
+  const L = lemPendentes(); if (!L.length) return "";
+  return `<div class="lemlista">${L.slice(0, max).map(l => ctx === "sec" && LEM.ed === l.id ? lemFormHTML("sece", l) : lemItemHTML(l, ctx)).join("")}${L.length > max ? `<p class="muted small">+ ${L.length - max} lembretes</p>` : ""}</div>`;
+}
+function lemDlg(id, pre = {}) {
+  const l = id ? lemList().find(x => x.id === id) : null, dlg = $("#dlg"); if (id && !l) return;
+  dlg.innerHTML = `<form method="dialog" class="rtcard lemdlg"><div class="rtch"><span class="rtcc lemcc"></span><div><h3>${l ? "Editar lembrete" : "Novo lembrete"}</h3><p class="muted small">Aparece na Rotina na hora marcada e avisa pelo Secretário, com o Atlas aberto. Marcando o Google Agenda, avisa também no celular.</p></div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>${lemFormHTML("dlg", l, pre)}</form>`;
+  if (!dlg.open) dlg.showModal(); setTimeout(() => dlg.querySelector(".lf-t")?.focus(), 30);
+}
+function lemCard(id, d) {
+  const l = lemList().find(x => x.id === id); if (!l) return; const dlg = $("#dlg"), hm = lemHM(l), feito = lemFeito(l, d), gr = lemGcReg()[l.id];
+  const gbtn = LEMGC.busy === l.id ? `<span class="muted small">Google Agenda…</span>` : `<button type="button" class="btn sm ghost" data-lemgc="${esc(l.id)}">${ic("cal")}${l.gcal?.on ? (lemGcDesatual(l) ? "Atualizar no Google" : "Tirar do Google") : "Pôr no Google Agenda"}</button>`;
+  dlg.innerHTML = `<form method="dialog" class="rtcard lemdlg"><div class="rtch"><span class="rtcc lemcc"></span><div><h3>${ic("bell")}${esc(l.texto)}</h3><p class="muted small">Lembrete · ${esc(lemQuandoTxt(d, hm))}${l.rep ? ` · ${esc(lemRepTxt(l.rep, lemDia(l)))}` : ""} · aviso ${esc(lemMinTxt(l.min))}${l.gcal?.on || gr ? ` · ${lemGcDesatual(l) ? "Google desatualizado" : "no Google Agenda"}` : ""}${feito ? " · feito" : ""}${l.origem && l.origem !== "você" ? ` · criado por ${esc(l.origem)}` : ""}</p></div><button type="button" class="iconbtn" data-rtcx="1" aria-label="Fechar">${ic("x")}</button></div>
+    <div class="row wrap rtca"><button type="button" class="btn sm${feito ? "" : " primary"}" data-lemok="${esc(l.id)}|${d}|${feito ? 0 : 1}">${ic(feito ? "undo" : "check")}${feito ? "Reabrir" : "Feito"}</button><button type="button" class="btn sm" data-lemed="${esc(l.id)}|dlg">${ic("edit")}Editar</button>${gbtn}
+      ${l.rep ? `<button type="button" class="btn sm ghost danger" data-lemdel="${esc(l.id)}|${d}|so">${ic("trash")}Tirar só deste dia</button><button type="button" class="btn sm ghost danger" data-lemdel="${esc(l.id)}">${ic("trash")}Apagar todos</button>` : `<button type="button" class="btn sm ghost danger" data-lemdel="${esc(l.id)}">${ic("trash")}Apagar</button>`}</div></form>`;
+  if (!dlg.open) dlg.showModal();
+}
+
+/* ---------------------------------------------------------------- eventos (chamados antes dos outros: valem também dentro do Secretário) */
+function lemClick(t) {
+  const ds = t.dataset;
+  if (ds.lemsave != null) { const root = t.closest("[data-lemf]"); if (root) { const l = lemSalvar(root); if (l) lemDepois(root.dataset.lemf); } return true; }
+  if (ds.lemx != null) { const p = ds.lemx, root = t.closest("[data-lemf]"); if (root) delete LEM.draft[lemDKey(p, root.dataset.lemid)]; if (p === "sece") { LEM.ed = ""; secPaint(); } else if (p === "dlg") $("#dlg").close(); return true; }
+  if (ds.rtlem) { const [id, d] = ds.rtlem.split("|"); lemCard(id, d); return true; }
+  if (ds.lemok) { const [id, d, v] = ds.lemok.split("|"), on = v !== "0", l = lemFeitoSet(id, d, on); if (l) { if ($("#dlg").open && $("#dlg .lemdlg")) lemCard(id, d); secPaint(); undoToast(`${on ? "Feito" : "Reaberto"}: ${trunc(l.texto, 40)}`); } return true; }
+  if (ds.lemed) { const [id, ctx] = ds.lemed.split("|"); if (ctx === "sec") { LEM.ed = id; secPaint(); setTimeout(() => $("#sec [data-lemf=sece] .lf-t")?.focus(), 0); } else lemDlg(id); return true; }
+  if (ds.lemdel) { const [id, d, so] = ds.lemdel.split("|"); if (t.closest("#dlg")) $("#dlg").close(); lemApagar(id, d, so === "so"); secPaint(); return true; }
+  if (ds.lemgc) { const l = lemList().find(x => x.id === ds.lemgc); if (l) { if (l.gcal?.on && !lemGcDesatual(l)) lemGcalTira(l); else lemGcalPor(l); } return true; }
+  if (ds.lemtipo) { LEM.tipo = ds.lemtipo; LEM.novo = true; render(); setTimeout(() => $(LEM.tipo === "data" ? "[data-lemf=rt] .lf-t" : "#ls_t")?.focus(), 0); return true; }
+  if (ds.act === "lsnovo") { LEM.novo = !t.closest("details")?.open; return true; }
+  if (ds.act === "lemnovo") { lemDlg(null, { d: RT.d, h: lemHoraSug(RT.d) }); return true; }
+  if (ds.lemver) { RT.d = ds.lemver; if (t.closest("#sec") && innerWidth <= 640) secToggle(false); if ($("#dlg").open) $("#dlg").close(); if (PAGE === "rotina" && SUB === "dia") render(); else setHash("rotina", "dia"); return true; }
+  return false;
+}
+function lemInput(t) {
+  const root = t.closest?.("[data-lemf]"); if (!root) return false; const ds = root.dataset;
+  if (t.classList.contains("lf-t")) lemAuto(root); else if (t.classList.contains("lf-d")) { ds.mand = "1"; delete ds.dsoft; } else if (t.classList.contains("lf-h")) ds.manh = "1";
+  lemPrev(root); lemDraft(root); return true;
+}
+function lemChange(t) {
+  const root = t.closest?.("[data-lemf]"); if (!root) return false; const ds = root.dataset;
+  if (t.classList.contains("lf-r")) ds.manr = "1"; else if (t.classList.contains("lf-d")) { ds.mand = "1"; delete ds.dsoft; } else if (t.classList.contains("lf-h")) ds.manh = "1";
+  lemPrev(root); lemDraft(root); return true;
+}
+
+/* ---------------------------------------------------------------- Google Agenda: um evento por lembrete, com a repetição e o aviso */
+const lemGcReg = () => ((S.integ ||= {}).lemGc ||= {});
+const lemSig = l => [l.texto, l.quando, l.rep || "", +l.min || 0, (l.exc || []).join(",")].join("|");
+const lemGcDesatual = l => !!l.gcal?.on && (l.gcal.sig !== lemSig(l) || !lemGcReg()[l.id]);
+const LEMGC = { busy: "", sync: false };
+const lemRRule = l => ({ diario: "RRULE:FREQ=DAILY", uteis: "RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR", semanal: "RRULE:FREQ=WEEKLY", mensal: "RRULE:FREQ=MONTHLY", anual: "RRULE:FREQ=YEARLY" })[l.rep] || "";
+const lemLoc = x => `${iso(x)}T${pad(x.getHours())}:${pad(x.getMinutes())}:00`;
+/* apaga o evento de um lembrete: pelo id guardado; sem id, procura a marca do lembrete na agenda perto do dia */
+async function lemGcTira0(lid, r) {
+  if (r?.e) { try { await MCP.callTool(GC_SRV, "delete_event", { eventId: r.e, notificationLevel: "NONE" }); } catch (e) { if (!/not.?found|404|410|gone|deleted/i.test(`${e?.code || ""} ${e?.message || e}`)) throw e; } return; }
+  const d = r?.d || TODAY, res = await MCP.callTool(GC_SRV, "list_events", { startTime: `${addDays(d, -1)}T00:00:00`, endTime: `${addDays(d, 2)}T00:00:00`, fullText: `${GC_LEMB}l:${lid}`, pageSize: 50, timeZone: tzLocal() }, { cache: false });
+  const pl = res?.payload ?? {}, lista = Array.isArray(pl) ? pl : pl.events ?? pl.items ?? pl.result?.events ?? pl.data?.events ?? [];
+  for (const id of new Set(lista.filter(ev => String(ev?.description || "").includes(`${GC_LEMB}l:${lid}`)).map(ev => ev.recurringEventId || ev.id).filter(Boolean))) await MCP.callTool(GC_SRV, "delete_event", { eventId: id, notificationLevel: "NONE" });
+}
+async function lemGcalPor(l0) {
+  if (!MCP) { toast(EX_MODE ? "Desligue o modo exemplo para usar o Google Agenda." : "O Google Agenda não está disponível nesta visualização: o lembrete fica só no Atlas."); return false; }
+  if (LEMGC.busy) return false; LEMGC.busy = l0.id; secPaint(); const lid = l0.id;
+  try {
+    const R = lemGcReg(); if (R[lid] || l0.gcal?.on) { await lemGcTira0(lid, R[lid] || { d: lemDia(l0) }); delete R[lid]; }
+    const l = lemList().find(x => x.id === lid); if (!l) return false;
+    const d = lemDia(l), hm = lemHM(l), ini = lemT(d, hm), fim = new Date(ini.getTime() + 15 * 60e3), rr = lemRRule(l);
+    const ex = rr && (l.exc || []).length ? [`EXDATE;TZID=${tzLocal()}:${l.exc.map(x => `${x.replace(/-/g, "")}T${hm.replace(":", "")}00`).join(",")}`] : [];
+    const res = await MCP.callTool(GC_SRV, "create_event", { summary: `🔔 ${l.texto}`, startTime: lemLoc(ini), endTime: lemLoc(fim), timeZone: tzLocal(), ...(rr ? { recurrenceData: [rr, ...ex] } : {}),
+      overrideReminders: [{ method: "popup", minutes: +l.min || 0 }], useDefaultReminders: false, availability: "AVAILABILITY_FREE",
+      description: `Lembrete do Atlas da Vida${l.rep ? ` (${lemRepTxt(l.rep, d)})` : ""}. Para mudar ou tirar, use o Atlas: Rotina › Lembretes. ${GC_LEMB}l:${lid}` });
+    const eid = lsIdDe(res), L = lemList().find(x => x.id === lid);
+    if (!L) { await lemGcTira0(lid, { e: eid, d }).catch(() => {}); return false; }   // apagado enquanto o Google respondia
+    L.gcal = { on: true, id: eid, sig: lemSig(L), at: Date.now() }; lemGcReg()[lid] = { e: eid, d };
+    touch("secretario", "integ", { noUndo: true }); toast(`${trunc(L.texto, 40)}: no Google Agenda${L.rep ? `, ${lemRepTxt(L.rep, d)}` : ""}, com aviso ${lemMinTxt(L.min)}.`); return true;
+  } catch (e) { toast(gcErr(e)); return false; }
+  finally { LEMGC.busy = ""; secPaint(); if ($("#dlg").open && $("#dlg .lemdlg") && !$("#dlg [data-lemf]")) { const l = lemList().find(x => x.id === lid); if (l) lemCard(lid, lemProx(l) || lemDia(l)); } }
+}
+async function lemGcalTira(l0) {
+  if (!MCP) { toast("O Google Agenda não está disponível nesta visualização: o evento continua lá até você apagar no Google."); return false; }
+  if (LEMGC.busy) return false; LEMGC.busy = l0.id; secPaint(); const lid = l0.id;
+  try { const R = lemGcReg(); await lemGcTira0(lid, R[lid] || { e: l0.gcal?.id, d: lemDia(l0) }); delete R[lid]; const L = lemList().find(x => x.id === lid); if (L) L.gcal = null;
+    touch("secretario", "integ", { noUndo: true }); toast(`${trunc(l0.texto, 40)} saiu do Google Agenda.`); return true; }
+  catch (e) { toast(gcErr(e)); return false; }
+  finally { LEMGC.busy = ""; secPaint(); }
+}
+/* depois de desfazer, refazer ou apagar: evento de lembrete que não existe mais sai do Google. Lembrete que voltou sem evento no registro
+   aparece como “Google desatualizado”: “Atualizar no Google” procura pela marca e refaz, sem duplicar */
+async function lemGcSync() {
+  if (!LOADED || EX_MODE) return; const R = lemGcReg(), ids = new Set(lemList().map(l => l.id));
+  const orf = Object.entries(R).filter(([lid]) => !ids.has(lid)); if (!orf.length || !MCP || LEMGC.sync) return;
+  LEMGC.sync = true; let n = 0;
+  try { for (const [lid, r] of orf) { try { await lemGcTira0(lid, r); delete lemGcReg()[lid]; n++; } catch (e) { console.warn("lembrete no Google", e); } } }
+  finally { LEMGC.sync = false; if (n) touch("integ", { noUndo: true, noRender: true }); }
+}
+
+/* ---------------------------------------------------------------- Próximos dias do Hoje: a próxima vez de cada lembrete */
+function lemAgendaItens(until) {
+  const out = [];
+  for (const l of lemList()) { const hm = lemHM(l); if (!hm) continue;
+    if (!l.rep) { if (l.feito || lemDia(l) > until) continue; out.push({ d: lemDia(l), l: `${hm} · ${l.texto}`, s: "lembrete", ico: "bell", a: null, lem: `${l.id}|${lemDia(l)}` }); continue; }
+    const d = lemProx(l); if (d && d <= until) out.push({ d, l: `${hm} · ${l.texto}`, s: lemRepTxt(l.rep, lemDia(l)), ico: "bell", a: null, lem: `${l.id}|${d}` }); }
+  return out;
+}
+
+/* ================================================================ Histórico de alterações (o motor está no 01-core: HX, hxDiff, hxAplica, hxDesfazer)
+   Janela com o que foi criado, mudado ou apagado neste aparelho, do mais recente ao mais antigo, com Desfazer em cada passo
+   (e Refazer no que foi desfeito). Abre pelo botão de relógio no topo (ao lado de desfazer e refazer) e pela busca (Ctrl K).
+   Desfazer um passo antigo não apaga o que veio depois: volta só o que aquele passo mudou. Ctrl Z e a seta de desfazer, com a
+   memória da página vazia (depois de recarregar), desfazem o último passo guardado aqui. */
+const HXN = { secretario: "Lembretes e Secretário", rotinaAtiv: "Atividades da Rotina", rotinaModelos: "Modelos da Rotina", cfg: "Ajustes", ck: "Cockpit", ckTar: "Cockpit · tarefas", ckRisk: "Cockpit · riscos", ckIss: "Cockpit · problemas", ckLog: "Cockpit · diário de bordo", ckDec: "Cockpit · decisões", ckMeet: "Cockpit · reuniões", ckBim: "Cockpit · BIM", ckEl: "Cockpit · elaborati", ckLic: "Cockpit · lições", ckRel: "Cockpit · relatórios",
+  nutri: "Alimentação", nutriLog: "Refeições", treino: "Treinos (fichas)", treinoLog: "Treinos (registros)", corridas: "Corridas", jornada: "Jornada", jardim: "Jardim", conselho: "Conselho", filosofia: "Filosofia", psique: "Psicologia", inspira: "Inspiração", guia: "Guia", marks: "Hábitos marcados", roda: "Roda da Vida", orc: "Orçamento", patr: "Patrimônio", alvo: "Alvos das áreas", revisao: "Revisão do mês", prio: "Prioridades",
+  listas: "Listas", mentores: "Mentores", integ: "Integrações", experimentos: "Experimentos", radar: "Radar", fechamentos: "Fechamento da semana", capitulos: "Capítulos", resumos: "Resumos", bussola: "Bússola", bmExames: "Exames da Bússola", bmDecisoes: "Decisões da Bússola", projetos: "Projetos", carreira: "Carreira", lazerHub: "Lazer", idiomas: "Idiomas", fut: "Futuro financeiro", hojeCtx: "Hoje", priv: "Privacidade", areasCfg: "Áreas", saldoConta: "Saldo da conta", importacoes: "Importações", auditoria: "Registro da IA", uso: "Uso" };
+const hxNomeChave = k => DSETS[k] || HXN[k] || k;
+const HXV = { q: "", n: 60 };
+function hxOnde(pg) { const [p, s] = String(pg || "").split("."); if (!p) return ""; const t = pageTitle(p), st = SUBS[p]?.find(x => x[0] === s)?.[1]; return st ? `${t} › ${st}` : t; }
+/* o que mudou, em palavras: “+ Consulta”, “− Academia”, “Inglês: ini, fim” */
+function hxDetalhes(e, max = 4) {
+  const out = [], nome = (k, x) => hxTitulo(x) || hxNomeChave(k);
+  for (const [k, ops] of Object.entries(e.k || {})) for (const op of ops) {
+    if (out.length >= max) break;
+    if (op[0] === "+") out.push(`+ ${nome(k, op[2])}`); else if (op[0] === "-") out.push(`− ${nome(k, op[2])}`);
+    else if (op[0] === "~") { const it = (Array.isArray(S[k]) ? S[k] : []).find(x => String(x?.id) === String(op[2])); const fs = Object.keys(op[3]).filter(f => !HX_INT.has(f)); out.push(`${hxTitulo(it) || hxNomeChave(k)}${fs.length ? `: ${fs.slice(0, 4).join(", ")}` : ""}`); }
+    else if (!op[2] && op[4] && isObj(op[5])) out.push(`+ ${hxTitulo(op[5]) || `${hxNomeChave(k)} ${op[1].at(-1) ?? ""}`}`);
+    else if (op[2] && !op[4] && isObj(op[3])) out.push(`− ${hxTitulo(op[3]) || `${hxNomeChave(k)} ${op[1].at(-1) ?? ""}`}`);
+    else out.push(`${hxNomeChave(k)}${op[1].length ? ` · ${op[1].slice(-2).join(" › ")}` : ""}`);
+  }
+  return out;
+}
+const hxVisiveis = () => { hxCarrega(); for (const e of HX.L) if (e.raw) hxProc(e); return HX.L.filter(e => !e.of && (e.grande || !e.k || Object.keys(e.k).length)); };
+function hxLista() {
+  const q = fold(HXV.q.trim()), L = hxVisiveis().slice().reverse().filter(e => !q || fold(`${e.l} ${hxRotulo(e)} ${hxOnde(e.pg)} ${hxDetalhes(e, 12).join(" ")} ${Object.keys(e.k || {}).map(hxNomeChave).join(" ")}`).includes(q));
+  if (!L.length) return `<div class="empty">${HXV.q ? "Nada com esse texto no histórico." : "Nada ainda: o que você criar, mudar ou apagar aparece aqui, com Desfazer."}</div>`;
+  let dia = "";
+  return L.slice(0, HXV.n).map(e => { const d = iso(new Date(e.t)), cab = d !== dia ? `<div class="hxd">${d === TODAY ? "Hoje" : d === addDays(TODAY, -1) ? "Ontem" : fmtDL(d)}</div>` : ""; dia = d;
+    const s = e.s || {}, chaves = Object.keys(e.k || {}).map(hxNomeChave).join(", "), det = hxDetalhes(e), hm = new Date(e.t);
+    const res = [s.a ? `${s.a} criado${s.a > 1 ? "s" : ""}` : "", s.r ? `${s.r} apagado${s.r > 1 ? "s" : ""}` : "", s.m ? `${s.m} ${s.m > 1 ? "mudanças" : "mudança"}` : ""].filter(Boolean).join(" · ");
+    return `${cab}<div class="hxr${e.u ? " u" : ""}"><time datetime="${new Date(e.t).toISOString()}">${pad(hm.getHours())}:${pad(hm.getMinutes())}</time>
+      <div class="hxb"><b>${esc(hxRotulo(e))}</b><small>${esc([hxOnde(e.pg), chaves, res].filter(Boolean).join(" · "))}</small>${det.length ? `<small class="hxdet">${det.map(esc).join(" · ")}</small>` : ""}</div>
+      <div class="hxa">${e.grande ? `<span class="muted small">grande demais para desfazer daqui</span>` : e.u ? `<span class="pill none">desfeito</span><button type="button" class="btn sm" data-hxu="${esc(e.h)}|1">${ic("redo")}Refazer</button>` : `<button type="button" class="btn sm" data-hxu="${esc(e.h)}|-1">${ic("undo")}Desfazer</button>`}${e.pg ? `<button type="button" class="iconbtn" data-hxgo="${esc(e.pg)}" aria-label="Ir para ${esc(hxOnde(e.pg))}" title="Ir para ${esc(hxOnde(e.pg))}">${ic("arrow")}</button>` : ""}</div></div>`; }).join("")
+    + (L.length > HXV.n ? `<button type="button" class="btn sm ghost hxmais" data-act="hxmais">Mostrar mais (${L.length - HXV.n})</button>` : "");
+}
+function hxHTML() {
+  const n = hxVisiveis().length;
+  return `<div class="rtch"><div><h3>${ic("hist")}Histórico de alterações</h3><p class="muted small">O que você criou, mudou ou apagou neste aparelho (${plural(n, "passo", "passos")}, os 150 mais recentes), também depois de recarregar a página. Desfazer volta só aquele passo: o que veio depois fica.</p></div><button type="button" class="iconbtn" data-hxx="1" aria-label="Fechar">${ic("x")}</button></div>
+    <input type="search" id="hx_q" class="hxq" placeholder="Buscar: lembrete, rotina, um nome…" value="${esc(HXV.q)}" aria-label="Buscar no histórico" autocomplete="off">
+    <div class="hxl" id="hx_l">${hxLista()}</div>
+    <div class="dlgfoot"><div>${n ? `<button type="button" class="btn sm ghost danger" data-act="hxlimpa">${ic("trash")}Limpar o histórico</button>` : ""}</div><div class="row"><button type="button" class="btn" data-hxx="1">Fechar</button></div></div>`;
+}
+function hxDlg() { const dlg = $("#dlg"); HXV.n = 60; dlg.innerHTML = `<form method="dialog" class="hxdlg wide" id="hxf">${hxHTML()}</form>`; if (!dlg.open) dlg.showModal(); setTimeout(() => $("#hx_q")?.focus(), 30); }
+/* chamado depois de desfazer: redesenha a lista sem perder a busca nem a rolagem */
+function hxPaint() { const l = $("#hx_l"); if (!l || !$("#dlg").open) return; const sc = l.scrollTop; l.innerHTML = hxLista(); l.scrollTop = sc; }
+/* Ctrl Z sem passos na memória da página: desfaz o último passo guardado no histórico, e Refazer volta a fotografia */
+function hxVolta() {
+  const e = hxVisiveis().slice().reverse().find(x => !x.u && x.k && Object.keys(x.k).length); if (!e) { toast("Nada para desfazer"); return; }
+  if (EX_MODE) { toast("Desligue o modo exemplo para mexer no histórico dos seus dados."); return; }
+  const keys = Object.keys(e.k).filter(k => KEYS.includes(k)), back = {}; let conf = 0;
+  for (const k of keys) { back[k] = SNAP[k]; const root = { v: hxClone(S[k] ?? null) }, r = hxAplica(root, e.k[k], -1); S[k] = root.v ?? EMPTY()[k]; conf += r.conf; }
+  touch(...keys, { noUndo: true }); REDO.push({ b: back, l: e.l || hxRotulo(e), h: e.h }); hxMarca(e.h, true);
+  toast(`Desfeito: ${e.l || hxRotulo(e)}${conf ? ` · ${plural(conf, "parte mudou", "partes mudaram")} depois e ficou como está` : ""}`, { l: "Refazer", f: redo });
+  if (keys.includes("secretario") || keys.includes("integ")) lemGcSync();
+  hxPaint();
+}
+const hxPodeVoltar = () => hxVisiveis().some(x => !x.u && x.k && Object.keys(x.k).length);
+function hxClick(t) {
+  const ds = t.dataset;
+  if (ds.act === "hxopen") { hxDlg(); return true; }
+  if (ds.hxu) { const [h, d] = ds.hxu.split("|"); hxDesfazer(h, +d); hxPaint(); return true; }
+  if (ds.hxx) { $("#dlg").close(); return true; }
+  if (ds.hxgo) { $("#dlg").close(); setHash(...ds.hxgo.split(".")); return true; }
+  if (ds.act === "hxmais") { HXV.n += 60; hxPaint(); return true; }
+  if (ds.act === "hxlimpa") { if (!t.dataset.c) { t.dataset.c = "1"; t.innerHTML = `${ic("trash")}Confirmar: limpar o histórico (os dados ficam)`; return true; }
+    HX.L = []; HX.ok = true; try { localStorage.removeItem(HXK); } catch {} $("#dlg").close(); toast("Histórico limpo. Seus dados continuam iguais."); render(); return true; }
+  return false;
+}
+function hxInput(t) { if (t.id !== "hx_q") return false; HXV.q = t.value; HXV.n = 60; const l = $("#hx_l"); if (l) l.innerHTML = hxLista(); return true; }
 
 
 /* ================================================================ render */
@@ -19439,7 +20081,7 @@ document.addEventListener("click", e => {
   if (t.tagName === "A" && t.getAttribute("href")?.startsWith("#") && !t.dataset.act) { NAVOPEN = false; DRAWER = null; return; }
   if (t.closest("#pal")) { if (t.dataset.pal != null) palRun(+t.dataset.pal); return; }
   if (t.dataset.aci != null) { acPick(+t.dataset.aci); return; }
-  if (avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || guClick(t) || coClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || lsClick(t) || insClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
+  if (lemClick(t) || hxClick(t) || avalClick(t) || sdClick(t) || nuClick(t) || trClick(t) || cfClick(t) || ckClick(t) || guClick(t) || coClick(t) || secClick(t) || csClick(t) || filClick(t) || psiClick(t) || rtcClick(t) || rtClick(t) || lsClick(t) || insClick(t) || pd3Click(t) || pdClick(t) || gcClick(t) || hjClick(t) || casaClick(t) || futClick(t) || idiClick(t) || cr2Click(t) || capClick(t) || jmClick(t) || jdClick(t) || bmClick(t) || jClick(t) || crClick(t) || crClick2(t) || lzClick(t) || pjClick(t) || privClick(t) || expClick(t) || radarClick(t) || weekClick(t) || chapClick(t) || semClick(t) || duoClick(t) || integ2Click(t) || sjClick(t) || diaryClick(t) || mentorClick(t) || reportClick(t) || dataClick(t) || integClick(t) || settingsClick(t)) return;
   const ds = t.dataset, a = ds.act;
   if (a === "menu") { NAVOPEN = !NAVOPEN; document.body.classList.toggle("navopen", NAVOPEN); return; }
   if (a === "pal") { NAVOPEN = false; document.body.classList.remove("navopen"); openPalette(); return; }
@@ -19485,6 +20127,7 @@ document.addEventListener("keydown", e => {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); PALSEL = clamp(PALSEL + (e.key === "ArrowDown" ? 1 : -1), 0, Math.max(0, PALITEMS.length - 1)); palUpdate(); return; }
     if (e.key === "Enter") { e.preventDefault(); palRun(PALSEL); return; }
   }
+  if (e.key === "Enter" && tg.classList?.contains("lf-t") && !e.isComposing) { e.preventDefault(); lemEnter(tg); return; }
   if (tg.id === "dz_texto" && AC.open) {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); AC.sel = clamp(AC.sel + (e.key === "ArrowDown" ? 1 : -1), 0, AC.items.length - 1); acUpdate(tg); return; }
     if (e.key === "Enter" || e.key === "Tab") { e.preventDefault(); acPick(AC.sel); return; }
@@ -19512,7 +20155,7 @@ document.addEventListener("keydown", e => {
 const reRender = debounce(() => render(), 220);
 document.addEventListener("input", e => {
   const t = e.target;
-  if (nuInput(t) || trInput(t) || cfInput(t) || ckInput(t) || secInput(t) || guInput(t) || insInput(t) || coInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtcInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
+  if (lemInput(t) || hxInput(t) || nuInput(t) || trInput(t) || cfInput(t) || ckInput(t) || secInput(t) || guInput(t) || insInput(t) || coInput(t) || csInput(t) || filInput(t) || psiInput(t) || rtcInput(t) || rtInput(t) || pdInput(t) || cr2Input(t) || diaryInput(t) || capInput(t) || weekInput(t) || duoInput(t) || jmInput(t) || jdInput(t) || bmInput(t) || jInput(t) || crInput(t) || lzInput(t) || pjInput(t)) return;
   if (t.id === "palq") { PALSEL = 0; palUpdate(); return; }
   if (t.id === "dq") { DIA.q = t.value; reRender(); return; }
   if (t.id === "sj_q") { SJ.q = t.value; reRender(); return; }
@@ -19527,7 +20170,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target, v = t.value;
-  if (nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || coChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || lsChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
+  if (lemChange(t) || nuChange(t) || trChange(t) || cfChange(t) || ckChange(t) || coChange(t) || secChange(t) || csChange(t) || filChange(t) || psiChange(t) || rtcChange(t) || rtChange(t) || lsChange(t) || pdChange(t) || hjChange(t) || futChange(t) || idiChange(t) || capChange(t) || jdChange(t) || bmChange(t) || jChange(t) || crChange(t) || crChange2(t) || lzChange(t) || pjChange(t) || privChange(t) || weekChange(t) || chapChange(t) || semChange(t) || duoChange(t) || integ2Change(t) || reportChange(t) || dataChange(t) || importChange(t) || integChange(t) || settingsChange(t)) return;
   if (t.dataset.roda != null) touch("roda", { label: "Nota da Roda" });
   else if (t.dataset.prio != null) { S.prio[+t.dataset.prio] = v; touch("prio", { label: "Prioridade" }); }
   else if (t.dataset.alvo != null) { S.alvo[t.dataset.alvo] = v === "" ? null : +v; touch("alvo", { label: "Alvo da área" }); }
@@ -19595,7 +20238,7 @@ document.addEventListener("focusout", () => setTimeout(diaVirou, 250));
   const use = n => { try { return Promise.resolve(window.claude?.use?.(n)).catch(() => null); } catch { return Promise.resolve(null); } };
   use("sample").then(async s => { SAMPLE = s || null; if (s) { const lim = await s.limits().catch(() => null); TOOLS_MAX = lim?.tools ? (lim.tools.maxCount || 8) : 0; } if (["mentores", "mentor", "diario"].includes(PAGE)) render(); });
   use("downloads").then(d => { DL = d || null; });
-  use("mcp").then(async m => { MCP = m || null; await notionStatus(); if (PAGE === "integ") render(); gcAuto(); });
+  use("mcp").then(async m => { MCP = m || null; await notionStatus(); if (PAGE === "integ") render(); gcAuto(); lemGcSync(); });
   const loaded = await loadStore();   /* null: a conta existe mas não respondeu */
   if (loaded && Object.keys(loaded).length) { S = comPadroes(loaded); IS_EXAMPLE = false; }
   applyLists(); VER++; LOADED = true; snapAll(); UNDO.length = 0; REDO.length = 0;
@@ -19604,7 +20247,7 @@ document.addEventListener("focusout", () => setTimeout(diaVirou, 250));
   try { radarSync(); } catch (e) { console.warn("radar", e); }
   try { ckSnapTake(); } catch (e) { console.warn("ckSnap", e); }
   render();
-  secBoot(); coInit();
+  secBoot(); coInit(); lemGcSync();
 })();
 
 </script>
