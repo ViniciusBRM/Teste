@@ -169,3 +169,11 @@ test('horário flexível: janelas de ingresso 08:45–09:30 e uscita 17:45–18:
   const s = C.summarize([ok, late, early], TODAY);
   assert.deepEqual([s.late, s.early, s.inWindow, s.windowDays], [1, 1, 1, 3]);
 });
+
+test('abono parcial justifica atraso e saída antecipada', () => {
+  const d = C.computeDay('2026-10-13', rec('2026-10-13', 'licenca', { in: '10:05', lo: '14:00', li: '14:48', out: '18:00' }, { abono: 'partial', abonoMin: 60 }), S, TODAY, null);
+  assert.equal(d.late, 0);
+  assert.equal(d.inWindow, null);
+  const m = C.computeDay('2026-10-02', rec('2026-10-02', 'atestado', { in: '09:16', lo: '13:00', li: '14:00', out: '16:48' }, { abono: 'partial', abonoMin: 70 }), S, TODAY, null);
+  assert.equal(m.early, 0);
+});

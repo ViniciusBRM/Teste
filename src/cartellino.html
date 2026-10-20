@@ -903,15 +903,16 @@ const Core = (() => {
     if (worked > 600) r.flags.push({ lvl: 'warn', t: `Jornada de ${dur(worked)}, acima de 10h.` });
     /* Horário flexível: atraso só depois do fim da janela de ingresso; saída antecipada só antes do início da janela de uscita. */
     const eAte = toMin(S.entradaAte), sDe = toMin(S.saidaDe);
-    if (workLike && expected > 0 && tin != null && eAte != null && tin > eAte) {
+    const flexRule = WORK.has(t) && t !== 'feriado';  // abono parcial (atestado/licença) justifica atraso e saída antecipada
+    if (flexRule && expected > 0 && tin != null && eAte != null && tin > eAte) {
       r.late = tin - eAte;
       r.flags.push({ lvl: 'info', t: `Ingresso às ${p.in}, depois da janela de entrada (${S.entradaDe}–${S.entradaAte}): ${r.late} min de atraso.` });
     }
-    if (workLike && expected > 0 && r.complete && tout >= tin && sDe != null && tout < sDe) {
+    if (flexRule && expected > 0 && r.complete && tout >= tin && sDe != null && tout < sDe) {
       r.early = sDe - tout;
       r.flags.push({ lvl: 'info', t: `Uscita às ${p.out}, antes da janela de saída (${S.saidaDe}–${S.saidaAte}): ${r.early} min antes.` });
     }
-    r.inWindow = workLike && expected > 0 && r.complete ? !r.late && !r.early : null;
+    r.inWindow = flexRule && expected > 0 && r.complete ? !r.late && !r.early : null;
     return r;
   }
 
