@@ -12,7 +12,7 @@ const html = readFileSync(join(root, 'src', 'cartellino.html'), 'utf8');
 const code = /<script id="core">([\s\S]*?)<\/script>/.exec(html)[1];
 const C = vm.runInNewContext(`${code}\n;Core`, {});
 
-const S = { ...C.defaults(), feriados: 'IT', tolerancia: 10, almocoMin: 60, entradaPrevista: '08:30', inicio: '2026-01-01' };
+const S = { ...C.defaults(), feriados: 'IT', tolerancia: 10, almocoMin: 60, inicio: '2026-01-01' };
 const rec = (date, type, p = {}, extra = {}) => ({ ...C.newRec(date, type), p, ...extra });
 const TODAY = '2026-10-01';
 
@@ -44,7 +44,7 @@ test('dia normal dentro da tolerância conta como cumprido', () => {
 });
 
 test('horas extras, almoço curto e atraso geram alertas', () => {
-  const d = C.computeDay('2026-09-29', rec('2026-09-29', 'trabalho', { in: '08:50', lo: '12:30', li: '13:10', out: '18:50' }), S, TODAY, null);
+  const d = C.computeDay('2026-09-29', rec('2026-09-29', 'trabalho', { in: '09:50', lo: '12:30', li: '13:10', out: '19:50' }), S, TODAY, null);
   assert.equal(d.worked, 560);
   assert.equal(d.saldo, 80);
   assert.equal(d.status, 'extra');
@@ -143,4 +143,29 @@ test('dados de exemplo cobrem os tipos e não quebram o cálculo', () => {
     assert.ok(Number.isFinite(d.saldo));
     assert.ok(!d.flags.some(f => f.lvl === 'err'), `${r.date} fora de ordem`);
   }
+});
+
+test('mês de referência pelo nome do arquivo do Nemesis', () => {
+  assert.equal(C.guessRef('cartellino_2026-09.pdf', '2026-10'), '2026-09');
+  assert.equal(C.guessRef('Cartellino 202608 Rossi.pdf', '2026-10'), '2026-08');
+  assert.equal(C.guessRef('timbrature_07_2026.xlsx', '2026-10'), '2026-07');
+  assert.equal(C.guessRef('Cartellino Settembre 2025.pdf', '2026-10'), '2025-09');
+  assert.equal(C.guessRef('espelho setembro.pdf', '2026-10'), '2026-09');
+  assert.equal(C.guessRef('relatorio.pdf', '2026-10'), '2026-10');
+});
+
+test('horário flexível: janelas de ingresso 08:45–09:30 e uscita 17:45–18:30', () => {
+  assert.deepEqual([S.entradaPadrao, S.entradaDe, S.entradaAte, S.saidaPadrao, S.saidaDe, S.saidaAte], ['09:00', '08:45', '09:30', '18:00', '17:45', '18:30']);
+  const ok = C.computeDay('2026-09-29', rec('2026-09-29', 'trabalho', { in: '09:29', lo: '13:30', li: '14:30', out: '18:29' }), S, TODAY, null);
+  assert.equal(ok.late, 0);
+  assert.equal(ok.early, 0);
+  assert.equal(ok.inWindow, true);
+  const late = C.computeDay('2026-09-29', rec('2026-09-29', 'trabalho', { in: '09:31', lo: '13:30', li: '14:30', out: '18:31' }), S, TODAY, null);
+  assert.equal(late.late, 1);
+  assert.equal(late.inWindow, false);
+  const early = C.computeDay('2026-09-29', rec('2026-09-29', 'trabalho', { in: '09:00', lo: '13:00', li: '14:00', out: '17:30' }), S, TODAY, null);
+  assert.equal(early.early, 15);
+  assert.equal(early.saldo, -30);
+  const s = C.summarize([ok, late, early], TODAY);
+  assert.deepEqual([s.late, s.early, s.inWindow, s.windowDays], [1, 1, 1, 3]);
 });

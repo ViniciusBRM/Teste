@@ -194,7 +194,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--a
 .key { width: 10px; height: 10px; border-radius: 2px; background: var(--c); }
 .key.line { width: 14px; height: 2px; border-radius: 1px; }
 .key.tick { width: 12px; height: 2px; background: var(--ink); }
-.key.ref { width: 14px; height: 1px; background: var(--muted); }
+.key.win { width: 14px; height: 10px; background: color-mix(in srgb, var(--c) 22%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 45%, transparent); }
+.chart .win { opacity: .11; }
 .chart { position: relative; min-width: 0; }
 .chart svg { display: block; max-width: 100%; height: auto; overflow: visible; }
 .chart svg:focus-visible { outline-offset: 4px; }
@@ -220,6 +221,27 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--a
 .tile.is-focus .mini-wrap { max-height: none; }
 .scrim { position: fixed; inset: 0; z-index: 60; background: var(--scrim); }
 
+.docs-tile .tile-h { flex-wrap: wrap; }
+.docs-tile.drag { box-shadow: inset 0 0 0 2px var(--accent), var(--shadow); }
+.docs { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.doc { display: grid; grid-template-columns: auto minmax(0, 1fr) 168px auto; align-items: center; gap: 8px 14px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.doc-kind { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--tile-2); color: var(--ink-2); font: 600 10.5px var(--font-mono); letter-spacing: .04em; }
+.doc-main { min-width: 0; }
+.doc-title { width: 100%; height: 30px; margin-left: -7px; padding: 0 6px; border-color: transparent !important; background: transparent !important; font-weight: 600; }
+.doc-title:hover { border-color: var(--line-2) !important; }
+.doc-title:focus { border-color: var(--accent) !important; background: var(--tile) !important; }
+.doc-meta { color: var(--ink-2); font-size: 12px; overflow-wrap: anywhere; }
+.doc-ref { display: grid; gap: 2px; min-width: 0; }
+.doc-ref span { color: var(--ink-2); font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.doc-ref input { width: 100%; }
+.doc-act { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
+a.btn { text-decoration: none; }
+.docs-empty { min-height: 84px; }
+@media (max-width: 760px) {
+  .doc { grid-template-columns: auto minmax(0, 1fr); }
+  .doc-ref, .doc-act { grid-column: 1 / -1; }
+  .doc-act { justify-content: flex-start; }
+}
 .comp-hero { display: flex; align-items: baseline; gap: 10px; }
 .comp-pct { font: 600 36px/1 var(--font-display); }
 .comp-pct small { font-size: .5em; color: var(--ink-2); }
@@ -314,6 +336,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--a
 .tape svg { display: block; width: 100%; height: auto; }
 .tape .trk { fill: var(--tile-2); stroke: var(--line); }
 .tape .exp { fill: var(--accent-wash); }
+.tape .win { fill: none; stroke: var(--accent); stroke-width: 1; opacity: .55; }
 .tape .wk { fill: var(--s1); }
 .tape .lu { fill: var(--neutral-mark); opacity: .55; }
 .tape .now { stroke: var(--ink); stroke-width: 1.5; }
@@ -529,6 +552,13 @@ button.cday:hover { border-color: var(--ink-2); }
           <div class="range"><input type="date" id="pFrom" aria-label="Data inicial"><span>–</span><input type="date" id="pTo" aria-label="Data final"></div>
         </div>
       </div>
+      <article class="tile docs-tile" id="docsTile" aria-labelledby="h-docs">
+        <header class="tile-h">
+          <div><h3 id="h-docs">Documentos Nemesis</h3><p id="docsSub">Cartellini, relatórios e comprovantes exportados do sistema de ponto eletrônico</p></div>
+          <div class="btn-row"><button type="button" class="btn" id="docsAll" aria-pressed="false" hidden>Ver todos</button><button type="button" class="btn primary" id="docAdd"><span data-icon="upload"></span>Anexar documento</button></div>
+        </header>
+        <div id="docsList"></div>
+      </article>
       <div class="kpis" id="kpis"></div>
       <div class="report">
         <article class="tile a-daily" data-chart="daily">
@@ -544,7 +574,7 @@ button.cday:hover { border-color: var(--ink-2); }
         <article class="tile a-trend" data-chart="trend">
           <header class="tile-h"><div><h3>Tendência de horários</h3><p>Ingresso e uscita em cada dia completo</p></div>
             <div class="tools"><button type="button" class="icon-btn sm" data-tool="table" aria-pressed="false" aria-label="Ver como tabela" title="Ver como tabela"><span data-icon="table"></span></button><button type="button" class="icon-btn sm" data-tool="focus" aria-label="Modo foco" title="Modo foco"><span data-icon="focus"></span></button></div></header>
-          <div class="legend"><span><i class="key line" style="--c:var(--s1)"></i>Ingresso</span><span><i class="key line" style="--c:var(--s2)"></i>Uscita</span><span><i class="key ref"></i><span id="trendRef">Ingresso previsto</span></span></div>
+          <div class="legend"><span><i class="key line" style="--c:var(--s1)"></i>Ingresso</span><span><i class="key line" style="--c:var(--s2)"></i>Uscita</span><span><i class="key win" style="--c:var(--s1)"></i><span id="trendWinIn">Janela de ingresso</span></span><span><i class="key win" style="--c:var(--s2)"></i><span id="trendWinOut">Janela de uscita</span></span></div>
           <div class="chart" id="ch-trend"></div>
         </article>
         <article class="tile a-events" data-chart="events">
@@ -695,6 +725,7 @@ button.cday:hover { border-color: var(--ink-2); }
 <div class="modal" id="modal" hidden></div>
 <input type="file" id="photoInput" accept="image/*" hidden>
 <input type="file" id="importInput" accept="application/json,.json" hidden>
+<input type="file" id="docInput" multiple accept=".pdf,image/*,.csv,.txt,.xls,.xlsx,.ods,.doc,.docx,.odt" hidden>
 
 <script id="core">
 /* Núcleo puro: datas, feriados, cálculo de jornada, CSV e dados de exemplo. Sem DOM. */
@@ -802,7 +833,9 @@ const Core = (() => {
   const defaults = () => ({
     nome: '', empresa: '', matricula: '',
     jornada: [0, 480, 480, 480, 480, 480, 0],
-    entradaPrevista: '08:30', almocoMin: 60, tolerancia: 10,
+    entradaPadrao: '09:00', entradaDe: '08:45', entradaAte: '09:30',
+    saidaPadrao: '18:00', saidaDe: '17:45', saidaAte: '18:30',
+    almocoMin: 60, tolerancia: 10,
     feriasAno: 22, feriasContagem: 'uteis', feriasSaldoAnterior: 0,
     bancoInicial: 0, inicio: '', feriados: 'IT', feriadosLocais: '',
   });
@@ -814,7 +847,7 @@ const Core = (() => {
     const hol = holidayName(date, S);
     const base = +(S.jornada || [])[dow(date)] || 0;
     let expected = hol ? 0 : base;
-    const r = { date, rec: rec || null, type: null, hol, base, expected, worked: 0, credited: 0, abono: 0, saldo: 0, lunch: null, late: 0,
+    const r = { date, rec: rec || null, type: null, hol, base, expected, worked: 0, credited: 0, abono: 0, saldo: 0, lunch: null, late: 0, early: 0, inWindow: null,
       status: 'none', flags: [], ongoing: false, complete: false, tin: null, tlo: null, tli: null, tout: null, punches: 0 };
     if (!rec) {
       r.status = date > today ? 'futuro' : hol ? 'feriado' : !expected ? 'livre' : (date < today && (!S.inicio || date >= S.inicio)) ? 'pendente' : 'aberto';
@@ -875,18 +908,24 @@ const Core = (() => {
     if (r.lunch != null && r.lunch < (+S.almocoMin || 0)) r.flags.push({ lvl: 'warn', t: `Intervalo de almoço de ${dur(r.lunch)}; o mínimo é ${dur(S.almocoMin)}.` });
     if (r.complete && r.lunch == null && worked > 360) r.flags.push({ lvl: 'warn', t: 'Sem intervalo em jornada acima de 6h.' });
     if (worked > 600) r.flags.push({ lvl: 'warn', t: `Jornada de ${dur(worked)}, acima de 10h.` });
-    const ep = toMin(S.entradaPrevista);
-    if (workLike && expected > 0 && tin != null && ep != null && tin > ep + (+S.tolerancia || 0)) {
-      r.late = tin - ep;
-      r.flags.push({ lvl: 'info', t: `Ingresso ${r.late} min depois do previsto (${S.entradaPrevista}).` });
+    /* Horário flexível: atraso só depois do fim da janela de ingresso; saída antecipada só antes do início da janela de uscita. */
+    const eAte = toMin(S.entradaAte), sDe = toMin(S.saidaDe);
+    if (workLike && expected > 0 && tin != null && eAte != null && tin > eAte) {
+      r.late = tin - eAte;
+      r.flags.push({ lvl: 'info', t: `Ingresso às ${p.in}, depois da janela de entrada (${S.entradaDe}–${S.entradaAte}): ${r.late} min de atraso.` });
     }
+    if (workLike && expected > 0 && r.complete && tout >= tin && sDe != null && tout < sDe) {
+      r.early = sDe - tout;
+      r.flags.push({ lvl: 'info', t: `Uscita às ${p.out}, antes da janela de saída (${S.saidaDe}–${S.saidaAte}): ${r.early} min antes.` });
+    }
+    r.inWindow = workLike && expected > 0 && r.complete ? !r.late && !r.early : null;
     return r;
   }
 
   function summarize(list, today) {
     const s = { worked: 0, expected: 0, credited: 0, abonoAll: 0, saldo: 0, extra: 0, debit: 0, extraDays: 0, faltas: 0, faltaMin: 0,
       abonoDays: 0, abonoMin: 0, trasferta: 0, places: {}, pendentes: 0, pendDates: [], cumprida: 0, acima: 0, abaixo: 0, incompleta: 0,
-      workDays: 0, late: 0, over10: 0, records: 0, counts: {}, calHolidays: 0, ins: [], outs: [], lunches: [] };
+      workDays: 0, late: 0, early: 0, inWindow: 0, windowDays: 0, over10: 0, records: 0, counts: {}, calHolidays: 0, ins: [], outs: [], lunches: [] };
     for (const d of list) {
       if (d.date > today) continue;
       s.expected += d.expected;
@@ -907,6 +946,8 @@ const Core = (() => {
       else if (d.status === 'abaixo') s.abaixo++;
       else if (d.status === 'incompleta' || d.status === 'semmarcacao') s.incompleta++;
       if (d.late) s.late++;
+      if (d.early) s.early++;
+      if (d.inWindow != null) { s.windowDays++; if (d.inWindow) s.inWindow++; }
       if (d.worked > 600) s.over10++;
       if (d.complete && d.tin != null) s.ins.push(d.tin);
       if (d.complete && d.tout != null) s.outs.push(d.tout);
@@ -976,9 +1017,10 @@ const Core = (() => {
     sp.set(at(0.86), { type: 'compensacao', note: 'Compensação do banco de horas' });
     sp.set(past[n - 4], { type: 'licenca', abono: 'partial', abonoMin: 120, note: 'Consulta médica: 2h abonadas' });
     const mk = (d, o = {}) => ({ date: d, type: o.type || 'trabalho', p: {}, note: o.note || '', local: o.local || '', motivo: o.motivo || '', abono: o.abono || 'full', abonoMin: o.abonoMin || 0, photos: [] });
+    const base = toMin(S.entradaPadrao) != null ? toMin(S.entradaPadrao) : 540;
     const punch = (rec, opt = {}) => {
-      let tin = 8 * 60 + 24 + J(10) + (rnd() < 0.1 ? 14 + Math.round(rnd() * 18) : 0);
-      const lo = 12 * 60 + 35 + J(14);
+      let tin = base + 2 + J(16) + (rnd() < 0.07 ? 38 + Math.round(rnd() * 20) : 0);
+      const lo = base + 245 + J(16);
       const lunch = rnd() < 0.07 ? 38 + Math.round(rnd() * 12) : 52 + Math.round(rnd() * 16);
       let work = 480 + J(8) + (rnd() < 0.3 ? 25 + Math.round(rnd() * 70) : 0) + (rnd() < 0.08 ? -40 : 0);
       if (opt.early) tin -= 55;
@@ -996,12 +1038,12 @@ const Core = (() => {
     }
     const sat = range(start, addDays(today, -1)).filter(d => dow(d) === 6 && !holidayName(d, S))[3];
     if (sat) { const r = mk(sat, { note: 'Plantão de fechamento do mês' }); r.p = { in: '09:00', out: '13:10' }; put(r); }
-    if (isWork(today) && nowMin != null && nowMin >= 8 * 60 + 27) {
+    if (isWork(today) && nowMin != null && nowMin >= base - 3) {
       const r = mk(today);
-      r.p.in = '08:27';
-      if (nowMin >= 12 * 60 + 38) r.p.lo = '12:38';
-      if (nowMin >= 13 * 60 + 36) r.p.li = '13:36';
-      if (nowMin >= 17 * 60 + 41) r.p.out = '17:41';
+      r.p.in = hm(base - 3);
+      if (nowMin >= base + 238) r.p.lo = hm(base + 238);
+      if (nowMin >= base + 296) r.p.li = hm(base + 296);
+      if (nowMin >= base + 541) r.p.out = hm(base + 541);
       put(r);
     }
     const y = today.slice(0, 4);
@@ -1009,7 +1051,22 @@ const Core = (() => {
     return months;
   }
 
-  return { pad, iso, parse, addDays, dow, dim, monthEnd, addMonths, shiftMonths, daysBetween, range, toMin, hm, clock, MINUS, sign, sClock, dur, durS, sDur, durToMin,
+  /* Mês de referência pelo nome do arquivo: 2026-09, 09_2026, "settembre 2026", "setembro". */
+  const MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+  function guessRef(name, fallback) {
+    const s = String(name || '').toLowerCase();
+    let m = /(20\d{2})[-_. ]?(0[1-9]|1[0-2])(?!\d)/.exec(s);
+    if (m) return `${m[1]}-${m[2]}`;
+    m = /(?<!\d)(0?[1-9]|1[0-2])[-_. ](20\d{2})(?!\d)/.exec(s);
+    if (m) return `${m[2]}-${pad(+m[1])}`;
+    const y = /(?<!\d)(20\d{2})(?!\d)/.exec(s);
+    for (const list of [MON, MESI]) for (let i = 0; i < 12; i++) {
+      if (s.includes(list[i])) return `${y ? y[1] : fallback.slice(0, 4)}-${pad(i + 1)}`;
+    }
+    return fallback;
+  }
+
+  return { guessRef, pad, iso, parse, addDays, dow, dim, monthEnd, addMonths, shiftMonths, daysBetween, range, toMin, hm, clock, MINUS, sign, sClock, dur, durS, sDur, durToMin,
     WD, WDS, MON, MONS, fmtLong, fmtDM, fmtDMY, monthLabel, esc, easter, CAL, holidaysOf, holidayName, TYPES, TYPE_ORDER, PUNCHES, SLOT_LABEL,
     defaults, newRec, isEmpty, computeDay, summarize, ferias, csv, demo };
 })();
@@ -1052,7 +1109,7 @@ const Core = (() => {
   const A = {
     mode: 'loading', loaded: false, readOnly: false, saving: 0,
     demo: false, autoDemo: false, demoOff: false, demoMonths: null,
-    months: {}, settings: C.defaults(), recs: [], eff: null, firstDate: null,
+    months: {}, settings: C.defaults(), recs: [], eff: null, firstDate: null, docs: [], docsAll: false, uploading: 0,
     view: 'resumo', sel: TODAY, monthCur: TODAY.slice(0, 7),
     repMonth: +TODAY.slice(8) <= 7 ? C.addMonths(TODAY.slice(0, 7), -1) : TODAY.slice(0, 7),
     period: '30d', pFrom: '', pTo: '',
@@ -1078,8 +1135,8 @@ const Core = (() => {
     open() {
       return new Promise(res => {
         let rq;
-        try { rq = indexedDB.open('cartellino', 1); } catch (e) { res(false); return; }
-        rq.onupgradeneeded = () => { const d = rq.result; ['kv', 'photos'].forEach(n => { if (!d.objectStoreNames.contains(n)) d.createObjectStore(n); }); };
+        try { rq = indexedDB.open('cartellino', 2); } catch (e) { res(false); return; }
+        rq.onupgradeneeded = () => { const d = rq.result; ['kv', 'photos', 'files'].forEach(n => { if (!d.objectStoreNames.contains(n)) d.createObjectStore(n); }); };
         rq.onsuccess = () => { this.db = rq.result; res(true); };
         rq.onerror = () => res(false);
         rq.onblocked = () => res(false);
@@ -1107,14 +1164,25 @@ const Core = (() => {
     },
   };
   const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const NATIVE_FILE = new Set(['application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'image/webp']);
+  const FILE_EXT = { pdf: 'application/pdf', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', heic: 'image/heic', csv: 'text/csv', txt: 'text/plain',
+    xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ods: 'application/vnd.oasis.opendocument.spreadsheet',
+    doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', odt: 'application/vnd.oasis.opendocument.text' };
+  const fileType = f => { const m = /\.([a-z0-9]+)$/i.exec(f.name || ''); return (m && FILE_EXT[m[1].toLowerCase()]) || f.type || 'application/octet-stream'; };
+  const blobToB64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = () => rej(r.error); r.readAsDataURL(blob); });
+  const b64ToBlob = (b64, type) => { const bin = atob(b64); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Blob([u], { type: type || 'application/octet-stream' }); };
   const Store = {
-    mode: 'loading', db: null, uid: null, pending: {}, running: {}, mem: {},
+    mode: 'loading', db: null, uid: null, pending: {}, running: {}, mem: {}, assets: null, memFiles: {},
     async init(onData) {
       if (!STANDALONE) {
         try {
           const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
           const uid = db && user ? await user.id() : null;
-          if (db && uid) { this.db = db; this.uid = uid; this.mode = 'cloud'; this.listen(onData); return; }
+          if (db && uid) {
+            this.db = db; this.uid = uid; this.mode = 'cloud'; this.listen(onData);
+            window.claude.use('assets').then(a => { this.assets = a; if (A.view === 'resumo') renderDocs(periodRange()); }).catch(() => { this.assets = null; });
+            return;
+          }
         } catch (e) { /* segue para o armazenamento local */ }
       }
       const ok = typeof indexedDB !== 'undefined' && await LocalDB.open();
@@ -1172,6 +1240,33 @@ const Core = (() => {
       if (this.mode === 'local') return (await LocalDB.get('photos', id)) || null;
       return this.mem[id] || null;
     },
+    async saveFile(id, blob, type, name) {
+      if (this.mode === 'cloud') {
+        if (!this.assets) throw { code: 'no_assets' };
+        if (NATIVE_FILE.has(type)) { const r = await this.assets.upload(blob, { type }); return { store: 'asset', key: r.id, wrapped: false }; }
+        const json = JSON.stringify({ app: 'cartellino-file', name, type, b64: await blobToB64(blob) });
+        const r = await this.assets.upload(new Blob([json], { type: 'application/json' }), { type: 'application/json' });
+        return { store: 'asset', key: r.id, wrapped: true };
+      }
+      if (this.mode === 'local') { await LocalDB.put('files', id, blob); return { store: 'idb', key: id, wrapped: false }; }
+      this.memFiles[id] = blob;
+      return { store: 'mem', key: id, wrapped: false };
+    },
+    async loadFile(it) {
+      if (it.store === 'asset') {
+        const res = await fetch('/_blob/' + it.key);
+        if (!res.ok) throw { code: 'missing' };
+        if (it.wrapped) { const j = await res.json(); return b64ToBlob(j.b64, j.type || it.type); }
+        return res.blob();
+      }
+      if (it.store === 'idb') return (await LocalDB.get('files', it.key)) || null;
+      return this.memFiles[it.key] || null;
+    },
+    async deleteFile(it) {
+      if (it.store === 'asset') { if (this.assets) await this.assets.delete(it.key); return; }
+      if (it.store === 'idb') return LocalDB.del('files', it.key);
+      delete this.memFiles[it.key];
+    },
     async deletePhoto(id) {
       if (this.mode === 'cloud') return this.retry(() => this.photoDoc(id).delete());
       if (this.mode === 'local') return LocalDB.del('photos', id);
@@ -1196,6 +1291,7 @@ const Core = (() => {
 
   function onData(kv, first, skip) {
     if (kv.settings && !skip.has('settings')) A.settings = Object.assign(C.defaults(), kv.settings);
+    if (!skip.has('docs')) A.docs = kv.docs && Array.isArray(kv.docs.items) ? kv.docs.items : [];
     const next = first ? {} : Object.assign({}, A.months);
     if (first) for (const k of skip) if (k.startsWith('m-') && A.months[k.slice(2)]) next[k.slice(2)] = A.months[k.slice(2)];
     for (const [k, v] of Object.entries(kv)) if (k.startsWith('m-') && v && v.days) next[k.slice(2)] = v;
@@ -1442,6 +1538,7 @@ const Core = (() => {
     const r = periodRange();
     if (A.period === 'custom') { $('#pFrom').value = r.from; $('#pTo').value = r.to; }
     $('#rsSub').textContent = `${r.label} · ${C.fmtDMY(r.from)} a ${C.fmtDMY(r.to)}`;
+    renderDocs(r);
     $$('#v-resumo [data-tool="table"]').forEach(b => b.setAttribute('aria-pressed', String(!!A.tableMode[b.closest('.tile').dataset.chart])));
     if (!A.loaded) {
       $('#kpis').innerHTML = `<div class="kpi hero" style="grid-column:1/-1"><span class="kpi-l">Carregando</span><span class="kpi-s">Seu painel de horas aparece aqui: horas do período, saldo do banco de horas, férias, atestados e trasferte. Conectando ao seu armazenamento…</span></div>`;
@@ -1520,8 +1617,150 @@ const Core = (() => {
         <div><dt>Ingresso médio</dt><dd class="mono">${avg(sum.avgIn)}</dd></div>
         <div><dt>Uscita média</dt><dd class="mono">${avg(sum.avgOut)}</dd></div>
         <div><dt>Almoço médio</dt><dd>${sum.avgLunch != null ? C.dur(sum.avgLunch) : '—'}</dd></div>
-        <div><dt>Ingressos atrasados</dt><dd>${sum.late}</dd></div>
+        <div><dt>Dentro das janelas</dt><dd>${sum.windowDays ? `${sum.inWindow} de ${sum.windowDays}` : '—'}</dd></div>
+        <div><dt>Atrasos · ingresso após ${esc(A.settings.entradaAte)}</dt><dd>${sum.late}</dd></div>
+        <div><dt>Saídas antes de ${esc(A.settings.saidaDe)}</dt><dd>${sum.early}</dd></div>
       </dl>`;
+  }
+
+
+  /* ---------------- DOCUMENTOS NEMESIS ---------------- */
+  const fmtSize = b => (b >= 1048576 ? (b / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB');
+  function docKind(it) {
+    const t = it.type || '', n = String(it.name || '').toLowerCase();
+    if (t === 'application/pdf' || n.endsWith('.pdf')) return 'PDF';
+    if (t.startsWith('image/')) return 'IMG';
+    if (/\.(xlsx?|ods)$/.test(n)) return 'XLS';
+    if (n.endsWith('.csv')) return 'CSV';
+    if (/\.(docx?|odt)$/.test(n)) return 'DOC';
+    if (n.endsWith('.txt')) return 'TXT';
+    return 'ARQ';
+  }
+  const docsAvailable = () => A.loaded && !A.readOnly && (Store.mode !== 'cloud' || !!Store.assets);
+  function renderDocs(r) {
+    keepFocus(() => {
+      const a = r.from.slice(0, 7), b = r.to.slice(0, 7);
+      const inRange = A.docs.filter(d => d.ref >= a && d.ref <= b);
+      const list = (A.docsAll ? A.docs.slice() : inRange).sort((x, y) => (x.ref === y.ref ? y.ts - x.ts : x.ref < y.ref ? 1 : -1));
+      const all = $('#docsAll');
+      all.hidden = !A.docs.length || (!A.docsAll && inRange.length === A.docs.length);
+      all.textContent = A.docsAll ? 'Só do período' : `Ver todos (${A.docs.length})`;
+      all.setAttribute('aria-pressed', String(A.docsAll));
+      $('#docAdd').disabled = !docsAvailable();
+      let sub = 'Cartellini, relatórios e comprovantes exportados do sistema de ponto eletrônico';
+      if (!A.loaded) sub = 'Carregando…';
+      else if (Store.mode === 'cloud' && !Store.assets) sub = 'Anexos indisponíveis nesta visualização. Quem pode editar o painel consegue anexar.';
+      else if (A.uploading) sub = `Enviando ${plural(A.uploading, 'arquivo', 'arquivos')}…`;
+      else if (A.docs.length) sub = A.docsAll ? `${plural(A.docs.length, 'documento', 'documentos')} no total` : `${plural(inRange.length, 'documento', 'documentos')} com referência ${A.period === 'mes' || A.period === 'mesant' ? 'em ' + r.label : 'no período'}`;
+      $('#docsSub').textContent = sub;
+      if (!list.length) {
+        $('#docsList').innerHTML = `<div class="empty docs-empty">${A.docs.length ? 'Nenhum documento Nemesis com referência neste período.' : 'Nenhum documento Nemesis anexado ainda.'} ${docsAvailable() ? 'Arraste um PDF, imagem ou planilha para cá, ou use Anexar documento.' : ''}</div>`;
+        return;
+      }
+      $('#docsList').innerHTML = `<ul class="docs">${list.map(it => {
+        const k = docKind(it), id = esc(it.id);
+        const canOpen = (k === 'PDF' || k === 'IMG') && !it.wrapped;
+        const open = !canOpen ? '' : it.store === 'asset' && k === 'PDF'
+          ? `<a class="btn sm" href="/_blob/${esc(it.key)}" target="_blank" rel="noopener">Abrir</a>`
+          : `<button type="button" class="btn sm" data-dopen="${id}">Abrir</button>`;
+        return `<li class="doc" data-id="${id}">
+          <span class="doc-kind" aria-hidden="true">${k}</span>
+          <div class="doc-main"><input type="text" class="doc-title" id="dt-${id}" maxlength="140" value="${esc(it.title)}" aria-label="Título do documento" ${A.readOnly ? 'readonly' : ''}>
+            <div class="doc-meta">${esc(it.name)} · ${fmtSize(it.size || 0)} · anexado em ${C.fmtDMY(C.iso(new Date(it.ts || Date.now())))}</div></div>
+          <label class="doc-ref"><span>Mês de referência</span><input type="month" id="dm-${id}" value="${esc(it.ref)}" ${A.readOnly ? 'readonly' : ''}></label>
+          <div class="doc-act">${open}<button type="button" class="btn sm" data-ddown="${id}">${icon('download')}Baixar</button>${A.readOnly ? '' : `<button type="button" class="btn sm danger" data-ddel="${id}" aria-label="Remover ${esc(it.title)}">${icon('trash')}</button>`}</div>
+        </li>`;
+      }).join('')}</ul>`;
+    });
+  }
+  function persistDocs(delay = 300) {
+    clearTimeout(timers.docs);
+    timers.docs = setTimeout(() => {
+      A.saving++; renderSaveState();
+      Store.write('docs', { items: A.docs, updatedAt: Date.now() }).then(() => { A.saving = Math.max(0, A.saving - 1); renderSaveState(); }, e => saveError(e, 'docs'));
+    }, delay);
+  }
+  function fileError(e, name) {
+    const c = e && e.code;
+    const msg = {
+      too_large: 'arquivo grande demais para o armazenamento do painel',
+      unsupported_type: 'tipo de arquivo não aceito',
+      quota_or_state: 'o espaço de arquivos do painel acabou; remova documentos antigos',
+      rate_limited: 'muitos envios seguidos; tente de novo em instantes',
+      no_assets: 'anexos indisponíveis nesta visualização',
+      upstream_auth: 'sessão expirada; recarregue a página',
+    }[c] || 'não foi possível salvar o arquivo agora';
+    toast(`${name}: ${msg}.`, { tone: 'err', ms: 8000 });
+  }
+  async function addDocs(files) {
+    files = Array.from(files || []);
+    if (!files.length) return;
+    if (!A.loaded) { toast('Aguarde: ainda conectando ao armazenamento.'); return; }
+    if (!docsAvailable()) { toast('Anexos indisponíveis nesta visualização.', { tone: 'err' }); return; }
+    const r = periodRange();
+    const fallback = (r.to < TODAY ? r.to : TODAY).slice(0, 7);
+    const range = [r.from.slice(0, 7), r.to.slice(0, 7)];
+    let n = 0, outside = 0;
+    for (const f of files) {
+      const type = fileType(f);
+      const max = Store.mode === 'cloud' ? (NATIVE_FILE.has(type) ? 20 : 14) * 1048576 : 30 * 1048576;
+      if (f.size > max) { toast(`${f.name}: acima de ${Math.round(max / 1048576)} MB.`, { tone: 'err', ms: 8000 }); continue; }
+      if (!f.size) { toast(`${f.name}: arquivo vazio.`, { tone: 'err' }); continue; }
+      A.uploading++; renderDocs(r);
+      try {
+        const id = 'dc' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+        const saved = await Store.saveFile(id, f, type, f.name);
+        const item = Object.assign({ id, name: String(f.name).slice(0, 200), type, size: f.size, title: String(f.name).replace(/\.[^.]+$/, '').replace(/[_]+/g, ' ').slice(0, 140), ref: C.guessRef(f.name, fallback), ts: Date.now() }, saved);
+        A.docs = A.docs.concat(item);
+        if (item.ref < range[0] || item.ref > range[1]) outside++;
+        n++;
+      } catch (e) { fileError(e, f.name); }
+      finally { A.uploading = Math.max(0, A.uploading - 1); }
+    }
+    if (n) {
+      persistDocs(0);
+      toast(`${plural(n, 'documento anexado', 'documentos anexados')}.${outside && !A.docsAll ? ` ${outside === 1 ? 'Um ficou' : outside + ' ficaram'} com mês de referência fora do período; use Ver todos.` : ''} Confira o mês de referência.`, { ms: 7000 });
+    }
+    if (A.view === 'resumo') renderDocs(periodRange());
+  }
+  const findDoc = id => A.docs.find(d => d.id === id);
+  async function openDoc(id) {
+    const it = findDoc(id); if (!it) return;
+    let blob;
+    try { blob = await Store.loadFile(it); } catch (e) { blob = null; }
+    if (!blob) { toast('Não foi possível abrir este arquivo.', { tone: 'err' }); return; }
+    const url = URL.createObjectURL(blob);
+    if (docKind(it) === 'IMG') {
+      const fig = document.createElement('figure'); fig.className = 'pv';
+      const img = document.createElement('img'); img.alt = it.title; img.src = url;
+      const cap = document.createElement('figcaption'); cap.textContent = `${it.name} · referência ${C.monthLabel(it.ref)}`;
+      fig.append(img, cap);
+      openModal({ title: it.title || it.name, body: fig, actions: [{ label: 'Fechar', primary: true }] });
+      return;
+    }
+    const w = window.open(url, '_blank', 'noopener');
+    if (!w) toast('O navegador bloqueou a nova aba. Use Baixar.', { tone: 'err' });
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+  async function downloadDoc(id) {
+    const it = findDoc(id); if (!it) return;
+    let blob;
+    try { blob = await Store.loadFile(it); } catch (e) { blob = null; }
+    if (!blob) { toast('Não foi possível ler este arquivo.', { tone: 'err' }); return; }
+    offerFile(it.name, blob, it.type);
+  }
+  async function removeDoc(id) {
+    const it = findDoc(id); if (!it) return;
+    A.docs = A.docs.filter(d => d.id !== id);
+    persistDocs(0);
+    renderDocs(periodRange());
+    try { await Store.deleteFile(it); } catch (e) { /* o registro já saiu da lista */ }
+    toast(`${it.title || it.name} removido.`);
+  }
+  function editDoc(id, patch) {
+    const i = A.docs.findIndex(d => d.id === id); if (i < 0 || A.readOnly) return;
+    A.docs = A.docs.slice(); A.docs[i] = Object.assign({}, A.docs[i], patch);
+    persistDocs(600);
   }
 
   /* ---------------- gráficos ---------------- */
@@ -1631,14 +1870,16 @@ const Core = (() => {
 
   function chartTrend(el, days, H) {
     const pts = days.filter(d => d.date <= TODAY && d.complete && d.tout > d.tin);
-    const ep = C.toMin(A.settings.entradaPrevista);
-    $('#trendRef').textContent = ep != null ? `Ingresso previsto ${C.hm(ep)}` : 'Ingresso previsto';
+    const S = A.settings, eDe = C.toMin(S.entradaDe), eAte = C.toMin(S.entradaAte), sDe = C.toMin(S.saidaDe), sAte = C.toMin(S.saidaAte);
+    $('#trendWinIn').textContent = eDe != null && eAte != null ? `Janela de ingresso ${S.entradaDe}–${S.entradaAte}` : 'Janela de ingresso';
+    $('#trendWinOut').textContent = sDe != null && sAte != null ? `Janela de uscita ${S.saidaDe}–${S.saidaAte}` : 'Janela de uscita';
     if (pts.length < 2) return empty(el, 'Registre pelo menos dois dias completos para ver a tendência de horários.');
     if (A.tableMode.trend) return table(el, ['Data', 'Ingresso', 'Ingr. almoço', 'Uscita almoço', 'Uscita'], pts.map(d => { const p = d.rec.p; return [dayLabel(d.date), p.in || '—', p.lo || '—', p.li || '—', p.out || '—']; }));
     const w = frameW(el), narrow = w < 460, m = { t: 12, r: narrow ? 46 : 108, b: 24, l: 40 };
     const pw = w - m.l - m.r, ph = H - m.t - m.b;
     let lo = Math.min(...pts.map(d => d.tin)), hi = Math.max(...pts.map(d => d.tout));
-    if (ep != null) lo = Math.min(lo, ep);
+    if (eDe != null) lo = Math.min(lo, eDe);
+    if (sAte != null) hi = Math.max(hi, sAte);
     lo = Math.floor((lo - 15) / 60) * 60; hi = Math.ceil((hi + 15) / 60) * 60;
     const step = hi - lo > 660 ? 120 : 60;
     if ((hi - lo) % step) hi += step - ((hi - lo) % step);
@@ -1646,9 +1887,9 @@ const Core = (() => {
     const sx = pw / (pts.length - 1), X = i => m.l + i * sx;
     let s = svgOpen(w, H, 'Tendência dos horários de ingresso e uscita');
     for (let v = lo; v <= hi; v += step) s += `<line class="gl" x1="${m.l}" x2="${w - m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ax" x="${m.l - 6}" y="${Y(v) + 3.5}" text-anchor="end">${C.hm(v)}</text>`;
-    if (ep != null) s += `<line class="ref" x1="${m.l}" x2="${w - m.r}" y1="${Y(ep)}" y2="${Y(ep)}"/>`;
+    if (eDe != null && eAte != null && eAte > eDe) s += `<rect class="win" x="${m.l}" width="${pw}" y="${Y(eAte)}" height="${Y(eDe) - Y(eAte)}" style="fill:var(--s1)"/>`;
+    if (sDe != null && sAte != null && sAte > sDe) s += `<rect class="win" x="${m.l}" width="${pw}" y="${Y(sAte)}" height="${Y(sDe) - Y(sAte)}" style="fill:var(--s2)"/>`;
     const pin = pts.map((d, i) => `${X(i).toFixed(1)},${Y(d.tin).toFixed(1)}`), pout = pts.map((d, i) => `${X(i).toFixed(1)},${Y(d.tout).toFixed(1)}`);
-    s += `<path class="area" style="fill:var(--s1)" d="M${pin.join('L')}L${pout.slice().reverse().join('L')}Z"/>`;
     s += `<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${m.t + ph}" visibility="hidden"/>`;
     s += `<path class="ln" style="stroke:var(--s1)" d="M${pin.join('L')}"/><path class="ln" style="stroke:var(--s2)" d="M${pout.join('L')}"/>`;
     const L = pts.length - 1, last = pts[L];
@@ -1670,7 +1911,7 @@ const Core = (() => {
         h1.setAttribute('cx', X(i)); h1.setAttribute('cy', Y(pts[i].tin)); h2.setAttribute('cx', X(i)); h2.setAttribute('cy', Y(pts[i].tout));
       },
       anchor: i => [X(i), Y(pts[i].tout)],
-      tip: i => { const d = pts[i], p = d.rec.p; return { title: dayLabel(d.date), rows: [{ k: 'Uscita', v: p.out, c: 'var(--s2)' }, { k: 'Uscita almoço', v: p.li || '—' }, { k: 'Ingresso almoço', v: p.lo || '—' }, { k: 'Ingresso', v: p.in, c: 'var(--s1)' }], foot: `Trabalhado ${C.dur(d.worked)}` }; },
+      tip: i => { const d = pts[i], p = d.rec.p; const notes = [d.late ? `${d.late} min de atraso` : '', d.early ? `saída ${d.early} min antes da janela` : ''].filter(Boolean).join(' · '); return { title: dayLabel(d.date), rows: [{ k: 'Uscita', v: p.out, c: 'var(--s2)' }, { k: 'Uscita almoço', v: p.li || '—' }, { k: 'Ingresso almoço', v: p.lo || '—' }, { k: 'Ingresso', v: p.in, c: 'var(--s1)' }], foot: `Trabalhado ${C.dur(d.worked)}${notes ? ' · ' + notes : d.inWindow ? ' · dentro das janelas' : ''}` }; },
     });
   }
 
@@ -1883,8 +2124,11 @@ const Core = (() => {
     const pl = 18, pr = 18, X = v => pl + ((v - lo) / (hi - lo)) * (W - pl - pr);
     let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Linha do tempo do dia">`;
     s += `<rect class="trk" x="${pl}" y="12" width="${W - pl - pr}" height="14" rx="3"/>`;
-    const ep = C.toMin(S.entradaPrevista);
-    if (ep != null && inf.expected > 0) { const e2 = Math.min(hi, ep + inf.expected + (+S.almocoMin || 0)); s += `<rect class="exp" x="${X(ep)}" y="12" width="${Math.max(0, X(e2) - X(ep))}" height="14" rx="3"/>`; }
+    const eP = C.toMin(S.entradaPadrao), sP = C.toMin(S.saidaPadrao);
+    if (eP != null && sP != null && sP > eP && inf.expected > 0) {
+      s += `<rect class="exp" x="${X(eP)}" y="12" width="${Math.max(0, X(sP) - X(eP))}" height="14" rx="3"/>`;
+      for (const [a, b] of [[S.entradaDe, S.entradaAte], [S.saidaDe, S.saidaAte]]) { const ma = C.toMin(a), mb = C.toMin(b); if (ma != null && mb != null && mb > ma) s += `<rect class="win" x="${X(ma)}" y="9" width="${X(mb) - X(ma)}" height="20" rx="2"/>`; }
+    }
     const nowEnd = inf.date === TODAY ? NOWMIN : null;
     const seg = (a, b, cls) => { if (a == null || b == null || b <= a) return ''; return `<rect class="${cls}" x="${X(a)}" y="14" width="${Math.max(2, X(b) - X(a))}" height="10" rx="2"/>`; };
     if (inf.tin != null && (inf.tout == null || inf.tout >= inf.tin)) {
@@ -2195,14 +2439,16 @@ const Core = (() => {
           const c = e && e.code;
           if (c === 'declined') return;
           if (c === 'rate_limited') toast('Já existe um download esperando sua confirmação.');
-          else copyFallback(name, data);
+          else if (c === 'rejected_extension' || c === 'extension_not_enabled') toast(`Esta visualização não baixa arquivos ${(/\.[^.]+$/.exec(name) || [''])[0]}. Abra o painel no navegador para baixar.`, { tone: 'err', ms: 8000 });
+          else if (typeof data === 'string') copyFallback(name, data);
+          else toast('Não foi possível baixar o arquivo nesta visualização.', { tone: 'err' });
         }
         return;
       }
-      copyFallback(name, data);
+      if (typeof data === 'string') copyFallback(name, data); else toast('Esta visualização não permite baixar arquivos.', { tone: 'err' });
       return;
     }
-    const blob = new Blob([data], { type: mime + ';charset=utf-8' }); const url = URL.createObjectURL(blob);
+    const blob = data instanceof Blob ? data : new Blob([data], { type: mime + ';charset=utf-8' }); const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 4000);
     toast('Download iniciado: ' + name);
@@ -2220,7 +2466,13 @@ const Core = (() => {
   async function exportBackup() {
     const photos = {};
     for (const r of realRecs()) for (const p of r.photos || []) { try { const d = await Store.loadPhoto(p.id); if (d) photos[p.id] = d; } catch (e) { /* foto indisponível */ } }
-    const data = { app: 'cartellino', version: 1, exportedAt: new Date().toISOString(), settings: A.settings, months: A.months, photos };
+    const docs = { items: A.docs, files: {} };
+    let total = 0, skipped = 0;
+    for (const it of A.docs) {
+      try { const b = await Store.loadFile(it); if (!b) continue; if (total + b.size > 60 * 1048576) { skipped++; continue; } total += b.size; docs.files[it.id] = { type: it.type, b64: await blobToB64(b) }; } catch (e) { skipped++; }
+    }
+    if (skipped) toast(`${plural(skipped, 'documento ficou', 'documentos ficaram')} fora do backup (limite de 60 MB ou arquivo indisponível).`, { tone: 'err', ms: 8000 });
+    const data = { app: 'cartellino', version: 1, exportedAt: new Date().toISOString(), settings: A.settings, months: A.months, photos, docs };
     offerFile(`cartellino-backup-${TODAY}.json`, JSON.stringify(data), 'application/json');
   }
   function sanitizeRec(r, d) {
@@ -2249,8 +2501,25 @@ const Core = (() => {
       for (const [d, r] of Object.entries(m.days)) { if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || d.slice(0, 7) !== ymk || !r) continue; cur.days[d] = sanitizeRec(r, d); nDays++; }
       cur.updatedAt = Date.now(); A.months[ymk] = cur; persist(ymk, 0);
     }
+    let nDocs = 0;
+    const bd = data.docs && Array.isArray(data.docs.items) ? data.docs : null;
+    if (bd && docsAvailable()) {
+      for (const it of bd.items) {
+        if (!it || !/^[A-Za-z0-9_-]{1,64}$/.test(it.id) || findDoc(it.id)) continue;
+        const f = bd.files && bd.files[it.id];
+        if (!f || typeof f.b64 !== 'string') continue;
+        const type = String(f.type || it.type || 'application/octet-stream');
+        try {
+          const blob = b64ToBlob(f.b64, type);
+          const saved = await Store.saveFile(it.id, blob, type, String(it.name || 'documento'));
+          A.docs = A.docs.concat(Object.assign({ id: it.id, name: String(it.name || 'documento').slice(0, 200), type, size: blob.size, title: String(it.title || it.name || '').slice(0, 140), ref: /^\d{4}-\d{2}$/.test(it.ref) ? it.ref : TODAY.slice(0, 7), ts: +it.ts || Date.now() }, saved));
+          nDocs++;
+        } catch (e) { /* segue */ }
+      }
+      if (nDocs) persistDocs(0);
+    }
     invalidate(); renderAll();
-    toast(`Backup restaurado: ${plural(nDays, 'dia', 'dias')} e ${plural(nPh, 'foto', 'fotos')}.`, { ms: 7000 });
+    toast(`Backup restaurado: ${plural(nDays, 'dia', 'dias')}, ${plural(nPh, 'foto', 'fotos')} e ${plural(nDocs, 'documento', 'documentos')}.`, { ms: 7000 });
   }
   function handleExport(kind) {
     if (kind === 'espelho') return exportEspelho();
@@ -2266,8 +2535,8 @@ const Core = (() => {
     const S = A.settings;
     const jorn = [1, 2, 3, 4, 5, 6, 0].map(k => `<label class="fld"><span>${C.WDS[k]}</span><input type="time" id="cfgJ${k}" class="mono" value="${C.clock(+S.jornada[k] || 0)}"></label>`).join('');
     const where = {
-      cloud: 'Seus registros e fotos ficam no seu espaço privado deste painel. Só você vê, e eles sincronizam entre os dispositivos em que você abrir o painel.',
-      local: 'Seus registros e fotos ficam guardados só neste navegador (IndexedDB). Faça backups regulares em Relatórios para não perdê-los ao limpar o navegador.',
+      cloud: 'Seus registros e fotos ficam no seu espaço privado deste painel. Só você vê, e eles sincronizam entre os dispositivos em que você abrir o painel. Os Documentos Nemesis ficam no armazenamento de arquivos do painel: a lista é privada, mas quem tiver acesso de edição ao painel consegue ver os arquivos guardados.',
+      local: 'Seus registros, fotos e Documentos Nemesis ficam guardados só neste navegador (IndexedDB). Faça backups regulares em Relatórios para não perdê-los ao limpar o navegador.',
       memory: 'Este navegador não permite salvar. Os registros desta sessão somem ao fechar a página. Baixe um backup antes de sair.',
       loading: 'Conectando…',
     }[A.mode] || '';
@@ -2278,8 +2547,14 @@ const Core = (() => {
         <label class="fld"><span>Matrícula</span><input type="text" id="cfgMatricula" maxlength="60" value="${esc(S.matricula)}"></label></div></section>
       <section class="tile"><header class="tile-h"><div><h3>Jornada</h3><p>Horas previstas por dia da semana. Use 00:00 nos dias livres.</p></div></header>
         <div class="fields seven">${jorn}</div>
-        <div class="fields three"><label class="fld"><span>Ingresso previsto</span><input type="time" id="cfgEntrada" class="mono" value="${esc(S.entradaPrevista)}"></label>
-        <label class="fld"><span>Almoço mínimo (min)</span><input type="number" id="cfgAlmoco" min="0" max="240" step="5" value="${+S.almocoMin || 0}"></label>
+        <div class="fields three"><label class="fld"><span>Ingresso padrão</span><input type="time" id="cfgEntPad" class="mono" value="${esc(S.entradaPadrao)}"></label>
+        <label class="fld"><span>Ingresso a partir de</span><input type="time" id="cfgEntDe" class="mono" value="${esc(S.entradaDe)}"></label>
+        <label class="fld"><span>Ingresso até</span><input type="time" id="cfgEntAte" class="mono" value="${esc(S.entradaAte)}"></label></div>
+        <div class="fields three"><label class="fld"><span>Uscita padrão</span><input type="time" id="cfgSaiPad" class="mono" value="${esc(S.saidaPadrao)}"></label>
+        <label class="fld"><span>Uscita a partir de</span><input type="time" id="cfgSaiDe" class="mono" value="${esc(S.saidaDe)}"></label>
+        <label class="fld"><span>Uscita até</span><input type="time" id="cfgSaiAte" class="mono" value="${esc(S.saidaAte)}"></label></div>
+        <p class="hint">Horário flexível: ingresso entre ${esc(S.entradaDe)} e ${esc(S.entradaAte)} não é atraso; uscita entre ${esc(S.saidaDe)} e ${esc(S.saidaAte)} não é saída antecipada. O saldo do dia continua vindo das horas trabalhadas contra a jornada.</p>
+        <div class="fields three"><label class="fld"><span>Almoço mínimo (min)</span><input type="number" id="cfgAlmoco" min="0" max="240" step="5" value="${+S.almocoMin || 0}"></label>
         <label class="fld"><span>Tolerância diária (min)</span><input type="number" id="cfgTol" min="0" max="60" value="${+S.tolerancia || 0}"></label></div>
         <p class="hint">Diferenças de até ${+S.tolerancia || 0} min por dia não geram saldo. No Brasil, a CLT (art. 58, §1º) admite até 10 minutos diários.</p></section>
       <section class="tile"><header class="tile-h"><div><h3>Férias e banco de horas</h3><p>Base para os cartões de férias restantes e banco de horas.</p></div></header>
@@ -2314,7 +2589,9 @@ const Core = (() => {
     const S = Object.assign({}, A.settings); const v = sel => { const e = $(sel); return e ? e.value : ''; };
     S.nome = v('#cfgNome').trim(); S.empresa = v('#cfgEmpresa').trim(); S.matricula = v('#cfgMatricula').trim();
     S.jornada = [0, 1, 2, 3, 4, 5, 6].map(k => { const m = C.toMin(v('#cfgJ' + k)); return m == null ? 0 : m; });
-    S.entradaPrevista = v('#cfgEntrada') || '';
+    S.entradaPadrao = v('#cfgEntPad'); S.entradaDe = v('#cfgEntDe'); S.entradaAte = v('#cfgEntAte');
+    S.saidaPadrao = v('#cfgSaiPad'); S.saidaDe = v('#cfgSaiDe'); S.saidaAte = v('#cfgSaiAte');
+    delete S.entradaPrevista;
     S.almocoMin = Math.max(0, Math.min(240, +v('#cfgAlmoco') || 0));
     S.tolerancia = Math.max(0, Math.min(60, +v('#cfgTol') || 0));
     S.feriasAno = Math.max(0, Math.min(60, +v('#cfgFeriasAno') || 0));
@@ -2374,6 +2651,25 @@ const Core = (() => {
       const tile = t.closest('.tile'); const id = tile.dataset.chart;
       if (t.dataset.tool === 'table') { A.tableMode[id] = !A.tableMode[id]; renderResumo(); }
       else if (tile.classList.contains('is-focus')) closeFocus(); else openFocus(tile);
+    });
+    // documentos nemesis
+    $('#docAdd').addEventListener('click', () => { const i = $('#docInput'); i.value = ''; i.click(); });
+    $('#docInput').addEventListener('change', e => addDocs(e.target.files));
+    $('#docsAll').addEventListener('click', () => { A.docsAll = !A.docsAll; renderDocs(periodRange()); });
+    const dt = $('#docsTile');
+    dt.addEventListener('dragover', e => { if (!docsAvailable() || !e.dataTransfer || !Array.from(e.dataTransfer.types || []).includes('Files')) return; e.preventDefault(); dt.classList.add('drag'); });
+    dt.addEventListener('dragleave', e => { if (!dt.contains(e.relatedTarget)) dt.classList.remove('drag'); });
+    dt.addEventListener('drop', e => { if (!e.dataTransfer || !e.dataTransfer.files.length) return; e.preventDefault(); dt.classList.remove('drag'); addDocs(e.dataTransfer.files); });
+    $('#docsList').addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.dataset.dopen) openDoc(b.dataset.dopen);
+      else if (b.dataset.ddown) downloadDoc(b.dataset.ddown);
+      else if (b.dataset.ddel) twoStep(b, 'Confirmar', () => removeDoc(b.dataset.ddel));
+    });
+    $('#docsList').addEventListener('change', e => {
+      const t = e.target, m = /^d([tm])-(.+)$/.exec(t.id || ''); if (!m) return;
+      if (m[1] === 't') editDoc(m[2], { title: t.value.trim().slice(0, 140) || (findDoc(m[2]) || {}).name });
+      else if (/^\d{4}-\d{2}$/.test(t.value)) { editDoc(m[2], { ref: t.value }); renderDocs(periodRange()); }
     });
     // diário
     const vd = $('#v-diario');

@@ -10,12 +10,12 @@ horas trabalhadas, horas extras, banco de horas, faltas, abonos, férias restant
 
 | Página | O que faz |
 |---|---|
-| **Resumo** | 8 KPIs (horas trabalhadas, saldo do período, banco de horas, extras, faltas, abonos, férias restantes, trasferte) com comparação ao período anterior; gráficos de horas por dia contra a jornada, cumprimento de jornada, tendência de horários, distribuição de eventos, banco de horas acumulado e média por dia da semana. Filtro de período: últimos 30 dias, este mês, mês anterior, últimos 3 meses, ano ou intervalo livre. Cada gráfico tem **modo foco** e **ver como tabela**. |
+| **Resumo** | Bloco **Documentos Nemesis** logo abaixo do filtro de período: anexe PDFs, imagens ou planilhas exportados do Nemesis (botão ou arrastar e soltar), com título e mês de referência editáveis; a lista segue o período escolhido, com opção de ver todos. Abaixo, 8 KPIs (horas trabalhadas, saldo do período, banco de horas, extras, faltas, abonos, férias restantes, trasferte) com comparação ao período anterior; gráficos de horas por dia contra a jornada, cumprimento de jornada, tendência de horários, distribuição de eventos, banco de horas acumulado e média por dia da semana. Filtro de período: últimos 30 dias, este mês, mês anterior, últimos 3 meses, ano ou intervalo livre. Cada gráfico tem **modo foco** e **ver como tabela**. |
 | **Diário** | Botão **Bater ponto** (preenche a próxima marcação com a hora atual), edição manual das 4 marcações, foto por marcação, tipo do dia, campos de trasferta e abono, comprovantes, notas, linha do tempo do dia, alertas (almoço curto, jornada acima de 10h, atraso, marcação incompleta) e a semana. |
 | **Mensal** | Calendário com código e cor do tipo de cada dia, horas, saldo, feriados e dias sem registro; totais do mês. |
 | **Registros** | Tabela com busca, filtro por datas e tipos, "só saldo negativo", "só com fotos", ordenação por coluna, paginação e exportação CSV do que está filtrado. |
 | **Relatórios** | Espelho de ponto mensal (pronto para assinatura), resumo anual com barras de dados, exportação de espelho em HTML, CSV do mês, CSV completo, backup e restauração em JSON (com fotos). |
-| **Ajustes** | Perfil, jornada por dia da semana, ingresso previsto, almoço mínimo, tolerância diária, direito de férias, banco de horas inicial, calendário de feriados (Itália, Brasil ou nenhum) e feriados locais. |
+| **Ajustes** | Perfil, jornada por dia da semana, horário padrão e janelas de flexibilidade de ingresso e uscita, almoço mínimo, tolerância diária, direito de férias, banco de horas inicial, calendário de feriados (Itália, Brasil ou nenhum) e feriados locais. |
 
 ## Tipos de dia
 
@@ -32,7 +32,9 @@ horas trabalhadas, horas extras, banco de horas, faltas, abonos, férias restant
 | FE | Feriado | Jornada prevista zero; horas trabalhadas viram extra |
 | X | Falta | Desconta a jornada prevista e conta como falta |
 
-Diferenças até a tolerância diária (padrão 10 min) não geram saldo. Dias úteis passados sem registro
+Horário padrão 09:00–18:00 com flexibilidade: ingresso entre 08:45 e 09:30 não é atraso, e uscita entre
+17:45 e 18:30 não é saída antecipada (ajustável em Ajustes). O saldo do dia vem das horas trabalhadas contra a
+jornada (8h). Diferenças até a tolerância diária (padrão 10 min) não geram saldo. Dias úteis passados sem registro
 aparecem como pendências, sem virar falta automaticamente.
 
 ## Onde os dados ficam
@@ -41,7 +43,9 @@ aparecem como pendências, sem virar falta automaticamente.
   *Relatórios → Backup (JSON)* com frequência; limpar os dados do navegador apaga tudo.
 - **Publicado como Artifact no claude.ai**: cada pessoa que abre o painel tem um espaço privado no banco
   de dados do artefato (`data/users/<id>/`), sincronizado entre dispositivos. Fotos são comprimidas
-  (cerca de 100–200 KB) e guardadas no mesmo espaço privado.
+  (cerca de 100–200 KB) e guardadas no mesmo espaço privado. Os Documentos Nemesis vão para o armazenamento
+  de arquivos do artefato (até 20 MB cada): a lista fica no espaço privado, mas quem tiver acesso de edição
+  ao painel consegue ver os arquivos guardados.
 - Sem nenhum registro, o painel mostra **dados de exemplo** gerados na hora (nunca gravados). A primeira
   batida ou edição sai do exemplo.
 
@@ -51,7 +55,8 @@ aparecem como pendências, sem virar falta automaticamente.
 src/cartellino.html   fonte (formato de página de Artifact, sem <html>/<head>/<body>)
 index.html            versão independente, gerada a partir da fonte
 scripts/build.mjs     gera index.html
-tests/core.test.mjs   testes do núcleo de cálculo (feriados, jornada, resumo, férias, CSV, exemplo)
+tests/core.test.mjs   testes do núcleo de cálculo (feriados, jornada, janelas de horário, resumo, férias, CSV,
+                      mês de referência dos documentos, exemplo)
 ```
 
 ```bash
